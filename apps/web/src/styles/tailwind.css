@@ -1,0 +1,205 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@plugin '@egoist/tailwindcss-icons';
+@plugin 'daisyui';
+@plugin 'tailwind-scrollbar';
+@plugin 'tailwindcss-animate';
+@import 'tailwindcss-safe-area';
+@import 'tailwindcss-uikit-colors/v4/macos.css';
+
+@source "../../node_modules/@afilmory/ui";
+
+@plugin "daisyui/theme" {
+  name: 'dark';
+  prefersdark: true;
+  color-scheme: dark;
+  --color-primary: #007aff;
+  --color-secondary: #007aff;
+  --color-accent: #007aff;
+  --color-neutral: #48484a;
+  --color-base-100: #1c1c1e;
+  --color-base-content: #fff;
+  --color-info: #0a84ff;
+  --color-success: #30d158;
+  --color-warning: #ff9f0a;
+  --color-error: #ff453a;
+  --rounded-btn: 1.9rem;
+  --tab-border: 2px;
+  --tab-radius: 0.5rem;
+}
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+[data-theme='dark'] {
+  --radius: 0.5rem;
+  --border: 0 0% 22.1%;
+}
+
+@theme {
+  /* Container */
+  --container-padding: 2rem;
+  --container-max-width-2xl: 1400px;
+
+  --color-background: #1c1c1e;
+
+  /* Custom cursors */
+  --cursor-button: var(--cursor-button);
+  --cursor-select: var(--cursor-select);
+  --cursor-checkbox: var(--cursor-checkbox);
+  --cursor-link: var(--cursor-link);
+  --cursor-menu: var(--cursor-menu);
+  --cursor-radio: var(--cursor-radio);
+  --cursor-switch: var(--cursor-switch);
+  --cursor-card: var(--cursor-card);
+
+  /* Colors */
+  --color-border: hsl(var(--border));
+
+  /* Border radius */
+  --radius: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  /* Font families */
+  --font-sans: Geist, ui-sans-serif, system-ui, sans-serif;
+  --font-serif:
+    'Noto Serif CJK SC', 'Noto Serif SC', var(--font-serif), 'Source Han Serif SC', 'Source Han Serif',
+    source-han-serif-sc, SongTi SC, SimSum, 'Hiragino Sans GB', system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+    'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+  --font-mono:
+    'OperatorMonoSSmLig Nerd Font', 'Cascadia Code PL', 'FantasqueSansMono Nerd Font', 'operator mono', JetBrainsMono,
+    'Fira code Retina', 'Fira code', Consolas, Monaco, 'Hannotate SC', monospace, -apple-system;
+
+  /* Custom screens */
+  --screen-light-mode: (prefers-color-scheme: light);
+  --screen-dark-mode: (prefers-color-scheme: dark);
+  --screen-w-screen: 100vw;
+  --screen-h-screen: 100vh;
+
+  /* Width and max-width */
+  --width-screen: 100vw;
+  --max-width-screen: 100vw;
+
+  /* Height and max-height */
+  --height-screen: 100vh;
+  --max-height-screen: 100vh;
+}
+
+@layer base {
+  .container {
+    margin-left: auto;
+    margin-right: auto;
+    padding: var(--container-padding);
+  }
+  @media (min-width: 1536px) {
+    .container {
+      max-width: var(--container-max-width-2xl);
+    }
+  }
+}
+
+html {
+  @apply font-sans;
+}
+
+html body {
+  @apply max-w-screen overflow-x-hidden;
+}
+
+*:focus {
+  outline: none;
+}
+
+*:not(input):not(textarea):not([contenteditable='true']):focus-visible {
+  outline: 0 !important;
+}
+
+@layer components {
+  .shadow-context-menu {
+    box-shadow:
+      rgba(0, 0, 0, 0.067) 0px 3px 8px,
+      rgba(0, 0, 0, 0.067) 0px 2px 5px,
+      rgba(0, 0, 0, 0.067) 0px 1px 1px;
+  }
+}
+
+@layer components {
+  .shadow-tooltip-bottom {
+    --bg: var(--color-primary);
+    box-shadow: 0px 5px 20px -11px var(--bg);
+  }
+
+  .shadow-tooltip-top {
+    --bg: var(--color-primary);
+    box-shadow: 0px -5px 20px -11px var(--bg);
+  }
+
+  /* Glassmorphic menu item highlight effect */
+  [data-highlighted] {
+    background: var(--highlight-bg, transparent);
+  }
+}
+
+[data-sonner-toast] {
+  border-color: color-mix(in srgb, var(--color-accent) 20%, transparent) !important;
+  box-shadow:
+    0 8px 32px color-mix(in srgb, var(--color-accent) 8%, transparent),
+    0 4px 16px color-mix(in srgb, var(--color-accent) 6%, transparent),
+    0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-sonner-toast][data-type='success'] {
+  border-color: rgba(48, 209, 88, 0.3) !important;
+}
+
+[data-sonner-toast][data-type='error'] {
+  border-color: rgba(255, 69, 58, 0.3) !important;
+}
+
+[data-sonner-toast][data-type='warning'] {
+  border-color: rgba(255, 159, 10, 0.3) !important;
+}
+
+[data-sonner-toast][data-type='info'] {
+  border-color: rgba(10, 132, 255, 0.3) !important;
+}
+
+[data-sonner-toast][data-type='loading'] {
+  border-color: rgba(142, 142, 147, 0.3) !important;
+}
+
+[data-sonner-toast]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom right,
+    color-mix(in srgb, var(--color-accent) 5%, transparent),
+    transparent,
+    color-mix(in srgb, var(--color-accent) 5%, transparent)
+  );
+}
+@layer components {
+  /* Glassmorphic button hover effect */
+  .glassmorphic-btn:hover {
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-accent) 8%, transparent),
+      color-mix(in srgb, var(--color-accent) 5%, transparent)
+    ) !important;
+    color: var(--color-accent) !important;
+  }
+
+  /* Command item hover/selected effect */
+  .command-item:hover,
+  .command-item.selected {
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-accent) 8%, transparent),
+      color-mix(in srgb, var(--color-accent) 5%, transparent)
+    ) !important;
+  }
+}

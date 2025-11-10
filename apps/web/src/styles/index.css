@@ -1,0 +1,39 @@
+@import './tailwind.css';
+
+html {
+  @apply fixed inset-0 overflow-hidden flex flex-col;
+}
+
+body {
+  @apply grow h-0 shrink-0 overflow-auto relative;
+}
+
+@media screen and (min-width: 1024px) {
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border: 3px solid theme(colors.gray.300);
+    @apply rounded-xl;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    border-color: theme(colors.zinc.500/0.8);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid theme(colors.zinc.500);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: theme(colors.zinc.500/0.5);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: theme(colors.zinc.100);
+  }
+}

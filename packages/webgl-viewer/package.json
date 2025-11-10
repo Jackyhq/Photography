@@ -1,0 +1,38 @@
+{
+  "name": "@afilmory/webgl-viewer",
+  "type": "module",
+  "version": "0.2.0",
+  "packageManager": "pnpm@10.18.1",
+  "description": "",
+  "author": "Innei",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "vite build",
+    "type-check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.2",
+    "nbump": "2.1.8",
+    "react": "19.2.0",
+    "tsdown": "0.15.12",
+    "unplugin-dts": "1.0.0-beta.6",
+    "vite": "7.1.12"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "./dist/index.js",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      }
+    }
+  }
+}
