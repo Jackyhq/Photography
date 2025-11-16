@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.18.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Afilmory/Afilmory"
+    "url": "https://github.com/Jackyhq/Afilmory"
   },
   "scripts": {
     "analyze": "analyzer=1 vite build",
