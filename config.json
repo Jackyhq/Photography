@@ -1,0 +1,30 @@
+{
+  "name": "Jacky's Photography",
+  "title": "Jackywhq's Photography",
+  "description": "Capturing beautiful moments in life.",
+  "url": "https://photo.jackyw.cn",
+  "accentColor": "#007bff",
+  "author": {
+    "name": "Jackywhq",
+    "url": "https://jackyw.cn/",
+    "avatar": "https://cdn.jackyw.cn/logo/avatar/final-1.png"
+  },
+  "social": {
+    "github": "Jackyhq",
+    "twitter": "",
+    "rss": false
+  },
+  "feed": {
+    "folo": {
+      "challenge": {
+        "feedId": "",
+        "userId": ""
+      }
+    }
+  },
+  "map": [
+    "maplibre"
+  ],
+  "mapStyle": "builtin",
+  "mapProjection": "mercator"
+}

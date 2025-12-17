@@ -10,9 +10,9 @@ test-traditional-font-rendering.png
 thomas-x2d-xcd-25v-1.jpg
 thomas-x2d-xcd-25v-1.webp
 
-config.json
-.env
-builder.config.ts
+# config.json
+# .env
+# builder.config.ts
 
 apps/web/assets-git
 apps/web/src/data/photos-manifest.json
