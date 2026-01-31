@@ -3,23 +3,23 @@ const __vite__mapDeps = (
   m = __vite__mapDeps,
   d = m.f ||
     (m.f = [
-      'assets/index-DDSJjbuG.js',
+      'assets/index-BWZYEDAR.js',
       'vendor/1-CkNOVE2J.js',
-      'assets/style-CE76UcKH.js',
+      'assets/style-DmHWLceK.js',
       'assets/style.Cm_JH2.css',
-      'assets/logo-control-4fBdy8pz.js',
-      'assets/index-CcbD0x2F.js',
-      'assets/image-loader-manager-CVxknb5O.js',
+      'assets/logo-control-B1aWpDZl.js',
+      'assets/index-Bf_kqlW6.js',
+      'assets/image-loader-manager-CYimcjN_.js',
       'vendor/0-BOriIG77.js',
       'vendor/2-VRqxSGaj.js',
       'assets/WebGLImageViewer-CUmzmelI.js',
       'assets/index.Bg-Nbl.css',
-      'assets/manifest-BR_hGZPW.js',
-      'assets/blurhash-BezOS6kN.js',
-      'assets/iframe-BfrY7rxb.js',
-      'assets/webgl-preview-D0PrhfZB.js',
-      'assets/layout-AygvjnzI.js',
-      'assets/index-BAooh865.js',
+      'assets/manifest-B62zPQ3o.js',
+      'assets/blurhash-xjUFzm8P.js',
+      'assets/iframe-B5u_xwSF.js',
+      'assets/webgl-preview-DkR3jPJL.js',
+      'assets/layout-DHwbREmY.js',
+      'assets/index-C5A_G_sG.js',
     ]),
 ) => i.map((i) => d[i])
 import { r as f, R as V, c as de, j as g, b as Xh, d as ms, e as qh, f as Zw } from '../vendor/1-CkNOVE2J.js'
@@ -6202,7 +6202,8 @@ function vC(e) {
 }
 const bC = "Jacky's Photography",
   wC = "Jackywhq's Photography",
-  xC = "Jacky's Visual Atlas: Constructing personal coordinates between city and nature.",
+  xC =
+    'Jackywhq的摄影画廊。于方寸间整理记忆，在流转中定格永恒。这是一场与自我的视觉对话，无论是否被看见，记录永不止步。',
   SC = 'https://photo.jackyw.cn',
   CC = '#007bff',
   EC = { name: 'Jackywhq', url: 'https://jackyw.cn/', avatar: 'https://cdn.jackyw.cn/logo/avatar/final-1.png' },
@@ -25994,7 +25995,7 @@ const gF = () => {
 function vF() {
   return (
     f.useEffect(() => {
-      mn(() => import('./index-DDSJjbuG.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+      mn(() => import('./index-BWZYEDAR.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
     }, []),
     g.jsx(yF, {
       children: g.jsxs('div', { className: 'overflow-hidden lg:h-svh', children: [g.jsx(O0, {}), g.jsx(bF, {})] }),
@@ -26227,15 +26228,15 @@ function EF(e) {
 }
 const PF = (e) => (e === 'index' ? '' : e.startsWith('[') && e.endsWith(']') ? `:${e.slice(1, -1)}` : e),
   RF = Object.assign({
-    './pages/(data)/manifest.tsx': () => mn(() => import('./manifest-BR_hGZPW.js'), __vite__mapDeps([11, 1, 8])),
-    './pages/(debug)/blurhash.tsx': () => mn(() => import('./blurhash-BezOS6kN.js'), __vite__mapDeps([12, 1, 5, 8])),
-    './pages/(debug)/iframe.tsx': () => mn(() => import('./iframe-BfrY7rxb.js'), __vite__mapDeps([13, 1, 8])),
+    './pages/(data)/manifest.tsx': () => mn(() => import('./manifest-B62zPQ3o.js'), __vite__mapDeps([11, 1, 8])),
+    './pages/(debug)/blurhash.tsx': () => mn(() => import('./blurhash-xjUFzm8P.js'), __vite__mapDeps([12, 1, 5, 8])),
+    './pages/(debug)/iframe.tsx': () => mn(() => import('./iframe-B5u_xwSF.js'), __vite__mapDeps([13, 1, 8])),
     './pages/(debug)/webgl-preview.tsx': () =>
-      mn(() => import('./webgl-preview-D0PrhfZB.js'), __vite__mapDeps([14, 1, 9, 8])),
-    './pages/(main)/layout.tsx': () => mn(() => import('./layout-AygvjnzI.js'), __vite__mapDeps([15, 1, 6, 7, 8, 5])),
+      mn(() => import('./webgl-preview-DkR3jPJL.js'), __vite__mapDeps([14, 1, 9, 8])),
+    './pages/(main)/layout.tsx': () => mn(() => import('./layout-DHwbREmY.js'), __vite__mapDeps([15, 1, 6, 7, 8, 5])),
     './pages/(main)/photos/[photoId]/index.tsx': () =>
-      mn(() => import('./index-DDSJjbuG.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])),
-    './pages/explory/index.tsx': () => mn(() => import('./index-BAooh865.js'), __vite__mapDeps([16, 1, 8])),
+      mn(() => import('./index-BWZYEDAR.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])),
+    './pages/explory/index.tsx': () => mn(() => import('./index-C5A_G_sG.js'), __vite__mapDeps([16, 1, 8])),
   }),
   TF = EF(RF),
   AF = i1([
