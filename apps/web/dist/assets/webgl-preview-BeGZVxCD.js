@@ -1,5 +1,5 @@
 import { c as u, r as f, j as o } from '../vendor/1-CkNOVE2J.js'
-import { B as p } from './index-D7b9glpC.js'
+import { B as p } from './index-B-WefkF1.js'
 import { W as U } from './WebGLImageViewer-CUmzmelI.js'
 import '../vendor/2-VRqxSGaj.js'
 function j(e) {
