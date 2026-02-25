@@ -73,10 +73,10 @@ import {
   ah as kr,
   p as Ft,
   ai as $r,
-} from './index-BwDtUm7n.js'
-import { u as Fe, g as Ir, i as zt, I as Fr } from './image-loader-manager-D-ZS7zQJ.js'
+} from './index-CJsgrCYE.js'
+import { u as Fe, g as Ir, i as zt, I as Fr } from './image-loader-manager-CZYgLemE.js'
 import { u as ve, s as zr } from '../vendor/2-VRqxSGaj.js'
-import { T as Hr } from './index-DCllequg.js'
+import { T as Hr } from './index-CwuseCYf.js'
 import '../vendor/0-BOriIG77.js'
 function Ur(t, e) {
   return t === e || (Number.isNaN(t) && Number.isNaN(e))
@@ -3476,7 +3476,7 @@ const kn = (t) => {
     e[13] !== a ? ((v = a('gallery.built.at')), (e[13] = a), (e[14] = v)) : (v = e[14])
     let x
     e[15] !== s.language
-      ? ((x = new Date('2/23/2026').toLocaleDateString(s.language, { year: 'numeric', month: 'long', day: 'numeric' })),
+      ? ((x = new Date('2/25/2026').toLocaleDateString(s.language, { year: 'numeric', month: 'long', day: 'numeric' })),
         (e[15] = s.language),
         (e[16] = x))
       : (x = e[16])
@@ -3487,11 +3487,11 @@ const kn = (t) => {
           children: [
             '(',
             h.jsx('a', {
-              href: `${Pr.url}/commit/8865af3f1a5a10e573f87e7f7a02d5696c2ac9df`,
+              href: `${Pr.url}/commit/34d0c9c948a7c213a4d8b47e7d2d18c45f74dcb1`,
               target: '_blank',
               rel: 'noreferrer',
               className: 'text-gray-500 dark:text-gray-400',
-              children: '8865af3f1a5a10e573f87e7f7a02d5696c2ac9df'.slice(0, 6),
+              children: '34d0c9c948a7c213a4d8b47e7d2d18c45f74dcb1'.slice(0, 6),
             }),
             ')',
           ],
