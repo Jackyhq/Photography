@@ -2,9 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://photo.jackyw.cn</loc>
-    <lastmod>2026-02-25T19:34:16.322Z</lastmod>
+    <lastmod>2026-03-02T14:27:21.337Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/20260301171801</loc>
+    <lastmod>2026-03-02T14:25:59.583Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/20260301171522</loc>
+    <lastmod>2026-03-02T14:25:59.563Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://photo.jackyw.cn/20260225125917</loc>
