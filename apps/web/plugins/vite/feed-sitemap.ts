@@ -9,6 +9,31 @@ import { MANIFEST_PATH } from './__internal__/constants'
 
 const { generateRSSFeed } = await tsImport('@afilmory/utils', import.meta.url)
 
+function escapeXml(unsafe: string): string {
+  return unsafe.replaceAll(/[<>&'"]/g, (c) => {
+    switch (c) {
+      case '<': {
+        return '&lt;'
+      }
+      case '>': {
+        return '&gt;'
+      }
+      case '&': {
+        return '&amp;'
+      }
+      case "'": {
+        return '&apos;'
+      }
+      case '"': {
+        return '&quot;'
+      }
+      default: {
+        return c
+      }
+    }
+  })
+}
+
 export function createFeedSitemapPlugin(siteConfig: SiteConfig): Plugin {
   return {
     name: 'feed-sitemap-generator',
@@ -23,7 +48,16 @@ export function createFeedSitemapPlugin(siteConfig: SiteConfig): Plugin {
         )
 
         // Generate RSS feed
-        const rssXml = generateRSSFeed(sortedPhotos, siteConfig)
+        const rssXml = generateRSSFeed(sortedPhotos, {
+          title: siteConfig.title,
+          description: siteConfig.description,
+          url: siteConfig.url,
+          author: {
+            name: siteConfig.author.name,
+            url: siteConfig.author.url,
+            avatar: siteConfig.author.avatar,
+          },
+        })
 
         // Generate sitemap
         const sitemapXml = generateSitemap(sortedPhotos, siteConfig)
@@ -53,10 +87,11 @@ export function createFeedSitemapPlugin(siteConfig: SiteConfig): Plugin {
 
 function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig): string {
   const now = new Date().toISOString()
+  const baseUrl = config.url.endsWith('/') ? config.url.slice(0, -1) : config.url
 
   // Main page
   const mainPageXml = `  <url>
-    <loc>${config.url}</loc>
+    <loc>${escapeXml(baseUrl)}</loc>
     <lastmod>${now}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -65,9 +100,10 @@ function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig): strin
   // Photo pages
   const photoUrls = photos
     .map((photo) => {
-      const lastmod = new Date(photo.lastModified || photo.dateTaken).toISOString()
+      const date = photo.lastModified || photo.dateTaken
+      const lastmod = date ? new Date(date).toISOString() : now
       return `  <url>
-    <loc>${config.url}/${photo.id}</loc>
+    <loc>${escapeXml(`${baseUrl}/${photo.id}`)}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -79,5 +115,5 @@ function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig): strin
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${mainPageXml}
 ${photoUrls}
-</urlset>`
+</urlset>\n`
 }
