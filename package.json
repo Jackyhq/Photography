@@ -10,12 +10,12 @@
     "url": "https://github.com/Jackyhq/Afilmory"
   },
   "scripts": {
-    "build": "pnpm --filter @afilmory/ssr build",
+    "build": "pnpm --filter web build",
     "build:demo": "sh scripts/prepare-demo-data.sh && pnpm --filter web build",
     "build:manifest": "pnpm --filter @afilmory/builder cli",
     "build:update-remote-repo": "sh scripts/build-update-remote-repo.sh",
     "create:doc": "tsx scripts/create-doc.ts",
-    "dev": "pnpm --filter @afilmory/ssr dev",
+    "dev": "pnpm --filter web dev",
     "docs:build": "pnpm --filter @afilmory/docs build",
     "docs:dev": "pnpm --filter @afilmory/docs dev",
     "docs:preview": "pnpm --filter @afilmory/docs preview",

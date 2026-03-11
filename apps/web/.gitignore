@@ -1,3 +1,5 @@
+dist
+node_modules
 
 public/og-image-*.png
 test-svg-font-rendering.png

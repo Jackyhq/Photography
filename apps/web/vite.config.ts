@@ -30,7 +30,7 @@ const devPrint = (): PluginOption => ({
   name: 'dev-print',
   configureServer(server: ViteDevServer) {
     server.printUrls = () => {
-      console.info(`  ${green('➜')}  ${dim('Next.js SSR')}: ${cyan('http://localhost:1924')}`)
+      console.info(`  ${green('➜')}  ${dim('Web')}: ${cyan('http://localhost:13333')}`)
     }
   },
 })
@@ -43,11 +43,12 @@ if (process.env.CI) {
     force: true,
   })
 }
-const DEV_NEXT_JS = process.env.DEV_NEXT_JS === 'true'
 
 const ReactCompilerConfig = {
   /* ... */
 }
+
+const BUILD_FOR_SERVER_SERVE = process.env.BUILD_FOR_SERVER_SERVE === '1'
 
 const staticWebBuildPlugins: PluginOption[] = [
   manifestInjectPlugin(),
@@ -58,7 +59,7 @@ const staticWebBuildPlugins: PluginOption[] = [
     base: '/',
     scope: '/',
     registerType: 'autoUpdate',
-    includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+    includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg', 'feed.xml', 'sitemap.xml'],
     manifest: {
       name: siteConfig.title,
       short_name: siteConfig.name,
@@ -159,7 +160,6 @@ const staticWebBuildPlugins: PluginOption[] = [
   }),
 ]
 
-const BUILD_FOR_SERVER_SERVE = process.env.BUILD_FOR_SERVER_SERVE === '1'
 // https://vitejs.dev/config/
 export default defineConfig(() => {
   return {
@@ -196,7 +196,7 @@ export default defineConfig(() => {
       devPrint(),
     ],
     server: {
-      port: !DEV_NEXT_JS ? 1924 : 13333, // 1924 年首款 35mm 相机问世
+      port: 13333,
     },
     define: {
       APP_DEV_CWD: JSON.stringify(process.cwd()),
