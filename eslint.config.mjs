@@ -104,14 +104,6 @@ const hyobanConfig = await defineConfig(
     },
   },
 
-  // Backend framework isn't React — disable React-specific hooks rule there.
-  {
-    files: ['be/packages/framework/**/*.{ts,tsx}'],
-    rules: {
-      'react-hooks/rules-of-hooks': 'off',
-    },
-  },
-
   // Redundant but harmless: keep a local ignore in case this block is used standalone somewhere
   globalIgnores(['apps/ssr/src/index.html.ts', 'apps/ssr/public/**', 'apps/web/public/**', 'packages/docs/public/**']),
 )

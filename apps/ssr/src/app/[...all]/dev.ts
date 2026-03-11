@@ -6,15 +6,23 @@ import { injectConfigToDocument } from '~/lib/injectable'
 
 const host = 'http://localhost:13333'
 export const handler = async (req: NextRequest) => {
-  if (process.env.NODE_ENV !== 'development') {
-    return new NextResponse(null, { status: 404 })
+  if (process.env.NODE_ENV === 'development') {
+    if (req.nextUrl.pathname.startsWith('/thumbnails') || req.nextUrl.pathname.startsWith('/photos')) {
+      return proxyAssets(req)
+    }
+    return proxyIndexHtml()
   }
 
-  if (req.nextUrl.pathname.startsWith('/thumbnails') || req.nextUrl.pathname.startsWith('/photos')) {
-    return proxyAssets(req)
-  }
-
-  return proxyIndexHtml()
+  // In production, serve index.html for all routes to let SPA handle routing
+  const indexHtml = await import('../../index.html').then((m) => m.default)
+  const document = new DOMParser().parseFromString(indexHtml, 'text/html')
+  injectConfigToDocument(document)
+  return new Response(document.documentElement.outerHTML, {
+    headers: {
+      'Content-Type': 'text/html',
+      'X-SSR': '1',
+    },
+  })
 }
 
 async function proxyAssets(req: NextRequest) {

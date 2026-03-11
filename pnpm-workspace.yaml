@@ -2,9 +2,6 @@ packages:
   - apps/**/*
   - packages/*
   - packages/*/*
-  - be
-  - be/packages/*
-  - be/apps/*
 
 catalog:
   '@egoist/tailwindcss-icons': 1.9.0
