@@ -67,10 +67,10 @@
     "pre-commit": "pnpm exec lint-staged"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
+    "!(*dist*|*node_modules*)/**/*.{js,jsx,ts,tsx}": [
       "prettier --ignore-path ./.gitignore --write "
     ],
-    "*.{js,ts,cjs,mjs,jsx,tsx,json}": [
+    "!(*dist*|*node_modules*)/**/*.{js,ts,cjs,mjs,jsx,tsx,json}": [
       "eslint --fix"
     ],
     "*.{md,mdx}": [
