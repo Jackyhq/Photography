@@ -103,7 +103,7 @@ function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig): strin
       const date = photo.lastModified || photo.dateTaken
       const lastmod = date ? new Date(date).toISOString() : now
       return `  <url>
-    <loc>${escapeXml(`${baseUrl}/${photo.id}`)}</loc>
+    <loc>${escapeXml(`${baseUrl}/photos/${photo.id}`)}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
