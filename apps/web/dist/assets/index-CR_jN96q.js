@@ -3,23 +3,23 @@ const __vite__mapDeps = (
   m = __vite__mapDeps,
   d = m.f ||
     (m.f = [
-      'assets/index-Cpt6ClBA.js',
+      'assets/index-DAXvfFL2.js',
       'vendor/1-CkNOVE2J.js',
-      'assets/style-CqXnFNCW.js',
+      'assets/style-zGu7iPIy.js',
       'assets/style.Cm_JH2.css',
-      'assets/logo-control-D678ldan.js',
-      'assets/index-DRfaasCj.js',
-      'assets/image-loader-manager-D3Zlu_t6.js',
+      'assets/logo-control-OEqtHU6a.js',
+      'assets/index-B2B3SiFO.js',
+      'assets/image-loader-manager-BMnf0xdi.js',
       'vendor/0-BOriIG77.js',
       'vendor/2-VRqxSGaj.js',
       'assets/WebGLImageViewer-CUmzmelI.js',
       'assets/index.Bg-Nbl.css',
-      'assets/manifest-DWBrCRGG.js',
-      'assets/blurhash-DTS2YNEO.js',
-      'assets/iframe-Cs8hg7D7.js',
-      'assets/webgl-preview-BhhV2Axt.js',
-      'assets/layout-B351h2vs.js',
-      'assets/index-BAHSNJO7.js',
+      'assets/manifest-Cz_nYltf.js',
+      'assets/blurhash-6GADTjlU.js',
+      'assets/iframe-BPNduOxR.js',
+      'assets/webgl-preview-BhJtAt4N.js',
+      'assets/layout-BhwOtg3B.js',
+      'assets/index-DhAPxVQB.js',
     ]),
 ) => i.map((i) => d[i])
 import { r as f, R as V, c as de, j as g, b as Xh, d as ms, e as qh, f as Zw } from '../vendor/1-CkNOVE2J.js'
@@ -6206,7 +6206,7 @@ const bC = "Jacky's Photography",
     'Jackywhq的摄影画廊。于方寸间整理记忆，在流转中定格永恒。这是一场与自我的视觉对话，无论是否被看见，记录永不止步。',
   SC = 'https://photo.jackyw.cn',
   CC = '#007bff',
-  EC = { name: 'Jackywhq', url: 'https://jackyw.cn/', avatar: 'https://cdn.jackyw.cn/logo/avatar/final-1.png' },
+  EC = { name: 'Jackywhq', url: 'https://jackyw.cn/', avatar: 'https://photos3.jackyw.cn/logo/avatar/final-1.png' },
   PC = { github: 'Jackyhq', twitter: '', rss: !1 },
   RC = { folo: { challenge: { feedId: '', userId: '' } } },
   TC = ['maplibre'],
@@ -25995,7 +25995,7 @@ const gF = () => {
 function vF() {
   return (
     f.useEffect(() => {
-      mn(() => import('./index-Cpt6ClBA.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+      mn(() => import('./index-DAXvfFL2.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
     }, []),
     g.jsx(yF, {
       children: g.jsxs('div', { className: 'overflow-hidden lg:h-svh', children: [g.jsx(O0, {}), g.jsx(bF, {})] }),
@@ -26228,15 +26228,15 @@ function EF(e) {
 }
 const PF = (e) => (e === 'index' ? '' : e.startsWith('[') && e.endsWith(']') ? `:${e.slice(1, -1)}` : e),
   RF = Object.assign({
-    './pages/(data)/manifest.tsx': () => mn(() => import('./manifest-DWBrCRGG.js'), __vite__mapDeps([11, 1, 8])),
-    './pages/(debug)/blurhash.tsx': () => mn(() => import('./blurhash-DTS2YNEO.js'), __vite__mapDeps([12, 1, 5, 8])),
-    './pages/(debug)/iframe.tsx': () => mn(() => import('./iframe-Cs8hg7D7.js'), __vite__mapDeps([13, 1, 8])),
+    './pages/(data)/manifest.tsx': () => mn(() => import('./manifest-Cz_nYltf.js'), __vite__mapDeps([11, 1, 8])),
+    './pages/(debug)/blurhash.tsx': () => mn(() => import('./blurhash-6GADTjlU.js'), __vite__mapDeps([12, 1, 5, 8])),
+    './pages/(debug)/iframe.tsx': () => mn(() => import('./iframe-BPNduOxR.js'), __vite__mapDeps([13, 1, 8])),
     './pages/(debug)/webgl-preview.tsx': () =>
-      mn(() => import('./webgl-preview-BhhV2Axt.js'), __vite__mapDeps([14, 1, 9, 8])),
-    './pages/(main)/layout.tsx': () => mn(() => import('./layout-B351h2vs.js'), __vite__mapDeps([15, 1, 6, 7, 8, 5])),
+      mn(() => import('./webgl-preview-BhJtAt4N.js'), __vite__mapDeps([14, 1, 9, 8])),
+    './pages/(main)/layout.tsx': () => mn(() => import('./layout-BhwOtg3B.js'), __vite__mapDeps([15, 1, 6, 7, 8, 5])),
     './pages/(main)/photos/[photoId]/index.tsx': () =>
-      mn(() => import('./index-Cpt6ClBA.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])),
-    './pages/explory/index.tsx': () => mn(() => import('./index-BAHSNJO7.js'), __vite__mapDeps([16, 1, 8])),
+      mn(() => import('./index-DAXvfFL2.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])),
+    './pages/explory/index.tsx': () => mn(() => import('./index-DhAPxVQB.js'), __vite__mapDeps([16, 1, 8])),
   }),
   TF = EF(RF),
   AF = i1([
