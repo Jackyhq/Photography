@@ -1,5 +1,5 @@
 import { c as o, j as s } from '../vendor/1-CkNOVE2J.js'
-import { S as r } from './index-CR_jN96q.js'
+import { S as r } from './index-Cqd96DM8.js'
 import '../vendor/2-VRqxSGaj.js'
 const c = () => {
   const l = o.c(1)
