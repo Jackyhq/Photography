@@ -73,10 +73,10 @@ import {
   ah as kr,
   p as Ft,
   ai as $r,
-} from './index-BKwr2PMi.js'
-import { u as Fe, g as Ir, i as zt, I as Fr } from './image-loader-manager-CSc4hxVB.js'
+} from './index-BDtK18ZX.js'
+import { u as Fe, g as Ir, i as zt, I as Fr } from './image-loader-manager-D3Zlu_t6.js'
 import { u as ve, s as zr } from '../vendor/2-VRqxSGaj.js'
-import { T as Hr } from './index-C-KXgnzn.js'
+import { T as Hr } from './index-DRfaasCj.js'
 import '../vendor/0-BOriIG77.js'
 function Ur(t, e) {
   return t === e || (Number.isNaN(t) && Number.isNaN(e))
@@ -3487,11 +3487,11 @@ const kn = (t) => {
           children: [
             '(',
             h.jsx('a', {
-              href: `${Pr.url}/commit/7181f6146c2b507126dda1b6a7dd514ec46e9fb9`,
+              href: `${Pr.url}/commit/96f90d6f2367aa0ac6e3a9a4b03eae7aba9d4a59`,
               target: '_blank',
               rel: 'noreferrer',
               className: 'text-gray-500 dark:text-gray-400',
-              children: '7181f6146c2b507126dda1b6a7dd514ec46e9fb9'.slice(0, 6),
+              children: '96f90d6f2367aa0ac6e3a9a4b03eae7aba9d4a59'.slice(0, 6),
             }),
             ')',
           ],

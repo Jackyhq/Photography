@@ -6,6 +6,6 @@ export default defineBuilderConfig(() => ({
   storage: {
     provider: 'local',
     basePath: './photos',
-    baseUrl: 'https://photo.jackyw.uk/photos/',
+    baseUrl: 'https://photos3.jackyw.cn/photos/',
   },
 }))
