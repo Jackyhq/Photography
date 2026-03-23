@@ -5,6 +5,7 @@ import { RemoveScroll } from 'react-remove-scroll'
 
 import { NotFound } from '~/components/common/NotFound'
 import { PhotoViewer } from '~/components/ui/photo-viewer'
+import { useCanonical } from '~/hooks/useCanonical'
 import { useContextPhotos, usePhotoViewer } from '~/hooks/usePhotoViewer'
 import { useTitle } from '~/hooks/useTitle'
 import { deriveAccentFromSources } from '~/lib/color'
@@ -20,7 +21,9 @@ export const Component = () => {
     }),
     [ref],
   )
-  useTitle(photos[photoViewer.currentIndex]?.title || 'Not Found')
+  const currentPhoto = photos[photoViewer.currentIndex]
+  useTitle(currentPhoto?.title || 'Not Found')
+  useCanonical(currentPhoto ? `/photos/${currentPhoto.id}` : undefined)
 
   const [accentColor, setAccentColor] = useState<string | null>(null)
 

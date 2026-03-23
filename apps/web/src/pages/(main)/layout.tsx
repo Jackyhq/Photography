@@ -6,6 +6,7 @@ import { Outlet, useLocation, useNavigate, useParams, useSearchParams } from 're
 
 import { gallerySettingAtom } from '~/atoms/app'
 import { siteConfig } from '~/config'
+import { useCanonical } from '~/hooks/useCanonical'
 import { useMobile } from '~/hooks/useMobile'
 import { getFilteredPhotos, usePhotos, usePhotoViewer } from '~/hooks/usePhotoViewer'
 import { MasonryRoot } from '~/modules/gallery/MasonryRoot'
@@ -19,6 +20,9 @@ export const Component = () => {
   const isMobile = useMobile()
 
   const photos = usePhotos()
+  const { photoId } = useParams()
+
+  useCanonical(photoId ? `/photos/${photoId}` : '/')
 
   return (
     <>
