@@ -3,23 +3,23 @@ const __vite__mapDeps = (
   m = __vite__mapDeps,
   d = m.f ||
     (m.f = [
-      'assets/index-CWkLeJ3n.js',
+      'assets/index-B3gR-w9U.js',
       'vendor/1-CkNOVE2J.js',
-      'assets/style-B6QdVIPA.js',
+      'assets/style-eL5Y9nR7.js',
       'assets/style.Cm_JH2.css',
-      'assets/logo-control-Cp3AFQcf.js',
-      'assets/index-DdX16l3R.js',
-      'assets/useCanonical-D6Jv1IUm.js',
+      'assets/logo-control-BfyKPpKi.js',
+      'assets/index-DN_-6OVA.js',
+      'assets/useCanonical-YbRnXZ8A.js',
       'vendor/0-BOriIG77.js',
       'vendor/2-VRqxSGaj.js',
       'assets/WebGLImageViewer-CUmzmelI.js',
       'assets/index.Bg-Nbl.css',
-      'assets/manifest-C9sRgPBB.js',
-      'assets/blurhash-DDxT5VlK.js',
-      'assets/iframe-bNMSk39A.js',
-      'assets/webgl-preview-Bd8Gbsen.js',
-      'assets/layout-WEnZlX9Y.js',
-      'assets/index-BJHc0C99.js',
+      'assets/manifest-dDA4JxLD.js',
+      'assets/blurhash-BsXmxtKs.js',
+      'assets/iframe-DBwaE7yq.js',
+      'assets/webgl-preview-Ccp243Ed.js',
+      'assets/layout-CmRZqI7M.js',
+      'assets/index-B6SUjyWA.js',
     ]),
 ) => i.map((i) => d[i])
 import { r as f, R as V, c as de, j as g, b as Xh, d as ms, e as qh, f as Zw } from '../vendor/1-CkNOVE2J.js'
@@ -25995,7 +25995,7 @@ const gF = () => {
 function vF() {
   return (
     f.useEffect(() => {
-      mn(() => import('./index-CWkLeJ3n.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+      mn(() => import('./index-B3gR-w9U.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
     }, []),
     g.jsx(yF, {
       children: g.jsxs('div', { className: 'overflow-hidden lg:h-svh', children: [g.jsx(O0, {}), g.jsx(bF, {})] }),
@@ -26228,15 +26228,15 @@ function EF(e) {
 }
 const PF = (e) => (e === 'index' ? '' : e.startsWith('[') && e.endsWith(']') ? `:${e.slice(1, -1)}` : e),
   RF = Object.assign({
-    './pages/(data)/manifest.tsx': () => mn(() => import('./manifest-C9sRgPBB.js'), __vite__mapDeps([11, 1, 8])),
-    './pages/(debug)/blurhash.tsx': () => mn(() => import('./blurhash-DDxT5VlK.js'), __vite__mapDeps([12, 1, 5, 8])),
-    './pages/(debug)/iframe.tsx': () => mn(() => import('./iframe-bNMSk39A.js'), __vite__mapDeps([13, 1, 8])),
+    './pages/(data)/manifest.tsx': () => mn(() => import('./manifest-dDA4JxLD.js'), __vite__mapDeps([11, 1, 8])),
+    './pages/(debug)/blurhash.tsx': () => mn(() => import('./blurhash-BsXmxtKs.js'), __vite__mapDeps([12, 1, 5, 8])),
+    './pages/(debug)/iframe.tsx': () => mn(() => import('./iframe-DBwaE7yq.js'), __vite__mapDeps([13, 1, 8])),
     './pages/(debug)/webgl-preview.tsx': () =>
-      mn(() => import('./webgl-preview-Bd8Gbsen.js'), __vite__mapDeps([14, 1, 9, 8])),
-    './pages/(main)/layout.tsx': () => mn(() => import('./layout-WEnZlX9Y.js'), __vite__mapDeps([15, 1, 6, 7, 8, 5])),
+      mn(() => import('./webgl-preview-Ccp243Ed.js'), __vite__mapDeps([14, 1, 9, 8])),
+    './pages/(main)/layout.tsx': () => mn(() => import('./layout-CmRZqI7M.js'), __vite__mapDeps([15, 1, 6, 7, 8, 5])),
     './pages/(main)/photos/[photoId]/index.tsx': () =>
-      mn(() => import('./index-CWkLeJ3n.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])),
-    './pages/explory/index.tsx': () => mn(() => import('./index-BJHc0C99.js'), __vite__mapDeps([16, 1, 8])),
+      mn(() => import('./index-B3gR-w9U.js'), __vite__mapDeps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])),
+    './pages/explory/index.tsx': () => mn(() => import('./index-B6SUjyWA.js'), __vite__mapDeps([16, 1, 8])),
   }),
   TF = EF(RF),
   AF = i1([

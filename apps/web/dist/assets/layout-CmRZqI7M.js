@@ -73,10 +73,10 @@ import {
   ah as $r,
   p as Ft,
   ai as kr,
-} from './index-B2iQjIZ4.js'
-import { u as Fe, g as Ir, i as zt, I as Fr, a as zr } from './useCanonical-D6Jv1IUm.js'
+} from './index-CPF2mvVm.js'
+import { u as Fe, g as Ir, i as zt, I as Fr, a as zr } from './useCanonical-YbRnXZ8A.js'
 import { u as ve, s as Hr } from '../vendor/2-VRqxSGaj.js'
-import { T as Ur } from './index-DdX16l3R.js'
+import { T as Ur } from './index-DN_-6OVA.js'
 import '../vendor/0-BOriIG77.js'
 function Br(t, e) {
   return t === e || (Number.isNaN(t) && Number.isNaN(e))
@@ -3476,7 +3476,7 @@ const kn = (t) => {
     e[13] !== a ? ((v = a('gallery.built.at')), (e[13] = a), (e[14] = v)) : (v = e[14])
     let x
     e[15] !== s.language
-      ? ((x = new Date('3/23/2026').toLocaleDateString(s.language, { year: 'numeric', month: 'long', day: 'numeric' })),
+      ? ((x = new Date('3/30/2026').toLocaleDateString(s.language, { year: 'numeric', month: 'long', day: 'numeric' })),
         (e[15] = s.language),
         (e[16] = x))
       : (x = e[16])
@@ -3487,11 +3487,11 @@ const kn = (t) => {
           children: [
             '(',
             h.jsx('a', {
-              href: `${Er.url}/commit/f1ee09f1d8b7722eaba67f7bba25d60ca19a50c9`,
+              href: `${Er.url}/commit/df9f0e5a97bf5bf44193ebe8d901968c129b1468`,
               target: '_blank',
               rel: 'noreferrer',
               className: 'text-gray-500 dark:text-gray-400',
-              children: 'f1ee09f1d8b7722eaba67f7bba25d60ca19a50c9'.slice(0, 6),
+              children: 'df9f0e5a97bf5bf44193ebe8d901968c129b1468'.slice(0, 6),
             }),
             ')',
           ],

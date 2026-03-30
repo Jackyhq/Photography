@@ -2,9 +2,81 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://photo.jackyw.cn</loc>
-    <lastmod>2026-03-23T21:17:48.116Z</lastmod>
+    <lastmod>2026-03-30T18:44:25.443Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260330103304</loc>
+    <lastmod>2026-03-30T18:32:44.654Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260330075251</loc>
+    <lastmod>2026-03-30T06:41:58.505Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260329144101</loc>
+    <lastmod>2026-03-30T18:32:56.713Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260329142650</loc>
+    <lastmod>2026-03-30T18:33:00.029Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260329133558</loc>
+    <lastmod>2026-03-30T18:33:12.269Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260328185228</loc>
+    <lastmod>2026-03-30T18:33:20.379Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260328182744</loc>
+    <lastmod>2026-03-28T17:57:02.191Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260328165428</loc>
+    <lastmod>2026-03-28T17:57:02.858Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260328164019</loc>
+    <lastmod>2026-03-30T18:33:30.373Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260328134207</loc>
+    <lastmod>2026-03-30T18:33:41.162Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260328133445</loc>
+    <lastmod>2026-03-30T18:33:40.071Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://photo.jackyw.cn/photos/20260328131541</loc>
+    <lastmod>2026-03-30T18:33:43.261Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://photo.jackyw.cn/photos/DJI_20260314192519_0115_D</loc>

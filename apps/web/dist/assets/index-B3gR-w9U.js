@@ -78,11 +78,11 @@ import {
   aZ as o0,
   a_ as a0,
   a$ as s0,
-} from './index-B2iQjIZ4.js'
-import { g as l0 } from './style-B6QdVIPA.js'
-import { M as c0, c as u0 } from './logo-control-Cp3AFQcf.js'
-import { T as Il, t as d0, d as f0 } from './index-DdX16l3R.js'
-import { u as Mo, g as m0, I as p0, i as ps, a as h0 } from './useCanonical-D6Jv1IUm.js'
+} from './index-CPF2mvVm.js'
+import { g as l0 } from './style-eL5Y9nR7.js'
+import { M as c0, c as u0 } from './logo-control-BfyKPpKi.js'
+import { T as Il, t as d0, d as f0 } from './index-DN_-6OVA.js'
+import { u as Mo, g as m0, I as p0, i as ps, a as h0 } from './useCanonical-YbRnXZ8A.js'
 import { u as $t } from '../vendor/2-VRqxSGaj.js'
 import { L as Qc, W as g0 } from './WebGLImageViewer-CUmzmelI.js'
 import '../vendor/0-BOriIG77.js'
