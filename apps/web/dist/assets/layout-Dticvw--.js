@@ -73,10 +73,10 @@ import {
   ah as $r,
   p as Ft,
   ai as kr,
-} from './index-CPF2mvVm.js'
-import { u as Fe, g as Ir, i as zt, I as Fr, a as zr } from './useCanonical-YbRnXZ8A.js'
+} from './index-xtYrjsCW.js'
+import { u as Fe, g as Ir, i as zt, I as Fr, a as zr } from './useCanonical-DwZnf2PK.js'
 import { u as ve, s as Hr } from '../vendor/2-VRqxSGaj.js'
-import { T as Ur } from './index-DN_-6OVA.js'
+import { T as Ur } from './index-Br3B4zoN.js'
 import '../vendor/0-BOriIG77.js'
 function Br(t, e) {
   return t === e || (Number.isNaN(t) && Number.isNaN(e))
@@ -3487,11 +3487,11 @@ const kn = (t) => {
           children: [
             '(',
             h.jsx('a', {
-              href: `${Er.url}/commit/df9f0e5a97bf5bf44193ebe8d901968c129b1468`,
+              href: `${Er.url}/commit/39af81d2688908983a4f24e171ab8819a90214ee`,
               target: '_blank',
               rel: 'noreferrer',
               className: 'text-gray-500 dark:text-gray-400',
-              children: 'df9f0e5a97bf5bf44193ebe8d901968c129b1468'.slice(0, 6),
+              children: '39af81d2688908983a4f24e171ab8819a90214ee'.slice(0, 6),
             }),
             ')',
           ],

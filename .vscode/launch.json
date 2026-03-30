@@ -15,6 +15,18 @@
             "runtimeArgs": [
                 "--remote-debugging-port=9222"
             ]
+        },
+        {
+            "name": "Build & Preview + Debug Chrome (apps/web)",
+            "type": "pwa-chrome",
+            "request": "launch",
+            "url": "http://localhost:13333",
+            "webRoot": "${workspaceFolder}/apps/web",
+            "preLaunchTask": "pnpm: build+preview (apps/web)",
+            "breakOnLoad": true,
+            "runtimeArgs": [
+                "--remote-debugging-port=9222"
+            ]
         }
     ]
 }

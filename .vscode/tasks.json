@@ -6,7 +6,49 @@
             "type": "shell",
             "command": "pnpm --filter @afilmory/web dev",
             "isBackground": true,
+            "problemMatcher": [
+                {
+                    "owner": "vite-dev",
+                    "pattern": [],
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": ".",
+                        "endsPattern": "http://localhost"
+                    }
+                }
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "pnpm: build (apps/web)",
+            "type": "shell",
+            "command": "pnpm --filter @afilmory/web build",
+            "isBackground": false,
             "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "pnpm: build+preview (apps/web)",
+            "type": "shell",
+            "command": "pnpm --filter @afilmory/web build && pnpm --filter @afilmory/web serve -- --port 13333",
+            "isBackground": true,
+            "problemMatcher": [
+                {
+                    "owner": "vite-preview",
+                    "pattern": [],
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": ".",
+                        "endsPattern": "http://localhost:13333"
+                    }
+                }
+            ],
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
