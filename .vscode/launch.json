@@ -5,11 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
+            "name": "Run Vite + Debug Chrome (apps/web)",
+            "type": "pwa-chrome",
             "request": "launch",
-            "name": "针对 localhost 启动 Chrome",
-            "url": "http://localhost:8080",
-            "webRoot": "${workspaceFolder}"
+            "url": "http://localhost:13333",
+            "webRoot": "${workspaceFolder}/apps/web",
+            "preLaunchTask": "pnpm: dev (apps/web)",
+            "breakOnLoad": true,
+            "runtimeArgs": [
+                "--remote-debugging-port=9222"
+            ]
         }
     ]
 }
