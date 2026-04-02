@@ -15,8 +15,6 @@ out
 .env
 .env.*
 !.env.example
-# config.json # Currently tracked
-# builder.config.ts # Currently tracked
 
 # IDEs & Editors
 .vscode/*
@@ -45,9 +43,8 @@ thomas-x2d-xcd-25v-1.webp
 apps/web/assets-git
 .claude
 
-# Generated Data (Uncomment if you want to keep these out of git)
-# apps/web/src/data/photos-manifest.json
-# apps/web/public/thumbnails/
+# Generated Data
+apps/web/public/thumbnails/
 
 # Others
 *.local
