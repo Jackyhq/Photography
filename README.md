@@ -1,4 +1,9 @@
 
+# <p align="center">Afilmory</p>
+
+> [!NOTE]
+> 本项目是基于原仓库 [Afilmory/afilmory](https://github.com/Afilmory/afilmory) 进行修改和优化的定制版本。
+
 Afilmory (/əˈfɪlməri/) 是一个专为个人摄影网站创造的词汇，融合了自动对焦（AF）、光圈（Aperture，光影控制）、胶片（Film，复古媒介）和记忆（Memory，定格瞬间）。
 
 这是一个基于 React + TypeScript 构建的现代摄影画廊网站，支持从多种存储源（S3, GitHub）自动同步照片。它具有高性能的 WebGL 渲染、瀑布流布局、EXIF 信息展示、缩略图生成等功能。
@@ -199,12 +204,3 @@ export async function customImageProcessor(buffer: Buffer) {
 
 Attribution Network License (ANL) v1.0 © 2025 Afilmory Team. 详见 [LICENSE](LICENSE)。
 
-## 🔗 相关链接
-
-- [在线演示](https://gallery.innei.in)
-- [个人网站](https://innei.in)
-- [GitHub](https://github.com/innei)
-
----
-
-如果这个项目对你有帮助，请给一个 ⭐️ Star 以示支持！
