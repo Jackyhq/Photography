@@ -64,13 +64,22 @@ jobs:
       - name: Build web app
         run: pnpm run build
 
+      - name: Check build output
+        run: |
+          if [ -d "./apps/web/dist" ]; then
+            echo "Build directory exists."
+          else
+            echo "Error: Build directory ./apps/web/dist not found!"
+            exit 1
+          fi
+
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './apps/web/dist'
+          path: 'apps/web/dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
