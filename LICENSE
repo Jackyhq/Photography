@@ -1,6 +1,7 @@
 # Attribution Network License (ANL) v1.0
 
-**Copyright (c) 2025 Afilmory Team**
+**Copyright (c) 2025-2026 Jackyhq. All rights reserved.**
+**Portions Copyright (c) 2025 Afilmory Team & Contributors**
 
 > This repository is licensed under a **dual-track** model:
 >
@@ -65,7 +66,9 @@ This project may include components under other licenses. You must comply with t
 
 ## 2C) Documentation & Media
 
-Unless stated otherwise, **project documentation** is licensed under **CC BY 4.0**, and **non-code media assets** (images, icons, diagrams) are licensed under **CC BY 4.0**. Trademarks and brand elements remain protected and are not licensed.
+Unless stated otherwise, **project documentation** is licensed under **CC BY 4.0**, and **non-code media assets** (images, icons, diagrams) are licensed under **CC BY 4.0**. 
+
+**EXCLUSION:** All photography files located within the `photos/` directory are **NOT** licensed under CC BY 4.0 or any other open-source license. These are the proprietary creative works of **Jackyhq**, and all rights are reserved. No permission is granted for reproduction, distribution, or use of these files without explicit written consent.
 
 ---
 
