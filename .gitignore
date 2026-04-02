@@ -1,19 +1,53 @@
+# Dependencies
 node_modules
-.DS_Store
-dist-ssr
-*.local
+.pnpm-debug.log*
 
+# Build outputs
+dist
+dist-ssr
+build
+out
+.next
+.turbo
+.vercel
+
+# Environment & Config
+.env
+.env.*
+!.env.example
+# config.json # Currently tracked
+# builder.config.ts # Currently tracked
+
+# IDEs & Editors
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+.idea
+*.swp
+*.swo
+
+# OS Specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Project Specific
 public/og-image-*.png
 test-svg-font-rendering.png
 test-traditional-font-rendering.png
 thomas-x2d-xcd-25v-1.jpg
 thomas-x2d-xcd-25v-1.webp
-
-# config.json
-# .env
-# builder.config.ts
-
 apps/web/assets-git
-.vercel
-*/*/.next
 .claude
+
+# Generated Data (Uncomment if you want to keep these out of git)
+# apps/web/src/data/photos-manifest.json
+# apps/web/public/thumbnails/
+
+# Others
+*.local
