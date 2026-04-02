@@ -74,11 +74,18 @@ jobs:
             echo "Copied sitemap.xml to googlesitemap.xml"
           fi
 
+      - name: Copy build output to /web
+        run: |
+          mkdir -p web
+          rm -rf web/*
+          cp -rp ./apps/web/dist/. web/
+          echo "Copied build output to /web directory"
+
       - name: Commit all changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: standardize photos and update manifest [skip ci]"
-          file_pattern: 'photos/** apps/web/src/data/photos-manifest.json'
+          commit_message: "chore: update photos, manifest, and build output [skip ci]"
+          file_pattern: 'photos/** apps/web/src/data/photos-manifest.json web/**'
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
