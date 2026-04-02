@@ -1,93 +1,89 @@
-<p align="center">
-  <img src="https://github.com/Afilmory/assets/blob/main/afilmory-readme.webp?raw=true" alt="Afilmory" width="100%" />
-</p>
 
-# <p align="center">Afilmory</p>
+Afilmory (/əˈfɪlməri/) 是一个专为个人摄影网站创造的词汇，融合了自动对焦（AF）、光圈（Aperture，光影控制）、胶片（Film，复古媒介）和记忆（Memory，定格瞬间）。
 
-Afilmory (/əˈfɪlməri/, "uh-FIL-muh-ree") is a term created for personal photography websites, blending Auto Focus (AF), aperture (light control), film (vintage medium), and memory (captured moments).
+这是一个基于 React + TypeScript 构建的现代摄影画廊网站，支持从多种存储源（S3, GitHub）自动同步照片。它具有高性能的 WebGL 渲染、瀑布流布局、EXIF 信息展示、缩略图生成等功能。
 
-A modern photo gallery website built with React + TypeScript, supporting automatic photo synchronization from multiple storage sources (S3, GitHub), featuring high-performance WebGL rendering, masonry layout, EXIF information display, thumbnail generation, and more.
+## 🌟 特性
 
-Live Photo Galleries:
+### 核心功能
 
-- https://afilmory.innei.in
-- https://gallery.mxte.cc
-- https://photography.pseudoyu.com
-- https://afilmory.magren.cc
+- 🖼️ **高性能 WebGL 图像渲染器** - 自定义 WebGL 组件，支持流畅的缩放和平移操作。
+- 📱 **响应式瀑布流布局** - 基于 Masonic，完美适配各种屏幕尺寸。
+- 🎨 **现代 UI 设计** - 使用 Tailwind CSS 和 Radix UI 组件库构建。
+- ⚡ **增量同步** - 智能检测变更，仅处理新增或修改的照片。
+- 🌐 **国际化 (i18n)** - 支持多语言切换。
+- 🔗 **OpenGraph** - 自动生成社交媒体分享的 OpenGraph 元数据。
 
-## 🌟 Features
+### 图像处理
 
-### Core Functionality
+- 🔄 **HEIC/HEIF 格式支持** - 自动转换苹果设备的 HEIC 格式。
+- 📷 **TIFF 格式支持** - 自动转换 TIFF 格式。
+- 🖼️ **智能缩略图生成** - 多尺寸缩略图优化加载性能。
+- 📊 **EXIF 信息展示** - 完整的拍摄参数，包括相机型号、焦距、光圈等。
+- 🌈 **Blurhash 占位图** - 优雅的图片加载体验。
+- 📱 **实况照片 (Live Photo) 支持** - 自动检测并展示 iPhone 实况照片。
+- ☀️ **HDR 图像支持** - 支持展示 HDR 图像。
 
-- 🖼️ **High-Performance WebGL Image Renderer** - Custom WebGL component with smooth zoom and pan operations
-- 📱 **Responsive Masonry Layout** - Powered by Masonic, adapts to different screen sizes
-- 🎨 **Modern UI Design** - Built with Tailwind CSS and Radix UI component library
-- ⚡ **Incremental Sync** - Smart change detection, processes only new or modified photos
-- 🌐 **i18n** - Multi-language support
-- 🔗 **OpenGraph** - OpenGraph metadata for social media sharing
+### 进阶特性
 
-### Image Processing
+- 🎛️ **富士胶片模拟 (Fujifilm Recipe)** - 读取并展示富士相机的胶片模拟设置。
+- 🔍 **全屏查看器** - 支持手势操作的图像查看器。
+- 🏷️ **文件系统标签** - 根据文件系统自动生成标签。
+- ⚡ **并发处理** - 支持多进程/多线程并发处理。
+- 🗂️ **多存储支持** - 支持 S3、GitHub 等多种存储后端。
+- 📷 **图片分享** - 支持将图片分享至社交媒体或通过 iframe 嵌入。
+- 🗺️ **交互式地图探索** - 使用 MapLibre 将照片的 GPS 坐标可视化。
 
-- 🔄 **HEIC/HEIF Format Support** - Automatic conversion of Apple device HEIC format
-- 📷 **TIFF Format Support** - Automatic conversion of TIFF format
-- 🖼️ **Smart Thumbnail Generation** - Multi-size thumbnails for optimized loading performance
-- 📊 **EXIF Information Display** - Complete shooting parameters including camera model, focal length, aperture, etc.
-- 🌈 **Blurhash Placeholders** - Elegant image loading experience
-- 📱 **Live Photo Support** - Detection and display of iPhone Live Photos
-- ☀️ **HDR Image Support** - Display HDR images
+## 🏗️ 技术架构
 
-### Advanced Features
+### 前端技术栈
 
-- 🎛️ **Fujifilm Recipe** - Read and display Fujifilm camera film simulation settings
-- 🔍 **Fullscreen Viewer** - Image viewer with gesture support
-- 🏷️ **File System Tags** - Auto-generated tags based on file system
-- ⚡ **Concurrent Processing** - Multi-process/multi-thread concurrent processing support
-- 🗂️ **Multi-Storage Support** - S3, GitHub, and other storage backends
-- 📷 **Share Image** - Share image to social media or embed iframe to your website
-- 🗺️ **Interactive Map Explorer** - Geographic visualization of photos with GPS coordinates from EXIF data using MapLibre
+- **React 19** - 最新的 React 版本及其编译器。
+- **TypeScript** - 完整的类型安全支持。
+- **Vite** - 现代构建工具。
+- **Tailwind CSS** - 原子化 CSS 框架。
+- **Radix UI** - 无障碍组件库。
+- **Jotai** - 状态管理。
+- **TanStack Query** - 数据获取和缓存。
+- **React Router 7** - 路由管理。
+- **i18next** - 国际化。
 
-## 🏗️ Technical Architecture
+### 构建系统
 
-### Frontend Tech Stack
+- **Node.js** - 服务端运行环境。
+- **Sharp** - 高性能图像处理库。
+- **AWS SDK** - S3 存储操作。
+- **Worker Threads/Cluster** - 并发处理支持。
+- **EXIF-Reader** - EXIF 数据提取。
 
-- **React 19** - Latest React version with Compiler
-- **TypeScript** - Complete type safety
-- **Vite** - Modern build tool
-- **Tailwind CSS** - Atomic CSS framework
-- **Radix UI** - Accessible component library
-- **Jotai** - State management
-- **TanStack Query** - Data fetching and caching
-- **React Router 7** - Routing management
-- **i18next** - Internationalization
+### 存储架构
 
-### Build System
+采用适配器模式设计，支持多种存储后端：
 
-- **Node.js** - Server-side runtime
-- **Sharp** - High-performance image processing
-- **AWS SDK** - S3 storage operations
-- **Worker Threads/Cluster** - Concurrent processing
-- **EXIF-Reader** - EXIF data extraction
+- **S3 兼容存储** - AWS S3, MinIO, 阿里云 OSS 等。
+- **GitHub 存储** - 使用 GitHub 仓库作为图片存储。
+- **Eagle 存储** - 使用 Eagle 应用库作为图片存储。
+- **本地文件系统** - 用于开发和测试的本地存储。
 
-### Storage Architecture
+## 🚀 快速开始
 
-Designed with adapter pattern, supporting multiple storage backends:
+### Docker 部署
 
-- **S3-Compatible Storage** - AWS S3, MinIO, Alibaba Cloud OSS, etc.
-- **GitHub Storage** - Using GitHub repository as image storage
-- **Eagle Storage** - Using Eagle app library as image storage
-- **Local File System** - Local storage for development and testing
+[Docker 部署文档](https://github.com/Afilmory/docker)
 
-## 🚀 Quick Start
+### GitHub Actions 自动化部署
 
-### Docker Deployment
+项目内置了 GitHub Actions 工作流，当你在 `photos/` 目录中更新照片并推送到 `main` 分支时：
+1. 自动进行照片标准化处理。
+2. 自动更新照片索引清单 (`photos-manifest.json`)。
+3. 自动构建前端项目。
+4. **自动同步**：构建后的静态产物会自动拷贝到根目录下的 `/web` 文件夹并提交到仓库。你可以直接将 Cloudflare Pages 或其他平台指向该目录进行零配置部署。
 
-[Docker Deployment](https://github.com/Afilmory/docker)
+## ⚙️ 配置选项
 
-## ⚙️ Configuration Options
+#### 远程仓库配置 (`repo`)
 
-#### Remote Repository Configuration (`repo`)
-
-To achieve incremental builds in CI, it is necessary to configure a cache repository, which will pull the cache before each build and upload the build results after the build.
+为了在 CI 中实现增量构建，需要配置一个缓存仓库，用于在每次构建前拉取缓存并在构建后上传结果。
 
 ```json
 {
@@ -98,117 +94,117 @@ To achieve incremental builds in CI, it is necessary to configure a cache reposi
 }
 ```
 
-This will automatically pull resources from the remote repository, avoiding rebuilds each time.
+这会自动从远程仓库拉取资源，避免每次都重新构建。
 
-**In order to achieve uploading to the git repository, you need to provide a `GIT_TOKEN` and write it in the `.env` file.**
+**为了实现上传功能，你需要在环境变量中提供 `GIT_TOKEN`。**
 
-#### Storage Configuration (`storage`)
+#### 存储配置 (`storage`)
 
-- `provider`: Storage provider (`s3` | `github`)
-- `bucket`: S3 bucket name
-- `region`: S3 region
-- `endpoint`: S3 endpoint (optional)
-- `prefix`: File prefix
-- `customDomain`: Custom domain
-- `excludeRegex`: Regular expression to exclude files (optional)
+- `provider`: 存储提供商 (`s3` | `github`)
+- `bucket`: S3 Bucket 名称
+- `region`: S3 区域
+- `endpoint`: S3 节点（可选）
+- `prefix`: 文件前缀
+- `customDomain`: 自定义域名
+- `excludeRegex`: 排除文件的正则表达式（可选）
 
-#### System Processing (`system.processing`)
+#### 系统处理 (`system.processing`)
 
-- `defaultConcurrency`: Default concurrency
-- `digestSuffixLength`: The length of the SHA-256 digest appended to the photo ID
-- `enableLivePhotoDetection`: Enable Live Photo detection
-- `supportedFormats`: Optional allowlist of file extensions to process
+- `defaultConcurrency`: 默认并发数
+- `digestSuffixLength`: 附加在照片 ID 后的 SHA-256 摘要长度
+- `enableLivePhotoDetection`: 启用实况照片检测
+- `supportedFormats`: 可选的照片格式处理白名单
 
-#### System Observability (`system.observability`)
+#### 系统可观测性 (`system.observability`)
 
-- `showProgress`: Show build progress
-- `showDetailedStats`: Show detailed statistics
-- `logging.verbose`: Verbose logging
-- `logging.level`: Log level (`info` | `warn` | `error` | `debug`)
-- `logging.outputToFile`: Output to file
-- `performance.worker.workerCount`: Number of worker processes
-- `performance.worker.timeout`: Worker timeout (milliseconds)
-- `performance.worker.useClusterMode`: Enable cluster mode
+- `showProgress`: 显示构建进度
+- `showDetailedStats`: 显示详细统计信息
+- `logging.verbose`: 详细日志
+- `logging.level`: 日志级别 (`info` | `warn` | `error` | `debug`)
+- `logging.outputToFile`: 输出日志到文件
+- `performance.worker.workerCount`: 工作进程数量
+- `performance.worker.timeout`: 工作进程超时时间（毫秒）
+- `performance.worker.useClusterMode`: 启用集群模式
 
-## 📋 CLI Commands
+## 📋 命令行指令
 
-### Build Commands
+### 构建指令
 
 ```bash
-# View help
+# 查看帮助
 pnpm run build:manifest -- --help
 
-# Incremental update (default)
+# 增量更新（默认）
 pnpm run build:manifest
 
-# Force full update
+# 强制完整更新
 pnpm run build:manifest -- --force
 
-# Only regenerate thumbnails
+# 仅重新生成缩略图
 pnpm run build:manifest -- --force-thumbnails
 
-# Only regenerate manifest
+# 仅重新生成清单
 pnpm run build:manifest -- --force-manifest
 ```
 
-### Development Commands
+### 开发指令
 
 ```bash
-# Start development server
+# 启动开发服务器
 pnpm dev
 
-# Build production version
+# 构建生产版本
 pnpm build
 ```
 
-### Notes
+### 注意事项
 
-- Ensure your S3 bucket already contains photo files
-- If using remote repository, configure `builder.config.ts` first
+- 确保你的 S3 Bucket 中已经存放了照片文件。
+- 如果使用远程仓库缓存，请先配置 `builder.config.ts`。
 
-## 🔧 Advanced Usage
+## 🔧 高级用法
 
-### Custom Storage Provider
+### 自定义存储提供商
 
-Implement the `StorageProvider` interface to support new storage backends:
+实现 `StorageProvider` 接口以支持新的存储后端：
 
 ```typescript
 import { StorageProvider } from './src/core/storage/interfaces'
 
 class MyStorageProvider implements StorageProvider {
   async getFile(key: string): Promise<Buffer | null> {
-    // Implement file retrieval logic
+    // 实现文件获取逻辑
   }
 
   async listImages(): Promise<StorageObject[]> {
-    // Implement image list retrieval logic
+    // 实现图片列表获取逻辑
   }
 
-  // ... other methods
+  // ... 其他方法
 }
 ```
 
-### Custom Image Processing
+### 自定义图像处理
 
-Add custom processors in the `src/core/image/` directory:
+在 `src/core/image/` 目录下添加自定义处理器：
 
 ```typescript
 export async function customImageProcessor(buffer: Buffer) {
-  // Custom image processing logic
+  // 自定义图像处理逻辑
   return processedBuffer
 }
 ```
 
-## 📄 License
+## 📄 许可证
 
-Attribution Network License (ANL) v1.0 © 2025 Afilmory Team. See [LICENSE](LICENSE) for more details.
+Attribution Network License (ANL) v1.0 © 2025 Afilmory Team. 详见 [LICENSE](LICENSE)。
 
-## 🔗 Related Links
+## 🔗 相关链接
 
-- [Live Demo](https://gallery.innei.in)
-- [Personal Website](https://innei.in)
+- [在线演示](https://gallery.innei.in)
+- [个人网站](https://innei.in)
 - [GitHub](https://github.com/innei)
 
 ---
 
-If this project helps you, please give it a ⭐️ Star for support!
+如果这个项目对你有帮助，请给一个 ⭐️ Star 以示支持！
