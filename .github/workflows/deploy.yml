@@ -73,6 +73,22 @@ jobs:
             exit 1
           fi
 
+      - name: Copy build output to /web
+        run: |
+          if [ -f "./apps/web/dist/sitemap.xml" ]; then
+            cp ./apps/web/dist/sitemap.xml ./apps/web/dist/googlesitemap.xml
+            echo "Copied sitemap.xml to googlesitemap.xml"
+          fi
+          mkdir -p web
+          rm -rf web/*
+          cp -R apps/web/dist/* web/
+
+      - name: Commit build artifacts to /web
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update build artifacts in /web [skip ci]"
+          file_pattern: 'web/**'
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
