@@ -17,7 +17,3 @@ apps/web/assets-git
 .vercel
 */*/.next
 .claude
-
-apps/web/public/thumbnails
-apps/web/public/photos
-apps/web/public/originals
