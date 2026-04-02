@@ -1,0 +1,77 @@
+name: Deploy Afilmory
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'photos/**'
+      - 'apps/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'builder.config.ts'
+      - 'site.config.ts'
+  workflow_dispatch:
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Standardize Photos
+        run: pnpm run photos:standardize
+
+      - name: Commit standardized photos
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: standardize photo filenames [skip ci]"
+          file_pattern: 'photos/**'
+
+      - name: Build manifest
+        run: pnpm run build:manifest
+
+      - name: Build web app
+        run: pnpm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './apps/web/dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

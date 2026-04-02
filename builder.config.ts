@@ -7,5 +7,6 @@ export default defineBuilderConfig(() => ({
     provider: 'local',
     basePath: './photos',
     baseUrl: 'https://photos3.jackyw.cn/photos/',
+    excludeRegex: '^incoming($|/.*)',
   },
 }))

@@ -23,6 +23,7 @@
     "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json,css,md}\" \"packages/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "lint": "eslint --fix",
     "migrate:manifest": "tsx scripts/migrate-manifest.ts",
+    "photos:standardize": "tsx scripts/standardize-photos.ts",
     "preinstall": "sh scripts/preinstall.sh",
     "prepare": "simple-git-hooks",
     "update:lastmodified": "tsx scripts/update-lastmodified.ts"
@@ -47,6 +48,7 @@
     "dotenv-expand": "catalog:",
     "eslint": "9.38.0",
     "eslint-config-hyoban": "4.0.10",
+    "exiftool-vendored": "31.2.0",
     "fast-glob": "3.3.3",
     "lint-staged": "16.2.6",
     "nbump": "2.1.8",
