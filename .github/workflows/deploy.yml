@@ -67,21 +67,18 @@ jobs:
             exit 1
           fi
 
-      - name: Prepare /web and sitemaps
+      - name: Prepare sitemaps
         run: |
           if [ -f "./apps/web/dist/sitemap.xml" ]; then
             cp ./apps/web/dist/sitemap.xml ./apps/web/dist/googlesitemap.xml
             echo "Copied sitemap.xml to googlesitemap.xml"
           fi
-          mkdir -p web
-          rm -rf web/*
-          cp -R apps/web/dist/* web/
 
       - name: Commit all changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: standardize photos and update build artifacts [skip ci]"
-          file_pattern: 'photos/** web/** apps/web/src/data/photos-manifest.json'
+          commit_message: "chore: standardize photos and update manifest [skip ci]"
+          file_pattern: 'photos/** apps/web/src/data/photos-manifest.json'
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
