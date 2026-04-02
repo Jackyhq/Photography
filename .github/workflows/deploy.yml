@@ -86,6 +86,7 @@ jobs:
         with:
           commit_message: "chore: update photos, manifest, and build output [skip ci]"
           file_pattern: 'photos/** apps/web/src/data/photos-manifest.json web/**'
+          add_options: '-A'
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
