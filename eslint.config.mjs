@@ -12,6 +12,7 @@ const rootIgnores = globalIgnores([
   'apps/ssr/public/**',
   'apps/web/public/**',
   'packages/docs/public/**',
+  'web/**',
 ])
 
 const hyobanConfig = await defineConfig(
