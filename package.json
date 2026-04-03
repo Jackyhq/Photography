@@ -7,7 +7,7 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Jackyhq/Afilmory"
+    "url": "https://github.com/Jackyhq/Photography"
   },
   "scripts": {
     "build": "pnpm --filter web build",
