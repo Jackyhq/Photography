@@ -80,6 +80,17 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
                 <i className="i-mingcute-rss-2-fill text-sm" />
               </a>
             )}
+            {siteConfig.author.url && (
+              <a
+                href={siteConfig.author.url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-text-secondary flex items-center justify-center p-2 duration-200 hover:text-[#007bff]"
+                title="Home"
+              >
+                <i className="i-mingcute-home-4-fill text-sm" />
+              </a>
+            )}
           </div>
         )}
 
