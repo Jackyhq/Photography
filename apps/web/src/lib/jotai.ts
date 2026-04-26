@@ -23,11 +23,11 @@ export const createAtomHooks = <T>(atom: PrimitiveAtom<T>) =>
   ] as const
 
 export const createAtomSelector = <T>(atom: Atom<T>) => {
-  const useHook = <R>(selector: (a: T) => R, deps: any[] = []) =>
+  const useHook = <R>(selector: (a: T) => R) =>
     useAtomValue(
       selectAtom(
         atom,
-        useCallback((a) => selector(a as T), deps),
+        useCallback((a) => selector(a as T), [selector]),
       ),
     )
 

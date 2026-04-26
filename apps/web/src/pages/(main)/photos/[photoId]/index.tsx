@@ -32,6 +32,8 @@ export const Component = () => {
     if (!current) return
 
     let isCancelled = false
+    let cssElement: HTMLStyleElement | null = null
+    let cssRemovalTimer: ReturnType<typeof setTimeout> | null = null
 
     ;(async () => {
       try {
@@ -40,16 +42,18 @@ export const Component = () => {
           thumbnailUrl: current.thumbnailUrl,
         })
         if (!isCancelled) {
-          const $css = document.createElement('style')
-          $css.textContent = `
+          cssElement = document.createElement('style')
+          cssElement.textContent = `
          * {
              transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
             }
           `
-          document.head.append($css)
+          document.head.append(cssElement)
 
-          setTimeout(() => {
-            $css.remove()
+          cssRemovalTimer = setTimeout(() => {
+            cssElement?.remove()
+            cssElement = null
+            cssRemovalTimer = null
           }, 100)
 
           setAccentColor(color ?? null)
@@ -61,6 +65,10 @@ export const Component = () => {
 
     return () => {
       isCancelled = true
+      if (cssRemovalTimer) {
+        clearTimeout(cssRemovalTimer)
+      }
+      cssElement?.remove()
     }
   }, [photoViewer.currentIndex, photos])
 

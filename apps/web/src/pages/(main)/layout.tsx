@@ -125,7 +125,10 @@ const useSyncStateToUrl = () => {
       }
     } else {
       const photos = getFilteredPhotos()
-      const targetPathname = `/photos/${photos[currentIndex].id}`
+      const targetPhoto = photos[currentIndex]
+      if (!targetPhoto) return
+
+      const targetPathname = `/photos/${targetPhoto.id}`
       if (location.pathname !== targetPathname) {
         navigate(targetPathname)
       }

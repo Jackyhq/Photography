@@ -81,10 +81,7 @@ export function useBlobUrl(blob: Blob | null): string | null {
 
   useEffect(() => {
     if (!blob) {
-      if (url) {
-        URL.revokeObjectURL(url)
-        setUrl(null)
-      }
+      setUrl(null)
       return
     }
 
@@ -95,15 +92,6 @@ export function useBlobUrl(blob: Blob | null): string | null {
       URL.revokeObjectURL(newUrl)
     }
   }, [blob])
-
-  // 清理 URL 当组件卸载
-  useEffect(() => {
-    return () => {
-      if (url) {
-        URL.revokeObjectURL(url)
-      }
-    }
-  }, [])
 
   return url
 }

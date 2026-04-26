@@ -22,7 +22,8 @@ import {
 import { getImageFormat } from '~/lib/image-utils'
 import { convertExifGPSToDecimal } from '~/lib/map-utils'
 
-import { formatExifData, Row } from './formatExifData'
+import { Row } from './ExifRow'
+import { formatExifData } from './formatExifData'
 import { HistogramChart } from './HistogramChart'
 import { MiniMap } from './MiniMap'
 import { RawExifViewer } from './RawExifViewer'

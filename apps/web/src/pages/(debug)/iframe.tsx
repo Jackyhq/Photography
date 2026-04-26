@@ -9,7 +9,7 @@ export const Component = () => {
           height={500}
           className="w-full"
           allowTransparency
-          sandbox="allow-scripts allow-same-origin allow-popups"
+          sandbox="allow-scripts allow-popups"
         />
 
         <iframe
@@ -17,7 +17,7 @@ export const Component = () => {
           height={400}
           className="w-[400px]"
           allowTransparency
-          sandbox="allow-scripts allow-same-origin allow-popups"
+          sandbox="allow-scripts allow-popups"
         />
 
         <iframe
@@ -25,7 +25,7 @@ export const Component = () => {
           height={400}
           className="w-full"
           allowTransparency
-          sandbox="allow-scripts allow-same-origin allow-popups"
+          sandbox="allow-scripts allow-popups"
         />
       </div>
     </ScrollArea>
