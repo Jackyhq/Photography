@@ -1,7 +1,7 @@
 import { clsxm } from '@afilmory/utils'
 import { AnimatePresence, m } from 'motion/react'
 import type { FC, ReactNode } from 'react'
-import { createContext, use, useState } from 'react'
+import { createContext, use, useCallback, useMemo, useState } from 'react'
 
 type CollapsibleContextValue = {
   isOpen: boolean
@@ -38,16 +38,18 @@ export const Collapsible: FC<CollapsibleProps> = ({
   const isControlled = controlledOpen !== undefined
   const isOpen = isControlled ? controlledOpen : uncontrolledOpen
 
-  const toggle = () => {
+  const toggle = useCallback(() => {
     const newValue = !isOpen
     if (!isControlled) {
       setUncontrolledOpen(newValue)
     }
     onOpenChange?.(newValue)
-  }
+  }, [isControlled, isOpen, onOpenChange])
+
+  const contextValue = useMemo(() => ({ isOpen, toggle }), [isOpen, toggle])
 
   return (
-    <CollapsibleContext value={{ isOpen, toggle }}>
+    <CollapsibleContext value={contextValue}>
       <div className={clsxm('overflow-hidden', className)}>{children}</div>
     </CollapsibleContext>
   )

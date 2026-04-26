@@ -16,6 +16,12 @@ export const ClusterPhotoGrid = ({ photos, onPhotoClick }: ClusterPhotoGridProps
   const displayPhotos = photos.slice(0, 6)
   const remainingCount = Math.max(0, photos.length - 6)
   const { t, i18n } = useTranslation()
+  const firstPhoto = photos[0]
+  const coordinatesText = firstPhoto
+    ? `${Math.abs(firstPhoto.latitude).toFixed(4)}°${firstPhoto.latitudeRef || 'N'}, ${Math.abs(
+        firstPhoto.longitude,
+      ).toFixed(4)}°${firstPhoto.longitudeRef || 'E'}`
+    : null
 
   return (
     <div className="space-y-3">
@@ -96,14 +102,11 @@ export const ClusterPhotoGrid = ({ photos, onPhotoClick }: ClusterPhotoGridProps
       </div>
 
       {/* 位置信息 */}
-      {photos[0] && (
+      {firstPhoto && (
         <div className="border-border space-y-2 border-t pt-3">
           <div className="text-text-secondary flex items-center gap-2 text-xs">
             <i className="i-mingcute-location-line text-sm" />
-            <span className="font-mono">
-              {Math.abs(photos[0].latitude).toFixed(4)}°{photos[0].latitudeRef || 'N'},{' '}
-              {Math.abs(photos[0].longitude).toFixed(4)}°{photos[0].longitudeRef || 'E'}
-            </span>
+            <span className="font-mono">{coordinatesText}</span>
           </div>
 
           {/* 拍摄时间范围 */}

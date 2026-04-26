@@ -17,6 +17,34 @@ import type { FollowMenuItem } from '~/atoms/context-menu'
 import { MenuItemSeparator, MenuItemType, useContextMenuState } from '~/atoms/context-menu'
 import { nextFrame, preventDefault } from '~/lib/dom'
 
+const getMenuItemKey = (item: FollowMenuItem, keyCounts: Map<string, number>) => {
+  const baseKey = item instanceof MenuItemSeparator ? 'separator' : `${item.type}:${item.label}:${item.shortcut || ''}`
+  const count = keyCounts.get(baseKey) || 0
+  keyCounts.set(baseKey, count + 1)
+
+  return count === 0 ? baseKey : `${baseKey}:${count}`
+}
+
+const renderMenuItems = (menuItems: FollowMenuItem[]) => {
+  const keyCounts = new Map<string, number>()
+
+  return menuItems.map((item, index) => {
+    const prevItem = menuItems[index - 1]
+    if (prevItem instanceof MenuItemSeparator && item instanceof MenuItemSeparator) {
+      return null
+    }
+
+    if (!prevItem && item instanceof MenuItemSeparator) {
+      return null
+    }
+    const nextItem = menuItems[index + 1]
+    if (!nextItem && item instanceof MenuItemSeparator) {
+      return null
+    }
+    return <Item key={getMenuItemKey(item, keyCounts)} item={item} />
+  })
+}
+
 export const ContextMenuProvider: Component = ({ children }) => (
   <>
     {children}
@@ -58,22 +86,7 @@ const Handler = () => {
     <ContextMenu onOpenChange={handleOpenChange}>
       <ContextMenuTrigger className="hidden" ref={ref} />
       <ContextMenuContent onContextMenu={preventDefault}>
-        {contextMenuState.open &&
-          contextMenuState.menuItems.map((item, index) => {
-            const prevItem = contextMenuState.menuItems[index - 1]
-            if (prevItem instanceof MenuItemSeparator && item instanceof MenuItemSeparator) {
-              return null
-            }
-
-            if (!prevItem && item instanceof MenuItemSeparator) {
-              return null
-            }
-            const nextItem = contextMenuState.menuItems[index + 1]
-            if (!nextItem && item instanceof MenuItemSeparator) {
-              return null
-            }
-            return <Item key={index} item={item} />
-          })}
+        {contextMenuState.open && renderMenuItems(contextMenuState.menuItems)}
       </ContextMenuContent>
     </ContextMenu>
   )
@@ -120,11 +133,7 @@ const Item = memo(({ item }: { item: FollowMenuItem }) => {
           </Wrapper>
           {hasSubmenu && (
             <ContextMenuPortal>
-              <ContextMenuSubContent>
-                {item.submenu.map((subItem, index) => (
-                  <Item key={index} item={subItem} />
-                ))}
-              </ContextMenuSubContent>
+              <ContextMenuSubContent>{renderMenuItems(item.submenu)}</ContextMenuSubContent>
             </ContextMenuPortal>
           )}
         </Sub>

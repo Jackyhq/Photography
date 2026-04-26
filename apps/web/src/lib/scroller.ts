@@ -72,11 +72,12 @@ export const springScrollToElement = (
   return springScrollTo(to, scrollerElement || document.documentElement)
 }
 
-const calculateElementTop = (el: HTMLElement) => {
+const calculateElementTop = (element: HTMLElement) => {
   let top = 0
-  while (el) {
-    top += el.offsetTop
-    el = el.offsetParent as HTMLElement
+  let currentElement: HTMLElement | null = element
+  while (currentElement) {
+    top += currentElement.offsetTop
+    currentElement = currentElement.offsetParent as HTMLElement | null
   }
   return top
 }

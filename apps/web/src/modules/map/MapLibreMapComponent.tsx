@@ -4,28 +4,7 @@ import type { MapRef } from 'react-map-gl/maplibre'
 
 import type { BaseMapProps, PhotoMarker } from '~/types/map'
 
-import type { MapAdapter } from './MapProvider'
-
 const Maplibre = lazy(() => import('~/components/ui/map/MapLibre').then((m) => ({ default: m.Maplibre })))
-/**
- * MapLibre map adapter implementation
- * This adapts MapLibre to work with our generic map provider system
- */
-export class MapLibreMapAdapter implements MapAdapter {
-  name = 'maplibre'
-
-  readonly isAvailable: boolean = true
-
-  MapComponent = MapLibreMapComponent
-
-  async initialize(): Promise<void> {
-    // MapLibre doesn't require additional async initialization
-  }
-
-  cleanup(): void {
-    // No cleanup needed for MapLibre
-  }
-}
 
 /**
  * MapLibre map component that integrates with the Map Provider context
@@ -110,11 +89,4 @@ export const MapLibreMapComponent: React.FC<BaseMapProps> = ({
       autoFitBounds={autoFitBounds}
     />
   )
-}
-
-/**
- * Create a MapLibre adapter instance
- */
-export const createMapLibreAdapter = (): MapAdapter => {
-  return new MapLibreMapAdapter()
 }

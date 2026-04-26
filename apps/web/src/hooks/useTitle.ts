@@ -8,9 +8,10 @@ export const useTitle = (title?: Nullable<string>) => {
   useEffect(() => {
     if (!title) return
 
+    const currentTitle = currentTitleRef.current
     document.title = titleTemplate.replace('%s', title)
     return () => {
-      document.title = currentTitleRef.current
+      document.title = currentTitle
     }
   }, [title])
 }

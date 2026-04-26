@@ -21,5 +21,5 @@ export function useSwitch(): SwitchContextType {
 }
 
 export function SwitchProvider({ value, children }: { value: SwitchContextType; children: React.ReactNode }) {
-  return <SwitchContext value={value}>{children}</SwitchContext>
+  return React.createElement(SwitchContext, { value }, children)
 }

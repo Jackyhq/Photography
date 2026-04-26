@@ -151,9 +151,9 @@ const PhotoCard = ({ photo, index }: { photo: any; index: number }) => (
           {/* 标签 */}
           {photo.tags && photo.tags.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
-              {photo.tags.slice(0, 3).map((tag: string, tagIndex: number) => (
+              {photo.tags.slice(0, 3).map((tag: string) => (
                 <span
-                  key={tagIndex}
+                  key={tag}
                   className="inline-flex items-center rounded-full bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-400 ring-1 ring-blue-500/20"
                 >
                   {tag}

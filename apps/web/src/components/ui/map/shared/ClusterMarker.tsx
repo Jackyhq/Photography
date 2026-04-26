@@ -5,12 +5,14 @@ import { Marker } from 'react-map-gl/maplibre'
 import { ClusterPhotoGrid } from '../ClusterPhotoGrid'
 import type { ClusterMarkerProps } from './types'
 
+const EMPTY_CLUSTERED_PHOTOS: NonNullable<ClusterMarkerProps['clusteredPhotos']> = []
+
 export const ClusterMarker = ({
   longitude,
   latitude,
   pointCount,
   representativeMarker: _representativeMarker,
-  clusteredPhotos = [],
+  clusteredPhotos = EMPTY_CLUSTERED_PHOTOS,
   onClusterClick,
 }: ClusterMarkerProps) => {
   const size = Math.min(64, Math.max(40, 32 + Math.log(pointCount) * 8))

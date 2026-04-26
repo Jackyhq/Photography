@@ -167,7 +167,7 @@ export const useVisiblePhotosDateRange = (_photos: PhotoManifest[]) => {
       // 更新当前范围
       currentRange.current = { start: startIndex, end: endIndex }
     },
-    [getPhotoDate, formatDateRange],
+    [getPhotoDate, formatDateRange, extractLocation],
   )
 
   // 用于传递给 masonry 的 onRender 回调

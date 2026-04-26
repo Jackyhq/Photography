@@ -5,7 +5,7 @@ import { use, useCallback, useMemo } from 'react'
 import { gallerySettingAtom } from '~/atoms/app'
 import { jotaiStore } from '~/lib/jotai'
 import { trackView } from '~/lib/tracker'
-import { PhotosContext } from '~/providers/photos-provider'
+import { PhotosContext } from '~/providers/photos-context'
 
 const openAtom = atom(false)
 const currentIndexAtom = atom(0)

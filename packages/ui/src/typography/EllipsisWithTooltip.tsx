@@ -1,6 +1,6 @@
 import { clsxm } from '@afilmory/utils'
 import type { PropsWithChildren } from 'react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Tooltip, TooltipContent, TooltipPortal, TooltipTrigger } from '../tooltip'
 
@@ -24,14 +24,14 @@ export const EllipsisTextWithTooltip = (props: EllipsisProps) => {
   const [textElRef, setTextElRef] = useState<HTMLSpanElement | null>()
   const [isOverflowed, setIsOverflowed] = useState(false)
 
-  const judgment = () => {
+  const judgment = useCallback(() => {
     if (!textElRef) return
 
     setIsOverflowed(isTextOverflowed(textElRef, dir))
-  }
+  }, [dir, textElRef])
   useEffect(() => {
     judgment()
-  }, [textElRef, children])
+  }, [children, judgment])
 
   useEffect(() => {
     if (!textElRef) return
@@ -43,7 +43,7 @@ export const EllipsisTextWithTooltip = (props: EllipsisProps) => {
     return () => {
       resizeObserver.disconnect()
     }
-  }, [textElRef])
+  }, [judgment, textElRef])
 
   const Content = (
     <span

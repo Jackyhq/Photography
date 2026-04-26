@@ -139,6 +139,12 @@ const DebugInfoComponent = ({ ref, outlineEnabled, onToggleOutline }: DebugInfoP
     return '#f87171'
   }
 
+  const formatTileKeyList = (label: string, keys?: string[]) => {
+    const visibleKeys = keys?.slice(0, 3).join(', ') || ''
+    const suffix = keys && keys.length > 3 ? ' ...' : ''
+    return `${label}: ${visibleKeys}${suffix}`
+  }
+
   // 新增：瓦片系统调试信息类型辅助
   function renderTileSystem(tileSystem?: any) {
     if (!tileSystem) return null
@@ -172,22 +178,10 @@ const DebugInfoComponent = ({ ref, outlineEnabled, onToggleOutline }: DebugInfoP
         </div>
         {/* 可选：显示部分 key 信息，避免过长 */}
         <div style={{ fontSize: '10px', marginTop: 4, opacity: 0.7 }}>
-          <div>
-            Cache Keys: {tileSystem.cacheKeys?.slice(0, 3).join(', ')}
-            {tileSystem.cacheKeys?.length > 3 ? ' ...' : ''}
-          </div>
-          <div>
-            Visible Keys: {tileSystem.visibleKeys?.slice(0, 3).join(', ')}
-            {tileSystem.visibleKeys?.length > 3 ? ' ...' : ''}
-          </div>
-          <div>
-            Loading Keys: {tileSystem.loadingKeys?.slice(0, 3).join(', ')}
-            {tileSystem.loadingKeys?.length > 3 ? ' ...' : ''}
-          </div>
-          <div>
-            Pending Keys: {tileSystem.pendingKeys?.slice(0, 3).join(', ')}
-            {tileSystem.pendingKeys?.length > 3 ? ' ...' : ''}
-          </div>
+          <div>{formatTileKeyList('Cache Keys', tileSystem.cacheKeys)}</div>
+          <div>{formatTileKeyList('Visible Keys', tileSystem.visibleKeys)}</div>
+          <div>{formatTileKeyList('Loading Keys', tileSystem.loadingKeys)}</div>
+          <div>{formatTileKeyList('Pending Keys', tileSystem.pendingKeys)}</div>
         </div>
       </CollapsibleSection>
     )
