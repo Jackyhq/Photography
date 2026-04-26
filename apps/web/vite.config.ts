@@ -155,6 +155,7 @@ const staticWebBuildPlugins: PluginOption[] = [
       data: {
         title: siteConfig.title,
         description: siteConfig.description,
+        siteUrl: siteConfig.url,
       },
     },
   }),

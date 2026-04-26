@@ -1,12 +1,16 @@
 import { useEffect } from 'react'
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
 
 import { CommandPalette } from './components/gallery/CommandPalette'
+import { useCanonical } from './hooks/useCanonical'
 import { useCommandPaletteShortcut } from './hooks/useCommandPaletteShortcut'
 import { RootProviders } from './providers/root-providers'
 
 // prefetch preview page route
 function App() {
+  const { pathname } = useLocation()
+  useCanonical(pathname)
+
   useEffect(() => {
     import('~/pages/(main)/photos/[photoId]/index')
   }, [])
