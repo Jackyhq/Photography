@@ -26,8 +26,9 @@ export const routes: RouteConfig[] = [
     title: 'Overview',
     meta: {
       title: 'Overview',
+      description: "Project overview for Jacky's Photography, a customized Afilmory-powered photo gallery.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2025-07-20T22:35:03+08:00',
+      lastModified: '2026-04-26T00:00:00+01:00',
     },
   },
   {
@@ -36,10 +37,9 @@ export const routes: RouteConfig[] = [
     title: 'Deployment',
     meta: {
       title: 'Deployment',
-      description:
-        'Guide to deploying Afilmory in production environments, including Docker and configuration options.',
+      description: "Guide to deploying Jacky's Photography in production environments.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2025-08-08T08:28:42.778+08:00',
+      lastModified: '2026-04-26T00:00:00+01:00',
     },
   },
   {
@@ -48,9 +48,9 @@ export const routes: RouteConfig[] = [
     title: 'Cloudflare Pages',
     meta: {
       title: 'Cloudflare Pages',
-      description: 'Guide to deploying Afilmory via Cloudflare Pages.',
+      description: "Guide to deploying Jacky's Photography via Cloudflare Pages.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2025-08-08T17:39:40+08:00',
+      lastModified: '2026-04-26T00:00:00+01:00',
     },
   },
   {
@@ -61,29 +61,29 @@ export const routes: RouteConfig[] = [
       title: 'Docker',
       description: 'Guide to deploying Afilmory via Docker.',
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2025-08-31T11:08:35+08:00',
+      lastModified: '2025-11-17T00:12:25+08:00',
     },
   },
   {
     path: '/deployment/github-action',
     component: Route4,
-    title: 'Github Action',
+    title: 'GitHub Action',
     meta: {
-      title: 'Github Action',
-      description: 'Guide to deploying Afilmory via Github Action.',
+      title: 'GitHub Action',
+      description: "Guide to the GitHub Actions deployment workflow used by Jacky's Photography.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2025-08-08T17:39:40+08:00',
+      lastModified: '2026-04-26T00:00:00+01:00',
     },
   },
   {
     path: '/deployment/github-pages',
     component: Route5,
-    title: 'Github Pages',
+    title: 'GitHub Pages',
     meta: {
-      title: 'Github Pages',
-      description: 'Guide to deploying Afilmory via Github Pages.',
+      title: 'GitHub Pages',
+      description: "Guide to deploying Jacky's Photography via GitHub Pages.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2025-08-08T17:39:40+08:00',
+      lastModified: '2026-04-26T00:00:00+01:00',
     },
   },
   {
@@ -92,9 +92,9 @@ export const routes: RouteConfig[] = [
     title: 'Vercel',
     meta: {
       title: 'Vercel',
-      description: 'Guide to deploying Afilmory via Vercel.',
+      description: "Guide to deploying Jacky's Photography via Vercel.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2025-08-08T17:39:40+08:00',
+      lastModified: '2026-04-26T00:00:00+01:00',
     },
   },
   {
@@ -114,9 +114,10 @@ export const routes: RouteConfig[] = [
     title: 'Storage providers',
     meta: {
       title: 'Storage providers',
-      description: 'Afilmory can work with multiple storage providers, including S3, Git and local file system',
+      description:
+        'Afilmory can work with multiple storage providers, including local file system, S3, GitHub, and Eagle',
       createdAt: '2025-08-12T15:09:08+08:00',
-      lastModified: '2025-08-31T11:08:35+08:00',
+      lastModified: '2026-04-26T00:00:00+01:00',
     },
   },
 ]
