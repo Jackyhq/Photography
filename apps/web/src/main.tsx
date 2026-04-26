@@ -1,5 +1,6 @@
 import './styles/index.css'
 
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router'
 
@@ -10,4 +11,9 @@ if (import.meta.env.DEV) {
   start()
 }
 
-createRoot(document.querySelector('#root')!).render(<RouterProvider router={router} />)
+createRoot(document.querySelector('#root')!).render(
+  <>
+    <RouterProvider router={router} />
+    <SpeedInsights />
+  </>,
+)

@@ -210,6 +210,9 @@ importers:
       '@uswriting/exiftool':
         specifier: 1.0.5
         version: 1.0.5
+      '@vercel/speed-insights':
+        specifier: ^2.0.0
+        version: 2.0.0(next@16.0.1(@babel/core@7.28.5)(babel-plugin-react-compiler@19.1.0-rc.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       blurhash:
         specifier: 2.0.5
         version: 2.0.5
@@ -4507,6 +4510,32 @@ packages:
 
   '@uswriting/exiftool@1.0.5':
     resolution: {integrity: sha512-yrEbljp4BDWizJ1BcZPiDnJShDdpi8GmZwFXpxrH7g2mG49KiToxmhYqu1NBf+rYkh92c/a+BVn+zSDHq1vNVw==}
+
+  '@vercel/speed-insights@2.0.0':
+    resolution: {integrity: sha512-jwkNcrTeafWxjmWq4AHBaptSqZiJkYU5adLC9QBSqeim0GcqDMgN5Ievh8OG1rJ6W3A4l1oiP7qr9CWxGuzu3w==}
+    peerDependencies:
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      nuxt: '>= 3'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      nuxt:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   '@vingle/bmp-js@0.2.5':
     resolution: {integrity: sha512-tiY69wMrXgIVcdpkjQybXTyQw+P2rKzUfA6b+biM6BD1utr5QeeEj9fzs0fFHVf+3siTsYwzI6zltV9+i6ehEA==}
@@ -14361,6 +14390,11 @@ snapshots:
       react: 19.2.0
 
   '@uswriting/exiftool@1.0.5': {}
+
+  '@vercel/speed-insights@2.0.0(next@16.0.1(@babel/core@7.28.5)(babel-plugin-react-compiler@19.1.0-rc.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
+    optionalDependencies:
+      next: 16.0.1(@babel/core@7.28.5)(babel-plugin-react-compiler@19.1.0-rc.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react: 19.2.0
 
   '@vingle/bmp-js@0.2.5':
     dependencies:
