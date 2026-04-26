@@ -1,7 +1,6 @@
 import { clsxm } from '@afilmory/utils'
-import { WebGLImageViewer } from '@afilmory/webgl-viewer'
 import { AnimatePresence, m } from 'motion/react'
-import { useCallback, useRef } from 'react'
+import { lazy, Suspense, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 import { useMediaQuery } from 'usehooks-ts'
@@ -23,6 +22,11 @@ import {
 import { LivePhotoBadge } from './LivePhotoBadge'
 import { LivePhotoVideo } from './LivePhotoVideo'
 import type { ProgressiveImageProps, WebGLImageViewerRef } from './types'
+
+const LazyWebGLImageViewer = lazy(async () => {
+  const { WebGLImageViewer } = await import('@afilmory/webgl-viewer')
+  return { default: WebGLImageViewer }
+})
 
 export const ProgressiveImage = ({
   src,
@@ -105,6 +109,7 @@ export const ProgressiveImage = ({
   const isHDRSupported = useMediaQuery('(dynamic-range: high)')
   // Only use HDR if the browser supports it and the image is HDR
   const shouldUseHDR = isHDR && isHDRSupported
+  const shouldUseDOMImageViewer = hasVideo || shouldUseHDR || !canUseWebGL
 
   return (
     <div
@@ -140,7 +145,7 @@ export const ProgressiveImage = ({
           }}
         >
           {/* LivePhoto/Motion Photo 或 HDR 模式使用 DOMImageViewer */}
-          {hasVideo || shouldUseHDR ? (
+          {shouldUseDOMImageViewer ? (
             <DOMImageViewer
               ref={domImageViewerRef}
               onZoomChange={onDOMTransformed}
@@ -166,22 +171,24 @@ export const ProgressiveImage = ({
             </DOMImageViewer>
           ) : (
             /* 非 LivePhoto 模式使用 WebGLImageViewer */
-            <WebGLImageViewer
-              ref={webglImageViewerRef}
-              src={blobSrc}
-              className="absolute inset-0 h-full w-full"
-              width={width}
-              height={height}
-              initialScale={1}
-              minScale={minZoom}
-              maxScale={maxZoom}
-              limitToBounds={true}
-              centerOnInit={true}
-              smooth={true}
-              onZoomChange={onTransformed}
-              onLoadingStateChange={handleWebGLLoadingStateChange}
-              debug={import.meta.env.DEV}
-            />
+            <Suspense fallback={null}>
+              <LazyWebGLImageViewer
+                ref={webglImageViewerRef}
+                src={blobSrc}
+                className="absolute inset-0 h-full w-full"
+                width={width}
+                height={height}
+                initialScale={1}
+                minScale={minZoom}
+                maxScale={maxZoom}
+                limitToBounds={true}
+                centerOnInit={true}
+                smooth={true}
+                onZoomChange={onTransformed}
+                onLoadingStateChange={handleWebGLLoadingStateChange}
+                debug={import.meta.env.DEV}
+              />
+            </Suspense>
           )}
         </div>
       )}
@@ -195,14 +202,6 @@ export const ProgressiveImage = ({
       )}
 
       {shouldUseHDR && highResLoaded && blobSrc && isActiveImage && !error && <HDRBadge />}
-
-      {/* 备用图片（当 WebGL 不可用时） - 只在非错误状态时显示 */}
-      {!canUseWebGL && highResLoaded && blobSrc && isActiveImage && !error && (
-        <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-black/20">
-          <i className="i-mingcute-warning-line mb-2 text-4xl" />
-          <span className="text-center text-sm text-white">{t('photo.webgl.unavailable')}</span>
-        </div>
-      )}
 
       {/* 操作提示 */}
       {!hasVideo && (

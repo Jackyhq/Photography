@@ -5,7 +5,7 @@ import { i18nAtom } from '~/i18n'
 import { imageConverterManager } from '~/lib/image-convert'
 import { jotaiStore } from '~/lib/jotai'
 import { LRUCache } from '~/lib/lru-cache'
-import { extractMotionPhotoVideo } from '~/lib/motion-photo-extractor'
+import { extractMotionPhotoVideo, revokeMotionPhotoVideoUrl } from '~/lib/motion-photo-extractor'
 import { convertMovToMp4, needsVideoConversion } from '~/lib/video-converter'
 
 export interface LoadingState {
@@ -66,6 +66,7 @@ function generateRegularImageCacheKey(url: string): string {
 export class ImageLoaderManager {
   private currentXHR: XMLHttpRequest | null = null
   private delayTimer: NodeJS.Timeout | null = null
+  private motionPhotoVideoUrls = new Set<string>()
 
   /**
    * 验证 Blob 是否为有效的图片格式
@@ -215,6 +216,8 @@ export class ImageLoaderManager {
             })
 
             if (extractedVideoUrl) {
+              this.motionPhotoVideoUrls.add(extractedVideoUrl)
+
               videoElement.src = extractedVideoUrl
               videoElement.load()
 
@@ -470,6 +473,11 @@ export class ImageLoaderManager {
       this.currentXHR.abort()
       this.currentXHR = null
     }
+
+    for (const videoUrl of this.motionPhotoVideoUrls) {
+      revokeMotionPhotoVideoUrl(videoUrl)
+    }
+    this.motionPhotoVideoUrls.clear()
   }
 }
 
