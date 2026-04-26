@@ -107,7 +107,7 @@ const PhotoCard = ({ photo, index }: { photo: any; index: number }) => (
             <div className="relative overflow-hidden rounded-lg">
               <img
                 src={photo.thumbnailUrl}
-                alt={photo.title}
+                alt={photo.title || photo.id || `Photo ${index + 1}`}
                 className="h-16 w-16 object-cover transition-transform group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />

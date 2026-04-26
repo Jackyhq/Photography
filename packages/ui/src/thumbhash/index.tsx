@@ -10,5 +10,5 @@ export const Thumbhash = ({ thumbHash, className }: { thumbHash: ArrayLike<numbe
     return thumbHashToDataURL(thumbHash)
   }, [thumbHash])
 
-  return <img src={dataURL} className={clsxm('h-full w-full', className)} />
+  return <img src={dataURL} alt="" aria-hidden="true" className={clsxm('h-full w-full', className)} />
 }

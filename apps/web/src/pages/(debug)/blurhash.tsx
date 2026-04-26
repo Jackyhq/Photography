@@ -17,7 +17,7 @@ export const Component = () => {
           >
             <img
               src={photo.thumbnailUrl}
-              alt={photo.title}
+              alt={photo.title || photo.id}
               height={photo.height}
               width={photo.width}
               className="absolute inset-0"

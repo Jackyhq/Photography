@@ -37,6 +37,7 @@ export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifes
   const imageLoaderManagerRef = useRef<ImageLoaderManager | null>(null)
   const videoLoadStartedRef = useRef(false)
   const scrollElement = useScrollViewElement()
+  const photoAlt = data.title || data.id
 
   const handleImageLoad = () => {
     setImageLoaded(true)
@@ -279,7 +280,7 @@ export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifes
         <img
           ref={imageRef}
           src={data.thumbnailUrl}
-          alt={data.title}
+          alt={photoAlt}
           className={clsx('absolute inset-0 h-full w-full object-cover duration-300 group-hover:scale-105')}
           onLoad={handleImageLoad}
           onError={handleImageError}

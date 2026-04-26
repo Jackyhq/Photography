@@ -146,7 +146,11 @@ export const GalleryThumbnail: FC<{
             onClick={() => onIndexChange(index)}
           >
             {photo.thumbHash && <Thumbhash thumbHash={photo.thumbHash} className="size-fill absolute inset-0" />}
-            <img src={photo.thumbnailUrl} alt={photo.title} className="absolute inset-0 h-full w-full object-cover" />
+            <img
+              src={photo.thumbnailUrl}
+              alt={photo.title || photo.id}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
           </button>
         ))}
       </div>
