@@ -1,8 +1,8 @@
 ---
 title: Storage providers
-description: Afilmory can work with multiple storage providers, including S3, Git, Eagle, and local file system
+description: Afilmory can work with multiple storage providers, including local file system, S3, GitHub, and Eagle
 createdAt: 2025-08-12T15:09:08+08:00
-lastModified: 2025-11-01T19:31:16+08:00
+lastModified: 2026-04-27T06:26:20+08:00
 ---
 
 # Storage Providers
@@ -10,6 +10,23 @@ lastModified: 2025-11-01T19:31:16+08:00
 Afilmory's flexible storage architecture allows you to store your photos across different platforms. The photo processing engine (`@afilmory/builder`) abstracts storage operations through a unified interface, making it easy to switch between providers such as S3, GitHub, Eagle, and the local file system.
 
 ## Supported Providers
+
+Jacky's Photography currently uses the local provider:
+
+```ts
+import { defineBuilderConfig } from '@afilmory/builder'
+
+export default defineBuilderConfig(() => ({
+  storage: {
+    provider: 'local',
+    basePath: './photos',
+    baseUrl: 'https://photos3.jackyw.cn/photos/',
+    excludeRegex: '^incoming($|/.*)',
+  },
+}))
+```
+
+`excludeRegex` keeps staging files under `photos/incoming/` out of the published manifest until they have been standardized or moved into a real category folder.
 
 ### S3-Compatible Storage
 
@@ -25,13 +42,15 @@ export default defineBuilderConfig(() => ({
     provider: 's3',
     bucket: 'your-photos-bucket',
     region: 'us-east-1',
+    accessKeyId: process.env.S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
     prefix: 'photos/',
     customDomain: 'cdn.yourdomain.com',
   },
 }))
 ```
 
-**Environment Variables (`.env`):**
+Because `builder.config.ts` is TypeScript, you can read secrets from environment variables instead of committing them:
 
 ```bash
 S3_ACCESS_KEY_ID=your_access_key_id
@@ -60,6 +79,7 @@ export default defineBuilderConfig(() => ({
     owner: 'your-username',
     repo: 'photo-storage',
     branch: 'main',
+    token: process.env.GIT_TOKEN,
     path: 'photos',
     useRawUrl: true,
   },
@@ -168,7 +188,7 @@ export default defineBuilderConfig(() => ({
 
 Hosted with frontend (serve via app static assets):
 
-```json
+```ts
 export default defineBuilderConfig(() => ({
   storage: {
     provider: 'local',
@@ -189,7 +209,7 @@ When photos are processed, Afilmory performs these operations:
 
 1. **Format Detection** - Identifies HEIC, TIFF, RAW, and standard formats
 2. **EXIF Extraction** - Extracts camera metadata, GPS data, and Fujifilm film recipes
-3. **Format Conversion** - Converts HEIC/TIFF to web-compatible formats (WebP, JPEG)
+3. **Format Conversion** - Converts formats such as HEIC, TIFF, and BMP to browser-friendly image data when needed
 4. **Thumbnail Generation** - Creates multiple thumbnail sizes
 5. **Blurhash Generation** - Creates placeholder images for smooth loading
 6. **Manifest Creation** - Generates metadata JSON for the gallery
@@ -228,8 +248,8 @@ pnpm run build:manifest -- --force
 # Regenerate only thumbnails
 pnpm run build:manifest -- --force-thumbnails
 
-# Process specific directory
-pnpm run build:manifest -- --path "2024/vacation"
+# Show resolved builder configuration
+pnpm run build:manifest -- --config
 ```
 
 ## Environment-Specific Configurations
@@ -238,36 +258,47 @@ pnpm run build:manifest -- --path "2024/vacation"
 
 For local development, use local storage:
 
-```json
-{
-  "storage": {
-    "provider": "local",
-    "basePath": "./dev-photos",
-    "baseUrl": "http://localhost:1924/photos"
-  }
-}
+```ts
+import { defineBuilderConfig } from '@afilmory/builder'
+
+export default defineBuilderConfig(() => ({
+  storage: {
+    provider: 'local',
+    basePath: './dev-photos',
+    baseUrl: 'http://localhost:1924/photos',
+  },
+}))
 ```
 
 ### Production Setup
 
 For production, use S3-compatible storage with CDN:
 
-```json
-{
-  "storage": {
-    "provider": "s3",
-    "bucket": "prod-photos-bucket",
-    "region": "us-east-1",
-    "prefix": "photos/",
-    "customDomain": "cdn.yourdomain.com"
+```ts
+import { defineBuilderConfig } from '@afilmory/builder'
+
+export default defineBuilderConfig(() => ({
+  storage: {
+    provider: 's3',
+    bucket: 'prod-photos-bucket',
+    region: 'us-east-1',
+    accessKeyId: process.env.S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+    prefix: 'photos/',
+    customDomain: 'cdn.yourdomain.com',
   },
-  "performance": {
-    "worker": {
-      "enabled": true,
-      "maxWorkers": 4
-    }
-  }
-}
+  system: {
+    observability: {
+      performance: {
+        worker: {
+          workerCount: 4,
+          workerConcurrency: 2,
+          useClusterMode: true,
+        },
+      },
+    },
+  },
+}))
 ```
 
 ## API Limitations
@@ -281,13 +312,13 @@ For production, use S3-compatible storage with CDN:
 
 ### Storage Provider Comparison
 
-| Feature          | S3              | GitHub                | Local                    |
-| ---------------- | --------------- | --------------------- | ------------------------ |
-| Storage Space    | Pay-as-you-go   | 1GB free              | Depends on disk          |
-| CDN              | Additional cost | Free global CDN       | Manual setup             |
-| API Limits       | Very high       | Limited               | None                     |
-| Use Case         | Production      | Small projects, demos | Development, self-hosted |
-| Setup Complexity | Medium          | Simple                | Minimal                  |
+| Feature          | Local                    | S3              | GitHub                    | Eagle                    |
+| ---------------- | ------------------------ | --------------- | ------------------------- | ------------------------ |
+| Storage Space    | Depends on disk          | Pay-as-you-go   | Repository-limited        | Depends on local library |
+| CDN              | Manual setup             | External/CDN    | raw.githubusercontent.com | Manual/static output     |
+| API Limits       | None                     | Provider limits | GitHub API limits         | None                     |
+| Use Case         | Development, self-hosted | Production      | Small projects, demos     | Eagle library publishing |
+| Setup Complexity | Minimal                  | Medium          | Simple                    | Medium                   |
 
 ## Security Considerations
 

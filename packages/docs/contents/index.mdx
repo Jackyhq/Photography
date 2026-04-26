@@ -1,220 +1,114 @@
 ---
 title: Overview
+description: Project overview for Jacky's Photography, a customized Afilmory-powered photo gallery.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2025-11-10T22:36:14+08:00
+lastModified: 2026-04-27T06:26:20+08:00
 ---
 
-# Overview
+# Jacky's Photography
 
-<p align="center">
-  <img
-    src="https://github.com/Afilmory/assets/blob/main/afilmory-readme.webp?raw=true"
-    alt="Afilmory"
-    width="100%"
-  />
-</p>
+Jacky's Photography is a customized personal photo gallery based on [Afilmory](https://github.com/Afilmory/afilmory). It keeps the core static-gallery workflow from Afilmory while adding project-specific automation, deployment, photo standardization, map exploration, and presentation refinements for [photo.jackyw.cn](https://photo.jackyw.cn).
 
-Afilmory (/əˈfɪlməri/, "uh-FIL-muh-ree") is a term created for personal photography websites, blending Auto Focus (AF), aperture (light control), film (vintage medium), and memory (captured moments).
+> Photos under `photos/` are Jackyhq's personal works and are not part of the open-source license. Do not reuse, redistribute, or publish them without explicit written permission.
 
-A modern photo gallery website built with React + TypeScript, supporting automatic photo synchronization from multiple storage sources (S3, GitHub), featuring high-performance WebGL rendering, masonry layout, EXIF information display, thumbnail generation, and more.
+## What It Builds
 
-Live Photo Galleries:
+The project builds a pure client-side React SPA. Photo metadata is generated before the frontend build and embedded as `photos-manifest.json`, so the deployed gallery can run on static hosting without an application server.
 
-- [afilmory.innei.in](https://afilmory.innei.in)
-- [gallery.mxte.cc](https://gallery.mxte.cc)
-- [photography.pseudoyu.com](https://photography.pseudoyu.com)
-- [afilmory.magren.cc](https://afilmory.magren.cc)
+Core user-facing features:
 
-## 🌟 Features
+- Responsive masonry photo gallery.
+- Fullscreen photo viewer with WebGL zoom and pan.
+- EXIF, histogram, camera, lens, tag, Live Photo, HDR, and Fujifilm recipe display.
+- Command palette and gallery controls for searching, sorting, and changing layout.
+- MapLibre-based location explorer for photos with GPS metadata.
+- OpenGraph, sitemap, RSS utilities, and static deployment output.
 
-### Core Functionality
+## Repository Layout
 
-- 🖼️ **High-Performance WebGL Image Renderer** - Custom WebGL component with smooth zoom and pan operations
-- 📱 **Responsive Masonry Layout** - Powered by Masonic, adapts to different screen sizes
-- 🎨 **Modern UI Design** - Built with Tailwind CSS and Radix UI component library
-- ⚡ **Incremental Sync** - Smart change detection, processes only new or modified photos
-- 🌐 **i18n** - Multi-language support
-- 🔗 **OpenGraph** - OpenGraph metadata for social media sharing
-
-### Image Processing
-
-- 🔄 **HEIC/HEIF Format Support** - Automatic conversion of Apple device HEIC format
-- 📷 **TIFF Format Support** - Automatic conversion of TIFF format
-- 🖼️ **Smart Thumbnail Generation** - Multi-size thumbnails for optimized loading performance
-- 📊 **EXIF Information Display** - Complete shooting parameters including camera model, focal length, aperture, etc.
-- 🌈 **Blurhash Placeholders** - Elegant image loading experience
-- 📱 **Live Photo Support** - Detection and display of iPhone Live Photos
-- ☀️ **HDR Image Support** - Display HDR images
-
-### Advanced Features
-
-- 🎛️ **Fujifilm Recipe** - Read and display Fujifilm camera film simulation settings
-- 🔍 **Fullscreen Viewer** - Image viewer with gesture support
-- 🏷️ **File System Tags** - Auto-generated tags based on file system
-- ⚡ **Concurrent Processing** - Multi-process/multi-thread concurrent processing support
-- 🗂️ **Multi-Storage Support** - S3, GitHub, and other storage backends
-- 📷 **Share Image** - Share image to social media or embed iframe to your website
-- 🗺️ **Interactive Map Explorer** - Geographic visualization of photos with GPS coordinates from EXIF data using MapLibre
-
-## 🏗️ Technical Architecture
-
-### Frontend Tech Stack
-
-- **React 19** - Latest React version with Compiler
-- **TypeScript** - Complete type safety
-- **Vite** - Modern build tool
-- **Tailwind CSS** - Atomic CSS framework
-- **Radix UI** - Accessible component library
-- **Jotai** - State management
-- **TanStack Query** - Data fetching and caching
-- **React Router 7** - Routing management
-- **i18next** - Internationalization
-
-### Build System
-
-- **Node.js** - Server-side runtime
-- **Sharp** - High-performance image processing
-- **AWS SDK** - S3 storage operations
-- **Worker Threads/Cluster** - Concurrent processing
-- **EXIF-Reader** - EXIF data extraction
-
-### Storage Architecture
-
-Designed with adapter pattern, supporting multiple storage backends:
-
-- **S3-Compatible Storage** - AWS S3, MinIO, Alibaba Cloud OSS, etc.
-- **GitHub Storage** - Using GitHub repository as image storage
-
-## 🚀 Quick Start
-
-### Docker Deployment
-
-[Docker Deployment](https://github.com/Afilmory/docker)
-
-## ⚙️ Configuration Options
-
-#### Remote Repository Configuration (`repo`)
-
-To achieve incremental builds in CI, it is necessary to configure a cache repository, which will pull the cache before each build and upload the build results after the build.
-
-```json
-{
-  "repo": {
-    "enable": true,
-    "url": "https://github.com/username/gallery-assets"
-  }
-}
+```plain
+apps/web/                 # Main React 19 + Vite gallery SPA
+packages/builder/         # Photo processing, EXIF, thumbnails, manifest generation
+packages/data/            # Manifest access layer and photoLoader singleton
+packages/docs/            # This Vite + React + MDX documentation site
+packages/hooks/           # Shared React hooks
+packages/sdk/             # Shared schemas/client helpers
+packages/ui/              # Shared UI primitives and glassmorphic components
+packages/utils/           # Shared utilities, RSS helpers, animation helpers
+packages/webgl-viewer/    # High-performance WebGL image viewer
+photos/                   # Private photo source files
 ```
 
-This will automatically pull resources from the remote repository, avoiding rebuilds each time.
+## Storage Providers
 
-**In order to achieve uploading to the git repository, you need to provide a `GIT_TOKEN` and write it in the `.env` file.**
+`@afilmory/builder` reads photos through a storage-provider abstraction. The current project uses the local provider:
 
-#### Storage Configuration (`storage`)
+```ts
+import { defineBuilderConfig } from '@afilmory/builder'
 
-- `provider`: Storage provider (`s3` | `github`)
-- `bucket`: S3 bucket name
-- `region`: S3 region
-- `endpoint`: S3 endpoint (optional)
-- `prefix`: File prefix
-- `customDomain`: Custom domain
-- `excludeRegex`: Regular expression to exclude files (optional)
+export default defineBuilderConfig(() => ({
+  storage: {
+    provider: 'local',
+    basePath: './photos',
+    baseUrl: 'https://photos3.jackyw.cn/photos/',
+    excludeRegex: '^incoming($|/.*)',
+  },
+}))
+```
 
-#### System Processing (`system.processing`)
+Supported providers:
 
-- `defaultConcurrency`: Default concurrency
-- `enableLivePhotoDetection`: Enable Live Photo detection
-- `digestSuffixLength`: Digest suffix length for deterministic IDs
-- `supportedFormats`: Optional allowlist of file extensions to process
+- `local`: reads local photo directories; useful for this repository, development, and self-hosted deployments.
+- `s3`: reads S3-compatible object storage with optional custom domains and network tuning.
+- `github`: reads photos from a GitHub repository or subdirectory.
+- `eagle`: reads an Eagle 4 library and can filter by tags or folders.
 
-#### System Observability (`system.observability`)
-
-- `showProgress`: Show build progress
-- `showDetailedStats`: Show detailed statistics
-- `logging.verbose`: Verbose logging
-- `logging.level`: Log level (`info` | `warn` | `error` | `debug`)
-- `logging.outputToFile`: Output to file
-- `performance.worker.workerCount`: Number of worker processes
-- `performance.worker.timeout`: Worker timeout (milliseconds)
-- `performance.worker.useClusterMode`: Enable cluster mode
-
-## 📋 CLI Commands
-
-### Build Commands
+## Development
 
 ```bash
-# View help
-pnpm run build:manifest -- --help
-
-# Incremental update (default)
+pnpm install
 pnpm run build:manifest
-
-# Force full update
-pnpm run build:manifest -- --force
-
-# Only regenerate thumbnails
-pnpm run build:manifest -- --force-thumbnails
-
-# Only regenerate manifest
-pnpm run build:manifest -- --force-manifest
+pnpm dev
 ```
 
-### Development Commands
+Useful commands:
 
 ```bash
-# Start development server
-pnpm dev
-
-# Build production version
+pnpm run photos:standardize
+pnpm run build:manifest -- --force
+pnpm run build:manifest -- --force-thumbnails
+pnpm run build:manifest -- --force-manifest
+pnpm run build:manifest -- --config
 pnpm build
+pnpm docs:dev
+pnpm docs:build
+pnpm --filter web type-check
 ```
 
-### Notes
+`pnpm dev` and `pnpm build` run the web precheck, which generates the manifest unless `SKIP_PRECHECK=1` is set.
 
-- Ensure your S3 bucket already contains photo files
-- If using remote repository, configure `builder.config.ts` first
+## Photo Workflow
 
-## 🔧 Advanced Usage
+1. Put new photos in `photos/incoming/` or directly in a category folder under `photos/`.
+2. Run `pnpm run photos:standardize` to rename incoming files from EXIF timestamps and move them into category folders.
+3. Run `pnpm run build:manifest` to scan photos, extract metadata, generate thumbnails, and update `apps/web/src/data/photos-manifest.json`.
+4. Run `pnpm dev` for local preview or `pnpm build` for static production output.
 
-### Custom Storage Provider
+## Deployment
 
-Implement the `StorageProvider` interface to support new storage backends:
+The repository includes `.github/workflows/deploy.yml`. On pushes to `main` that touch photos, app code, packages, or project configuration, the workflow:
 
-```typescript
-import { StorageProvider } from './src/core/storage/interfaces'
+1. Installs pnpm and Node.js 24.
+2. Installs dependencies.
+3. Runs photo standardization.
+4. Builds the photo manifest.
+5. Builds the web app with `SKIP_PRECHECK=1`.
+6. Copies `sitemap.xml` to `googlesitemap.xml` when present.
+7. Syncs `apps/web/dist/` into the root `web/` directory and commits generated changes.
+8. Deploys `apps/web/dist/` to GitHub Pages.
 
-class MyStorageProvider implements StorageProvider {
-  async getFile(key: string): Promise<Buffer | null> {
-    // Implement file retrieval logic
-  }
+The committed `web/` directory can also be used as a static output target for platforms such as Cloudflare Pages.
 
-  async listImages(): Promise<StorageObject[]> {
-    // Implement image list retrieval logic
-  }
+## License
 
-  // ... other methods
-}
-```
-
-### Custom Image Processing
-
-Add custom processors in the `src/core/image/` directory:
-
-```typescript
-export async function customImageProcessor(buffer: Buffer) {
-  // Custom image processing logic
-  return processedBuffer
-}
-```
-
-## 📄 License
-
-MIT License © 2025 Innei
-
-## 🔗 Related Links
-
-- [Live Demo](https://gallery.innei.in)
-- [Personal Website](https://innei.in)
-- [GitHub](https://github.com/innei)
-
-If this project helps you, please give it a ⭐️ Star for support!
+Code is licensed under the repository license. Photos in `photos/` remain private copyrighted works owned by Jackyhq.

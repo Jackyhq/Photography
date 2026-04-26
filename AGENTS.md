@@ -1,95 +1,129 @@
 # AGENTS
 
+This repository is Jacky's Photography, a customized Afilmory-based photo gallery. It is a pnpm workspace with a static React/Vite gallery, a photo-manifest builder, shared packages, and an MDX documentation site.
+
 ## Commands
 
-### Development Commands
+### Development
 
 ```bash
-# Start web development server
+# Start the web gallery dev server.
 pnpm dev
 
-# Build production version (SPA)
+# Build the production SPA.
 pnpm build
 
-# Build manifest from storage (generates photo metadata)
-pnpm run build:manifest
+# Build the documentation site.
+pnpm docs:build
 
-# Force rebuild all photos and metadata
-pnpm run build:manifest -- --force
-
-# Force regenerate thumbnails only
-pnpm run build:manifest -- --force-thumbnails
-
-# Force regenerate manifest only
-pnpm run build:manifest -- --force-manifest
+# Start/preview the documentation site.
+pnpm docs:dev
+pnpm docs:preview
 ```
 
-### Code Quality Commands
+### Photo Pipeline
 
 ```bash
-# Lint and fix code
+# Rename and move files from photos/incoming using EXIF timestamps.
+pnpm run photos:standardize
+
+# Build or update apps/web/src/data/photos-manifest.json.
+pnpm run build:manifest
+
+# Force rebuild all photos and metadata.
+pnpm run build:manifest -- --force
+
+# Force regenerate thumbnails only.
+pnpm run build:manifest -- --force-thumbnails
+
+# Force regenerate manifest only.
+pnpm run build:manifest -- --force-manifest
+
+# Print resolved builder configuration.
+pnpm run build:manifest -- --config
+```
+
+### Code Quality
+
+```bash
+# Lint and fix code.
 pnpm lint
 
-# Format code
+# Format code.
 pnpm format
 
-# Type check (web app)
+# Type check the web app.
 pnpm --filter web type-check
 ```
 
 ## Architecture
 
-The project is a pure client-side application (SPA) built with React, Vite, and TypeScript.
+The production site is a pure client-side SPA. The builder runs before the web build, scans the configured photo storage, extracts metadata, generates thumbnails and hashes, and writes `apps/web/src/data/photos-manifest.json`. The frontend imports that manifest through `@afilmory/data` and deploys as static files from `apps/web/dist/`.
 
-### Core Components
+### Workspace Packages
 
-1.  **`apps/web` - Standalone Frontend SPA**
-    *   **Description**: The main user-facing photo gallery. It can be deployed as a static website (e.g., to Vercel, GitHub Pages, or any static host).
-    *   **UI/Design**: Features a modern, interactive, and user-centric UI with a "Glassmorphic Depth Design System".
-    *   **Sitemap & RSS**: Generated automatically during the build process into the `dist` folder.
-    *   **OG Images**: Basic OG tags are injected into the HTML during build.
-
-### Monorepo Structure
-
-- `apps/web/` - Main frontend React application (Vite + React 19 SPA).
-- `packages/builder/` - Photo processing and manifest generation tool.
-- `packages/webgl-viewer/` - High-performance WebGL-based photo viewer component.
-- `packages/data/` - Shared data access layer and PhotoLoader singleton.
-- `packages/components/` - Reusable UI components.
-- `packages/ui/` - Core UI elements and design system components.
+- `apps/web/` - Main React 19 + Vite gallery SPA.
+- `packages/builder/` - Photo processing, storage providers, EXIF extraction, thumbnails, manifest generation, and builder plugins.
+- `packages/data/` - Shared data access layer and `photoLoader` singleton.
+- `packages/docs/` - Vite + React + MDX documentation site.
 - `packages/hooks/` - Shared React hooks.
-- `packages/utils/` - Utility functions.
+- `packages/sdk/` - Lightweight client/schema helpers.
+- `packages/ui/` - Shared UI primitives and design-system components.
+- `packages/utils/` - Utilities for class names, animation constants, RSS, tenant helpers, backoff, and binary helpers.
+- `packages/webgl-viewer/` - WebGL image viewer used by the photo viewer.
 
-### Configuration Architecture
+There is no `packages/components/` package in the current workspace.
 
-1. **Builder Config** (`builder.config.ts`) - Controls photo processing and storage.
-2. **Site Config** (`site.config.ts` + `config.json`) - Controls site branding and author info.
+### Configuration
 
-### Manifest Generation & Data Flow
+- `builder.config.ts` controls photo storage and builder behavior. The current project uses local storage:
 
-**Builder Pipeline**:
-1. Downloads photos from storage.
-2. Processes images (HEIC→JPEG, etc.).
-3. Extracts EXIF metadata.
-4. Generates thumbnails and blurhash.
-5. Serializes all data into `photos-manifest.json`.
+  ```ts
+  storage: {
+    provider: 'local',
+    basePath: './photos',
+    baseUrl: 'https://photos3.jackyw.cn/photos/',
+    excludeRegex: '^incoming($|/.*)',
+  }
+  ```
 
-**SPA Data Consumption**:
-- `PhotoLoader` consumes the manifest data to provide a searchable, filterable gallery.
+- `config.json` and `site.config.ts` control site branding, author metadata, social links, map settings, and canonical URL.
+- `pnpm-workspace.yaml` defines workspace packages and shared dependency catalog versions.
 
-### Key Technologies
+### Photo Data Flow
 
-- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Jotai, TanStack Query.
-- **Image Processing**: Sharp, exiftool-vendored.
-- **Build System**: pnpm workspaces.
+1. New files are staged in `photos/incoming/` or placed directly under `photos/<category>/`.
+2. `pnpm run photos:standardize` reads EXIF timestamps, renames files to `YYYYMMDDHHmmss.ext`, and moves them into category folders.
+3. `pnpm run build:manifest` scans configured storage, excludes `incoming`, processes images, detects Live Photos, extracts EXIF/GPS/Fujifilm metadata, generates thumbnails and hash placeholders, and saves `apps/web/src/data/photos-manifest.json`.
+4. `@afilmory/data` loads `__MANIFEST__` and exposes photos, cameras, and lenses to the web app.
+5. `pnpm build` builds `apps/web/dist/`; CI also mirrors this output into root `web/`.
 
-### Code Quality Rules
+### Storage Providers
+
+`@afilmory/builder` supports:
+
+- `local` - local filesystem source, optionally with `distPath` and `baseUrl`.
+- `s3` - S3-compatible object storage.
+- `github` - GitHub repository contents.
+- `eagle` - Eagle 4 library with folder/tag include and exclude rules.
+
+## Development Notes
+
+- Do not treat files under `photos/` as open-source assets; they are personal copyrighted works.
+- Avoid editing generated outputs unless the task explicitly involves generation or deployment output. Generated files include `apps/web/dist/`, root `web/`, and `apps/web/src/data/photos-manifest.json`.
+- `pnpm dev` and `pnpm build` run `apps/web/scripts/precheck.ts`, which builds the manifest unless `SKIP_PRECHECK=1` is set.
+- GitHub Actions builds on Node.js 24 and pnpm 10.19.0.
+- When changing documentation content under `packages/docs/contents/`, keep frontmatter `lastModified` current.
+- Follow strict TypeScript and existing workspace import boundaries. Prefer workspace packages such as `@afilmory/ui`, `@afilmory/utils`, `@afilmory/hooks`, and `@afilmory/data` over duplicate local helpers.
+
+## Code Quality Rules
 
 1. Avoid code duplication.
-2. Keep components focused.
-3. Follow React best practices.
-4. Use TypeScript strictly.
+2. Keep components focused and colocated with the feature when they are app-specific.
+3. Follow React best practices and keep rendering side effects out of component bodies.
+4. Use TypeScript strictly and preserve package exports.
+5. Prefer existing storage, builder, routing, and UI abstractions over ad hoc rewrites.
 
-## Design System
+## Web Design System
 
-- **`apps/web`**: See `apps/web/AGENTS.md` for details.
+For `apps/web`, also read `apps/web/AGENTS.md`.

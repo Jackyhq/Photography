@@ -1,43 +1,97 @@
-# agents.md
+# AGENTS
 
-This agent file only for under this folder project use.
+This file applies to `apps/web/`, the standalone React 19 + Vite photo gallery SPA.
 
-## Glassmorphic Depth Design System
+## Commands
 
-This application utilizes a sophisticated glassmorphic depth design system for elevated UI components like modals, toasts, and floating panels. This system creates a sense of visual hierarchy through layered transparency and subtle color accents.
+```bash
+# From the repository root
+pnpm dev
+pnpm build
+pnpm --filter web type-check
 
-### Design Principles
+# From apps/web
+pnpm dev
+pnpm build
+pnpm serve
+pnpm analyze
+pnpm type-check
+```
 
-- **Multi-layer Depth**: Create visual depth through stacked transparent layers.
-- **Subtle Color Accents**: Use brand colors at very low opacity (5-20%) for borders, glows, and backgrounds.
-- **Refined Blur**: Employ heavy backdrop blur (`backdrop-blur-2xl`) for a frosted glass effect.
-- **Minimal Shadows**: Combine multiple soft shadows with accent colors for depth perception.
-- **Smooth Animations**: Use spring-based presets for all transitions to ensure fluid motion.
+`pnpm dev` and `pnpm build` run `scripts/precheck.ts`, which calls the builder CLI before starting Vite/building. Use `SKIP_PRECHECK=1` only when the manifest was already generated intentionally.
 
-### Color Usage
+## App Architecture
 
-**IMPORTANT**: Prefer Tailwind CSS classes with opacity modifiers (e.g., `/20`) over inline styles for applying colors.
+- Entry point: `src/main.tsx`.
+- Router: `src/router.tsx` builds routes from `src/pages/**/*.tsx` through `src/lib/route-builder.ts`.
+- Root shell: `src/App.tsx` installs providers, canonical URL updates, and the command palette.
+- Global providers: `src/providers/root-providers.tsx` and nearby provider modules.
+- Data source: `@afilmory/data` reads `__MANIFEST__` from `src/data/photos-manifest.json`.
+- Site config: `src/config/index.ts` merges `site.config.ts` defaults with runtime `window.__SITE_CONFIG__` when available.
 
-- **Borders**: `border-accent/20`
-- **Backgrounds**: `bg-accent/5`, `bg-accent/[0.03]`
-- **Text**: `text-accent/80`
+### Route Conventions
 
-Use inline styles with `color-mix()` only for complex gradients or shadows that Tailwind classes do not support.
+- `src/pages/(main)/layout.tsx` owns the main gallery layout.
+- `src/pages/(main)/photos/[photoId]/index.tsx` is the photo detail route.
+- `src/pages/explory/index.tsx` is the map exploration route.
+- `src/pages/(data)/manifest.tsx` exposes the manifest inspection/download page.
+- `src/pages/(debug)/*` contains debug-only routes.
+- Route groups in parentheses do not add URL segments; `[param]` becomes a React Router dynamic segment.
 
-### Component Structure Example
+## Feature Areas
+
+- `src/modules/gallery/` - masonry gallery, action panels, sorting, columns, and view controls.
+- `src/components/ui/photo-viewer/` - fullscreen viewer, progressive images, EXIF panel, histogram, Live Photo, HDR, sharing, and transitions.
+- `src/modules/map/` and `src/components/ui/map/` - MapLibre integration, clustering, controls, and marker UI.
+- `src/components/gallery/CommandPalette.tsx` - search and command palette.
+- `src/lib/` - feature utilities such as image loading, route building, map helpers, color analysis, and browser-side conversion.
+- `src/atoms/` and `src/store/` - shared app state.
+
+## Design System
+
+The app uses a glassmorphic depth design system for elevated UI such as modals, command menus, floating panels, toasts, and viewer overlays.
+
+### Principles
+
+- Use layered transparency, backdrop blur, and subtle borders to create hierarchy.
+- Keep color accents low opacity: usually 5-20% for backgrounds, borders, and glows.
+- Prefer spring-like Motion transitions already used in the app.
+- Keep gallery and viewer surfaces visually quiet so the photos remain primary.
+- Avoid adding marketing-style hero sections; the gallery itself is the main experience.
+
+### Tailwind And Styling
+
+- Prefer Tailwind CSS classes with opacity modifiers over inline styles.
+- Use examples such as `border-accent/20`, `bg-accent/5`, `bg-accent/[0.03]`, and `text-accent/80`.
+- Use inline `color-mix()` only for gradients or shadows that Tailwind cannot express cleanly.
+- Shared theme tokens live in `src/styles/tailwind.css`.
+- Keep dark-mode behavior aligned with `[data-theme='dark']`.
+
+### Components And Icons
+
+- Prefer shared primitives from `@afilmory/ui` for buttons, dialogs, dropdowns, scroll areas, tooltips, lazy images, thumbhash, and glass buttons.
+- Use `@afilmory/utils` helpers such as `clsxm`, `cx`, and `Spring` instead of duplicating class or animation logic.
+- Match the existing icon approach: Iconify class names such as `i-mingcute-*` and existing React icon components already imported in nearby files.
+- Prefer CSS/data-attribute hover states such as `data-highlighted` for Radix-style menus instead of JavaScript hover bookkeeping.
+
+### Glassmorphic Example
 
 ```tsx
 <div
   className="rounded-2xl border border-accent/20 backdrop-blur-2xl"
   style={{
-    backgroundImage: "linear-gradient(...)",
-    boxShadow: "0 8px 32px color-mix(...)",
+    backgroundImage: 'linear-gradient(...)',
+    boxShadow: '0 8px 32px color-mix(in srgb, var(--color-accent) 8%, transparent)',
   }}
 >
-  {/* Inner glow and content */}
+  {/* content */}
 </div>
 ```
 
-### Interactive Elements
+## Implementation Notes
 
-Prefer CSS-driven hover effects using `data-highlighted` attributes (for Radix UI components) or custom CSS classes over JavaScript event handlers for better performance.
+- Keep app-specific UI inside `apps/web/src`; move only broadly reusable primitives to `packages/ui`.
+- Be careful with `photos-manifest.json`; it is generated by the builder and should not be hand-edited for normal feature work.
+- Map features should respect `config.json` keys `map`, `mapStyle`, and `mapProjection`.
+- Viewer changes should consider desktop and mobile behavior, WebGL and DOM fallbacks, Live Photo video loading, and browser memory pressure.
+- For text, use existing i18next keys and add translations where the local pattern requires it.

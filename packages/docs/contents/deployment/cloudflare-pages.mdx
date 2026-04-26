@@ -1,10 +1,45 @@
 ---
 title: Cloudflare Pages
-description: Guide to deploying Afilmory via Cloudflare Pages.
+description: Guide to deploying Jacky's Photography via Cloudflare Pages.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2025-08-08T17:39:40+08:00
+lastModified: 2026-04-27T06:26:20+08:00
 ---
 
 # Cloudflare Pages Deployment
 
-🚧 WIP
+The GitHub Actions workflow mirrors the built gallery into the root `web/` directory. That makes Cloudflare Pages deployment straightforward if you want Cloudflare to serve the committed static output.
+
+## Recommended Settings
+
+Use these settings when connecting the repository to Cloudflare Pages:
+
+```plain
+Production branch: main
+Build command: (leave empty)
+Build output directory: web
+```
+
+This mode lets GitHub Actions handle photo standardization, manifest generation, and the Vite build. Cloudflare Pages only serves the static files already committed to `web/`.
+
+## Build On Cloudflare Instead
+
+If you prefer Cloudflare Pages to build from source, use:
+
+```bash
+pnpm install
+pnpm run build:manifest
+SKIP_PRECHECK=1 pnpm build
+```
+
+And configure:
+
+```plain
+Build output directory: apps/web/dist
+Node.js version: 24
+```
+
+The repository workflow is still the safer default because it commits the generated manifest and output in one place.
+
+## Custom Domain
+
+Point your custom domain, such as `photo.jackyw.cn`, at the Cloudflare Pages project and keep `config.json` aligned with that public URL.
