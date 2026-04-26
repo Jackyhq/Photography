@@ -1,4 +1,3 @@
-import { LoadingState } from '@afilmory/webgl-viewer'
 import type { TFunction } from 'i18next'
 import { startTransition, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -12,6 +11,11 @@ import type { LivePhotoVideoHandle } from './LivePhotoVideo'
 import type { LoadingIndicatorRef } from './LoadingIndicator'
 import type { ProgressiveImageState } from './types'
 import { SHOW_SCALE_INDICATOR_DURATION } from './types'
+
+const WebGLLoadingState = {
+  CREATE_TEXTURE: 0,
+  IMAGE_LOADING: 1,
+} as const
 
 export const useProgressiveImageState = (): [
   ProgressiveImageState,
@@ -230,12 +234,12 @@ export const useWebGLLoadingState = (loadingIndicatorRef: React.RefObject<Loadin
   const { t } = useTranslation()
 
   const handleWebGLLoadingStateChange = useCallback(
-    (isLoading: boolean, state?: LoadingState, quality?: 'high' | 'medium' | 'low' | 'unknown') => {
+    (isLoading: boolean, state?: number, quality?: 'high' | 'medium' | 'low' | 'unknown') => {
       let message = ''
 
-      if (state === LoadingState.CREATE_TEXTURE) {
+      if (state === WebGLLoadingState.CREATE_TEXTURE) {
         message = t('photo.webgl.creatingTexture')
-      } else if (state === LoadingState.IMAGE_LOADING) {
+      } else if (state === WebGLLoadingState.IMAGE_LOADING) {
         message = t('photo.webgl.loadingImage')
       }
 
