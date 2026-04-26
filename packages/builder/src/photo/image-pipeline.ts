@@ -211,6 +211,8 @@ export async function executePhotoProcessingPipeline(
       tags: photoInfo.tags,
       originalUrl: await storageManager.generatePublicUrl(photoKey),
       thumbnailUrl: thumbnailResult.thumbnailUrl,
+      thumbnailSrcSet: thumbnailResult.thumbnailSrcSet,
+      thumbnailWebpSrcSet: thumbnailResult.thumbnailWebpSrcSet,
       thumbHash: thumbnailResult.thumbHash ? compressUint8Array(thumbnailResult.thumbHash) : null,
       width: metadata.width,
       height: metadata.height,

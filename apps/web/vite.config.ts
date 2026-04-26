@@ -58,6 +58,7 @@ const staticWebBuildPlugins: PluginOption[] = [
   VitePWA({
     base: '/',
     scope: '/',
+    injectRegister: 'script-defer',
     registerType: 'autoUpdate',
     includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg', 'feed.xml', 'sitemap.xml'],
     manifest: {

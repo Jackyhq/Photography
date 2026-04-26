@@ -12,11 +12,16 @@ import {
   TablerAperture,
 } from '~/icons'
 import { isMobileDevice } from '~/lib/device-viewport'
-import { ImageLoaderManager } from '~/lib/image-loader-manager'
+import type { ImageLoaderManager } from '~/lib/image-loader-manager'
 import { getImageFormat } from '~/lib/image-utils'
 import type { PhotoManifest } from '~/types/photo'
 
-export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifest; width: number; index: number }) => {
+const PRIORITY_IMAGE_COUNT = 6
+const THUMBNAIL_SIZES = '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 350px'
+
+type VideoSource = Parameters<ImageLoaderManager['processVideo']>[0]
+
+export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; width: number; index: number }) => {
   const photos = useContextPhotos()
   const photoViewer = usePhotoViewer()
   const { t } = useTranslation()
@@ -38,6 +43,7 @@ export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifes
   const videoLoadStartedRef = useRef(false)
   const scrollElement = useScrollViewElement()
   const photoAlt = data.title || data.id
+  const isPriorityImage = index < PRIORITY_IMAGE_COUNT
 
   const handleImageLoad = () => {
     setImageLoaded(true)
@@ -157,15 +163,20 @@ export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifes
     let isCancelled = false
     videoLoadStartedRef.current = true
 
-    const imageLoaderManager = new ImageLoaderManager()
-    imageLoaderManagerRef.current = imageLoaderManager
+    let imageLoaderManager: ImageLoaderManager | null = null
 
     const loadVideo = async () => {
       setIsConvertingVideo(true)
 
       try {
+        const imageLoaderManagerModule = await import('~/lib/image-loader-manager')
+        if (isCancelled) return
+
+        imageLoaderManager = new imageLoaderManagerModule.ImageLoaderManager()
+        imageLoaderManagerRef.current = imageLoaderManager
+
         // 构造 VideoSource（适配前端格式）- 使用 type narrowing
-        let videoSource: Parameters<typeof imageLoaderManager.processVideo>[0]
+        let videoSource: VideoSource
 
         if (photoVideo.type === 'motion-photo') {
           videoSource = {
@@ -206,7 +217,7 @@ export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifes
 
     return () => {
       isCancelled = true
-      imageLoaderManager.cleanup()
+      imageLoaderManager?.cleanup()
       if (imageLoaderManagerRef.current === imageLoaderManager) {
         imageLoaderManagerRef.current = null
       }
@@ -277,14 +288,24 @@ export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifes
       {data.thumbHash && <Thumbhash thumbHash={data.thumbHash} className="absolute inset-0" />}
 
       {!imageError && (
-        <img
-          ref={imageRef}
-          src={data.thumbnailUrl}
-          alt={photoAlt}
-          className={clsx('absolute inset-0 h-full w-full object-cover duration-300 group-hover:scale-105')}
-          onLoad={handleImageLoad}
-          onError={handleImageError}
-        />
+        <picture className="absolute inset-0 block h-full w-full">
+          {data.thumbnailWebpSrcSet && (
+            <source type="image/webp" srcSet={data.thumbnailWebpSrcSet} sizes={THUMBNAIL_SIZES} />
+          )}
+          {data.thumbnailSrcSet && <source srcSet={data.thumbnailSrcSet} sizes={THUMBNAIL_SIZES} />}
+          <img
+            ref={imageRef}
+            src={data.thumbnailUrl}
+            alt={photoAlt}
+            className={clsx('h-full w-full object-cover duration-300 group-hover:scale-105')}
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+            loading={isPriorityImage ? 'eager' : 'lazy'}
+            fetchPriority={isPriorityImage ? 'high' : 'auto'}
+            decoding="async"
+            sizes={THUMBNAIL_SIZES}
+          />
+        </picture>
       )}
 
       {/* Live Photo/Motion Photo 视频 */}

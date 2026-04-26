@@ -7,7 +7,7 @@ import type sharp from 'sharp'
 import { HEIC_FORMATS } from '../constants/index.js'
 import { extractExifData } from '../image/exif.js'
 import { calculateHistogramAndAnalyzeTone } from '../image/histogram.js'
-import { generateThumbnailAndBlurhash, thumbnailExists } from '../image/thumbnail.js'
+import { generateThumbnailAndBlurhash, getThumbnailSources, thumbnailExists } from '../image/thumbnail.js'
 import { workdir } from '../path.js'
 import type { PhotoManifestItem, PickedExif, ToneAnalysis } from '../types/photo.js'
 import { getGlobalLoggers } from './logger-adapter.js'
@@ -15,6 +15,8 @@ import type { PhotoProcessorOptions } from './processor.js'
 
 export interface ThumbnailResult {
   thumbnailUrl: string
+  thumbnailSrcSet: string
+  thumbnailWebpSrcSet: string
   thumbnailBuffer: Buffer
   thumbHash: Uint8Array | null
 }
@@ -41,13 +43,15 @@ export async function processThumbnailAndBlurhash(
     try {
       const thumbnailPath = path.join(workdir, 'public/thumbnails', `${photoId}.jpg`)
       const thumbnailBuffer = await fs.readFile(thumbnailPath)
-      const thumbnailUrl = `/thumbnails/${photoId}.jpg`
+      const { thumbnailUrl, thumbnailSrcSet, thumbnailWebpSrcSet } = getThumbnailSources(photoId)
 
       loggers.blurhash.info(`复用现有 blurhash: ${photoId}`)
       loggers.thumbnail.info(`复用现有缩略图：${photoId}`)
 
       return {
         thumbnailUrl,
+        thumbnailSrcSet,
+        thumbnailWebpSrcSet,
         thumbnailBuffer,
         thumbHash: decompressUint8Array(existingItem.thumbHash),
       }
@@ -66,6 +70,8 @@ export async function processThumbnailAndBlurhash(
 
   return {
     thumbnailUrl: result.thumbnailUrl!,
+    thumbnailSrcSet: result.thumbnailSrcSet!,
+    thumbnailWebpSrcSet: result.thumbnailWebpSrcSet!,
     thumbnailBuffer: result.thumbnailBuffer!,
     thumbHash: result.thumbHash!,
   }
