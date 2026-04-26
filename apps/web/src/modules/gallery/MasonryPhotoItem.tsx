@@ -1,4 +1,4 @@
-import { Thumbhash } from '@afilmory/ui'
+import { Thumbhash, useScrollViewElement } from '@afilmory/ui'
 import clsx from 'clsx'
 import { m } from 'motion/react'
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
@@ -28,11 +28,15 @@ export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifes
   const [livePhotoVideoLoaded, setLivePhotoVideoLoaded] = useState(false)
   const [isConvertingVideo, setIsConvertingVideo] = useState(false)
   const [videoConvertionError, setVideoConversionError] = useState<unknown>(null)
+  const [shouldPreloadVideo, setShouldPreloadVideo] = useState(false)
 
+  const itemRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLImageElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const hoverTimerRef = useRef<NodeJS.Timeout | null>(null)
   const imageLoaderManagerRef = useRef<ImageLoaderManager | null>(null)
+  const videoLoadStartedRef = useRef(false)
+  const scrollElement = useScrollViewElement()
 
   const handleImageLoad = () => {
     setImageLoaded(true)
@@ -100,39 +104,80 @@ export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifes
   const imageFormat = getImageFormat(data.originalUrl || data.s3Key || '')
 
   // 检查是否有视频内容（Live Photo 或 Motion Photo）
-  const hasVideo = data.video !== undefined
+  const { video: photoVideo, originalUrl } = data
+  const hasVideo = photoVideo !== undefined
 
-  // Live Photo/Motion Photo 视频加载逻辑
   useEffect(() => {
-    if (!data.video || !imageLoaded || livePhotoVideoLoaded || isConvertingVideo || !videoRef.current) {
+    videoLoadStartedRef.current = false
+    setShouldPreloadVideo(false)
+    setLivePhotoVideoLoaded(false)
+    setIsConvertingVideo(false)
+    setVideoConversionError(null)
+    setIsPlayingLivePhoto(false)
+  }, [data.id])
+
+  useEffect(() => {
+    if (!hasVideo || shouldPreloadVideo) return
+
+    const item = itemRef.current
+    if (!item || typeof IntersectionObserver === 'undefined') {
+      setShouldPreloadVideo(true)
       return
     }
 
-    const {video, originalUrl} = data
+    const root = scrollElement && scrollElement !== document.body ? scrollElement : null
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShouldPreloadVideo(true)
+          observer.disconnect()
+        }
+      },
+      {
+        root,
+        rootMargin: isMobileDevice ? '400px 0px' : '1000px 0px',
+        threshold: 0,
+      },
+    )
+
+    observer.observe(item)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [hasVideo, scrollElement, shouldPreloadVideo])
+
+  // Live Photo/Motion Photo 视频加载逻辑
+  useEffect(() => {
+    if (!photoVideo || !imageLoaded || !shouldPreloadVideo || videoLoadStartedRef.current || !videoRef.current) {
+      return
+    }
+
+    let isCancelled = false
+    videoLoadStartedRef.current = true
+
+    const imageLoaderManager = new ImageLoaderManager()
+    imageLoaderManagerRef.current = imageLoaderManager
 
     const loadVideo = async () => {
       setIsConvertingVideo(true)
-
-      // 创建新的 image loader manager
-      const imageLoaderManager = new ImageLoaderManager()
-      imageLoaderManagerRef.current = imageLoaderManager
 
       try {
         // 构造 VideoSource（适配前端格式）- 使用 type narrowing
         let videoSource: Parameters<typeof imageLoaderManager.processVideo>[0]
 
-        if (video.type === 'motion-photo') {
+        if (photoVideo.type === 'motion-photo') {
           videoSource = {
             type: 'motion-photo',
             imageUrl: originalUrl,
-            offset: video.offset,
-            size: video.size,
-            presentationTimestamp: video.presentationTimestamp,
+            offset: photoVideo.offset,
+            size: photoVideo.size,
+            presentationTimestamp: photoVideo.presentationTimestamp,
           }
-        } else if (video.type === 'live-photo') {
+        } else if (photoVideo.type === 'live-photo') {
           videoSource = {
             type: 'live-photo',
-            videoUrl: video.videoUrl,
+            videoUrl: photoVideo.videoUrl,
           }
         } else {
           videoSource = { type: 'none' }
@@ -140,26 +185,32 @@ export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifes
 
         if (videoSource.type !== 'none') {
           await imageLoaderManager.processVideo(videoSource, videoRef.current!)
-          setLivePhotoVideoLoaded(true)
+          if (!isCancelled) {
+            setLivePhotoVideoLoaded(true)
+          }
         }
       } catch (videoError) {
         console.error('Failed to process video:', videoError)
-        setVideoConversionError(videoError)
+        if (!isCancelled) {
+          setVideoConversionError(videoError)
+        }
       } finally {
-        setIsConvertingVideo(false)
+        if (!isCancelled) {
+          setIsConvertingVideo(false)
+        }
       }
     }
 
     loadVideo()
 
     return () => {
-      if (imageLoaderManagerRef.current) {
-        imageLoaderManagerRef.current.cleanup()
+      isCancelled = true
+      imageLoaderManager.cleanup()
+      if (imageLoaderManagerRef.current === imageLoaderManager) {
         imageLoaderManagerRef.current = null
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.video, data.originalUrl, imageLoaded, livePhotoVideoLoaded])
+  }, [photoVideo, originalUrl, imageLoaded, shouldPreloadVideo])
 
   // Live Photo/Motion Photo hover 处理（仅在桌面端）
   const handleMouseEnter = useCallback(() => {
@@ -210,6 +261,7 @@ export const MasonryPhotoItem = ({ data, width, index: _ }: { data: PhotoManifes
 
   return (
     <m.div
+      ref={itemRef}
       className="bg-fill-quaternary group relative w-full cursor-pointer overflow-hidden"
       style={{
         width,
