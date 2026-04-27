@@ -41,6 +41,13 @@ export const useVisiblePhotosDateRange = (_photos: PhotoManifest[]) => {
       }
     }
 
+    if (photo.dateTaken) {
+      const date = new Date(photo.dateTaken)
+      if (!Number.isNaN(date.getTime())) {
+        return date
+      }
+    }
+
     // 回退到 lastModified
     return new Date(photo.lastModified)
   }, [])

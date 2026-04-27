@@ -12,6 +12,7 @@ export type ProgressCallback = (progress: ScanProgress) => void
 export interface StorageObject {
   key: string
   size?: number
+  createdAt?: Date
   lastModified?: Date
   etag?: string
 }

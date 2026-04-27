@@ -115,6 +115,7 @@
   "exif.device.info": "设备信息",
   "exif.digital.zoom": "数字变焦",
   "exif.dimensions": "尺寸",
+  "exif.duration": "时长",
   "exif.dynamic.range": "动态范围",
   "exif.exposure.mode.auto": "自动曝光",
   "exif.exposure.mode.bracket": "自动包围",
@@ -347,6 +348,7 @@
   "photo.share.text": "看看这张漂亮的照片：{{title}}",
   "photo.share.title": "分享照片",
   "photo.share.weibo": "微博",
+  "photo.video.badge": "视频",
   "photo.webgl.creatingTexture": "正在创建纹理...",
   "photo.webgl.loadingImage": "正在加载图像...",
   "photo.webgl.unavailable": "WebGL 不可用，无法渲染图像",
@@ -373,6 +375,7 @@
   "video.conversion.transmux.success": "转封装转换成功完成",
   "video.conversion.webcodecs.high.quality": "使用高质量 WebCodecs 转换器...",
   "video.conversion.webcodecs.not.supported": "此浏览器不支持 WebCodecs",
+  "video.error.loading": "视频加载失败",
   "video.format.mov.not.supported": "浏览器不支持 MOV 格式，需要转换",
   "video.format.mov.supported": "浏览器原生支持 MOV 格式，跳过转换",
   "video.motion-photo.extracting": "正在提取嵌入的视频..."

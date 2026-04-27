@@ -1,9 +1,11 @@
 import path from 'node:path'
 
+import { SUPPORTED_VIDEO_FORMATS } from '../constants/index.js'
 import { thumbnailExists } from '../image/thumbnail.js'
 import { logger } from '../logger/index.js'
 import { handleDeletedPhotos, loadExistingManifest, needsUpdate, saveManifest } from '../manifest/manager.js'
 import { CURRENT_MANIFEST_VERSION } from '../manifest/version.js'
+import { generateMediaId } from '../media/id.js'
 import type { PhotoProcessorOptions } from '../photo/processor.js'
 import { processPhoto } from '../photo/processor.js'
 import type { PluginRunState } from '../plugins/manager.js'
@@ -16,9 +18,11 @@ import type {
 import type { StorageProviderFactory } from '../storage/factory.js'
 import type { StorageConfig } from '../storage/index.js'
 import { StorageFactory, StorageManager } from '../storage/index.js'
+import type { StorageObject } from '../storage/interfaces.js'
 import type { BuilderConfig, UserBuilderSettings } from '../types/config.js'
 import type { AfilmoryManifest, CameraInfo, LensInfo } from '../types/manifest.js'
 import type { PhotoManifestItem, ProcessPhotoResult } from '../types/photo.js'
+import { processVideoFile } from '../video/processor.js'
 import { ClusterPool } from '../worker/cluster-pool.js'
 import type { TaskCompletedPayload } from '../worker/pool.js'
 import { WorkerPool } from '../worker/pool.js'
@@ -158,8 +162,11 @@ export class AfilmoryBuilder {
         imageObjects,
       })
 
-      if (imageObjects.length === 0) {
-        logger.main.error('❌ 没有找到需要处理的照片')
+      const videoObjects = this.getIndependentVideoObjects(allObjects, livePhotoMap)
+      logger.main.info(`存储中找到 ${videoObjects.length} 个独立视频`)
+
+      if (imageObjects.length === 0 && videoObjects.length === 0) {
+        logger.main.error('❌ 没有找到需要处理的照片或视频')
         const result: BuilderResult = {
           hasUpdates: false,
           newCount: 0,
@@ -178,11 +185,12 @@ export class AfilmoryBuilder {
         return result
       }
 
-      // 创建存储中存在的图片 key 集合，用于检测已删除的图片
-      const s3ImageKeys = new Set(imageObjects.map((obj) => obj.key))
+      // 创建存储中存在的媒体 key 集合，用于检测已删除的媒体
+      const mediaKeys = new Set([...imageObjects.map((obj) => obj.key), ...videoObjects.map((obj) => obj.key)])
 
       // 筛选出实际需要处理的图片
       let tasksToProcess = await this.filterTaskImages(imageObjects, existingManifestMap, options)
+      let videoTasksToProcess = await this.filterTaskVideos(videoObjects, existingManifestMap, options)
 
       // 为减少尾部长耗时，按文件大小降序处理（优先处理大文件）
       if (tasksToProcess.length > 1) {
@@ -200,11 +208,36 @@ export class AfilmoryBuilder {
       })
 
       logger.main.info(`存储中找到 ${imageObjects.length} 张照片，实际需要处理 ${tasksToProcess.length} 张`)
+      logger.main.info(`存储中找到 ${videoObjects.length} 个独立视频，实际需要处理 ${videoTasksToProcess.length} 个`)
 
       const processorOptions: PhotoProcessorOptions = {
         isForceMode: options.isForceMode,
         isForceManifest: options.isForceManifest,
         isForceThumbnails: options.isForceThumbnails,
+      }
+
+      const applyResultCounters = (result: ProcessPhotoResult | null | undefined): void => {
+        if (!result) return
+
+        switch (result.type) {
+          case 'new': {
+            newCount++
+            processedCount++
+            break
+          }
+          case 'processed': {
+            processedCount++
+            break
+          }
+          case 'skipped': {
+            skippedCount++
+            break
+          }
+          case 'failed': {
+            failedCount++
+            break
+          }
+        }
       }
 
       const concurrency = options.concurrencyLimit ?? this.config.system.processing.defaultConcurrency
@@ -222,45 +255,9 @@ export class AfilmoryBuilder {
 
       if (tasksToProcess.length === 0) {
         logger.main.info('💡 没有需要处理的照片，使用现有 manifest')
-        for (const item of existingManifestItems) {
-          if (!s3ImageKeys.has(item.s3Key)) continue
-
-          await this.emitPluginEvent(runState, 'beforeAddManifestItem', {
-            options,
-            item,
-            pluginData: {},
-            resultType: 'skipped',
-          })
-
-          manifest.push(item)
-        }
       } else {
         const totalTasks = tasksToProcess.length
         let completedTaskCount = 0
-
-        const applyResultCounters = (result: ProcessPhotoResult | null | undefined): void => {
-          if (!result) return
-
-          switch (result.type) {
-            case 'new': {
-              newCount++
-              processedCount++
-              break
-            }
-            case 'processed': {
-              processedCount++
-              break
-            }
-            case 'skipped': {
-              skippedCount++
-              break
-            }
-            case 'failed': {
-              failedCount++
-              break
-            }
-          }
-        }
 
         const emitProgress = (currentKey?: string): void => {
           progressListener?.onProgress?.({
@@ -390,19 +387,52 @@ export class AfilmoryBuilder {
           skippedCount,
           failedCount,
         })
+      }
 
-        for (const [key, item] of existingManifestMap) {
-          if (s3ImageKeys.has(key) && !manifest.some((m) => m.s3Key === key)) {
-            await this.emitPluginEvent(runState, 'beforeAddManifestItem', {
-              options,
-              item,
-              pluginData: {},
-              resultType: 'skipped',
-            })
+      if (videoTasksToProcess.length > 1) {
+        videoTasksToProcess = videoTasksToProcess.sort((a, b) => (b.size ?? 0) - (a.size ?? 0))
+      }
 
-            manifest.push(item)
-            skippedCount++
-          }
+      for (let index = 0; index < videoTasksToProcess.length; index++) {
+        const result = await processVideoFile(
+          videoTasksToProcess[index],
+          index,
+          0,
+          videoTasksToProcess.length,
+          existingManifestMap,
+          processorOptions,
+          this,
+          {
+            builderOptions: options,
+          },
+        )
+
+        applyResultCounters(result)
+        processingResults.push(result)
+
+        if (result.item) {
+          await this.emitPluginEvent(runState, 'beforeAddManifestItem', {
+            options,
+            item: result.item,
+            pluginData: result.pluginData ?? {},
+            resultType: result.type,
+          })
+
+          manifest.push(result.item)
+        }
+      }
+
+      for (const [key, item] of existingManifestMap) {
+        if (mediaKeys.has(key) && !manifest.some((m) => m.s3Key === key)) {
+          await this.emitPluginEvent(runState, 'beforeAddManifestItem', {
+            options,
+            item,
+            pluginData: {},
+            resultType: 'skipped',
+          })
+
+          manifest.push(item)
+          skippedCount++
         }
       }
 
@@ -419,7 +449,7 @@ export class AfilmoryBuilder {
 
       await this.emitPluginEvent(runState, 'afterProcessTasks', {
         options,
-        tasks: tasksToProcess,
+        tasks: [...tasksToProcess, ...videoTasksToProcess],
         results: processingResults,
         manifest,
         stats: {
@@ -681,7 +711,7 @@ export class AfilmoryBuilder {
   }
 
   getStorageConfig(): StorageConfig {
-    const {storage} = this.getUserSettings()
+    const { storage } = this.getUserSettings()
     if (!storage) {
       throw new Error('Storage configuration is missing. 请配置 system/user storage 设置。')
     }
@@ -716,7 +746,7 @@ export class AfilmoryBuilder {
 
     for (const obj of imageObjects) {
       const { key } = obj
-      const photoId = path.basename(key, path.extname(key))
+      const photoId = generateMediaId(key, this.config.system.processing.digestSuffixLength)
       const existingItem = existingManifestMap.get(key)
 
       // 新图片需要处理
@@ -746,6 +776,65 @@ export class AfilmoryBuilder {
       }
 
       // 其他情况下跳过处理
+    }
+
+    return tasksToProcess
+  }
+
+  private getIndependentVideoObjects(
+    allObjects: StorageObject[],
+    livePhotoMap: Map<string, StorageObject>,
+  ): StorageObject[] {
+    const livePhotoVideoKeys = new Set(Array.from(livePhotoMap.values()).map((obj) => obj.key))
+
+    return allObjects.filter((obj) => {
+      const ext = path.extname(obj.key).toLowerCase()
+      return SUPPORTED_VIDEO_FORMATS.has(ext) && !livePhotoVideoKeys.has(obj.key)
+    })
+  }
+
+  private async filterTaskVideos(
+    videoObjects: StorageObject[],
+    existingManifestMap: Map<string, PhotoManifestItem>,
+    options: BuilderOptions,
+  ): Promise<StorageObject[]> {
+    if (options.isForceMode || options.isForceManifest) {
+      return videoObjects
+    }
+
+    const tasksToProcess: StorageObject[] = []
+
+    for (const obj of videoObjects) {
+      const { key } = obj
+      const videoId = generateMediaId(key, this.config.system.processing.digestSuffixLength)
+      const existingItem = existingManifestMap.get(key)
+
+      if (!existingItem || existingItem.mediaType !== 'video') {
+        tasksToProcess.push(obj)
+        continue
+      }
+
+      if (obj.createdAt && !existingItem.fileCreatedAt) {
+        tasksToProcess.push(obj)
+        continue
+      }
+
+      const legacyObj = {
+        Key: key,
+        Size: obj.size,
+        LastModified: obj.lastModified,
+        ETag: obj.etag,
+      }
+
+      if (needsUpdate(existingItem, legacyObj)) {
+        tasksToProcess.push(obj)
+        continue
+      }
+
+      const hasThumbnail = await thumbnailExists(videoId)
+      if (!hasThumbnail || options.isForceThumbnails) {
+        tasksToProcess.push(obj)
+      }
     }
 
     return tasksToProcess

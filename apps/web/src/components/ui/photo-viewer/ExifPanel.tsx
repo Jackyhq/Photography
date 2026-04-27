@@ -35,7 +35,7 @@ export const ExifPanel: FC<{
   onClose?: () => void
   visible?: boolean
 }> = ({ currentPhoto, exifData, onClose, visible = true }) => {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
   const isMobile = useMobile()
   const formattedExifData = formatExifData(exifData)
   const isExiftoolLoaded = useAtomValue(isExiftoolLoadedAtom)
@@ -49,6 +49,11 @@ export const ExifPanel: FC<{
   // 使用通用的图片格式提取函数
   const imageFormat = getImageFormat(currentPhoto.originalUrl || currentPhoto.s3Key || '')
   const megaPixels = (((currentPhoto.height * currentPhoto.width) / 1000000) | 0).toString()
+  const isVideoMedia = currentPhoto.mediaType === 'video'
+  const formattedDuration = isVideoMedia && currentPhoto.duration ? formatDuration(currentPhoto.duration) : null
+  const formattedCaptureTime =
+    formattedExifData?.dateTime ||
+    formatManifestDateTime(currentPhoto.fileCreatedAt || currentPhoto.dateTaken, i18n.language)
 
   return (
     <m.div
@@ -113,7 +118,10 @@ export const ExifPanel: FC<{
               <Row label={t('exif.format')} value={imageFormat} />
               <Row label={t('exif.dimensions')} value={`${currentPhoto.width} × ${currentPhoto.height}`} />
               <Row label={t('exif.file.size')} value={`${(currentPhoto.size / 1024 / 1024).toFixed(1)}MB`} />
-              {megaPixels && <Row label={t('exif.pixels')} value={`${megaPixels} MP`} />}
+              {formattedDuration && (
+                <Row label={t('exif.duration', { defaultValue: 'Duration' })} value={formattedDuration} />
+              )}
+              {!isVideoMedia && megaPixels && <Row label={t('exif.pixels')} value={`${megaPixels} MP`} />}
               {formattedExifData?.colorSpace && (
                 <Row label={t('exif.color.space')} value={formattedExifData.colorSpace} />
               )}
@@ -121,7 +129,7 @@ export const ExifPanel: FC<{
                 <Row label={t('exif.rating')} value={'★'.repeat(formattedExifData.rating)} />
               ) : null}
 
-              {formattedExifData?.dateTime && <Row label={t('exif.capture.time')} value={formattedExifData.dateTime} />}
+              {formattedCaptureTime && <Row label={t('exif.capture.time')} value={formattedCaptureTime} />}
 
               {formattedExifData?.zone && <Row label={t('exif.time.zone')} value={formattedExifData.zone} />}
               {formattedExifData?.artist && <Row label={t('exif.artist')} value={formattedExifData.artist} />}
@@ -439,4 +447,29 @@ export const ExifPanel: FC<{
       </ScrollArea>
     </m.div>
   )
+}
+
+const formatDuration = (duration: number) => {
+  const totalSeconds = Math.max(0, Math.round(duration))
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+  }
+
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
+const formatManifestDateTime = (value: string | null | undefined, locale: string) => {
+  if (!value) return null
+
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return null
+
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: 'short',
+    timeStyle: 'medium',
+  }).format(date)
 }
