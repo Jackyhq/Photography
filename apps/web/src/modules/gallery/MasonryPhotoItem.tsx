@@ -351,9 +351,9 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
       {/* 独立视频标识 */}
       {isVideoMedia && (
         <>
-          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-            <div className="flex size-12 items-center justify-center rounded-full bg-black/45 text-white shadow-lg backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
-              <i className="i-mingcute-play-fill ml-0.5 size-6" />
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center opacity-100 transition-opacity duration-200 group-hover:opacity-0">
+            <div className="flex size-10 items-center justify-center rounded-full bg-black/45 text-white shadow-lg backdrop-blur-md">
+              <i className="i-mingcute-play-fill ml-0.5 size-5" />
             </div>
           </div>
           <div className="absolute top-2 left-2 z-20 flex items-center gap-1 rounded-xl bg-black/50 px-2 py-1 text-xs text-white">
