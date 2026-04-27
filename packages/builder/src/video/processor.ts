@@ -162,7 +162,11 @@ async function executeVideoProcessingPipeline({
     const height = readPositiveNumber(metadata.ImageHeight) ?? readPositiveNumber(metadata.SourceImageHeight) ?? 1080
     const fileCreatedAt = obj.createdAt?.toISOString()
     const dateTaken =
-      fileCreatedAt ?? extractVideoDate(metadata) ?? obj.lastModified?.toISOString() ?? new Date().toISOString()
+      extractDateFromKey(key) ??
+      extractVideoDate(metadata) ??
+      fileCreatedAt ??
+      obj.lastModified?.toISOString() ??
+      new Date().toISOString()
     const mimeType = readString(metadata.MIMEType) ?? VIDEO_MIME_TYPES[ext] ?? 'video/mp4'
     const videoSize = typeof obj.size === 'number' && obj.size > 0 ? obj.size : videoBuffer.byteLength
 
@@ -210,6 +214,23 @@ async function extractVideoPoster(videoPath: string, posterPath: string): Promis
     '2',
     posterPath,
   ])
+}
+
+function extractDateFromKey(key: string): string | null {
+  const fileName = path.basename(key, path.extname(key))
+  const compactDateMatch = fileName.match(/(?:^|\D)(\d{4})(\d{2})(\d{2})(?:(\d{2})(\d{2})(\d{2}))?(?:\D|$)/)
+  if (compactDateMatch) {
+    const [, year, month, day, hour = '00', minute = '00', second = '00'] = compactDateMatch
+    return coerceDate(`${year}-${month}-${day}T${hour}:${minute}:${second}`)?.toISOString() ?? null
+  }
+
+  const dashedDateMatch = fileName.match(/(?:^|\D)(\d{4})-(\d{2})-(\d{2})(?:\D|$)/)
+  if (dashedDateMatch) {
+    const [, year, month, day] = dashedDateMatch
+    return coerceDate(`${year}-${month}-${day}T00:00:00`)?.toISOString() ?? null
+  }
+
+  return null
 }
 
 function readNumber(value: unknown): number | null {
