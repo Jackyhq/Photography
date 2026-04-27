@@ -40,7 +40,7 @@ class CompatibleLoggerAdapter implements PhotoLogger {
 
 1. 预处理图片数据
 2. 创建 Sharp 实例
-3. 处理缩略图和 blurhash
+3. 处理响应式缩略图、JPEG fallback 和 thumbhash
 4. 处理 EXIF 数据
 5. 处理影调分析
 6. 提取照片信息
@@ -102,6 +102,6 @@ const exifData = await processExifData(imageBuffer, rawImageBuffer, photoKey, ex
 
 ### 性能优化
 
-1. **缓存复用**: 智能复用现有的缩略图、EXIF、影调分析数据
+1. **缓存复用**: 智能复用现有的缩略图变体、EXIF、影调分析数据
 2. **Sharp 实例复用**: 在处理管道中复用 Sharp 实例
 3. **条件处理**: 只在需要时处理特定的数据类型

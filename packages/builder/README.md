@@ -38,7 +38,7 @@ src/core/
 - `ImageMetadata`: 图像元数据
 - `PhotoManifestItem`: Manifest 项目
 - `ProcessPhotoResult`: 处理结果
-- `ThumbnailResult`: 缩略图生成结果
+- `ThumbnailResult`: 缩略图生成结果，包含 JPEG fallback 与响应式 WebP srcset
 
 ### 2. 日志系统 (`logger/`)
 
@@ -55,7 +55,7 @@ src/core/
 
 - **processor.ts**: 图像预处理、HEIC 转换、元数据提取
 - **blurhash.ts**: Blurhash 生成算法
-- **thumbnail.ts**: 缩略图生成和管理
+- **thumbnail.ts**: 生成 `360w`/`640w` WebP 缩略图、`640w` JPEG fallback，并维护 manifest 需要的 srcset 字段
 - **exif.ts**: EXIF 数据提取和清理
 
 ### 5. 照片处理 (`photo/`)
@@ -164,4 +164,4 @@ customLogger.info('自定义日志')
 - 使用 Worker 池避免过度并发
 - Sharp 实例复用减少内存开销
 - 增量更新减少不必要的处理
-- 缩略图和 Blurhash 缓存复用
+- 缩略图、响应式 WebP 变体和 Thumbhash 缓存复用

@@ -1,0 +1,76 @@
+---
+title: Performance
+description: Mobile-first loading and image performance notes for Jacky's Photography.
+createdAt: 2026-04-27T00:00:00+01:00
+lastModified: 2026-04-27T18:06:47+08:00
+---
+
+# Performance
+
+The gallery is optimized for a static-hosted, mobile-first photo browsing path. The current performance work was based on a PageSpeed mobile report from 2026-04-26 22:43 UTC, where the main bottlenecks were oversized first-screen thumbnails and JavaScript that was loaded before the user opened the viewer or special image formats.
+
+## Image Pipeline
+
+The builder generates responsive thumbnail resources for every photo:
+
+- `360w` WebP for narrow mobile columns.
+- `640w` WebP for larger cards and higher-density screens.
+- `640w` JPEG as the compatibility fallback.
+
+The manifest keeps `thumbnailUrl` as the JPEG fallback and adds optional responsive fields:
+
+```ts
+interface PhotoManifestItem {
+  thumbnailUrl: string
+  thumbnailSrcSet?: string
+  thumbnailWebpSrcSet?: string
+}
+```
+
+`thumbnailSrcSet` currently points at the JPEG fallback and `thumbnailWebpSrcSet` points at both WebP variants. Existing consumers can keep using `thumbnailUrl`, while the gallery can render a `<picture>` element for modern browsers.
+
+## Gallery Loading
+
+The masonry gallery treats the first six items as first-screen candidates:
+
+- First six thumbnails use eager loading and high fetch priority.
+- Later thumbnails remain lazy-loaded with normal priority.
+- Each gallery item uses `<picture>` with WebP first and JPEG fallback.
+- The Vite manifest injection plugin preloads the first four homepage thumbnails into `index.html`, so the browser can discover likely LCP images before React runs.
+
+This keeps the initial viewport image budget low while preserving compatibility for browsers that cannot use WebP.
+
+## JavaScript Loading
+
+The homepage path should avoid pulling viewer-only and conversion-heavy code:
+
+- Photo detail routes are no longer preloaded unconditionally from `App.tsx`.
+- The command palette is lazy-imported only when opened.
+- Live Photo and Motion Photo helpers dynamically import the image loader manager.
+- HEIC and TIFF converters are registered through dynamic imports, so ordinary JPEG and PNG viewer paths do not load `heic-to` or TIFF conversion code.
+- The PWA registration script is injected with `script-defer`.
+
+Google Fonts are loaded with a non-blocking stylesheet pattern. The first paint uses system fonts and naturally swaps to Geist when the stylesheet is ready.
+
+## Regeneration
+
+After changing thumbnail formats, manifest fields, or first-screen loading behavior, regenerate and verify the generated files:
+
+```bash
+pnpm run build:manifest -- --force-thumbnails --force-manifest
+pnpm --filter web type-check
+pnpm build
+```
+
+Use `pnpm --filter web analyze` when checking chunk boundaries. The home route should not eagerly include HEIC/TIFF converter chunks, command palette code, or the photo detail route.
+
+## Validation Checklist
+
+Before publishing a performance change, check:
+
+- Mobile masonry thumbnails render through WebP with JPEG fallback.
+- Opening the photo viewer still works for ordinary images.
+- Live Photo and Motion Photo items still load their media.
+- Map markers and the manifest page still have usable thumbnails through `thumbnailUrl`.
+- `index.html` contains image preloads for the first homepage thumbnails.
+- `registerSW.js` is loaded with `defer`.

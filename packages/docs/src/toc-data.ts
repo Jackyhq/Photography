@@ -453,6 +453,50 @@ export const tocData: FileToc[] = [
     ],
   },
   {
+    file: 'performance/index.mdx',
+    path: '/performance',
+    title: 'Performance',
+    toc: [
+      {
+        id: 'heading-performance',
+        level: 1,
+        text: 'Performance',
+        children: [
+          {
+            id: 'heading-image-pipeline',
+            level: 2,
+            text: 'Image Pipeline',
+            children: [],
+          },
+          {
+            id: 'heading-gallery-loading',
+            level: 2,
+            text: 'Gallery Loading',
+            children: [],
+          },
+          {
+            id: 'heading-javascript-loading',
+            level: 2,
+            text: 'JavaScript Loading',
+            children: [],
+          },
+          {
+            id: 'heading-regeneration',
+            level: 2,
+            text: 'Regeneration',
+            children: [],
+          },
+          {
+            id: 'heading-validation-checklist',
+            level: 2,
+            text: 'Validation Checklist',
+            children: [],
+          },
+        ],
+      },
+    ],
+  },
+  {
     file: 'storage/index.mdx',
     path: '/storage',
     title: 'Storage providers',

@@ -10,7 +10,8 @@ import Route1 from '../contents/deployment/index.mdx'
 import Route6 from '../contents/deployment/vercel.mdx'
 import Route7 from '../contents/docs-site.mdx'
 import Route0 from '../contents/index.mdx'
-import Route8 from '../contents/storage/index.mdx'
+import Route8 from '../contents/performance/index.mdx'
+import Route9 from '../contents/storage/index.mdx'
 
 export interface RouteConfig {
   path: string
@@ -28,7 +29,7 @@ export const routes: RouteConfig[] = [
       title: 'Overview',
       description: "Project overview for Jacky's Photography, a customized Afilmory-powered photo gallery.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-26T00:00:00+01:00',
+      lastModified: '2026-04-27T06:26:20+08:00',
     },
   },
   {
@@ -39,7 +40,7 @@ export const routes: RouteConfig[] = [
       title: 'Deployment',
       description: "Guide to deploying Jacky's Photography in production environments.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-26T00:00:00+01:00',
+      lastModified: '2026-04-27T06:26:20+08:00',
     },
   },
   {
@@ -50,7 +51,7 @@ export const routes: RouteConfig[] = [
       title: 'Cloudflare Pages',
       description: "Guide to deploying Jacky's Photography via Cloudflare Pages.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-26T00:00:00+01:00',
+      lastModified: '2026-04-27T06:26:20+08:00',
     },
   },
   {
@@ -72,7 +73,7 @@ export const routes: RouteConfig[] = [
       title: 'GitHub Action',
       description: "Guide to the GitHub Actions deployment workflow used by Jacky's Photography.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-26T00:00:00+01:00',
+      lastModified: '2026-04-27T06:26:20+08:00',
     },
   },
   {
@@ -83,7 +84,7 @@ export const routes: RouteConfig[] = [
       title: 'GitHub Pages',
       description: "Guide to deploying Jacky's Photography via GitHub Pages.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-26T00:00:00+01:00',
+      lastModified: '2026-04-27T06:26:20+08:00',
     },
   },
   {
@@ -94,7 +95,7 @@ export const routes: RouteConfig[] = [
       title: 'Vercel',
       description: "Guide to deploying Jacky's Photography via Vercel.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-26T00:00:00+01:00',
+      lastModified: '2026-04-27T06:26:20+08:00',
     },
   },
   {
@@ -109,15 +110,26 @@ export const routes: RouteConfig[] = [
     },
   },
   {
-    path: '/storage',
+    path: '/performance',
     component: Route8,
+    title: 'Performance',
+    meta: {
+      title: 'Performance',
+      description: "Mobile-first loading and image performance notes for Jacky's Photography.",
+      createdAt: '2026-04-27T00:00:00+01:00',
+      lastModified: '2026-04-27T00:00:00+01:00',
+    },
+  },
+  {
+    path: '/storage',
+    component: Route9,
     title: 'Storage providers',
     meta: {
       title: 'Storage providers',
       description:
         'Afilmory can work with multiple storage providers, including local file system, S3, GitHub, and Eagle',
       createdAt: '2025-08-12T15:09:08+08:00',
-      lastModified: '2026-04-26T00:00:00+01:00',
+      lastModified: '2026-04-27T06:26:20+08:00',
     },
   },
 ]
