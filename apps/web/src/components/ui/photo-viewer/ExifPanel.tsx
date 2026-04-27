@@ -53,7 +53,7 @@ export const ExifPanel: FC<{
   const formattedDuration = isVideoMedia && currentPhoto.duration ? formatDuration(currentPhoto.duration) : null
   const formattedCaptureTime =
     formattedExifData?.dateTime ||
-    formatManifestDateTime(currentPhoto.fileCreatedAt || currentPhoto.dateTaken, i18n.language)
+    formatManifestDateTime(currentPhoto.dateTaken || currentPhoto.fileCreatedAt, i18n.language)
 
   return (
     <m.div
