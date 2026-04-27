@@ -1,6 +1,3 @@
-import crypto from 'node:crypto'
-import path from 'node:path'
-
 import { compressUint8Array } from '@afilmory/utils'
 import type { _Object } from '@aws-sdk/client-s3'
 import sharp from 'sharp'
@@ -12,6 +9,7 @@ import {
   isBitmap,
   preprocessImageBuffer,
 } from '../image/processor.js'
+import { generateMediaId } from '../media/id.js'
 import type { PluginRunState } from '../plugins/manager.js'
 import { THUMBNAIL_PLUGIN_DATA_KEY } from '../plugins/thumbnail-storage/shared.js'
 import type { PhotoManifestItem, ProcessPhotoResult } from '../types/photo.js'
@@ -131,14 +129,7 @@ async function generatePhotoId(s3Key: string): Promise<string> {
       processing: { digestSuffixLength },
     },
   } = builder.getConfig()
-  if (!digestSuffixLength || digestSuffixLength <= 0) {
-    return path.basename(s3Key, path.extname(s3Key))
-  }
-
-  const baseName = path.basename(s3Key, path.extname(s3Key))
-  const sha256 = crypto.createHash('sha256').update(s3Key).digest('hex')
-  const digestSuffix = sha256.slice(0, digestSuffixLength)
-  return `${baseName}_${digestSuffix}`
+  return generateMediaId(s3Key, digestSuffixLength)
 }
 
 /**
@@ -205,6 +196,7 @@ export async function executePhotoProcessingPipeline(
 
     const photoItem: PhotoManifestItem = {
       id: photoId,
+      mediaType: 'photo',
       title: photoInfo.title,
       description: photoInfo.description,
       dateTaken: photoInfo.dateTaken,

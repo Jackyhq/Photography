@@ -118,6 +118,7 @@
   "exif.device.info": "Device Information",
   "exif.digital.zoom": "Digital Zoom",
   "exif.dimensions": "Dimensions",
+  "exif.duration": "Duration",
   "exif.dynamic.range": "Dynamic Range",
   "exif.exposure.mode.auto": "Auto Exposure",
   "exif.exposure.mode.bracket": "Auto Bracket",
@@ -350,6 +351,7 @@
   "photo.share.text": "Check out this beautiful photo: {{title}}",
   "photo.share.title": "Share Photo",
   "photo.share.weibo": "Weibo",
+  "photo.video.badge": "Video",
   "photo.webgl.creatingTexture": "Creating texture...",
   "photo.webgl.loadingImage": "Loading image...",
   "photo.webgl.unavailable": "WebGL is unavailable, unable to render image",
@@ -376,6 +378,7 @@
   "video.conversion.transmux.success": "Transmux completed successfully",
   "video.conversion.webcodecs.high.quality": "Using high-quality WebCodecs converter...",
   "video.conversion.webcodecs.not.supported": "WebCodecs is not supported in this browser",
+  "video.error.loading": "Failed to load video",
   "video.format.mov.not.supported": "Browser does not support MOV format, conversion required",
   "video.format.mov.supported": "Browser natively supports MOV format, skipping conversion",
   "video.motion-photo.extracting": "Extracting embedded video..."

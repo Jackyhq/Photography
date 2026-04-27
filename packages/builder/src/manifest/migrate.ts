@@ -101,6 +101,19 @@ const MIGRATION_STEPS: MigrationStep[] = [
       return raw
     },
   },
+  {
+    from: 'v8',
+    to: 'v9',
+    exec: (raw) => {
+      logger.main.info('🔄 迁移 v8 -> v9: 为现有条目补充 mediaType')
+
+      raw.data.forEach((item: any) => {
+        item.mediaType = item.mediaType || 'photo'
+      })
+      ;(raw as any).version = 'v9'
+      return raw
+    },
+  },
 ]
 
 function noOpBumpVersion(raw: any, _target: ManifestVersion): AfilmoryManifest {

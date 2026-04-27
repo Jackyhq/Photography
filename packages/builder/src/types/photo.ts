@@ -40,6 +40,8 @@ export interface PhotoInfo {
   description: string
 }
 
+export type MediaType = 'photo' | 'video'
+
 export interface ImageMetadata {
   width: number
   height: number
@@ -48,6 +50,7 @@ export interface ImageMetadata {
 
 export interface PhotoManifestItem extends PhotoInfo {
   id: string
+  mediaType?: MediaType
   originalUrl: string
   thumbnailUrl: string
   thumbnailSrcSet?: string
@@ -57,6 +60,7 @@ export interface PhotoManifestItem extends PhotoInfo {
   height: number
   aspectRatio: number
   s3Key: string
+  fileCreatedAt?: string
   lastModified: string
   size: number
   exif: PickedExif | null
@@ -64,6 +68,10 @@ export interface PhotoManifestItem extends PhotoInfo {
   isHDR?: boolean
   // Video source (Live Photo or Motion Photo)
   video?: VideoSource
+  // Independent video media fields. These are separate from Live Photo/Motion Photo.
+  videoUrl?: string
+  mimeType?: string
+  duration?: number
 }
 
 export interface ProcessPhotoResult {

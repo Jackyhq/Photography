@@ -115,6 +115,7 @@
   "exif.device.info": "デバイス情報",
   "exif.digital.zoom": "デジタルズーム",
   "exif.dimensions": "サイズ",
+  "exif.duration": "長さ",
   "exif.dynamic.range": "ダイナミックレンジ",
   "exif.exposure.mode.auto": "自動露出",
   "exif.exposure.mode.bracket": "オートブラケット",
@@ -345,6 +346,7 @@
   "photo.share.text": "この素敵な写真を見てください：{{title}}",
   "photo.share.title": "写真を共有",
   "photo.share.weibo": "Weibo",
+  "photo.video.badge": "Video",
   "photo.webgl.unavailable": "WebGL が利用できないため、画像をレンダリングできません",
   "photo.zoom.hint": "ダブルタップまたはピンチしてズーム",
   "slider.auto": "自動",
@@ -369,6 +371,7 @@
   "video.conversion.transmux.success": "トランスマックス変換が正常に完了しました",
   "video.conversion.webcodecs.high.quality": "高品質の WebCodecs コンバーターを使用しています...",
   "video.conversion.webcodecs.not.supported": "このブラウザは WebCodecs をサポートしていません",
+  "video.error.loading": "動画の読み込みに失敗しました",
   "video.format.mov.not.supported": "ブラウザが MOV 形式をサポートしていないため、変換が必要です",
   "video.format.mov.supported": "ブラウザが MOV 形式をネイティブでサポートしているため、変換をスキップします",
   "video.motion-photo.extracting": "埋め込み動画を抽出しています..."

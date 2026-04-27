@@ -115,6 +115,7 @@
   "exif.device.info": "裝置資訊",
   "exif.digital.zoom": "數位變焦",
   "exif.dimensions": "尺寸",
+  "exif.duration": "時長",
   "exif.dynamic.range": "動態範圍",
   "exif.exposure.mode.auto": "自動曝光",
   "exif.exposure.mode.bracket": "自動包圍",
@@ -345,6 +346,7 @@
   "photo.share.text": "看看這張漂亮的照片：{{title}}",
   "photo.share.title": "分享照片",
   "photo.share.weibo": "微博",
+  "photo.video.badge": "影片",
   "photo.webgl.unavailable": "WebGL 不可用，無法渲染圖像",
   "photo.zoom.hint": "雙擊或捏合縮放",
   "slider.auto": "自動",
@@ -369,6 +371,7 @@
   "video.conversion.transmux.success": "轉封裝轉換成功完成",
   "video.conversion.webcodecs.high.quality": "使用高品質 WebCodecs 轉換器...",
   "video.conversion.webcodecs.not.supported": "此瀏覽器不支援 WebCodecs",
+  "video.error.loading": "影片載入失敗",
   "video.format.mov.not.supported": "瀏覽器不支援 MOV 格式，需要轉換",
   "video.format.mov.supported": "瀏覽器原生支援 MOV 格式，跳過轉換",
   "video.motion-photo.extracting": "正在提取嵌入的影片..."

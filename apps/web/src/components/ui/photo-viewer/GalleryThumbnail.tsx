@@ -151,6 +151,11 @@ export const GalleryThumbnail: FC<{
               alt={photo.title || photo.id}
               className="absolute inset-0 h-full w-full object-cover"
             />
+            {photo.mediaType === 'video' && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20 text-white">
+                <i className="i-mingcute-play-fill size-5" />
+              </div>
+            )}
           </button>
         ))}
       </div>

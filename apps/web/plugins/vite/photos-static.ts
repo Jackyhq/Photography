@@ -123,10 +123,15 @@ export function photosStaticPlugin(): Plugin {
           '.hif': 'image/heif',
           '.avif': 'image/avif',
           '.svg': 'image/svg+xml',
+          '.m4v': 'video/mp4',
+          '.mov': 'video/quicktime',
+          '.mp4': 'video/mp4',
+          '.webm': 'video/webm',
         }
 
         const contentType = mimeTypes[ext] || 'application/octet-stream'
         res.setHeader('Content-Type', contentType)
+        res.setHeader('Accept-Ranges', 'bytes')
 
         // 设置缓存头
         res.setHeader('Cache-Control', 'public, max-age=31536000') // 1 year
@@ -141,6 +146,54 @@ export function photosStaticPlugin(): Plugin {
           res.end()
           return
         }
+
+        const { range } = req.headers
+        if (range) {
+          const match = range.match(/^bytes=(\d*)-(\d*)$/)
+          if (!match) {
+            res.statusCode = 416
+            res.setHeader('Content-Range', `bytes */${stats.size}`)
+            res.end()
+            return
+          }
+
+          if (!match[1] && !match[2]) {
+            res.statusCode = 416
+            res.setHeader('Content-Range', `bytes */${stats.size}`)
+            res.end()
+            return
+          }
+
+          const requestedStart = match[1] ? Number.parseInt(match[1], 10) : null
+          const requestedEnd = match[2] ? Number.parseInt(match[2], 10) : null
+          const start = requestedStart ?? (requestedEnd !== null ? Math.max(stats.size - requestedEnd, 0) : 0)
+          const end = requestedStart === null ? stats.size - 1 : (requestedEnd ?? stats.size - 1)
+
+          if (!Number.isFinite(start) || !Number.isFinite(end) || start > end || start >= stats.size) {
+            res.statusCode = 416
+            res.setHeader('Content-Range', `bytes */${stats.size}`)
+            res.end()
+            return
+          }
+
+          const safeEnd = Math.min(end, stats.size - 1)
+          res.statusCode = 206
+          res.setHeader('Content-Range', `bytes ${start}-${safeEnd}/${stats.size}`)
+          res.setHeader('Content-Length', safeEnd - start + 1)
+
+          const stream = fs.createReadStream(localPhotoPath, { start, end: safeEnd })
+          stream.on('error', (error) => {
+            console.error('[photos-static] Error streaming ranged photo file:', error)
+            if (!res.headersSent) {
+              res.statusCode = 500
+              res.end('Internal Server Error')
+            }
+          })
+          stream.pipe(res)
+          return
+        }
+
+        res.setHeader('Content-Length', stats.size)
 
         // 流式传输文件
         const stream = fs.createReadStream(localPhotoPath)

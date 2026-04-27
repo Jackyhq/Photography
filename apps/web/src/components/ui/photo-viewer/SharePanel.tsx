@@ -77,14 +77,16 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
     const shareUrl = window.location.href
     const shareTitle = photo.title || t('photo.share.default.title')
     const shareText = t('photo.share.text', { title: shareTitle })
+    const isVideoMedia = photo.mediaType === 'video'
 
     try {
-      // 优先使用 blobSrc（转换后的图片），如果没有则使用 originalUrl
-      const imageUrl = blobSrc || photo.originalUrl
-      const response = await fetch(imageUrl)
+      // 图片优先使用 blobSrc（转换后的图片）；独立视频始终分享原视频。
+      const mediaUrl = isVideoMedia ? photo.videoUrl || photo.originalUrl : blobSrc || photo.originalUrl
+      const response = await fetch(mediaUrl)
       const blob = await response.blob()
-      const file = new File([blob], `${photo.title || 'photo'}.jpg`, {
-        type: blob.type || 'image/jpeg',
+      const fallbackExtension = isVideoMedia ? getExtension(mediaUrl) || 'mp4' : 'jpg'
+      const file = new File([blob], `${photo.title || (isVideoMedia ? 'video' : 'photo')}.${fallbackExtension}`, {
+        type: blob.type || photo.mimeType || (isVideoMedia ? 'video/mp4' : 'image/jpeg'),
       })
 
       // 检查是否支持文件分享
@@ -110,7 +112,7 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
       toast.success(t('photo.share.link.copied'))
       setIsOpen(false)
     }
-  }, [photo.title, blobSrc, photo.originalUrl, t])
+  }, [photo.mediaType, photo.title, photo.videoUrl, photo.originalUrl, photo.mimeType, blobSrc, t])
 
   const handleCopyLink = useCallback(async () => {
     try {
@@ -325,4 +327,10 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
       </AnimatePresence>
     </DropdownMenuPrimitive.Root>
   )
+}
+
+function getExtension(url: string): string | null {
+  const cleanUrl = url.split('?')[0]?.split('#')[0]
+  const extension = cleanUrl?.split('.').pop()
+  return extension && extension !== cleanUrl ? extension.toLowerCase() : null
 }

@@ -21,6 +21,19 @@ const THUMBNAIL_SIZES = '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 350p
 
 type VideoSource = Parameters<ImageLoaderManager['processVideo']>[0]
 
+const formatDuration = (duration: number) => {
+  const totalSeconds = Math.max(0, Math.round(duration))
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+  }
+
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
 export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; width: number; index: number }) => {
   const photos = useContextPhotos()
   const photoViewer = usePhotoViewer()
@@ -110,9 +123,12 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
   // 使用通用的图片格式提取函数
   const imageFormat = getImageFormat(data.originalUrl || data.s3Key || '')
 
-  // 检查是否有视频内容（Live Photo 或 Motion Photo）
+  const isVideoMedia = data.mediaType === 'video'
+  const formattedDuration = isVideoMedia && data.duration ? formatDuration(data.duration) : null
+
+  // 检查是否有实况视频内容（Live Photo 或 Motion Photo）
   const { video: photoVideo, originalUrl } = data
-  const hasVideo = photoVideo !== undefined
+  const hasLivePhotoVideo = !isVideoMedia && photoVideo !== undefined
 
   useEffect(() => {
     videoLoadStartedRef.current = false
@@ -124,7 +140,7 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
   }, [data.id])
 
   useEffect(() => {
-    if (!hasVideo || shouldPreloadVideo) return
+    if (!hasLivePhotoVideo || shouldPreloadVideo) return
 
     const item = itemRef.current
     if (!item || typeof IntersectionObserver === 'undefined') {
@@ -152,7 +168,7 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
     return () => {
       observer.disconnect()
     }
-  }, [hasVideo, scrollElement, shouldPreloadVideo])
+  }, [hasLivePhotoVideo, scrollElement, shouldPreloadVideo])
 
   // Live Photo/Motion Photo 视频加载逻辑
   useEffect(() => {
@@ -226,7 +242,7 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
 
   // Live Photo/Motion Photo hover 处理（仅在桌面端）
   const handleMouseEnter = useCallback(() => {
-    if (isMobileDevice || !hasVideo || !livePhotoVideoLoaded || isPlayingLivePhoto || isConvertingVideo) {
+    if (isMobileDevice || !hasLivePhotoVideo || !livePhotoVideoLoaded || isPlayingLivePhoto || isConvertingVideo) {
       return
     }
 
@@ -238,7 +254,7 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
         video.play()
       }
     }, 200) // 200ms hover 延迟
-  }, [hasVideo, livePhotoVideoLoaded, isPlayingLivePhoto, isConvertingVideo])
+  }, [hasLivePhotoVideo, livePhotoVideoLoaded, isPlayingLivePhoto, isConvertingVideo])
 
   const handleMouseLeave = useCallback(() => {
     if (hoverTimerRef.current) {
@@ -309,7 +325,7 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
       )}
 
       {/* Live Photo/Motion Photo 视频 */}
-      {hasVideo && (
+      {hasLivePhotoVideo && (
         <video
           ref={videoRef}
           className={clsx(
@@ -332,8 +348,28 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
         </div>
       )}
 
+      {/* 独立视频标识 */}
+      {isVideoMedia && (
+        <>
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+            <div className="flex size-12 items-center justify-center rounded-full bg-black/45 text-white shadow-lg backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
+              <i className="i-mingcute-play-fill ml-0.5 size-6" />
+            </div>
+          </div>
+          <div className="absolute top-2 left-2 z-20 flex items-center gap-1 rounded-xl bg-black/50 px-2 py-1 text-xs text-white">
+            <i className="i-mingcute-video-line size-4" />
+            <span>{t('photo.video.badge', { defaultValue: 'Video' })}</span>
+          </div>
+          {formattedDuration && (
+            <div className="absolute right-2 bottom-2 z-20 rounded bg-black/60 px-1.5 py-0.5 text-xs font-medium text-white">
+              {formattedDuration}
+            </div>
+          )}
+        </>
+      )}
+
       {/* Live Photo/Motion Photo 标识 */}
-      {hasVideo && (
+      {hasLivePhotoVideo && (
         <div
           className={clsx(
             'absolute z-20 flex items-center space-x-1 rounded-xl bg-black/50 px-1 py-1 text-xs text-white transition-all duration-200 hover:bg-black/70',
@@ -392,6 +428,12 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
                 </span>
                 <span>•</span>
                 <span>{(data.size / 1024 / 1024).toFixed(1)}MB</span>
+                {formattedDuration && (
+                  <>
+                    <span>•</span>
+                    <span>{formattedDuration}</span>
+                  </>
+                )}
               </div>
 
               {/* Tags */}

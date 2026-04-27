@@ -12,6 +12,23 @@ const currentIndexAtom = atom(0)
 const triggerElementAtom = atom<HTMLElement | null>(null)
 const data = photoLoader.getPhotos()
 
+const parsePhotoTime = (value: string | undefined | null): number | null => {
+  if (!value) return null
+
+  const normalized = value.replace(/^(\d{4}):(\d{2}):(\d{2})/, '$1-$2-$3')
+  const timestamp = new Date(normalized).getTime()
+  return Number.isNaN(timestamp) ? null : timestamp
+}
+
+const getPhotoSortTime = (photo: (typeof data)[number]) => {
+  return (
+    parsePhotoTime(photo.exif?.DateTimeOriginal as unknown as string | undefined) ??
+    parsePhotoTime(photo.dateTaken) ??
+    parsePhotoTime(photo.lastModified) ??
+    0
+  )
+}
+
 // 抽取照片筛选和排序逻辑为独立函数
 const filterAndSortPhotos = (
   selectedTags: string[],
@@ -67,22 +84,10 @@ const filterAndSortPhotos = (
 
   // 然后排序
   const sortedPhotos = filteredPhotos.toSorted((a, b) => {
-    let aDateStr = ''
-    let bDateStr = ''
+    const aTime = getPhotoSortTime(a)
+    const bTime = getPhotoSortTime(b)
 
-    if (a.exif && a.exif.DateTimeOriginal) {
-      aDateStr = a.exif.DateTimeOriginal as unknown as string
-    } else {
-      aDateStr = a.lastModified
-    }
-
-    if (b.exif && b.exif.DateTimeOriginal) {
-      bDateStr = b.exif.DateTimeOriginal as unknown as string
-    } else {
-      bDateStr = b.lastModified
-    }
-
-    return sortOrder === 'asc' ? aDateStr.localeCompare(bDateStr) : bDateStr.localeCompare(aDateStr)
+    return sortOrder === 'asc' ? aTime - bTime : bTime - aTime
   })
 
   return sortedPhotos

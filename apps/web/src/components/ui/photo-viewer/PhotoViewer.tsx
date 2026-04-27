@@ -25,6 +25,7 @@ import { LoadingIndicator } from './LoadingIndicator'
 import { ProgressiveImage } from './ProgressiveImage'
 import { ReactionButton } from './Reaction'
 import { SharePanel } from './SharePanel'
+import { VideoViewer } from './VideoViewer'
 
 interface PhotoViewerProps {
   photos: PhotoManifest[]
@@ -100,6 +101,7 @@ export const PhotoViewer = ({
     }
     // 切换图片时重置缩放状态
     setIsImageZoomed(false)
+    setCurrentBlobSrc(null)
   }, [currentIndex])
 
   // 当图片缩放状态改变时，控制 Swiper 的触摸行为
@@ -313,41 +315,49 @@ export const PhotoViewer = ({
                               visibility: hideCurrentImage ? 'hidden' : 'visible',
                             }}
                           >
-                            <ProgressiveImage
-                              loadingIndicatorRef={loadingIndicatorRef}
-                              isCurrentImage={isCurrentImage}
-                              src={photo.originalUrl}
-                              thumbnailSrc={photo.thumbnailUrl}
-                              alt={photo.title || photo.id}
-                              width={isCurrentImage ? currentPhoto.width : undefined}
-                              height={isCurrentImage ? currentPhoto.height : undefined}
-                              className="h-full w-full object-contain"
-                              enablePan={isCurrentImage ? !isMobile || isImageZoomed : true}
-                              enableZoom={true}
-                              shouldRenderHighRes={isViewerContentVisible && isOpen}
-                              onZoomChange={isCurrentImage ? handleZoomChange : undefined}
-                              onBlobSrcChange={isCurrentImage ? handleBlobSrcChange : undefined}
-                              // Video source (Live Photo or Motion Photo)
-                              videoSource={
-                                photo.video?.type === 'motion-photo'
-                                  ? {
-                                      type: 'motion-photo',
-                                      imageUrl: photo.originalUrl,
-                                      offset: photo.video.offset,
-                                      size: photo.video.size,
-                                      presentationTimestamp: photo.video.presentationTimestamp,
-                                    }
-                                  : photo.video?.type === 'live-photo'
+                            {photo.mediaType === 'video' ? (
+                              <VideoViewer
+                                media={photo}
+                                isCurrent={isCurrentImage}
+                                className="h-full w-full object-contain"
+                              />
+                            ) : (
+                              <ProgressiveImage
+                                loadingIndicatorRef={loadingIndicatorRef}
+                                isCurrentImage={isCurrentImage}
+                                src={photo.originalUrl}
+                                thumbnailSrc={photo.thumbnailUrl}
+                                alt={photo.title || photo.id}
+                                width={isCurrentImage ? currentPhoto.width : undefined}
+                                height={isCurrentImage ? currentPhoto.height : undefined}
+                                className="h-full w-full object-contain"
+                                enablePan={isCurrentImage ? !isMobile || isImageZoomed : true}
+                                enableZoom={true}
+                                shouldRenderHighRes={isViewerContentVisible && isOpen}
+                                onZoomChange={isCurrentImage ? handleZoomChange : undefined}
+                                onBlobSrcChange={isCurrentImage ? handleBlobSrcChange : undefined}
+                                // Video source (Live Photo or Motion Photo)
+                                videoSource={
+                                  photo.video?.type === 'motion-photo'
                                     ? {
-                                        type: 'live-photo',
-                                        videoUrl: photo.video.videoUrl,
+                                        type: 'motion-photo',
+                                        imageUrl: photo.originalUrl,
+                                        offset: photo.video.offset,
+                                        size: photo.video.size,
+                                        presentationTimestamp: photo.video.presentationTimestamp,
                                       }
-                                    : { type: 'none' }
-                              }
-                              shouldAutoPlayVideoOnce={isCurrentImage}
-                              // HDR props
-                              isHDR={photo.isHDR}
-                            />
+                                    : photo.video?.type === 'live-photo'
+                                      ? {
+                                          type: 'live-photo',
+                                          videoUrl: photo.video.videoUrl,
+                                        }
+                                      : { type: 'none' }
+                                }
+                                shouldAutoPlayVideoOnce={isCurrentImage}
+                                // HDR props
+                                isHDR={photo.isHDR}
+                              />
+                            )}
                           </m.div>
                         </SwiperSlide>
                       )

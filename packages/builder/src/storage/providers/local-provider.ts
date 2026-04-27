@@ -195,6 +195,7 @@ export class LocalStorageProvider implements StorageProvider {
       return {
         key,
         size: stats.size,
+        createdAt: stats.birthtime,
         lastModified: stats.mtime,
       }
     } catch (error) {
@@ -236,6 +237,7 @@ export class LocalStorageProvider implements StorageProvider {
             files.push({
               key: relativeFilePath,
               size: stats.size,
+              createdAt: stats.birthtime,
               lastModified: stats.mtime,
               etag: this.generateETag(stats),
             })

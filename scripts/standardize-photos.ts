@@ -43,7 +43,7 @@ async function processDirectory(sourceDir: string, targetDir: string) {
   const files = await readdir(sourceDir)
   const imageFiles = files.filter((file) => {
     const ext = path.extname(file).toLowerCase()
-    return ['.jpg', '.jpeg', '.png', '.heic', '.mov', '.mp4'].includes(ext)
+    return ['.jpg', '.jpeg', '.png', '.heic', '.mov', '.mp4', '.webm', '.m4v'].includes(ext)
   })
 
   if (imageFiles.length === 0) return
