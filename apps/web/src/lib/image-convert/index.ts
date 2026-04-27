@@ -8,13 +8,17 @@ import { jotaiStore } from '~/lib/jotai'
 import type { LoadingCallbacks } from '../image-loader-manager'
 import type { PipelineOptions } from './pipeline'
 import { ImageConversionPipeline } from './pipeline'
-import { HeicConverterStrategy } from './strategies/heic'
-import { TiffConverterStrategy } from './strategies/tiff'
 import type { ConversionResult, ImageConverterStrategy } from './type'
+
+interface StrategyRegistration {
+  name: string
+  strategy?: ImageConverterStrategy
+  load: () => Promise<ImageConverterStrategy>
+}
 
 // 图像转换策略管理器
 export class ImageConverterManager {
-  private strategies = new Map<string, ImageConverterStrategy>()
+  private strategies = new Map<string, StrategyRegistration>()
   private readonly conversionPipeline: ImageConversionPipeline
   private readonly pendingConversions = new Map<string, Promise<ConversionResult>>()
 
@@ -22,20 +26,47 @@ export class ImageConverterManager {
     this.conversionPipeline = new ImageConversionPipeline({
       maxConcurrent: options.maxConcurrent ?? 2,
     })
-    // 注册默认策略
-    this.registerStrategy(new HeicConverterStrategy())
-    this.registerStrategy(new TiffConverterStrategy())
+    this.registerLazyStrategy('HEIC', ['image/heic', 'image/heif'], async () => {
+      const { HeicConverterStrategy } = await import('./strategies/heic')
+      return new HeicConverterStrategy()
+    })
+    this.registerLazyStrategy('TIFF', ['image/tiff', 'image/tif'], async () => {
+      const { TiffConverterStrategy } = await import('./strategies/tiff')
+      return new TiffConverterStrategy()
+    })
   }
 
   /**
    * 注册转换策略
    */
   registerStrategy(strategy: ImageConverterStrategy): void {
+    const registration: StrategyRegistration = {
+      name: strategy.getName(),
+      strategy,
+      load: async () => strategy,
+    }
     // 为每个支持的格式注册策略
     strategy.getSupportedFormats().forEach((format) => {
-      this.strategies.set(format, strategy)
+      this.strategies.set(format, registration)
     })
     console.info(`Registered image converter strategy: ${strategy.getName()}`)
+  }
+
+  private registerLazyStrategy(name: string, formats: string[], load: () => Promise<ImageConverterStrategy>): void {
+    const registration: StrategyRegistration = {
+      name,
+      load: async () => {
+        if (!registration.strategy) {
+          registration.strategy = await load()
+        }
+        return registration.strategy
+      },
+    }
+
+    formats.forEach((format) => {
+      this.strategies.set(format, registration)
+    })
+    console.info(`Registered lazy image converter strategy: ${name}`)
   }
 
   /**
@@ -43,18 +74,14 @@ export class ImageConverterManager {
    */
   removeStrategy(strategyName: string): boolean {
     let removed = false
-    const strategy = Array.from(this.strategies.values()).find((s) => s.getName() === strategyName)
-
-    if (strategy) {
-      strategy.getSupportedFormats().forEach((format) => {
-        if (this.strategies.get(format) === strategy) {
-          this.strategies.delete(format)
-          removed = true
-        }
-      })
-      if (removed) {
-        console.info(`Removed image converter strategy: ${strategyName}`)
+    for (const [format, registration] of this.strategies) {
+      if (registration.name === strategyName || registration.strategy?.getName() === strategyName) {
+        this.strategies.delete(format)
+        removed = true
       }
+    }
+    if (removed) {
+      console.info(`Removed image converter strategy: ${strategyName}`)
     }
     return removed
   }
@@ -63,7 +90,10 @@ export class ImageConverterManager {
    * 获取所有已注册的策略
    */
   getStrategies(): ImageConverterStrategy[] {
-    const uniqueStrategies = new Set(this.strategies.values())
+    const loadedStrategies = Array.from(this.strategies.values()).flatMap((registration) =>
+      registration.strategy ? [registration.strategy] : [],
+    )
+    const uniqueStrategies = new Set(loadedStrategies)
     return Array.from(uniqueStrategies)
   }
 
@@ -84,9 +114,10 @@ export class ImageConverterManager {
       console.info(`Detected file type: ${fileType.ext} (${fileType.mime})`)
 
       // 直接根据 MIME 类型查找策略
-      const strategy = this.strategies.get(fileType.mime)
+      const registration = this.strategies.get(fileType.mime)
 
-      if (strategy) {
+      if (registration) {
+        const strategy = await registration.load()
         // 验证策略是否确实需要转换这个文件
         const shouldConvert = await strategy.shouldConvert(blob)
         if (shouldConvert) {

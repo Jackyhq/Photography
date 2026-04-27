@@ -4,11 +4,57 @@ import type { Plugin } from 'vite'
 
 import { MANIFEST_PATH } from './__internal__/constants'
 
+interface PreloadManifestItem {
+  thumbnailUrl?: string
+  thumbnailWebpSrcSet?: string
+}
+
 function resolveEmbedPreference(_command: 'serve' | 'build'): boolean {
   const flag = process.env.AFILMORY_EMBED_MANIFEST?.trim().toLowerCase()
   if (flag === 'true') return true
   if (flag === 'false') return false
   return true
+}
+
+function escapeAttribute(value: string): string {
+  return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+}
+
+function getFirstSrcFromSrcSet(srcSet: string): string {
+  return srcSet.split(',')[0]?.trim().split(/\s+/)[0] ?? ''
+}
+
+function createThumbnailPreloadLinks(manifestContent: string): string {
+  try {
+    const manifest = JSON.parse(manifestContent) as { data?: PreloadManifestItem[] }
+    const items = manifest.data?.slice(0, 4) ?? []
+
+    return items
+      .map((item) => {
+        const webpSrcSet = item.thumbnailWebpSrcSet?.trim()
+        const href = webpSrcSet ? getFirstSrcFromSrcSet(webpSrcSet) : item.thumbnailUrl
+        if (!href) return ''
+
+        const attributes = [
+          'rel="preload"',
+          'as="image"',
+          `href="${escapeAttribute(href)}"`,
+          'fetchpriority="high"',
+          'imagesizes="(max-width: 640px) 50vw, 350px"',
+        ]
+
+        if (webpSrcSet) {
+          attributes.push('type="image/webp"', `imagesrcset="${escapeAttribute(webpSrcSet)}"`)
+        }
+
+        return `<link ${attributes.join(' ')}>`
+      })
+      .filter(Boolean)
+      .join('')
+  } catch (error) {
+    console.warn('Failed to create thumbnail preload links:', error)
+    return ''
+  }
 }
 
 export function manifestInjectPlugin(): Plugin {
@@ -63,8 +109,12 @@ export function manifestInjectPlugin(): Plugin {
 
       // 将 manifest 内容注入到 script#manifest 标签中
       const scriptContent = `window.__MANIFEST__ = ${manifestContent};`
+      const preloadLinks = createThumbnailPreloadLinks(manifestContent)
 
-      return html.replace('<script id="manifest"></script>', `<script id="manifest">${scriptContent}</script>`)
+      return html.replace(
+        '<script id="manifest"></script>',
+        `${preloadLinks}<script id="manifest">${scriptContent}</script>`,
+      )
     },
   }
 }

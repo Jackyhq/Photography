@@ -50,6 +50,8 @@ export interface PhotoManifestItem extends PhotoInfo {
   id: string
   originalUrl: string
   thumbnailUrl: string
+  thumbnailSrcSet?: string
+  thumbnailWebpSrcSet?: string
   thumbHash: string | null
   width: number
   height: number
@@ -162,6 +164,8 @@ export interface PickedExif {
 
 export interface ThumbnailResult {
   thumbnailUrl: string | null
+  thumbnailSrcSet?: string | null
+  thumbnailWebpSrcSet?: string | null
   thumbnailBuffer: Buffer | null
   thumbHash: Uint8Array | null
 }

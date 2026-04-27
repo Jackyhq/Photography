@@ -96,11 +96,12 @@ export async function handleDeletedPhotos(items: PhotoManifestItem[]): Promise<n
   let deletedCount = 0
   const allThumbnails = await fs.readdir(path.join(workdir, 'public/thumbnails'))
 
-  // If thumbnails not in manifest, delete it
-  const manifestKeySet = new Set(items.map((item) => item.id))
+  const expectedThumbnailFileSet = new Set(
+    items.flatMap((item) => [`${item.id}.jpg`, `${item.id}-360.webp`, `${item.id}-640.webp`]),
+  )
 
   for (const thumbnail of allThumbnails) {
-    if (!manifestKeySet.has(basename(thumbnail, '.jpg'))) {
+    if (!expectedThumbnailFileSet.has(basename(thumbnail))) {
       await fs.unlink(path.join(workdir, 'public/thumbnails', thumbnail))
       deletedCount++
     }
