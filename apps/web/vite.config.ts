@@ -60,7 +60,18 @@ const staticWebBuildPlugins: PluginOption[] = [
     scope: '/',
     injectRegister: 'script-defer',
     registerType: 'autoUpdate',
-    includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg', 'feed.xml', 'sitemap.xml'],
+    includeAssets: [
+      'favicon.ico',
+      'favicon-16x16.png',
+      'favicon-32x32.png',
+      'favicon-48x48.png',
+      'apple-touch-icon.png',
+      'android-chrome-192x192.png',
+      'android-chrome-512x512.png',
+      'masked-icon.svg',
+      'feed.xml',
+      'sitemap.xml',
+    ],
     manifest: {
       name: siteConfig.title,
       short_name: siteConfig.name,
@@ -90,8 +101,8 @@ const staticWebBuildPlugins: PluginOption[] = [
     },
     workbox: {
       maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB
-      globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
-      globIgnores: ['**/*.{jpg,jpeg}'], // 忽略大图片文件
+      globPatterns: ['**/*.{js,css,html,ico,svg}'],
+      globIgnores: ['thumbnails/**/*', '**/*.{jpg,jpeg,png,webp,avif,gif,mp4,mov,webm}'],
       runtimeCaching: [
         {
           urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

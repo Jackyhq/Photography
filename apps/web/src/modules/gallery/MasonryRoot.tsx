@@ -8,6 +8,7 @@ import { gallerySettingAtom } from '~/atoms/app'
 import { DateRangeIndicator } from '~/components/ui/date-range-indicator'
 import { useMobile } from '~/hooks/useMobile'
 import { useContextPhotos } from '~/hooks/usePhotoViewer'
+import { useUpcomingThumbnailPrefetch } from '~/hooks/useUpcomingThumbnailPrefetch'
 import { useVisiblePhotosDateRange } from '~/hooks/useVisiblePhotosDateRange'
 import type { PhotoManifest } from '~/types/photo'
 
@@ -61,6 +62,7 @@ export const MasonryRoot = () => {
   const isMobile = useMobile()
 
   const [activePanel, setActivePanel] = useState<PanelType | null>(null)
+  const masonryItems = useMemo(() => (isMobile ? photos : [MasonryHeaderItem.default, ...photos]), [photos, isMobile])
 
   // 监听容器宽度变化
   useEffect(() => {
@@ -106,6 +108,7 @@ export const MasonryRoot = () => {
 
     return Math.max(Math.min(calculatedWidth, maxWidth), minWidth)
   }, [isMobile, columns, containerWidth])
+  const prefetchUpcomingThumbnails = useUpcomingThumbnailPrefetch(columnWidth)
 
   // 监听滚动，控制浮动组件的显示
   useEffect(() => {
@@ -152,7 +155,7 @@ export const MasonryRoot = () => {
         {isMobile && <MasonryHeaderMasonryItem className="mb-1" />}
         <Masonry<MasonryItemType>
           ref={masonryRef}
-          items={useMemo(() => (isMobile ? photos : [MasonryHeaderItem.default, ...photos]), [photos, isMobile])}
+          items={masonryItems}
           render={useCallback(
             (props) => (
               <MasonryItem
@@ -163,7 +166,13 @@ export const MasonryRoot = () => {
             ),
             [handleAnimationComplete],
           )}
-          onRender={handleRender}
+          onRender={useCallback(
+            (startIndex, stopIndex, items) => {
+              handleRender(startIndex, stopIndex, items)
+              prefetchUpcomingThumbnails(stopIndex, items)
+            },
+            [handleRender, prefetchUpcomingThumbnails],
+          )}
           columnWidth={columnWidth}
           columnGutter={4}
           rowGutter={4}
