@@ -50,7 +50,7 @@ if (typeof window !== 'undefined' && 'serviceWorker' in navigator && !import.met
         })
       } catch (err) {
         // swallow errors - registration is best-effort
-         
+
         console.error('SW registration failed', err)
       }
     })()
