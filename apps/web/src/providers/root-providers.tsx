@@ -6,6 +6,7 @@ import type { FC, PropsWithChildren } from 'react'
 
 import { jotaiStore } from '~/lib/jotai'
 
+import { AppUpdateProvider } from './app-update-provider'
 import { ContextMenuProvider } from './context-menu-provider'
 import { EventProvider } from './event-provider'
 import { I18nProvider } from './i18n-provider'
@@ -19,7 +20,9 @@ export const RootProviders: FC<PropsWithChildren> = ({ children }) => (
         <StableRouterProvider />
 
         <ContextMenuProvider />
-        <I18nProvider>{children}</I18nProvider>
+        <I18nProvider>
+          <AppUpdateProvider>{children}</AppUpdateProvider>
+        </I18nProvider>
       </Provider>
     </MotionConfig>
     <Toaster />

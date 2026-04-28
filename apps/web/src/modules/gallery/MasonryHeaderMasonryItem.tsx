@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { siteConfig } from '~/config'
 import { usePhotos } from '~/hooks/usePhotoViewer'
+import { useAppUpdate } from '~/providers/app-update-provider'
 
 import { ActionGroup } from './ActionGroup'
 
@@ -12,6 +13,7 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
   const { t } = useTranslation()
   const { i18n } = useTranslation()
   const visiblePhotoCount = usePhotos().length
+  const { needRefresh, updateApp } = useAppUpdate()
   return (
     <div
       className={clsxm(
@@ -106,30 +108,45 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
 
       {/* Footer with build date and ICP */}
       <div className="border-t border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-800 dark:bg-gray-800/50">
-        <div className="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-          <i className="i-mingcute-calendar-line text-sm" />
-          <span>
-            {t('gallery.built.at')}
-            {new Date(BUILT_DATE).toLocaleDateString(i18n.language, {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-            {GIT_COMMIT_HASH && (
-              <span className="ml-1">
-                (
-                <a
-                  href={`${repository.url}/commit/${GIT_COMMIT_HASH}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-gray-500 dark:text-gray-400"
-                >
-                  {GIT_COMMIT_HASH.slice(0, 6)}
-                </a>
-                )
-              </span>
-            )}
+        <div
+          className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-gray-500 dark:text-gray-400"
+          aria-live="polite"
+        >
+          <span className="inline-flex items-center justify-center gap-2">
+            <i className="i-mingcute-calendar-line text-sm" />
+            <span>
+              {t('gallery.built.at')}
+              {new Date(BUILT_DATE).toLocaleDateString(i18n.language, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+              {GIT_COMMIT_HASH && (
+                <span className="ml-1">
+                  (
+                  <a
+                    href={`${repository.url}/commit/${GIT_COMMIT_HASH}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-gray-500 dark:text-gray-400"
+                  >
+                    {GIT_COMMIT_HASH.slice(0, 6)}
+                  </a>
+                  )
+                </span>
+              )}
+            </span>
           </span>
+          {needRefresh && (
+            <button
+              type="button"
+              onClick={updateApp}
+              className="border-accent/25 bg-accent/10 text-accent hover:bg-accent/20 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-medium transition-colors"
+            >
+              <i className="i-mingcute-refresh-2-line text-sm" />
+              <span>{t('gallery.update.available')}</span>
+            </button>
+          )}
         </div>
         <div className="mt-1 flex items-center justify-center gap-1 text-xs text-gray-500 dark:text-gray-400">
           <a

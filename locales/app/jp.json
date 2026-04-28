@@ -309,6 +309,7 @@
   "gallery.built.at": "ビルド日時 ",
   "gallery.photos_one": "写真{{count}}枚",
   "gallery.photos_other": "写真{{count}}枚",
+  "gallery.update.available": "更新があります",
   "loading.converting": "変換中...",
   "loading.default": "読み込み中",
   "loading.heic.converting": "HEIC/HEIF 画像フォーマットを変換中...",
