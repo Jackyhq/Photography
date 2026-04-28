@@ -1,4 +1,4 @@
-name: Deploy Afilmory
+name: Deploy
 
 on:
   push:
