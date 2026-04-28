@@ -132,7 +132,6 @@ export const MasonryRoot = () => {
         <>
           <DateRangeIndicator
             dateRange={dateRange.formattedRange}
-            location={dateRange.location}
             isVisible={showFloatingActions && !!dateRange.formattedRange}
           />
           <FloatingActionBar showFloatingActions={showFloatingActions} />
@@ -144,7 +143,6 @@ export const MasonryRoot = () => {
         <div className="fixed top-0 right-0 left-0 z-50">
           <DateRangeIndicator
             dateRange={dateRange.formattedRange}
-            location={dateRange.location}
             isVisible={showFloatingActions && !!dateRange.formattedRange}
             className="relative top-0 left-0"
           />

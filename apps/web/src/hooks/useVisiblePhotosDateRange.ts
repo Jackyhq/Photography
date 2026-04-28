@@ -7,7 +7,6 @@ interface DateRange {
   startDate: Date | null
   endDate: Date | null
   formattedRange: string
-  location?: string
 }
 
 interface VisibleRange {
@@ -24,7 +23,6 @@ export const useVisiblePhotosDateRange = (_photos: PhotoManifest[]) => {
     startDate: null,
     endDate: null,
     formattedRange: '',
-    location: undefined,
   })
 
   const currentRange = useRef<VisibleRange>({ start: 0, end: 0 })
@@ -92,38 +90,6 @@ export const useVisiblePhotosDateRange = (_photos: PhotoManifest[]) => {
     [i18n.language],
   )
 
-  const extractLocation = useCallback((photos: PhotoManifest[]): string | undefined => {
-    // 尝试从照片标签中提取位置信息
-    for (const photo of photos) {
-      // 如果照片有位置标签，优先使用
-      if (photo.tags) {
-        const locationTag = photo.tags.find(
-          (tag) =>
-            tag.includes('省') ||
-            tag.includes('市') ||
-            tag.includes('区') ||
-            tag.includes('县') ||
-            tag.includes('镇') ||
-            tag.includes('村') ||
-            tag.includes('街道') ||
-            tag.includes('路') ||
-            tag.includes('北京') ||
-            tag.includes('上海') ||
-            tag.includes('广州') ||
-            tag.includes('深圳') ||
-            tag.includes('杭州') ||
-            tag.includes('南京') ||
-            tag.includes('成都'),
-        )
-        if (locationTag) {
-          return locationTag
-        }
-      }
-    }
-
-    return undefined
-  }, [])
-
   // 计算当前可视范围内照片的日期范围
   const calculateDateRange = useCallback(
     (startIndex: number, endIndex: number, items: any[]) => {
@@ -132,7 +98,6 @@ export const useVisiblePhotosDateRange = (_photos: PhotoManifest[]) => {
           startDate: null,
           endDate: null,
           formattedRange: '',
-          location: undefined,
         })
         return
       }
@@ -147,7 +112,6 @@ export const useVisiblePhotosDateRange = (_photos: PhotoManifest[]) => {
           startDate: null,
           endDate: null,
           formattedRange: '',
-          location: undefined,
         })
         return
       }
@@ -163,25 +127,22 @@ export const useVisiblePhotosDateRange = (_photos: PhotoManifest[]) => {
           startDate: null,
           endDate: null,
           formattedRange: '',
-          location: undefined,
         })
         return
       }
 
       const formattedRange = formatDateRange(startDate, endDate)
-      const location = extractLocation(visiblePhotos)
 
       setDateRange({
         startDate,
         endDate,
         formattedRange,
-        location,
       })
 
       // 更新当前范围
       currentRange.current = { start: startIndex, end: endIndex }
     },
-    [getPhotoDate, formatDateRange, extractLocation],
+    [getPhotoDate, formatDateRange],
   )
 
   // 用于传递给 masonry 的 onRender 回调
