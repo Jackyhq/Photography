@@ -313,6 +313,7 @@
   "gallery.built.at": "Built at ",
   "gallery.photos_one": "{{count}} photo",
   "gallery.photos_other": "{{count}} photos",
+  "gallery.update.available": "Update available",
   "loading.converting": "Converting...",
   "loading.default": "Loading",
   "loading.heic.converting": "Converting HEIC/HEIF image format...",

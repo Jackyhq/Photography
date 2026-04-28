@@ -66,7 +66,7 @@ const staticWebBuildPlugins: PluginOption[] = [
     base: '/',
     scope: '/',
     injectRegister: false,
-    registerType: 'autoUpdate',
+    registerType: 'prompt',
     includeAssets: [
       'favicon.ico',
       'favicon-16x16.png',

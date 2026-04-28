@@ -309,6 +309,7 @@
   "gallery.built.at": "빌드 날짜 ",
   "gallery.photos_one": "사진 {{count}}장",
   "gallery.photos_other": "사진 {{count}}장",
+  "gallery.update.available": "새 버전 업데이트",
   "loading.converting": "변환 중...",
   "loading.default": "로딩 중",
   "loading.heic.converting": "HEIC/HEIF 이미지 형식 변환 중...",

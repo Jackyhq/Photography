@@ -310,6 +310,7 @@
   "gallery.built.at": "构建于 ",
   "gallery.photos_one": "{{count}} 张照片",
   "gallery.photos_other": "{{count}} 张照片",
+  "gallery.update.available": "有新版本，点击更新",
   "loading.converting": "转换中...",
   "loading.default": "加载中",
   "loading.heic.converting": "正在转换 HEIC/HEIF 图像格式...",
