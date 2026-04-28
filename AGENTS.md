@@ -27,7 +27,7 @@ pnpm docs:preview
 # Rename and move files from photos/incoming using EXIF timestamps.
 pnpm run photos:standardize
 
-# Build or update apps/web/src/data/photos-manifest.json.
+# Build or update the local apps/web/src/data/photos-manifest.json.
 pnpm run build:manifest
 
 # Force rebuild all photos and metadata.
@@ -94,7 +94,7 @@ There is no `packages/components/` package in the current workspace.
 
 1. New files are staged in `photos/incoming/` or placed directly under `photos/<category>/`.
 2. `pnpm run photos:standardize` reads EXIF timestamps, renames files to `YYYYMMDDHHmmss.ext`, and moves them into category folders.
-3. `pnpm run build:manifest` scans configured storage, excludes `incoming`, processes images, detects Live Photos, extracts EXIF/GPS/Fujifilm metadata, generates thumbnails and hash placeholders, and saves `apps/web/src/data/photos-manifest.json`.
+3. `pnpm run build:manifest` scans configured storage, excludes `incoming`, processes images, detects Live Photos, extracts EXIF/GPS/Fujifilm metadata, generates thumbnails and hash placeholders, and saves the local `apps/web/src/data/photos-manifest.json`.
 4. `@afilmory/data` loads `__MANIFEST__` and exposes photos, cameras, and lenses to the web app.
 5. `pnpm build` builds `apps/web/dist/`; CI also mirrors this output into root `web/`.
 
@@ -110,7 +110,7 @@ There is no `packages/components/` package in the current workspace.
 ## Development Notes
 
 - Do not treat files under `photos/` as open-source assets; they are personal copyrighted works.
-- Avoid editing generated outputs unless the task explicitly involves generation or deployment output. Generated files include `apps/web/dist/`, root `web/`, and `apps/web/src/data/photos-manifest.json`.
+- Avoid editing generated outputs unless the task explicitly involves generation or deployment output. Generated files include `apps/web/dist/`, root `web/`, and the Git-ignored `apps/web/src/data/photos-manifest.json`.
 - `pnpm dev` and `pnpm build` run `apps/web/scripts/precheck.ts`, which builds the manifest unless `SKIP_PRECHECK=1` is set.
 - GitHub Actions builds on Node.js 24 and pnpm 10.19.0.
 - When changing documentation content under `packages/docs/contents/`, keep frontmatter `lastModified` current.

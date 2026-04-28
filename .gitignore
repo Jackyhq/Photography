@@ -45,6 +45,7 @@ apps/web/assets-git
 
 # Generated Data
 apps/web/public/thumbnails/
+apps/web/src/data/photos-manifest.json
 
 # Others
 *.local

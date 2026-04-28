@@ -2,7 +2,7 @@
 title: Overview
 description: Project overview for Jacky's Photography, a customized Afilmory-powered photo gallery.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2026-04-27T18:06:47+08:00
+lastModified: 2026-04-28T19:11:20+08:00
 ---
 
 # Jacky's Photography
@@ -94,7 +94,7 @@ For mobile loading details, responsive thumbnails, and chunk-splitting expectati
 
 1. Put new photos in `photos/incoming/` or directly in a category folder under `photos/`.
 2. Run `pnpm run photos:standardize` to rename incoming files from EXIF timestamps and move them into category folders.
-3. Run `pnpm run build:manifest` to scan photos, extract metadata, generate thumbnails, and update `apps/web/src/data/photos-manifest.json`.
+3. Run `pnpm run build:manifest` to scan photos, extract metadata, generate thumbnails, and generate the local `apps/web/src/data/photos-manifest.json`.
 4. Run `pnpm dev` for local preview or `pnpm build` for static production output.
 
 ## Deployment
