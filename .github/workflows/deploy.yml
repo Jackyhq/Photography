@@ -84,8 +84,8 @@ jobs:
       - name: Commit all changes
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: "chore: update photos, manifest, and build output"
-          file_pattern: 'photos/** apps/web/src/data/photos-manifest.json web/**'
+          commit_message: "chore: update photos and build output"
+          file_pattern: 'photos/** web/**'
           add_options: '-A'
 
       - name: Setup Pages
