@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react'
-import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 interface AppUpdateContextValue {
   needRefresh: boolean
