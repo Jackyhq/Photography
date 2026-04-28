@@ -81,6 +81,12 @@ jobs:
           cp -rp ./apps/web/dist/. web/
           echo "Copied build output to /web directory"
 
+      - name: Pull latest changes to avoid non-fast-forward rejection
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash
+
       - name: Commit all changes
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
