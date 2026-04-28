@@ -58,7 +58,7 @@ const staticWebBuildPlugins: PluginOption[] = [
   VitePWA({
     base: '/',
     scope: '/',
-    injectRegister: 'script-defer',
+    injectRegister: false,
     registerType: 'autoUpdate',
     includeAssets: [
       'favicon.ico',
@@ -104,28 +104,6 @@ const staticWebBuildPlugins: PluginOption[] = [
       globPatterns: ['**/*.{js,css,html,ico,svg}'],
       globIgnores: ['thumbnails/**/*', '**/*.{jpg,jpeg,png,webp,avif,gif,mp4,mov,webm}'],
       runtimeCaching: [
-        {
-          urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'google-fonts-cache',
-            expiration: {
-              maxEntries: 10,
-              maxAgeSeconds: 60 * 60 * 24 * 365, // <== 365 days
-            },
-          },
-        },
-        {
-          urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'gstatic-fonts-cache',
-            expiration: {
-              maxEntries: 10,
-              maxAgeSeconds: 60 * 60 * 24 * 365, // <== 365 days
-            },
-          },
-        },
         {
           urlPattern: /\.(?:png|jpg|jpeg|svg|webp)$/,
           handler: 'CacheFirst',

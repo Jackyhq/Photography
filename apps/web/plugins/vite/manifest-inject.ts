@@ -9,6 +9,8 @@ interface PreloadManifestItem {
   thumbnailWebpSrcSet?: string
 }
 
+const PRELOAD_THUMBNAIL_COUNT = 2
+
 function resolveEmbedPreference(_command: 'serve' | 'build'): boolean {
   const flag = process.env.AFILMORY_EMBED_MANIFEST?.trim().toLowerCase()
   if (flag === 'true') return true
@@ -27,10 +29,10 @@ function getFirstSrcFromSrcSet(srcSet: string): string {
 function createThumbnailPreloadLinks(manifestContent: string): string {
   try {
     const manifest = JSON.parse(manifestContent) as { data?: PreloadManifestItem[] }
-    const items = manifest.data?.slice(0, 4) ?? []
+    const items = manifest.data?.slice(0, PRELOAD_THUMBNAIL_COUNT) ?? []
 
     return items
-      .map((item) => {
+      .map((item, index) => {
         const webpSrcSet = item.thumbnailWebpSrcSet?.trim()
         const href = webpSrcSet ? getFirstSrcFromSrcSet(webpSrcSet) : item.thumbnailUrl
         if (!href) return ''
@@ -39,9 +41,12 @@ function createThumbnailPreloadLinks(manifestContent: string): string {
           'rel="preload"',
           'as="image"',
           `href="${escapeAttribute(href)}"`,
-          'fetchpriority="high"',
           'imagesizes="(max-width: 640px) 50vw, 350px"',
         ]
+
+        if (index === 0) {
+          attributes.push('fetchpriority="high"')
+        }
 
         if (webpSrcSet) {
           attributes.push('type="image/webp"', `imagesrcset="${escapeAttribute(webpSrcSet)}"`)

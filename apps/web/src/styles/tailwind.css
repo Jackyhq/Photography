@@ -62,7 +62,7 @@
   --radius-sm: calc(var(--radius) - 4px);
 
   /* Font families */
-  --font-sans: Geist, ui-sans-serif, system-ui, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-serif:
     'Noto Serif CJK SC', 'Noto Serif SC', var(--font-serif), 'Source Han Serif SC', 'Source Han Serif',
     source-han-serif-sc, SongTi SC, SimSum, 'Hiragino Sans GB', system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
