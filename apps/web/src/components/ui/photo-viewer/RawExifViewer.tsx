@@ -12,10 +12,10 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { ExifToolManager } from '~/lib/exiftool'
-import type { PhotoManifest } from '~/types/photo'
+import type { FullPhotoManifest } from '~/types/photo'
 
 interface RawExifViewerProps {
-  currentPhoto: PhotoManifest
+  currentPhoto: FullPhotoManifest
 }
 
 type ParsedExifData = Record<string, string | number | boolean | null>

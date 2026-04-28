@@ -59,9 +59,8 @@ const searchPhotos = (photos: ReturnType<typeof photoLoader.getPhotos>, query: s
     const matchesTitle = photo.title?.toLowerCase().includes(lowerQuery)
     const matchesDescription = photo.description?.toLowerCase().includes(lowerQuery)
     const matchesTags = photo.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery))
-    const matchesCamera =
-      photo.exif?.Make?.toLowerCase().includes(lowerQuery) || photo.exif?.Model?.toLowerCase().includes(lowerQuery)
-    const matchesLens = photo.exif?.LensModel?.toLowerCase().includes(lowerQuery)
+    const matchesCamera = photo.cameraDisplayName?.toLowerCase().includes(lowerQuery)
+    const matchesLens = photo.lensDisplayName?.toLowerCase().includes(lowerQuery)
 
     return matchesTitle || matchesDescription || matchesTags || matchesCamera || matchesLens
   })
@@ -267,7 +266,7 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
           id: `photo-${photo.id}`,
           type: 'photo',
           title: photo.title || photo.id,
-          subtitle: photo.description || `${photo.exif?.Model || 'Photo'}`,
+          subtitle: photo.description || photo.cameraDisplayName || 'Photo',
           icon: <img src={photo.thumbnailUrl} alt={photo.title || 'Photo'} className="h-6 w-6 rounded object-cover" />,
           action: () => {
             const allPhotos = photoLoader.getPhotos()

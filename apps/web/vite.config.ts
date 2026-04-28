@@ -1,5 +1,4 @@
 import { execSync } from 'node:child_process'
-import { rmSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -37,12 +36,20 @@ const devPrint = (): PluginOption => ({
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-if (process.env.CI) {
-  rmSync(path.join(process.cwd(), 'src/pages/(debug)'), {
-    recursive: true,
-    force: true,
-  })
-}
+const productionRouterPlugin = (enabled: boolean): PluginOption => ({
+  name: 'production-router',
+  enforce: 'pre',
+  transform(code, id) {
+    if (!enabled || !id.includes('/src/main.tsx')) {
+      return null
+    }
+
+    return {
+      code: code.replace("from './router'", "from './router.prod'"),
+      map: null,
+    }
+  },
+})
 
 const ReactCompilerConfig = {
   /* ... */
@@ -152,10 +159,11 @@ const staticWebBuildPlugins: PluginOption[] = [
 ]
 
 // https://vitejs.dev/config/
-export default defineConfig(() => {
+export default defineConfig(({ command }) => {
   return {
     base: BUILD_FOR_SERVER_SERVE ? '/static/web/' : '/',
     plugins: [
+      productionRouterPlugin(command === 'build'),
       codeInspectorPlugin({
         bundler: 'vite',
         hotKeys: ['altKey'],

@@ -5,12 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
 
 import { GenericMap, MapBackButton, MapInfoPanel, MapLoadingState } from '~/components/ui/map'
-import {
-  calculateMapBounds,
-  convertExifGPSToDecimal,
-  convertPhotosToMarkersFromEXIF,
-  getInitialViewStateForMarkers,
-} from '~/lib/map-utils'
+import { calculateMapBounds, convertPhotosToMarkersFromEXIF, getInitialViewStateForMarkers } from '~/lib/map-utils'
 import { MapProvider } from '~/modules/map/MapProvider'
 import type { MapBounds, PhotoMarker } from '~/types/map'
 
@@ -69,7 +64,7 @@ const MapSectionContent = () => {
       setError(null)
 
       try {
-        const photos = photoLoader.getPhotos()
+        const photos = await photoLoader.getFullPhotos()
         const photoMarkers = convertPhotosToMarkersFromEXIF(photos)
 
         setMarkers(photoMarkers)
@@ -91,8 +86,13 @@ const MapSectionContent = () => {
     const photoIdParam = searchParams.get('photoId')
 
     if (photoIdParam) {
-      const photo = photoLoader.getPhoto(photoIdParam)
-      const gpsData = convertExifGPSToDecimal(photo?.exif ?? null)
+      const marker = markers.find((marker) => marker.id === photoIdParam)
+      const gpsData = marker
+        ? {
+            latitude: marker.latitude,
+            longitude: marker.longitude,
+          }
+        : null
 
       if (gpsData) {
         return {
@@ -110,7 +110,7 @@ const MapSectionContent = () => {
       zoom: null,
       photoId: photoIdParam,
     }
-  }, [searchParams])
+  }, [markers, searchParams])
 
   // Initial view state calculation - handle URL parameters
   const initialViewState = useMemo(() => {

@@ -21,6 +21,7 @@ import {
 } from '~/icons'
 import { getImageFormat } from '~/lib/image-utils'
 import { convertExifGPSToDecimal } from '~/lib/map-utils'
+import type { PhotoManifest } from '~/types/photo'
 
 import { Row } from './ExifRow'
 import { formatExifData } from './formatExifData'
@@ -29,12 +30,12 @@ import { MiniMap } from './MiniMap'
 import { RawExifViewer } from './RawExifViewer'
 
 export const ExifPanel: FC<{
-  currentPhoto: PhotoManifestItem
+  currentPhoto: PhotoManifest | PhotoManifestItem
   exifData: PickedExif | null
-
+  isLoadingDetails?: boolean
   onClose?: () => void
   visible?: boolean
-}> = ({ currentPhoto, exifData, onClose, visible = true }) => {
+}> = ({ currentPhoto, exifData, isLoadingDetails = false, onClose, visible = true }) => {
   const { i18n, t } = useTranslation()
   const isMobile = useMobile()
   const formattedExifData = formatExifData(exifData)
@@ -93,7 +94,9 @@ export const ExifPanel: FC<{
       />
       <div className="relative z-10 mb-4 flex shrink-0 items-center justify-between p-4 pb-0">
         <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold`}>{t('exif.header.title')}</h3>
-        {!isMobile && isExiftoolLoaded && <RawExifViewer currentPhoto={currentPhoto} />}
+        {!isMobile && isExiftoolLoaded && !isLoadingDetails && currentPhoto.s3Key && (
+          <RawExifViewer currentPhoto={currentPhoto as PhotoManifestItem} />
+        )}
         {isMobile && onClose && (
           <button
             type="button"
@@ -136,6 +139,11 @@ export const ExifPanel: FC<{
               {formattedExifData?.copyright && <Row label={t('exif.copyright')} value={formattedExifData.copyright} />}
 
               {formattedExifData?.software && <Row label={t('exif.software')} value={formattedExifData.software} />}
+              {isLoadingDetails && (
+                <p className="text-text-secondary pt-2 text-xs">
+                  {t('exif.loading.details', { defaultValue: 'Loading full metadata...' })}
+                </p>
+              )}
             </div>
 
             {formattedExifData &&

@@ -3,6 +3,7 @@ import './PhotoViewer.css'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
+import { photoLoader } from '@afilmory/data'
 import { Thumbhash } from '@afilmory/ui'
 import { Spring } from '@afilmory/utils'
 import { AnimatePresence, m } from 'motion/react'
@@ -14,7 +15,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 
 import { injectConfig } from '~/config'
 import { useMobile } from '~/hooks/useMobile'
-import type { PhotoManifest } from '~/types/photo'
+import type { FullPhotoManifest, PhotoManifest } from '~/types/photo'
 
 import { PhotoViewerTransitionPreview } from './animations/PhotoViewerTransitionPreview'
 import { usePhotoViewerTransitions } from './animations/usePhotoViewerTransitions'
@@ -49,9 +50,16 @@ export const PhotoViewer = ({
   const [isImageZoomed, setIsImageZoomed] = useState(false)
   const [showExifPanel, setShowExifPanel] = useState(false)
   const [currentBlobSrc, setCurrentBlobSrc] = useState<string | null>(null)
+  const [photoDetails, setPhotoDetails] = useState<Record<string, FullPhotoManifest>>({})
+  const [loadingPhotoDetailId, setLoadingPhotoDetailId] = useState<string | null>(null)
 
   const isMobile = useMobile()
   const currentPhoto = photos[currentIndex]
+  const detailedCurrentPhoto = currentPhoto ? photoDetails[currentPhoto.id] : undefined
+  const shouldLoadCurrentPhotoDetail = Boolean(isOpen && currentPhoto && (!isMobile || showExifPanel))
+  const isCurrentPhotoDetailLoading = Boolean(
+    currentPhoto && shouldLoadCurrentPhotoDetail && !detailedCurrentPhoto && loadingPhotoDetailId === currentPhoto.id,
+  )
 
   const {
     containerRef,
@@ -79,6 +87,35 @@ export const PhotoViewer = ({
       setCurrentBlobSrc(null)
     }
   }, [isOpen])
+
+  useEffect(() => {
+    if (!currentPhoto || !shouldLoadCurrentPhotoDetail || detailedCurrentPhoto) return
+
+    let isCancelled = false
+    setLoadingPhotoDetailId(currentPhoto.id)
+
+    photoLoader
+      .getPhotoDetail(currentPhoto.id)
+      .then((detail) => {
+        if (!detail || isCancelled) return
+        setPhotoDetails((prev) => ({
+          ...prev,
+          [detail.id]: detail,
+        }))
+      })
+      .catch((error) => {
+        console.error('Failed to load photo detail:', error)
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setLoadingPhotoDetailId(null)
+        }
+      })
+
+    return () => {
+      isCancelled = true
+    }
+  }, [currentPhoto, detailedCurrentPhoto, shouldLoadCurrentPhotoDetail])
 
   const handlePrevious = useCallback(() => {
     if (currentIndex > 0) {
@@ -407,8 +444,9 @@ export const PhotoViewer = ({
                 <AnimatePresenceOnlyMobile>
                   {(!isMobile || showExifPanel) && (
                     <ExifPanel
-                      currentPhoto={currentPhoto}
-                      exifData={currentPhoto.exif}
+                      currentPhoto={detailedCurrentPhoto ?? currentPhoto}
+                      exifData={detailedCurrentPhoto?.exif ?? null}
+                      isLoadingDetails={isCurrentPhotoDetailLoading}
                       visible={isViewerContentVisible}
                       onClose={isMobile ? () => setShowExifPanel(false) : undefined}
                     />

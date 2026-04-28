@@ -2,7 +2,7 @@
 title: GitHub Pages
 description: Guide to deploying Jacky's Photography via GitHub Pages.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2026-04-27T06:26:20+08:00
+lastModified: 2026-04-28T19:11:20+08:00
 ---
 
 # GitHub Pages Deployment
@@ -44,7 +44,7 @@ During CI, the workflow also copies the build output into:
 web/
 ```
 
-This directory is committed back to the repository together with `photos/**` and `apps/web/src/data/photos-manifest.json`, so it can be used by static hosts that deploy from a repository subdirectory.
+This directory is committed back to the repository together with `photos/**`. The photo manifest is generated during the build instead of being committed, which avoids repeated merge conflicts from environment-specific metadata.
 
 ## Custom Domain
 
