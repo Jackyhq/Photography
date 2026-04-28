@@ -1,13 +1,16 @@
 import { RootPortal, RootPortalProvider } from '@afilmory/ui'
 import clsx from 'clsx'
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { RemoveScroll } from 'react-remove-scroll'
 
 import { NotFound } from '~/components/common/NotFound'
-import { PhotoViewer } from '~/components/ui/photo-viewer'
 import { useContextPhotos, usePhotoViewer } from '~/hooks/usePhotoViewer'
 import { useTitle } from '~/hooks/useTitle'
 import { deriveAccentFromSources } from '~/lib/color'
+
+const PhotoViewer = lazy(() =>
+  import('~/components/ui/photo-viewer/PhotoViewer').then((module) => ({ default: module.PhotoViewer })),
+)
 
 export const Component = () => {
   const photoViewer = usePhotoViewer()
@@ -86,14 +89,16 @@ export const Component = () => {
           ref={setRef}
           className={clsx(photoViewer.isOpen ? 'fixed inset-0 z-9999' : 'pointer-events-none fixed inset-0 z-40')}
         >
-          <PhotoViewer
-            photos={photos}
-            currentIndex={photoViewer.currentIndex}
-            isOpen={photoViewer.isOpen}
-            triggerElement={photoViewer.triggerElement}
-            onClose={photoViewer.closeViewer}
-            onIndexChange={photoViewer.goToIndex}
-          />
+          <Suspense fallback={null}>
+            <PhotoViewer
+              photos={photos}
+              currentIndex={photoViewer.currentIndex}
+              isOpen={photoViewer.isOpen}
+              triggerElement={photoViewer.triggerElement}
+              onClose={photoViewer.closeViewer}
+              onIndexChange={photoViewer.goToIndex}
+            />
+          </Suspense>
         </RemoveScroll>
       </RootPortalProvider>
     </RootPortal>

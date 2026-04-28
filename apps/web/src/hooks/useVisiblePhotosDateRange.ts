@@ -30,6 +30,13 @@ export const useVisiblePhotosDateRange = (_photos: PhotoManifest[]) => {
   const currentRange = useRef<VisibleRange>({ start: 0, end: 0 })
 
   const getPhotoDate = useCallback((photo: PhotoManifest): Date => {
+    if (photo.sortTime) {
+      const date = new Date(photo.sortTime)
+      if (!Number.isNaN(date.getTime())) {
+        return date
+      }
+    }
+
     // 优先使用 EXIF 中的拍摄时间
     if (photo.exif?.DateTimeOriginal) {
       const dateStr = photo.exif.DateTimeOriginal as unknown as string

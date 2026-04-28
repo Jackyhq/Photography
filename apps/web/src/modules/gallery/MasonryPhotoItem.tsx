@@ -81,7 +81,7 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
 
   // 格式化 EXIF 数据
   const formatExifData = () => {
-    const { exif } = data
+    const exif = data.galleryExif ?? data.exif
 
     // 安全处理：如果 exif 不存在或为空，则返回空对象
     if (!exif) {

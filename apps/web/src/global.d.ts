@@ -1,5 +1,5 @@
+import type { AfilmoryIndexManifest } from '@afilmory/data'
 import type { SiteConfig } from '@config'
-import type { AfilmoryManifest } from '@packages/builder/src/types/manifest'
 import type { FC, PropsWithChildren } from 'react'
 
 import type { InjectConfig } from './config/types'
@@ -21,7 +21,8 @@ declare global {
   const BUILT_DATE: string
   const GIT_COMMIT_HASH: string
 
-  const __MANIFEST__: AfilmoryManifest
+  const __MANIFEST__: AfilmoryIndexManifest
+  const __FULL_MANIFEST_URL__: string | undefined
   const __SITE_CONFIG__: Partial<SiteConfig>
 
   const __CONFIG__: InjectConfig

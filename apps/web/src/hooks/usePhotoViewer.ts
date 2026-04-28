@@ -21,12 +21,7 @@ const parsePhotoTime = (value: string | undefined | null): number | null => {
 }
 
 const getPhotoSortTime = (photo: (typeof data)[number]) => {
-  return (
-    parsePhotoTime(photo.exif?.DateTimeOriginal as unknown as string | undefined) ??
-    parsePhotoTime(photo.dateTaken) ??
-    parsePhotoTime(photo.lastModified) ??
-    0
-  )
+  return photo.sortTime ?? parsePhotoTime(photo.dateTaken) ?? parsePhotoTime(photo.lastModified) ?? 0
 }
 
 // 抽取照片筛选和排序逻辑为独立函数
@@ -57,28 +52,24 @@ const filterAndSortPhotos = (
   // Cameras 筛选：照片的相机必须匹配选中的相机之一
   if (selectedCameras.length > 0) {
     filteredPhotos = filteredPhotos.filter((photo) => {
-      if (!photo.exif?.Make || !photo.exif?.Model) return false
-      const cameraDisplayName = `${photo.exif.Make.trim()} ${photo.exif.Model.trim()}`
-      return selectedCameras.includes(cameraDisplayName)
+      if (!photo.cameraDisplayName) return false
+      return selectedCameras.includes(photo.cameraDisplayName)
     })
   }
 
   // Lenses 筛选：照片的镜头必须匹配选中的镜头之一
   if (selectedLenses.length > 0) {
     filteredPhotos = filteredPhotos.filter((photo) => {
-      if (!photo.exif?.LensModel) return false
-      const lensModel = photo.exif.LensModel.trim()
-      const lensMake = photo.exif.LensMake?.trim()
-      const lensDisplayName = lensMake ? `${lensMake} ${lensModel}` : lensModel
-      return selectedLenses.includes(lensDisplayName)
+      if (!photo.lensDisplayName) return false
+      return selectedLenses.includes(photo.lensDisplayName)
     })
   }
 
   // Ratings 筛选：照片的评分必须大于等于选中的最小阈值
   if (selectedRatings !== null) {
     filteredPhotos = filteredPhotos.filter((photo) => {
-      if (!photo.exif?.Rating) return false
-      return photo.exif.Rating >= selectedRatings
+      if (!photo.rating) return false
+      return photo.rating >= selectedRatings
     })
   }
 
@@ -132,9 +123,6 @@ export const usePhotoViewer = () => {
   const [currentIndex, setCurrentIndex] = useAtom(currentIndexAtom)
   const [triggerElement, setTriggerElement] = useAtom(triggerElementAtom)
 
-  const id = useMemo(() => {
-    return photos[currentIndex]?.id
-  }, [photos, currentIndex])
   const openViewer = useCallback(
     (index: number, element?: HTMLElement) => {
       setCurrentIndex(index)
@@ -143,9 +131,9 @@ export const usePhotoViewer = () => {
       // 防止背景滚动
       document.body.style.overflow = 'hidden'
 
-      trackView(id)
+      trackView(photos[index]?.id)
     },
-    [id, setCurrentIndex, setIsOpen, setTriggerElement],
+    [photos, setCurrentIndex, setIsOpen, setTriggerElement],
   )
 
   const closeViewer = useCallback(() => {

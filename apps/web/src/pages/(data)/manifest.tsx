@@ -1,6 +1,7 @@
+import type { AfilmoryManifest } from '@afilmory/builder'
 import { photoLoader } from '@afilmory/data'
 import { Button, ScrollArea } from '@afilmory/ui'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // JSON 语法高亮组件
 const JsonHighlight = ({ data }: { data: any }) => {
@@ -175,12 +176,31 @@ const PhotoCard = ({ photo, index }: { photo: any; index: number }) => (
 export const Component = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [viewMode, setViewMode] = useState<'stats' | 'raw'>('stats')
+  const [manifestData, setManifestData] = useState<AfilmoryManifest | null>(null)
+  const [loadError, setLoadError] = useState<Error | null>(null)
 
-  const photos = photoLoader.getPhotos()
-  const manifestData = {
-    version: 'v6',
-    data: photos,
-  }
+  useEffect(() => {
+    let isCancelled = false
+
+    photoLoader
+      .loadFullManifest()
+      .then((manifest) => {
+        if (!isCancelled) {
+          setManifestData(manifest)
+        }
+      })
+      .catch((error) => {
+        if (!isCancelled) {
+          setLoadError(error instanceof Error ? error : new Error('Failed to load manifest'))
+        }
+      })
+
+    return () => {
+      isCancelled = true
+    }
+  }, [])
+
+  const photos = manifestData?.data ?? []
 
   // 搜索过滤
   const filteredPhotos = useMemo(() => {
@@ -198,6 +218,8 @@ export const Component = () => {
   }, [photos, searchTerm])
 
   const handleExport = () => {
+    if (!manifestData) return
+
     const dataStr = JSON.stringify(manifestData, null, 2)
     const dataBlob = new Blob([dataStr], { type: 'application/json' })
     const url = URL.createObjectURL(dataBlob)
@@ -209,6 +231,28 @@ export const Component = () => {
     link.click()
     link.remove()
     URL.revokeObjectURL(url)
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black text-zinc-100">
+        <div className="text-center">
+          <div className="mb-3 text-2xl">Manifest load failed</div>
+          <p className="text-sm text-zinc-400">{loadError.message}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!manifestData) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black text-zinc-100">
+        <div className="text-center">
+          <div className="mb-3 text-2xl">Loading manifest</div>
+          <p className="text-sm text-zinc-400">Fetching full photo metadata...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

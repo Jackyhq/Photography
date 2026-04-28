@@ -6,7 +6,7 @@
       "mediaType": "video",
       "title": "20260414",
       "description": "",
-      "dateTaken": "2026-04-14T00:00:00.000Z",
+      "dateTaken": "2026-04-13T23:00:00.000Z",
       "tags": [
         "video"
       ],
@@ -22,8 +22,8 @@
       "height": 1080,
       "aspectRatio": 1.7777777777777777,
       "s3Key": "video/20260414.mov",
-      "fileCreatedAt": "2026-04-27T21:10:45.650Z",
-      "lastModified": "2026-04-27T21:10:45.735Z",
+      "fileCreatedAt": "2026-04-28T10:34:31.476Z",
+      "lastModified": "2026-04-28T10:34:31.744Z",
       "size": 93800319,
       "exif": null,
       "toneAnalysis": null
