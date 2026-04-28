@@ -1,285 +1,115 @@
 ---
 title: Docker
-description: Guide to deploying Afilmory via Docker.
+description: Guide to packaging Jacky's Photography as a static Docker image.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2025-11-17T00:12:25+08:00
+lastModified: 2026-04-29T04:05:16+08:00
 ---
 
 # Docker Deployment
 
-![Docker Deployment](https://github.com/Afilmory/assets/blob/main/docker-deploy.webp?raw=true)
+Jacky's Photography builds to a static Vite SPA. A production Docker image only needs to serve the files generated in `apps/web/dist/`; it does not need a Node.js runtime, SSR server, or database.
 
-## TL;DR
+Use Docker when you want to self-host the already-built gallery behind NGINX, Caddy, Traefik, or another reverse proxy. GitHub Pages and Cloudflare Pages remain simpler for the current repository workflow.
 
-Fork https://github.com/Afilmory/docker, customize configuration and build image.
+## Prerequisites
 
-## 🚀 Quick Start
+- Docker.
+- Access to the repository contents needed for the build.
+- Node.js 24 and pnpm 10.19.0 inside the build stage.
+- Perl in the build stage, because `exiftool-vendored` checks for it.
 
-Using Docker to deploy Afilmory is a convenient and efficient way to manage your photo gallery application. This guide will walk you through the steps to set up and run Afilmory using Docker.
+The current `builder.config.ts` reads source photos from `./photos` and uses `https://photos3.jackyw.cn/photos/` for original image URLs. If you change `storage.baseUrl` or use `storage.distPath`, make sure the final static files can still reach the original images.
 
-### Prerequisites
+## Static NGINX Image
 
-- Docker
-- Docker Compose (optional but recommended)
-- PostgreSQL database (for SSR app)
-
-### 1. Configuration Files
-
-Before building your Docker image, you'll need to configure the following files:
-
-**`config.json`**
-
-```json
-{
-  "name": "Your Photo Gallery",
-  "title": "Your Photo Gallery",
-  "description": "Capturing beautiful moments in life",
-  "url": "https://your-domain.com",
-  "accentColor": "#fb7185",
-  "author": {
-    "name": "Your Name",
-    "url": "https://your-website.com",
-    "avatar": "https://your-avatar-url.com/avatar.png"
-  },
-  "social": {
-    "twitter": "@yourusername"
-  },
-  "extra": {
-    "accessRepo": true
-  }
-}
-```
-
-**`builder.config.ts`**
-
-```ts
-import { defineBuilderConfig } from '@afilmory/builder'
-
-export default defineBuilderConfig(() => ({
-  repo: {
-    enable: false,
-    url: 'https://github.com/username/gallery-public',
-  },
-  storage: {
-    provider: 's3',
-    bucket: 'your-photos-bucket',
-    region: 'us-east-1',
-    prefix: 'photos/',
-    customDomain: 'cdn.yourdomain.com',
-  },
-  performance: {
-    worker: {
-      enabled: true,
-      maxWorkers: 4,
-    },
-  },
-}))
-```
-
-**`.env`**
-
-```bash
-# Database Configuration
-PG_CONNECTION_STRING=postgresql://user:password@postgres:5432/afilmory
-
-# S3 Storage Configuration
-S3_ACCESS_KEY_ID=your_access_key_id
-S3_SECRET_ACCESS_KEY=your_secret_access_key
-
-# Git Repository (optional)
-GIT_TOKEN=your_github_token
-
-# Application Settings
-NODE_ENV=production
-PORT=3000
-```
-
-### 2. Dockerfile setup
-
-Create a `Dockerfile` in your project root:
+Create a `Dockerfile` at the repository root:
 
 ```dockerfile
-# Dockerfile for Next.js app in a pnpm monorepo
-# This Dockerfile should be built from the root of the monorepo:
-# > docker build -t iris-ssr .
-# > docker run -p 3000:3000 iris-ssr
+FROM node:24-bookworm-slim AS builder
 
-# -----------------
-# Base stage
-# -----------------
-FROM node:20-alpine AS base
 WORKDIR /app
 RUN corepack enable
 
-# -----------------
-# Builder stage
-# -----------------
-FROM base AS builder
+COPY . .
 
-RUN apk update && apk add --no-cache git perl
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends perl \
+  && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/Jackyhq/Photography --depth 1 .
-COPY config.json ./
-COPY builder.config.ts ./
-COPY .env ./
-
-ARG S3_ACCESS_KEY_ID
-ARG S3_SECRET_ACCESS_KEY
-ARG GIT_TOKEN
-ARG PG_CONNECTION_STRING
-
-RUN sh ./scripts/preinstall.sh
-# Install all dependencies
 RUN pnpm install --frozen-lockfile
+RUN pnpm run photos:standardize
+RUN pnpm build
 
-# Build the app.
-# The build script in the ssr package.json handles building the web app first.
-RUN pnpm --filter=@afilmory/ssr build
+FROM nginx:1.27-alpine AS runtime
 
-# -----------------
-# Runner stage
-# -----------------
-FROM base AS runner
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/apps/web/dist/ /usr/share/nginx/html/
 
-WORKDIR /app
-
-ENV NODE_ENV=production
-# ENV PORT and other configurations are now in the config files
-# and passed through environment variables during runtime.
-RUN apk add --no-cache curl wget
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-USER nextjs
-
-COPY --from=builder --chown=nextjs:nodejs /app/apps/ssr/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/ssr/.next/static /app/apps/ssr/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/ssr/public /app/apps/ssr/public
-
-# The standalone output includes the server.js file.
-# The PORT environment variable is automatically used by Next.js.
-EXPOSE 3000
-
-CMD ["node", "apps/ssr/server.js"]
+EXPOSE 80
 ```
 
-### 3. Docker Compose Setup
+Create `deploy/nginx.conf`:
 
-Create a `docker-compose.yml` file in your project root:
+```nginx
+server {
+  listen 80;
+  server_name _;
+  root /usr/share/nginx/html;
+  index index.html;
 
-```yaml
-version: '3.8'
+  location /assets/ {
+    try_files $uri =404;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+  }
 
-services:
-  afilmory:
-    build: .
-    ports:
-      - '3000:3000'
-    environment:
-      - NODE_ENV=production
-    volumes:
-      - ./config.json:/app/config.json:ro
-      - ./builder.config.ts:/app/builder.config.ts:ro
-      - ./.env:/app/.env:ro
-    depends_on:
-      - postgres
-    restart: unless-stopped
+  location /thumbnails/ {
+    try_files $uri =404;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+  }
 
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_DB: afilmory
-      POSTGRES_USER: afilmory
-      POSTGRES_PASSWORD: your_secure_password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-
-volumes:
-  postgres_data:
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+}
 ```
 
-### 4. Building and Running
-
-#### Option 1: Using Docker Compose (Recommended)
+Build and run:
 
 ```bash
-# Build and start all services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f afilmory
-
-# Stop services
-docker-compose down
+docker build -t jackys-photography .
+docker run --rm -p 8080:80 jackys-photography
 ```
 
-#### Option 2: Manual Docker Build
+The gallery will be available at `http://localhost:8080`.
 
-```bash
-# Build the image
-docker build -t afilmory .
+## Image Contents
 
-# Run the container
-docker run -d \
-  --name afilmory \
-  -p 3000:3000 \
-  --env-file .env \
-  -v $(pwd)/config.json:/app/config.json:ro \
-  -v $(pwd)/builder.config.ts:/app/builder.config.ts:ro \
-  afilmory
+The runtime image contains only the static build output:
+
+```plain
+/usr/share/nginx/html/
 ```
 
-## 📋 Configuration Details
+That directory is copied from:
 
-### Storage Providers
-
-Afilmory supports multiple storage providers. Configure them in `builder.config.ts`:
-
-**S3-Compatible Storage:**
-
-```json
-{
-  "storage": {
-    "provider": "s3",
-    "bucket": "your-bucket",
-    "region": "us-east-1",
-    "prefix": "photos/",
-    "customDomain": "cdn.example.com"
-  }
-}
+```plain
+apps/web/dist/
 ```
 
-**GitHub Storage:**
+The builder stage may read `photos/` to generate thumbnails and manifest data, but the final image should only contain photo originals if your storage configuration explicitly copies originals into the web build, such as through a local `distPath`.
 
-```json
-{
-  "storage": {
-    "provider": "github",
-    "owner": "username",
-    "repo": "photo-storage",
-    "branch": "main",
-    "path": "photos/"
-  }
-}
-```
+## Configuration Notes
 
-### Performance Tuning
+- Keep `config.json.url` aligned with the public URL served by your container or reverse proxy.
+- Keep `builder.config.ts` aligned with where original photos are served from.
+- `photos/incoming/` is excluded from the manifest by `excludeRegex`; run `pnpm run photos:standardize` before publishing new incoming files.
+- If your container host serves behind a subpath, review Vite `base` handling before building.
 
-For optimal performance in Docker environments:
+## Verification
 
-```json
-{
-  "performance": {
-    "worker": {
-      "enabled": true,
-      "maxWorkers": 4
-    },
-    "cache": {
-      "thumbnails": true,
-      "manifests": true
-    }
-  }
-}
-```
+After the container starts, check:
+
+- The homepage loads without 404s for `/assets/*` and `/thumbnails/*`.
+- Deep routes fall back to `index.html`.
+- Fullscreen viewer requests original image URLs successfully.
+- `sitemap.xml`, `feed.xml`, and `site.webmanifest` are reachable if they are present in the build output.

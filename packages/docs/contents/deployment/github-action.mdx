@@ -2,7 +2,7 @@
 title: GitHub Action
 description: Guide to the GitHub Actions deployment workflow used by Jacky's Photography.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2026-04-27T06:26:20+08:00
+lastModified: 2026-04-29T04:05:16+08:00
 ---
 
 # GitHub Action Deployment
@@ -31,11 +31,11 @@ The workflow performs the following steps:
 4. Install dependencies with `pnpm install`.
 5. Run `pnpm run photos:standardize`.
 6. Run `pnpm run build:manifest`.
-7. Run `pnpm run build` with `SKIP_PRECHECK=1` to avoid rebuilding the manifest a second time.
+7. Run `pnpm run build`.
 8. Verify that `apps/web/dist/` exists.
 9. Copy `sitemap.xml` to `googlesitemap.xml` when it exists.
 10. Copy the built web output to the root `web/` directory.
-11. Commit generated photo, manifest, and `web/` output changes.
+11. Commit generated photo and `web/` output changes.
 12. Upload `apps/web/dist/` as a GitHub Pages artifact.
 13. Deploy the artifact to GitHub Pages.
 
@@ -67,4 +67,4 @@ This makes it possible to point another static host, such as Cloudflare Pages, a
 
 - Photo source files under `photos/` remain private copyrighted works and are only committed as part of this specific personal gallery workflow.
 - `photos/incoming/` is excluded from the manifest by the current `builder.config.ts`; run `pnpm run photos:standardize` or move files into a real category before publishing.
-- If the web build is run locally after `pnpm run build:manifest`, set `SKIP_PRECHECK=1` only when you intentionally want to skip the manifest precheck.
+- `pnpm run build` runs the web precheck, which calls the builder CLI before Vite builds.

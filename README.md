@@ -83,7 +83,7 @@ pnpm run build:manifest
 pnpm dev
 ```
 
-`pnpm dev` 会先执行 web precheck；如需跳过 manifest 预检查，可设置 `SKIP_PRECHECK=1` 后再启动。
+`pnpm dev` 会先执行 web precheck，并在 Vite 启动前调用 builder CLI 生成或更新 manifest。
 
 ### 生产构建
 
@@ -196,9 +196,9 @@ pnpm build
 2. 执行 `pnpm install`。
 3. 执行 `pnpm run photos:standardize`。
 4. 执行 `pnpm run build:manifest`。
-5. 执行 `pnpm run build`，并通过 `SKIP_PRECHECK=1` 避免重复生成 manifest。
+5. 执行 `pnpm run build`。
 6. 校验 `apps/web/dist/`，复制 sitemap 为 `googlesitemap.xml`。
-7. 将构建产物同步到根目录 `web/` 并提交 `photos/**`、manifest 和 `web/**`。
+7. 将构建产物同步到根目录 `web/` 并提交 `photos/**` 和 `web/**`。
 8. 上传 `apps/web/dist/` 到 GitHub Pages 并部署。
 
 ## 文档

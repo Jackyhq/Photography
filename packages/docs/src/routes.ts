@@ -29,7 +29,7 @@ export const routes: RouteConfig[] = [
       title: 'Overview',
       description: "Project overview for Jacky's Photography, a customized Afilmory-powered photo gallery.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-27T06:26:20+08:00',
+      lastModified: '2026-04-29T03:50:15+08:00',
     },
   },
   {
@@ -51,7 +51,7 @@ export const routes: RouteConfig[] = [
       title: 'Cloudflare Pages',
       description: "Guide to deploying Jacky's Photography via Cloudflare Pages.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-27T06:26:20+08:00',
+      lastModified: '2026-04-29T03:50:15+08:00',
     },
   },
   {
@@ -60,9 +60,9 @@ export const routes: RouteConfig[] = [
     title: 'Docker',
     meta: {
       title: 'Docker',
-      description: 'Guide to deploying Afilmory via Docker.',
+      description: "Guide to packaging Jacky's Photography as a static Docker image.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2025-11-17T00:12:25+08:00',
+      lastModified: '2026-04-29T03:50:15+08:00',
     },
   },
   {
@@ -73,7 +73,7 @@ export const routes: RouteConfig[] = [
       title: 'GitHub Action',
       description: "Guide to the GitHub Actions deployment workflow used by Jacky's Photography.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-27T06:26:20+08:00',
+      lastModified: '2026-04-29T03:50:15+08:00',
     },
   },
   {
@@ -84,7 +84,7 @@ export const routes: RouteConfig[] = [
       title: 'GitHub Pages',
       description: "Guide to deploying Jacky's Photography via GitHub Pages.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-27T06:26:20+08:00',
+      lastModified: '2026-04-29T03:50:15+08:00',
     },
   },
   {
@@ -95,7 +95,7 @@ export const routes: RouteConfig[] = [
       title: 'Vercel',
       description: "Guide to deploying Jacky's Photography via Vercel.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-04-27T06:26:20+08:00',
+      lastModified: '2026-04-29T03:50:15+08:00',
     },
   },
   {
@@ -104,9 +104,9 @@ export const routes: RouteConfig[] = [
     title: 'Docs site',
     meta: {
       title: 'Docs site',
-      description: 'Docs site introduction and contribution guide',
+      description: "How to maintain the Jacky's Photography documentation site.",
       createdAt: '2025-09-11T17:05:55+08:00',
-      lastModified: '2025-09-11T17:10:35+08:00',
+      lastModified: '2026-04-29T03:50:15+08:00',
     },
   },
   {
@@ -117,7 +117,7 @@ export const routes: RouteConfig[] = [
       title: 'Performance',
       description: "Mobile-first loading and image performance notes for Jacky's Photography.",
       createdAt: '2026-04-27T00:00:00+01:00',
-      lastModified: '2026-04-27T00:00:00+01:00',
+      lastModified: '2026-04-29T03:50:15+08:00',
     },
   },
   {
@@ -129,7 +129,7 @@ export const routes: RouteConfig[] = [
       description:
         'Afilmory can work with multiple storage providers, including local file system, S3, GitHub, and Eagle',
       createdAt: '2025-08-12T15:09:08+08:00',
-      lastModified: '2026-04-27T06:26:20+08:00',
+      lastModified: '2026-04-29T03:50:15+08:00',
     },
   },
 ]

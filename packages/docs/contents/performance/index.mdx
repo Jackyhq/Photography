@@ -2,7 +2,7 @@
 title: Performance
 description: Mobile-first loading and image performance notes for Jacky's Photography.
 createdAt: 2026-04-27T00:00:00+01:00
-lastModified: 2026-04-27T18:06:47+08:00
+lastModified: 2026-04-29T04:05:16+08:00
 ---
 
 # Performance
@@ -36,7 +36,11 @@ The masonry gallery treats the first six items as first-screen candidates:
 - First six thumbnails use eager loading and high fetch priority.
 - Later thumbnails remain lazy-loaded with normal priority.
 - Each gallery item uses `<picture>` with WebP first and JPEG fallback.
-- The Vite manifest injection plugin preloads the first four homepage thumbnails into `index.html`, so the browser can discover likely LCP images before React runs.
+- The Vite manifest injection plugin preloads the first two homepage thumbnails into `index.html`, so the browser can discover likely LCP images before React runs.
+
+## Manifest Loading
+
+The build embeds a lightweight manifest into `index.html` for the gallery grid and emits the full manifest as a hashed JSON asset. The lightweight manifest keeps fields needed for sorting, filtering, thumbnails, camera/lens display names, and first-screen rendering. Detail-heavy views, such as the manifest inspection page and photo detail data, fetch the full manifest through `__FULL_MANIFEST_URL__` only when needed.
 
 This keeps the initial viewport image budget low while preserving compatibility for browsers that cannot use WebP.
 
@@ -72,5 +76,5 @@ Before publishing a performance change, check:
 - Opening the photo viewer still works for ordinary images.
 - Live Photo and Motion Photo items still load their media.
 - Map markers and the manifest page still have usable thumbnails through `thumbnailUrl`.
-- `index.html` contains image preloads for the first homepage thumbnails.
+- `index.html` contains image preloads for the first two homepage thumbnails.
 - `registerSW.js` is loaded with `defer`.

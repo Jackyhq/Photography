@@ -111,7 +111,7 @@ There is no `packages/components/` package in the current workspace.
 
 - Do not treat files under `photos/` as open-source assets; they are personal copyrighted works.
 - Avoid editing generated outputs unless the task explicitly involves generation or deployment output. Generated files include `apps/web/dist/`, root `web/`, and the Git-ignored `apps/web/src/data/photos-manifest.json`.
-- `pnpm dev` and `pnpm build` run `apps/web/scripts/precheck.ts`, which builds the manifest unless `SKIP_PRECHECK=1` is set.
+- `pnpm dev` and `pnpm build` run `apps/web/scripts/precheck.ts`, which calls the builder CLI before Vite starts or builds.
 - GitHub Actions builds on Node.js 24 and pnpm 10.19.0.
 - When changing documentation content under `packages/docs/contents/`, keep frontmatter `lastModified` current.
 - Follow strict TypeScript and existing workspace import boundaries. Prefer workspace packages such as `@afilmory/ui`, `@afilmory/utils`, `@afilmory/hooks`, and `@afilmory/data` over duplicate local helpers.

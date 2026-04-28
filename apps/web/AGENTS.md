@@ -18,7 +18,7 @@ pnpm analyze
 pnpm type-check
 ```
 
-`pnpm dev` and `pnpm build` run `scripts/precheck.ts`, which calls the builder CLI before starting Vite/building. Use `SKIP_PRECHECK=1` only when the manifest was already generated intentionally.
+`pnpm dev` and `pnpm build` run `scripts/precheck.ts`, which calls the builder CLI before starting Vite or building.
 
 ## App Architecture
 

@@ -2,7 +2,7 @@
 title: Overview
 description: Project overview for Jacky's Photography, a customized Afilmory-powered photo gallery.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2026-04-28T19:11:20+08:00
+lastModified: 2026-04-29T04:05:16+08:00
 ---
 
 # Jacky's Photography
@@ -86,7 +86,7 @@ pnpm docs:build
 pnpm --filter web type-check
 ```
 
-`pnpm dev` and `pnpm build` run the web precheck, which generates the manifest unless `SKIP_PRECHECK=1` is set.
+`pnpm dev` and `pnpm build` run the web precheck, which calls the builder CLI before Vite starts or builds.
 
 For mobile loading details, responsive thumbnails, and chunk-splitting expectations, see [Performance](/performance).
 
@@ -105,9 +105,9 @@ The repository includes `.github/workflows/deploy.yml`. On pushes to `main` that
 2. Installs dependencies.
 3. Runs photo standardization.
 4. Builds the photo manifest.
-5. Builds the web app with `SKIP_PRECHECK=1`.
+5. Builds the web app.
 6. Copies `sitemap.xml` to `googlesitemap.xml` when present.
-7. Syncs `apps/web/dist/` into the root `web/` directory and commits generated changes.
+7. Syncs `apps/web/dist/` into the root `web/` directory and commits generated photo and `web/` output changes.
 8. Deploys `apps/web/dist/` to GitHub Pages.
 
 The committed `web/` directory can also be used as a static output target for platforms such as Cloudflare Pages.
