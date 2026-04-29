@@ -7,7 +7,7 @@ import { photoLoader } from '@afilmory/data'
 import { Thumbhash } from '@afilmory/ui'
 import { Spring } from '@afilmory/utils'
 import { AnimatePresence, m } from 'motion/react'
-import { Fragment, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { Fragment, lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Swiper as SwiperType } from 'swiper'
 import { Keyboard, Navigation, Virtual } from 'swiper/modules'
@@ -19,14 +19,15 @@ import type { FullPhotoManifest, PhotoManifest } from '~/types/photo'
 
 import { PhotoViewerTransitionPreview } from './animations/PhotoViewerTransitionPreview'
 import { usePhotoViewerTransitions } from './animations/usePhotoViewerTransitions'
-import { ExifPanel } from './ExifPanel'
 import { GalleryThumbnail } from './GalleryThumbnail'
 import type { LoadingIndicatorRef } from './LoadingIndicator'
 import { LoadingIndicator } from './LoadingIndicator'
 import { ProgressiveImage } from './ProgressiveImage'
-import { ReactionButton } from './Reaction'
 import { SharePanel } from './SharePanel'
 import { VideoViewer } from './VideoViewer'
+
+const ExifPanel = lazy(() => import('./ExifPanel').then((module) => ({ default: module.ExifPanel })))
+const ReactionButton = lazy(() => import('./Reaction').then((module) => ({ default: module.ReactionButton })))
 
 interface PhotoViewerProps {
   photos: PhotoManifest[]
@@ -55,6 +56,7 @@ export const PhotoViewer = ({
 
   const isMobile = useMobile()
   const currentPhoto = photos[currentIndex]
+  const shouldRenderReactionButton = !isMobile && (injectConfig.useApi || injectConfig.useCloud)
   const detailedCurrentPhoto = currentPhoto ? photoDetails[currentPhoto.id] : undefined
   const shouldLoadCurrentPhotoDetail = Boolean(isOpen && currentPhoto && (!isMobile || showExifPanel))
   const isCurrentPhotoDetailLoading = Boolean(
@@ -301,16 +303,18 @@ export const PhotoViewer = ({
                     </div>
                   </m.div>
 
-                  {!isMobile && (injectConfig.useApi || injectConfig.useCloud) && (
-                    <ReactionButton
-                      photoId={currentPhoto.id}
-                      className="absolute right-4 bottom-4"
-                      style={{
-                        opacity: isViewerContentVisible ? 1 : 0,
-                        transition: 'opacity 180ms ease',
-                        pointerEvents: !isViewerContentVisible || isEntryAnimating ? 'none' : 'auto',
-                      }}
-                    />
+                  {shouldRenderReactionButton && (
+                    <Suspense fallback={null}>
+                      <ReactionButton
+                        photoId={currentPhoto.id}
+                        className="absolute right-4 bottom-4"
+                        style={{
+                          opacity: isViewerContentVisible ? 1 : 0,
+                          transition: 'opacity 180ms ease',
+                          pointerEvents: !isViewerContentVisible || isEntryAnimating ? 'none' : 'auto',
+                        }}
+                      />
+                    </Suspense>
                   )}
 
                   {/* 加载指示器 */}

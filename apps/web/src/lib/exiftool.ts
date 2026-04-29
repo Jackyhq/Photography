@@ -1,24 +1,25 @@
-import { isExiftoolLoadedAtom } from '~/atoms/app'
-
-import { jotaiStore } from './jotai'
-
 class ExifToolManagerStatic {
   private isLoaded = false
+  private loadPromise: Promise<void> | null = null
 
   private exifTool: typeof import('@uswriting/exiftool') | null = null
 
   async load() {
     if (this.isLoaded) return
-    const exiftool = await import('@uswriting/exiftool')
-    console.info('ExifTool loaded...')
-    this.exifTool = exiftool
-    this.isLoaded = true
 
-    jotaiStore.set(isExiftoolLoadedAtom, true)
-  }
+    if (!this.loadPromise) {
+      this.loadPromise = import('@uswriting/exiftool')
+        .then((exiftool) => {
+          console.info('ExifTool loaded...')
+          this.exifTool = exiftool
+          this.isLoaded = true
+        })
+        .finally(() => {
+          this.loadPromise = null
+        })
+    }
 
-  constructor() {
-    this.load()
+    await this.loadPromise
   }
 
   async parse(buffer: Blob, filename?: string) {

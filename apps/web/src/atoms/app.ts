@@ -15,7 +15,5 @@ export const gallerySettingAtom = atom({
   columns: 'auto' as number | 'auto', // 自定义列数，auto 表示自动计算
 })
 
-export const isExiftoolLoadedAtom = atom(false)
-
 // Command Palette state
 export const isCommandPaletteOpenAtom = atom(false)

@@ -74,6 +74,7 @@ const Viewport = ({
   className,
 
   focusable = true,
+  mask: _mask,
   ...rest
 }: React.ComponentPropsWithoutRef<typeof ScrollAreaBase.Viewport> & {
   mask?: boolean

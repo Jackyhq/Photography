@@ -4,13 +4,11 @@ import type { PhotoManifestItem, PickedExif } from '@afilmory/builder'
 import { MotionButtonBase, ScrollArea } from '@afilmory/ui'
 import { Spring } from '@afilmory/utils'
 import { isNil } from 'es-toolkit/compat'
-import { useAtomValue } from 'jotai'
 import { m } from 'motion/react'
 import type { FC } from 'react'
-import { Fragment, useMemo } from 'react'
+import { Fragment, lazy, Suspense, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { isExiftoolLoadedAtom } from '~/atoms/app'
 import { useMobile } from '~/hooks/useMobile'
 import {
   CarbonIsoOutline,
@@ -26,8 +24,9 @@ import type { PhotoManifest } from '~/types/photo'
 import { Row } from './ExifRow'
 import { formatExifData } from './formatExifData'
 import { HistogramChart } from './HistogramChart'
-import { MiniMap } from './MiniMap'
-import { RawExifViewer } from './RawExifViewer'
+
+const MiniMap = lazy(() => import('./MiniMap').then((module) => ({ default: module.MiniMap })))
+const RawExifViewer = lazy(() => import('./RawExifViewer').then((module) => ({ default: module.RawExifViewer })))
 
 export const ExifPanel: FC<{
   currentPhoto: PhotoManifest | PhotoManifestItem
@@ -39,7 +38,6 @@ export const ExifPanel: FC<{
   const { i18n, t } = useTranslation()
   const isMobile = useMobile()
   const formattedExifData = formatExifData(exifData)
-  const isExiftoolLoaded = useAtomValue(isExiftoolLoadedAtom)
 
   // Compute decimal GPS coordinates from raw EXIF data
   const gpsData = useMemo(() => convertExifGPSToDecimal(exifData), [exifData])
@@ -94,8 +92,10 @@ export const ExifPanel: FC<{
       />
       <div className="relative z-10 mb-4 flex shrink-0 items-center justify-between p-4 pb-0">
         <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold`}>{t('exif.header.title')}</h3>
-        {!isMobile && isExiftoolLoaded && !isLoadingDetails && currentPhoto.s3Key && (
-          <RawExifViewer currentPhoto={currentPhoto as PhotoManifestItem} />
+        {!isMobile && !isLoadingDetails && currentPhoto.s3Key && (
+          <Suspense fallback={null}>
+            <RawExifViewer currentPhoto={currentPhoto as PhotoManifestItem} />
+          </Suspense>
         )}
         {isMobile && onClose && (
           <button
@@ -410,7 +410,9 @@ export const ExifPanel: FC<{
                     {/* Maplibre MiniMap */}
                     {decimalLatitude !== null && decimalLongitude !== null && (
                       <div className="mt-3">
-                        <MiniMap latitude={decimalLatitude} longitude={decimalLongitude} photoId={currentPhoto.id} />
+                        <Suspense fallback={null}>
+                          <MiniMap latitude={decimalLatitude} longitude={decimalLongitude} photoId={currentPhoto.id} />
+                        </Suspense>
                       </div>
                     )}
                   </div>
