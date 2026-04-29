@@ -1,5 +1,3 @@
-import { fileTypeFromBlob } from 'file-type'
-
 import type { VideoSource } from '~/components/ui/photo-viewer/types'
 import { i18nAtom } from '~/i18n'
 import { imageConverterManager } from '~/lib/image-convert'
@@ -55,6 +53,11 @@ const regularImageCache: LRUCache<string, ImageCacheResult> = new LRUCache<strin
   },
 )
 
+const detectFileType = async (blob: Blob) => {
+  const { fileTypeFromBlob } = await import('file-type')
+  return fileTypeFromBlob(blob)
+}
+
 /**
  * 生成普通图片的缓存键
  */
@@ -81,7 +84,7 @@ export class ImageLoaderManager {
 
     try {
       // 使用 magic number 检测文件类型
-      const fileType = await fileTypeFromBlob(blob)
+      const fileType = await detectFileType(blob)
 
       if (!fileType) {
         console.warn('Could not detect file type from blob')
