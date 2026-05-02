@@ -346,7 +346,7 @@ export function getTocByPath(routePath: string): TocItem[] | undefined {
 // Helper function to flatten TOC tree into a simple array
 export function flattenToc(toc: TocItem[]): TocItem[] {
   const result: TocItem[] = []
-  
+
   function traverse(items: TocItem[]) {
     for (const item of items) {
       result.push({
@@ -359,7 +359,7 @@ export function flattenToc(toc: TocItem[]): TocItem[] {
       }
     }
   }
-  
+
   traverse(toc)
   return result
 }
@@ -367,7 +367,7 @@ export function flattenToc(toc: TocItem[]): TocItem[] {
 // Helper function to get all headings at a specific level
 export function getHeadingsByLevel(toc: TocItem[], level: number): TocItem[] {
   const result: TocItem[] = []
-  
+
   function traverse(items: TocItem[]) {
     for (const item of items) {
       if (item.level === level) {
@@ -378,7 +378,7 @@ export function getHeadingsByLevel(toc: TocItem[], level: number): TocItem[] {
       }
     }
   }
-  
+
   traverse(toc)
   return result
 }
