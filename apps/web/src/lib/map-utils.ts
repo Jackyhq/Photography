@@ -1,5 +1,6 @@
 import type { PhotoManifestItem, PickedExif } from '@afilmory/builder'
 
+import { normalizeGPSAltitudeRef } from '~/lib/gps-altitude'
 import type { GPSCoordinates, MapBounds, MapViewState, PhotoMarker } from '~/types/map'
 import { GPSDirection } from '~/types/map'
 
@@ -59,7 +60,7 @@ export function convertExifGPSToDecimal(exif: PickedExif | null): {
 
     if (exif.GPSAltitude && typeof exif.GPSAltitude === 'number') {
       altitude = exif.GPSAltitude
-      altitudeRef = exif.GPSAltitudeRef === 'Below Sea Level' ? 'Below Sea Level' : 'Above Sea Level'
+      altitudeRef = normalizeGPSAltitudeRef(exif.GPSAltitudeRef)
 
       // Apply altitude reference
       if (altitudeRef === 'Below Sea Level') {
