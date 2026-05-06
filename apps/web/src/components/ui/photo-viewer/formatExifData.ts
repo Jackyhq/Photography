@@ -1,6 +1,7 @@
 import type { FujiRecipe, PickedExif } from '@afilmory/builder'
 
 import { i18nAtom } from '~/i18n'
+import { isGPSAltitudeBelowSeaLevel } from '~/lib/gps-altitude'
 import { jotaiStore } from '~/lib/jotai'
 
 // Helper function to clean up EXIF values by removing unnecessary characters
@@ -281,11 +282,11 @@ export const formatExifData = (exif: PickedExif | null) => {
   // 评分
   const rating = exif.Rating
 
-  const GPSAltitudeIsAboveSeaLevel = exif.GPSAltitudeRef === 'Above Sea Level'
+  const gpsAltitudeIsBelowSeaLevel = isGPSAltitudeBelowSeaLevel(exif.GPSAltitudeRef)
 
   // GPS 信息
   const gpsInfo = {
-    altitude: exif.GPSAltitude ? `${GPSAltitudeIsAboveSeaLevel ? '' : '-'}${exif.GPSAltitude}` : null,
+    altitude: exif.GPSAltitude ? `${gpsAltitudeIsBelowSeaLevel ? '-' : ''}${exif.GPSAltitude}` : null,
     latitude: exif.GPSLatitude ? `${exif.GPSLatitude}° ${exif.GPSLatitudeRef}` : null,
     longitude: exif.GPSLongitude ? `${exif.GPSLongitude}° ${exif.GPSLongitudeRef}` : null,
   }
