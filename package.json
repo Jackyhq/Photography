@@ -48,7 +48,7 @@
     "dotenv-expand": "catalog:",
     "eslint": "9.39.4",
     "eslint-config-hyoban": "4.0.10",
-    "exiftool-vendored": "31.2.0",
+    "exiftool-vendored": "35.19.0",
     "fast-glob": "3.3.3",
     "lint-staged": "16.4.0",
     "nbump": "2.1.8",
