@@ -112,6 +112,7 @@
   "exif.custom.rendered.normal": "일반 처리",
   "exif.custom.rendered.special": "사용자 정의 처리",
   "exif.custom.rendered.type": "사용자 정의 렌더링",
+  "exif.description": "설명",
   "exif.device.info": "장치 정보",
   "exif.digital.zoom": "디지털 줌",
   "exif.dimensions": "크기",

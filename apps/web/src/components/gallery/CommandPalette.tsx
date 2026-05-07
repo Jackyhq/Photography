@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router'
 import { gallerySettingAtom } from '~/atoms/app'
 import { usePhotoViewer } from '~/hooks/usePhotoViewer'
 import { MageLens } from '~/icons'
+import { getLocalizedPhotoDescription, getSearchablePhotoDescriptions } from '~/lib/photo-description'
 
 // Command types
 type CommandType = 'search' | 'filter' | 'action' | 'photo'
@@ -57,7 +58,9 @@ const searchPhotos = (photos: ReturnType<typeof photoLoader.getPhotos>, query: s
 
   return photos.filter((photo) => {
     const matchesTitle = photo.title?.toLowerCase().includes(lowerQuery)
-    const matchesDescription = photo.description?.toLowerCase().includes(lowerQuery)
+    const matchesDescription = getSearchablePhotoDescriptions(photo).some((description) =>
+      description.toLowerCase().includes(lowerQuery),
+    )
     const matchesTags = photo.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery))
     const matchesCamera = photo.cameraDisplayName?.toLowerCase().includes(lowerQuery)
     const matchesLens = photo.lensDisplayName?.toLowerCase().includes(lowerQuery)
@@ -67,7 +70,7 @@ const searchPhotos = (photos: ReturnType<typeof photoLoader.getPhotos>, query: s
 }
 
 export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
   const [gallerySetting, setGallerySetting] = useAtom(gallerySettingAtom)
   const navigate = useNavigate()
   const { openViewer } = usePhotoViewer()
@@ -262,11 +265,12 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
     if (query.trim()) {
       const photos = searchPhotos(photoLoader.getPhotos(), query)
       photos.slice(0, 10).forEach((photo) => {
+        const photoDescription = getLocalizedPhotoDescription(photo, i18n.language)
         cmds.push({
           id: `photo-${photo.id}`,
           type: 'photo',
           title: photo.title || photo.id,
-          subtitle: photo.description || photo.cameraDisplayName || 'Photo',
+          subtitle: photoDescription || photo.cameraDisplayName || 'Photo',
           icon: <img src={photo.thumbnailUrl} alt={photo.title || 'Photo'} className="h-6 w-6 rounded object-cover" />,
           action: () => {
             const allPhotos = photoLoader.getPhotos()
@@ -277,13 +281,15 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
               onClose()
             }
           },
-          keywords: [photo.title, photo.description, ...(photo.tags || [])].filter(Boolean) as string[],
+          keywords: [photo.title, ...getSearchablePhotoDescriptions(photo), ...(photo.tags || [])].filter(
+            Boolean,
+          ) as string[],
         })
       })
     }
 
     return cmds
-  }, [t, gallerySetting, query, navigate, onClose, setGallerySetting, openViewer, updateTagFilterMode])
+  }, [t, i18n.language, gallerySetting, query, navigate, onClose, setGallerySetting, openViewer, updateTagFilterMode])
 
   // Filter commands based on query
   const filteredCommands = useMemo(() => {

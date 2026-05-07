@@ -23,6 +23,7 @@
     "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json,css,md}\" \"packages/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "lint": "eslint --fix",
     "migrate:manifest": "tsx scripts/migrate-manifest.ts",
+    "photos:descriptions:sync": "tsx scripts/sync-photo-descriptions.ts",
     "photos:standardize": "tsx scripts/standardize-photos.ts",
     "preinstall": "sh scripts/preinstall.sh",
     "prepare": "simple-git-hooks",
