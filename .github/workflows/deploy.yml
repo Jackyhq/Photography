@@ -5,6 +5,19 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/deploy.yml'
+      - 'photos/**'
+      - 'apps/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'builder.config.ts'
+      - 'site.config.ts'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy.yml'
       - 'photos/**'
       - 'apps/**'
       - 'packages/**'
@@ -14,19 +27,60 @@ on:
       - 'site.config.ts'
   workflow_dispatch:
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Allow only one concurrent deployment while letting PR validation cancel stale runs.
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
 
 jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10.19.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Standardize Photos
+        run: pnpm run photos:standardize
+
+      - name: Build manifest
+        run: pnpm run build:manifest
+
+      - name: Build web app
+        run: pnpm run build
+
+      - name: Check build output
+        run: |
+          if [ -d "./apps/web/dist" ]; then
+            echo "Build directory exists."
+          else
+            echo "Error: Build directory ./apps/web/dist not found!"
+            exit 1
+          fi
+
   build-and-deploy:
+    if: github.event_name != 'pull_request'
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
