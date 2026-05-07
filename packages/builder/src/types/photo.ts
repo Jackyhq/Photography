@@ -38,6 +38,7 @@ export interface PhotoInfo {
   dateTaken: string
   tags: string[]
   description: string
+  descriptions?: Record<string, string>
 }
 
 export type MediaType = 'photo' | 'video'

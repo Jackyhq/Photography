@@ -22,6 +22,7 @@ interface FullManifestItem extends PreloadManifestItem {
   mediaType?: string
   title?: string
   description?: string
+  descriptions?: Record<string, string>
   dateTaken?: string
   tags?: string[]
   originalUrl?: string
@@ -99,7 +100,7 @@ function createLightManifest(manifest: FullManifest) {
     version: manifest.version,
     data:
       manifest.data?.map((item) => {
-        const {exif} = item
+        const { exif } = item
         const lensDisplayName = getDisplayName(exif?.LensMake, exif?.LensModel) ?? getDisplayName(exif?.LensModel)
 
         return compactObject({
@@ -107,6 +108,7 @@ function createLightManifest(manifest: FullManifest) {
           mediaType: item.mediaType,
           title: item.title,
           description: item.description,
+          descriptions: item.descriptions,
           dateTaken: item.dateTaken,
           tags: item.tags,
           thumbnailUrl: item.thumbnailUrl,

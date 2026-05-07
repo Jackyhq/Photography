@@ -115,6 +115,7 @@
   "exif.custom.rendered.normal": "Normal Process",
   "exif.custom.rendered.special": "Custom Process",
   "exif.custom.rendered.type": "Custom Rendered",
+  "exif.description": "Description",
   "exif.device.info": "Device Information",
   "exif.digital.zoom": "Digital Zoom",
   "exif.dimensions": "Dimensions",

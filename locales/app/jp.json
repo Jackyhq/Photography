@@ -112,6 +112,7 @@
   "exif.custom.rendered.normal": "通常処理",
   "exif.custom.rendered.special": "カスタム処理",
   "exif.custom.rendered.type": "カスタムレンダリング",
+  "exif.description": "説明",
   "exif.device.info": "デバイス情報",
   "exif.digital.zoom": "デジタルズーム",
   "exif.dimensions": "サイズ",

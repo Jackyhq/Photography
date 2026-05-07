@@ -14,6 +14,7 @@ import {
 import { isMobileDevice } from '~/lib/device-viewport'
 import type { ImageLoaderManager } from '~/lib/image-loader-manager'
 import { getImageFormat } from '~/lib/image-utils'
+import { getLocalizedPhotoDescription } from '~/lib/photo-description'
 import type { PhotoManifest } from '~/types/photo'
 
 const PRIORITY_IMAGE_COUNT = 6
@@ -37,7 +38,7 @@ const formatDuration = (duration: number) => {
 export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; width: number; index: number }) => {
   const photos = useContextPhotos()
   const photoViewer = usePhotoViewer()
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
 
@@ -56,6 +57,7 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
   const videoLoadStartedRef = useRef(false)
   const scrollElement = useScrollViewElement()
   const photoAlt = data.title || data.id
+  const photoDescription = getLocalizedPhotoDescription(data, i18n.language)
   const isPriorityImage = index < PRIORITY_IMAGE_COUNT
 
   const handleImageLoad = () => {
@@ -413,9 +415,9 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
             {/* 基本信息和标签 section */}
             <div className="mb-3 [&_*]:duration-300">
               <h3 className="mb-2 truncate text-sm font-medium opacity-0 group-hover:opacity-100">{data.title}</h3>
-              {data.description && (
+              {photoDescription && (
                 <p className="mb-2 line-clamp-2 text-sm text-white/80 opacity-0 group-hover:opacity-100">
-                  {data.description}
+                  {photoDescription}
                 </p>
               )}
 

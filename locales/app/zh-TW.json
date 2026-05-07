@@ -112,6 +112,7 @@
   "exif.custom.rendered.normal": "正常處理",
   "exif.custom.rendered.special": "自訂處理",
   "exif.custom.rendered.type": "自訂渲染",
+  "exif.description": "描述",
   "exif.device.info": "裝置資訊",
   "exif.digital.zoom": "數位變焦",
   "exif.dimensions": "尺寸",
