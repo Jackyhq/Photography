@@ -7,7 +7,6 @@ interface ManifestFile {
 
 interface ManifestPhoto {
   title?: string
-  description?: string
   dateTaken?: string
   tags?: string[]
   s3Key?: string
@@ -27,7 +26,6 @@ interface PhotoDescriptionsFile {
 interface PhotoDescriptionEntry {
   key: string
   title: string
-  description: string
   descriptions: PhotoDescriptionTranslations
   tags: string[]
   aiContext: PhotoDescriptionAIContext
@@ -124,8 +122,7 @@ function mergeEntry(
   return {
     key,
     title: existing?.title ?? '',
-    description: existing?.description ?? '',
-    descriptions: existing?.descriptions ?? createEmptyTranslations(existing?.description),
+    descriptions: existing?.descriptions ?? createEmptyTranslations(),
     tags: existing?.tags ?? [],
     aiContext: createAIContext(photo),
   }
@@ -151,8 +148,7 @@ function normalizeEntry(entry: unknown): PhotoDescriptionEntry | null {
   return {
     key,
     title: typeof candidate.title === 'string' ? candidate.title : '',
-    description: typeof candidate.description === 'string' ? candidate.description : '',
-    descriptions: normalizeTranslations(candidate.descriptions, candidate.description),
+    descriptions: normalizeTranslations(candidate.descriptions),
     tags: Array.isArray(candidate.tags) ? candidate.tags.filter((tag): tag is string => typeof tag === 'string') : [],
     aiContext: {
       currentTitle: '',
@@ -164,22 +160,21 @@ function normalizeEntry(entry: unknown): PhotoDescriptionEntry | null {
   }
 }
 
-function normalizeTranslations(value: unknown, legacyDescription: unknown): PhotoDescriptionTranslations {
-  const fallback = typeof legacyDescription === 'string' ? legacyDescription : ''
+function normalizeTranslations(value: unknown): PhotoDescriptionTranslations {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    return createEmptyTranslations(fallback)
+    return createEmptyTranslations()
   }
 
   const candidate = value as Partial<Record<keyof PhotoDescriptionTranslations, unknown>>
   return {
-    'zh-CN': typeof candidate['zh-CN'] === 'string' ? candidate['zh-CN'] : fallback,
+    'zh-CN': typeof candidate['zh-CN'] === 'string' ? candidate['zh-CN'] : '',
     en: typeof candidate.en === 'string' ? candidate.en : '',
   }
 }
 
-function createEmptyTranslations(legacyDescription = ''): PhotoDescriptionTranslations {
+function createEmptyTranslations(): PhotoDescriptionTranslations {
   return {
-    'zh-CN': legacyDescription,
+    'zh-CN': '',
     en: '',
   }
 }

@@ -11,7 +11,6 @@ export interface PhotoDescriptionsPluginOptions {
 interface PhotoDescriptionEntry {
   key: string
   title?: unknown
-  description?: unknown
   descriptions?: unknown
   tags?: unknown
 }
@@ -91,7 +90,6 @@ async function loadDescriptions(filePath: string): Promise<{ photos: PhotoDescri
 function applyDescriptionEntry(item: PhotoManifestItem, entry: PhotoDescriptionEntry): boolean {
   let changed = false
   const title = readNonEmptyString(entry.title)
-  const description = readNonEmptyString(entry.description)
   const descriptions = readDescriptions(entry.descriptions)
   const tags = readTags(entry.tags)
 
@@ -105,7 +103,7 @@ function applyDescriptionEntry(item: PhotoManifestItem, entry: PhotoDescriptionE
     changed = true
   }
 
-  const fallbackDescription = descriptions?.['zh-CN'] || descriptions?.en || description
+  const fallbackDescription = descriptions?.['zh-CN'] || descriptions?.en
   if (fallbackDescription && item.description !== fallbackDescription) {
     item.description = fallbackDescription
     changed = true
