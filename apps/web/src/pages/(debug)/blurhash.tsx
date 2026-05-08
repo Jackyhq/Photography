@@ -1,8 +1,12 @@
 import { photoLoader } from '@afilmory/data'
 import { ScrollArea, Thumbhash } from '@afilmory/ui'
+import { useTranslation } from 'react-i18next'
+
+import { getPhotoAltText } from '~/lib/photo-description'
 
 export const Component = () => {
   const photos = photoLoader.getPhotos()
+  const { i18n } = useTranslation()
 
   return (
     <ScrollArea rootClassName="h-screen">
@@ -17,7 +21,7 @@ export const Component = () => {
           >
             <img
               src={photo.thumbnailUrl}
-              alt={photo.title || photo.id}
+              alt={getPhotoAltText(photo, i18n.language)}
               height={photo.height}
               width={photo.width}
               className="absolute inset-0"

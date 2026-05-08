@@ -3,9 +3,11 @@ import { clsxm, Spring } from '@afilmory/utils'
 import { m } from 'motion/react'
 import type { FC } from 'react'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { useMobile } from '~/hooks/useMobile'
 import { nextFrame } from '~/lib/dom'
+import { getPhotoAltText } from '~/lib/photo-description'
 import type { PhotoManifest } from '~/types/photo'
 
 const thumbnailSize = {
@@ -32,6 +34,7 @@ export const GalleryThumbnail: FC<{
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const isMobile = useMobile()
+  const { i18n } = useTranslation()
 
   const [scrollContainerWidth, setScrollContainerWidth] = useState(0)
 
@@ -148,7 +151,7 @@ export const GalleryThumbnail: FC<{
             {photo.thumbHash && <Thumbhash thumbHash={photo.thumbHash} className="size-fill absolute inset-0" />}
             <img
               src={photo.thumbnailUrl}
-              alt={photo.title || photo.id}
+              alt={getPhotoAltText(photo, i18n.language)}
               className="absolute inset-0 h-full w-full object-cover"
             />
             {photo.mediaType === 'video' && (

@@ -1,11 +1,17 @@
 import { GlassButton, HoverCard, HoverCardContent, HoverCardTrigger, LazyImage } from '@afilmory/ui'
 import { m } from 'motion/react'
+import { useTranslation } from 'react-i18next'
 import { Marker } from 'react-map-gl/maplibre'
 import { Link } from 'react-router'
+
+import { getPhotoAltText } from '~/lib/photo-description'
 
 import type { PhotoMarkerPinProps } from './types'
 
 export const PhotoMarkerPin = ({ marker, isSelected = false, onClick, onClose }: PhotoMarkerPinProps) => {
+  const { i18n } = useTranslation()
+  const photoAlt = getPhotoAltText(marker.photo, i18n.language)
+
   const handleClick = () => {
     onClick?.(marker)
   }
@@ -43,7 +49,7 @@ export const PhotoMarkerPin = ({ marker, isSelected = false, onClick, onClose }:
             <div className="absolute inset-0 overflow-hidden rounded-full">
               <LazyImage
                 src={marker.photo.thumbnailUrl || marker.photo.originalUrl}
-                alt={marker.photo.title || marker.photo.id}
+                alt={photoAlt}
                 thumbHash={marker.photo.thumbHash}
                 className="h-full w-full object-cover opacity-40"
                 rootMargin="100px"
@@ -100,7 +106,7 @@ export const PhotoMarkerPin = ({ marker, isSelected = false, onClick, onClose }:
             <div className="relative h-32 overflow-hidden">
               <LazyImage
                 src={marker.photo.thumbnailUrl || marker.photo.originalUrl}
-                alt={marker.photo.title || marker.photo.id}
+                alt={photoAlt}
                 thumbHash={marker.photo.thumbHash}
                 className="h-full w-full object-cover"
                 rootMargin="200px"

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router'
 import { gallerySettingAtom } from '~/atoms/app'
 import { usePhotoViewer } from '~/hooks/usePhotoViewer'
 import { MageLens } from '~/icons'
-import { getLocalizedPhotoDescription, getSearchablePhotoDescriptions } from '~/lib/photo-description'
+import { getLocalizedPhotoDescription, getPhotoAltText, getSearchablePhotoDescriptions } from '~/lib/photo-description'
 
 // Command types
 type CommandType = 'search' | 'filter' | 'action' | 'photo'
@@ -271,7 +271,13 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
           type: 'photo',
           title: photo.title || photo.id,
           subtitle: photoDescription || photo.cameraDisplayName || 'Photo',
-          icon: <img src={photo.thumbnailUrl} alt={photo.title || 'Photo'} className="h-6 w-6 rounded object-cover" />,
+          icon: (
+            <img
+              src={photo.thumbnailUrl}
+              alt={getPhotoAltText(photo, i18n.language)}
+              className="h-6 w-6 rounded object-cover"
+            />
+          ),
           action: () => {
             const allPhotos = photoLoader.getPhotos()
             const photoIndex = allPhotos.findIndex((p) => p.id === photo.id)

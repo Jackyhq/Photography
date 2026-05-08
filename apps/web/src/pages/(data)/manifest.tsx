@@ -2,6 +2,11 @@ import type { AfilmoryManifest } from '@afilmory/builder'
 import { photoLoader } from '@afilmory/data'
 import { Button, ScrollArea } from '@afilmory/ui'
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { getPhotoAltText } from '~/lib/photo-description'
+
+const EMPTY_PHOTOS: AfilmoryManifest['data'] = []
 
 // JSON 语法高亮组件
 const JsonHighlight = ({ data }: { data: any }) => {
@@ -96,82 +101,86 @@ const ManifestStats = ({ data }: { data: any[] }) => {
 }
 
 // 照片卡片组件
-const PhotoCard = ({ photo, index }: { photo: any; index: number }) => (
-  <div className="group relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/30 backdrop-blur-sm transition-all hover:border-zinc-700 hover:bg-zinc-900/50">
-    <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/0 via-zinc-800/5 to-zinc-800/10 opacity-0 transition-opacity group-hover:opacity-100" />
+const PhotoCard = ({ photo, index }: { photo: any; index: number }) => {
+  const { i18n } = useTranslation()
 
-    <div className="relative p-6">
-      <div className="flex items-start gap-4">
-        {/* 缩略图 */}
-        <div className="flex-shrink-0">
-          {photo.thumbnailUrl ? (
-            <div className="relative overflow-hidden rounded-lg">
-              <img
-                src={photo.thumbnailUrl}
-                alt={photo.title || photo.id || `Photo ${index + 1}`}
-                className="h-16 w-16 object-cover transition-transform group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-            </div>
-          ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-zinc-800 text-zinc-600">
-              <span className="text-xl">📷</span>
-            </div>
-          )}
-        </div>
+  return (
+    <div className="group relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/30 backdrop-blur-sm transition-all hover:border-zinc-700 hover:bg-zinc-900/50">
+      <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/0 via-zinc-800/5 to-zinc-800/10 opacity-0 transition-opacity group-hover:opacity-100" />
 
-        {/* 内容 */}
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-6 w-8 items-center justify-center rounded bg-zinc-800 font-mono text-xs text-zinc-400">
-              {index + 1}
-            </span>
-            <h3 className="truncate font-medium text-zinc-100">{photo.title}</h3>
+      <div className="relative p-6">
+        <div className="flex items-start gap-4">
+          {/* 缩略图 */}
+          <div className="flex-shrink-0">
+            {photo.thumbnailUrl ? (
+              <div className="relative overflow-hidden rounded-lg">
+                <img
+                  src={photo.thumbnailUrl}
+                  alt={getPhotoAltText(photo, i18n.language, `Photo ${index + 1}`)}
+                  className="h-16 w-16 object-cover transition-transform group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              </div>
+            ) : (
+              <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-zinc-800 text-zinc-600">
+                <span className="text-xl">📷</span>
+              </div>
+            )}
           </div>
 
-          {/* 元数据网格 */}
-          <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm lg:grid-cols-3">
-            <div className="flex items-center gap-2">
-              <span className="text-zinc-500">📐</span>
-              <span className="text-zinc-300">
-                {photo.width} × {photo.height}
+          {/* 内容 */}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-6 w-8 items-center justify-center rounded bg-zinc-800 font-mono text-xs text-zinc-400">
+                {index + 1}
               </span>
+              <h3 className="truncate font-medium text-zinc-100">{photo.title}</h3>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-zinc-500">📦</span>
-              <span className="text-zinc-300">{(photo.size / (1024 * 1024)).toFixed(1)} MB</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-zinc-500">📷</span>
-              <span className="truncate text-zinc-300">
-                {photo.exif?.Make} {photo.exif?.Model}
-              </span>
-            </div>
-          </div>
 
-          {/* 标签 */}
-          {photo.tags && photo.tags.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {photo.tags.slice(0, 3).map((tag: string) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center rounded-full bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-400 ring-1 ring-blue-500/20"
-                >
-                  {tag}
+            {/* 元数据网格 */}
+            <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm lg:grid-cols-3">
+              <div className="flex items-center gap-2">
+                <span className="text-zinc-500">📐</span>
+                <span className="text-zinc-300">
+                  {photo.width} × {photo.height}
                 </span>
-              ))}
-              {photo.tags.length > 3 && (
-                <span className="inline-flex items-center rounded-full bg-zinc-800 px-2.5 py-1 text-xs text-zinc-400">
-                  +{photo.tags.length - 3} more
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-zinc-500">📦</span>
+                <span className="text-zinc-300">{(photo.size / (1024 * 1024)).toFixed(1)} MB</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-zinc-500">📷</span>
+                <span className="truncate text-zinc-300">
+                  {photo.exif?.Make} {photo.exif?.Model}
                 </span>
-              )}
+              </div>
             </div>
-          )}
+
+            {/* 标签 */}
+            {photo.tags && photo.tags.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {photo.tags.slice(0, 3).map((tag: string) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center rounded-full bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-400 ring-1 ring-blue-500/20"
+                  >
+                    {tag}
+                  </span>
+                ))}
+                {photo.tags.length > 3 && (
+                  <span className="inline-flex items-center rounded-full bg-zinc-800 px-2.5 py-1 text-xs text-zinc-400">
+                    +{photo.tags.length - 3} more
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 export const Component = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -200,7 +209,7 @@ export const Component = () => {
     }
   }, [])
 
-  const photos = manifestData?.data ?? []
+  const photos = manifestData?.data ?? EMPTY_PHOTOS
 
   // 搜索过滤
   const filteredPhotos = useMemo(() => {
