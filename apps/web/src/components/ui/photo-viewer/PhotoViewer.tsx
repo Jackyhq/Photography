@@ -15,6 +15,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 
 import { injectConfig } from '~/config'
 import { useMobile } from '~/hooks/useMobile'
+import { getPhotoAltText } from '~/lib/photo-description'
 import type { FullPhotoManifest, PhotoManifest } from '~/types/photo'
 
 import { PhotoViewerTransitionPreview } from './animations/PhotoViewerTransitionPreview'
@@ -46,7 +47,7 @@ export const PhotoViewer = ({
   onIndexChange,
   triggerElement,
 }: PhotoViewerProps) => {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
   const swiperRef = useRef<SwiperType | null>(null)
   const [isImageZoomed, setIsImageZoomed] = useState(false)
   const [showExifPanel, setShowExifPanel] = useState(false)
@@ -368,7 +369,7 @@ export const PhotoViewer = ({
                                 isCurrentImage={isCurrentImage}
                                 src={photo.originalUrl}
                                 thumbnailSrc={photo.thumbnailUrl}
-                                alt={photo.title || photo.id}
+                                alt={getPhotoAltText(photo, i18n.language)}
                                 width={isCurrentImage ? currentPhoto.width : undefined}
                                 height={isCurrentImage ? currentPhoto.height : undefined}
                                 className="h-full w-full object-contain"

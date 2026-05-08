@@ -1,12 +1,15 @@
 import { RootPortal, RootPortalProvider } from '@afilmory/ui'
 import clsx from 'clsx'
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { RemoveScroll } from 'react-remove-scroll'
 
 import { NotFound } from '~/components/common/NotFound'
+import { usePageMeta } from '~/hooks/usePageMeta'
 import { useContextPhotos, usePhotoViewer } from '~/hooks/usePhotoViewer'
 import { useTitle } from '~/hooks/useTitle'
 import { deriveAccentFromSources } from '~/lib/color'
+import { getLocalizedPhotoDescription } from '~/lib/photo-description'
 
 const PhotoViewer = lazy(() =>
   import('~/components/ui/photo-viewer/PhotoViewer').then((module) => ({ default: module.PhotoViewer })),
@@ -15,6 +18,7 @@ const PhotoViewer = lazy(() =>
 export const Component = () => {
   const photoViewer = usePhotoViewer()
   const photos = useContextPhotos()
+  const { i18n } = useTranslation()
 
   const [ref, setRef] = useState<HTMLElement | null>(null)
   const rootPortalValue = useMemo(
@@ -25,6 +29,13 @@ export const Component = () => {
   )
   const currentPhoto = photos[photoViewer.currentIndex]
   useTitle(currentPhoto?.title || 'Not Found')
+  usePageMeta({
+    title: currentPhoto?.title || currentPhoto?.id,
+    description: currentPhoto ? getLocalizedPhotoDescription(currentPhoto, i18n.language) : undefined,
+    image: currentPhoto?.thumbnailUrl || currentPhoto?.originalUrl,
+    url: currentPhoto ? `/photos/${currentPhoto.id}` : undefined,
+    type: currentPhoto?.mediaType === 'video' ? 'video.other' : 'article',
+  })
 
   const [accentColor, setAccentColor] = useState<string | null>(null)
 

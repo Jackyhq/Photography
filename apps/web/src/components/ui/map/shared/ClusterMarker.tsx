@@ -1,6 +1,9 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger, LazyImage } from '@afilmory/ui'
 import { m } from 'motion/react'
+import { useTranslation } from 'react-i18next'
 import { Marker } from 'react-map-gl/maplibre'
+
+import { getPhotoAltText } from '~/lib/photo-description'
 
 import { ClusterPhotoGrid } from '../ClusterPhotoGrid'
 import type { ClusterMarkerProps } from './types'
@@ -16,6 +19,7 @@ export const ClusterMarker = ({
   onClusterClick,
 }: ClusterMarkerProps) => {
   const size = Math.min(64, Math.max(40, 32 + Math.log(pointCount) * 8))
+  const { i18n } = useTranslation()
 
   return (
     <Marker longitude={longitude} latitude={latitude}>
@@ -70,7 +74,7 @@ export const ClusterMarker = ({
                       <div key={photoMarker.photo.id} className="absolute opacity-30" style={position}>
                         <LazyImage
                           src={photoMarker.photo.thumbnailUrl || photoMarker.photo.originalUrl}
-                          alt={photoMarker.photo.title || photoMarker.photo.id}
+                          alt={getPhotoAltText(photoMarker.photo, i18n.language)}
                           thumbHash={photoMarker.photo.thumbHash}
                           className="h-full w-full object-cover"
                           rootMargin="100px"

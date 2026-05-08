@@ -4,6 +4,7 @@ import { m } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { getPhotoAltText } from '~/lib/photo-description'
 import type { PhotoMarker } from '~/types/map'
 
 interface ClusterPhotoGridProps {
@@ -55,7 +56,7 @@ export const ClusterPhotoGrid = ({ photos, onPhotoClick }: ClusterPhotoGridProps
             >
               <LazyImage
                 src={photoMarker.photo.thumbnailUrl || photoMarker.photo.originalUrl}
-                alt={photoMarker.photo.title || photoMarker.photo.id}
+                alt={getPhotoAltText(photoMarker.photo, i18n.language)}
                 thumbHash={photoMarker.photo.thumbHash}
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                 rootMargin="200px"

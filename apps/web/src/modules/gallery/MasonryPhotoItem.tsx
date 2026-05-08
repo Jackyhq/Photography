@@ -14,6 +14,7 @@ import {
 import { isMobileDevice } from '~/lib/device-viewport'
 import type { ImageLoaderManager } from '~/lib/image-loader-manager'
 import { getImageFormat } from '~/lib/image-utils'
+import { getPhotoAltText } from '~/lib/photo-description'
 import type { PhotoManifest } from '~/types/photo'
 
 const PRIORITY_IMAGE_COUNT = 6
@@ -37,7 +38,7 @@ const formatDuration = (duration: number) => {
 export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; width: number; index: number }) => {
   const photos = useContextPhotos()
   const photoViewer = usePhotoViewer()
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
 
@@ -55,7 +56,7 @@ export const MasonryPhotoItem = ({ data, width, index }: { data: PhotoManifest; 
   const imageLoaderManagerRef = useRef<ImageLoaderManager | null>(null)
   const videoLoadStartedRef = useRef(false)
   const scrollElement = useScrollViewElement()
-  const photoAlt = data.title || data.id
+  const photoAlt = getPhotoAltText(data, i18n.language)
   const isPriorityImage = index < PRIORITY_IMAGE_COUNT
 
   const handleImageLoad = () => {

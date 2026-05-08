@@ -1,4 +1,6 @@
 interface PhotoWithDescriptions {
+  id?: string
+  title?: string
   description?: string
   descriptions?: Record<string, string>
 }
@@ -16,9 +18,22 @@ export function getLocalizedPhotoDescription(photo: PhotoWithDescriptions, langu
 }
 
 export function getSearchablePhotoDescriptions(photo: PhotoWithDescriptions): string[] {
-  return [...Object.values(photo.descriptions ?? {}), photo.description].filter(
-    (description): description is string => typeof description === 'string' && description.trim().length > 0,
-  )
+  const descriptions = [...Object.values(photo.descriptions ?? {}), photo.description]
+    .map((description) => (typeof description === 'string' ? description.trim() : ''))
+    .filter((description) => description.length > 0)
+
+  return Array.from(new Set(descriptions))
+}
+
+export function getPhotoAltText(photo: PhotoWithDescriptions, language: string, fallback = 'Photo'): string {
+  const description = getLocalizedPhotoDescription(photo, language).trim()
+  if (description) return description
+
+  const title = photo.title?.trim()
+  if (title) return title
+
+  const id = photo.id?.trim()
+  return id || fallback
 }
 
 function getDescriptionLanguageCandidates(language: string): string[] {
