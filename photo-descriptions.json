@@ -3,12 +3,16 @@
   "photos": [
     {
       "key": "视频/20260414.mov",
-      "title": "",
+      "title": "芝加哥与纽约剪辑",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于美国，这段剪辑串联芝加哥与纽约的城市天际线、水岸和旅途片段。",
+        "en": "Filmed in the United States, this clip brings together travel fragments from Chicago and New York, including skylines, waterfronts, and city moments."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "纽约"
+      ],
       "aiContext": {
         "currentTitle": "20260414",
         "dateTaken": "2026-04-13T23:00:00.000Z",
@@ -21,12 +25,16 @@
     },
     {
       "key": "随手/20260413193902.jpeg",
-      "title": "",
+      "title": "密歇根湖上的小船",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于芝加哥，港湾里的船只、水面和远山组成平静的旅行场景。",
+        "en": "Photographed in Chicago, where boats, water, and distant hills form a calm harbor scene."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260413193902",
         "dateTaken": "2026-04-13T19:39:02.000Z",
@@ -39,12 +47,16 @@
     },
     {
       "key": "随手/20260412210032.jpeg",
-      "title": "",
+      "title": "芝加哥街角餐厅",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于芝加哥，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in Chicago, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260412210032",
         "dateTaken": "2026-04-12T21:00:32.000Z",
@@ -57,12 +69,16 @@
     },
     {
       "key": "随手/20260412194241.jpeg",
-      "title": "",
+      "title": "湖面上的芝加哥天际线",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于芝加哥，隔着水面望向高楼天际线，城市轮廓清晰展开。",
+        "en": "Photographed in Chicago, where the skyline opens across the water with a clear urban silhouette."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20260412194241",
         "dateTaken": "2026-04-12T19:42:41.000Z",
@@ -75,12 +91,16 @@
     },
     {
       "key": "无人机/20260412193504.jpg",
-      "title": "",
+      "title": "芝加哥湖岸航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于芝加哥，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in Chicago, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260412193504",
         "dateTaken": "2026-04-12T19:35:04.000Z",
@@ -93,12 +113,16 @@
     },
     {
       "key": "无人机/20260411225731.jpg",
-      "title": "",
+      "title": "芝加哥立交航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于芝加哥，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in Chicago, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260411225731",
         "dateTaken": "2026-04-11T22:57:31.000Z",
@@ -111,12 +135,16 @@
     },
     {
       "key": "无人机/20260411210013.jpg",
-      "title": "",
+      "title": "芝加哥街谷远望",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于芝加哥，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in Chicago, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20260411210013",
         "dateTaken": "2026-04-11T21:00:13.000Z",
@@ -129,12 +157,16 @@
     },
     {
       "key": "无人机/20260411174529.jpg",
-      "title": "",
+      "title": "芝加哥河岸高楼",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于芝加哥，河道穿过楼群，水面和建筑形成纵深。",
+        "en": "Photographed in Chicago, where the river cuts through the buildings and adds depth to the scene."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20260411174529",
         "dateTaken": "2026-04-11T17:45:29.000Z",
@@ -147,12 +179,16 @@
     },
     {
       "key": "无人机/20260411170343.jpg",
-      "title": "",
+      "title": "千禧公园航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于芝加哥，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in Chicago, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260411170343",
         "dateTaken": "2026-04-11T17:03:43.000Z",
@@ -165,12 +201,16 @@
     },
     {
       "key": "随手/20260411164214.jpeg",
-      "title": "",
+      "title": "云门前的广场",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于芝加哥，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in Chicago, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20260411164214",
         "dateTaken": "2026-04-11T16:42:14.000Z",
@@ -183,12 +223,16 @@
     },
     {
       "key": "随手/20260411000456.jpeg",
-      "title": "",
+      "title": "芝加哥窗边街景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于芝加哥，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in Chicago, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "芝加哥",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260411000456",
         "dateTaken": "2026-04-11T00:04:56.000Z",
@@ -201,12 +245,16 @@
     },
     {
       "key": "随手/20260410102438.jpeg",
-      "title": "",
+      "title": "纽约降落前的机翼",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约，机窗外的天空、云层和机翼记录了旅途中的过渡时刻。",
+        "en": "Photographed in New York City, where sky, clouds, and wing outside the window mark an in-between travel moment."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "旅途"
+      ],
       "aiContext": {
         "currentTitle": "20260410102438",
         "dateTaken": "2026-04-10T10:24:38.000Z",
@@ -219,12 +267,16 @@
     },
     {
       "key": "无人机/20260409104624.jpeg",
-      "title": "",
+      "title": "纽约港日落航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于新泽西哈德逊河畔，夕阳下的城市天际线和水面形成温暖层次。",
+        "en": "Photographed in the New Jersey waterfront, where the skyline and water are layered in warm sunset light."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "新泽西",
+        "纽约"
+      ],
       "aiContext": {
         "currentTitle": "20260409104624",
         "dateTaken": "2026-04-09T10:46:24.000Z",
@@ -237,12 +289,16 @@
     },
     {
       "key": "无人机/20260409104222.jpeg",
-      "title": "",
+      "title": "哈德逊河畔日落",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，夕阳下的城市天际线和水面形成温暖层次。",
+        "en": "Photographed in New York Harbor, where the skyline and water are layered in warm sunset light."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20260409104222",
         "dateTaken": "2026-04-09T10:42:22.000Z",
@@ -255,12 +311,16 @@
     },
     {
       "key": "随手/20260408210418.jpeg",
-      "title": "",
+      "title": "纽约老城建筑",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in New York Harbor, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260408210418",
         "dateTaken": "2026-04-08T21:04:18.000Z",
@@ -273,12 +333,16 @@
     },
     {
       "key": "随手/20260408205056.jpeg",
-      "title": "",
+      "title": "曼哈顿桥下",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，桥梁与城市背景交织，线条把视线引向远处。",
+        "en": "Photographed in New York Harbor, where bridge lines lead the eye into the city beyond."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260408205056",
         "dateTaken": "2026-04-08T20:50:56.000Z",
@@ -291,12 +355,16 @@
     },
     {
       "key": "随手/20260408204352.jpeg",
-      "title": "",
+      "title": "纽约春日花枝",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，花树在城市边缘盛开，柔化了街景和天空。",
+        "en": "Photographed in New York Harbor, where blossoms soften the city edge and the sky around it."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260408204352",
         "dateTaken": "2026-04-08T20:43:52.000Z",
@@ -309,12 +377,16 @@
     },
     {
       "key": "随手/20260408204030.jpeg",
-      "title": "",
+      "title": "布鲁克林桥与世贸中心",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，桥梁与城市背景交织，线条把视线引向远处。",
+        "en": "Photographed in New York Harbor, where bridge lines lead the eye into the city beyond."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260408204030",
         "dateTaken": "2026-04-08T20:40:30.000Z",
@@ -327,12 +399,16 @@
     },
     {
       "key": "无人机/20260408174000.jpeg",
-      "title": "",
+      "title": "自由女神像远眺",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于新泽西哈德逊河畔，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in the New Jersey waterfront, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "新泽西",
+        "纽约"
+      ],
       "aiContext": {
         "currentTitle": "20260408174000",
         "dateTaken": "2026-04-08T17:40:00.000Z",
@@ -345,12 +421,16 @@
     },
     {
       "key": "无人机/20260408173745.jpeg",
-      "title": "",
+      "title": "纽约高楼航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于新泽西哈德逊河畔，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in the New Jersey waterfront, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "新泽西",
+        "纽约"
+      ],
       "aiContext": {
         "currentTitle": "20260408173745",
         "dateTaken": "2026-04-08T17:37:45.000Z",
@@ -363,12 +443,16 @@
     },
     {
       "key": "无人机/20260408173651.jpeg",
-      "title": "",
+      "title": "纽约城区航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于新泽西哈德逊河畔，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in the New Jersey waterfront, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "新泽西",
+        "纽约"
+      ],
       "aiContext": {
         "currentTitle": "20260408173651",
         "dateTaken": "2026-04-08T17:36:51.000Z",
@@ -381,12 +465,16 @@
     },
     {
       "key": "随手/20260407205029.jpeg",
-      "title": "",
+      "title": "曼哈顿街头高楼",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in New York City, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260407205029",
         "dateTaken": "2026-04-07T20:50:29.000Z",
@@ -399,12 +487,16 @@
     },
     {
       "key": "随手/20260407193943.jpeg",
-      "title": "",
+      "title": "中央公园湖景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约，公园里的树影、草地和水面让画面放慢下来。",
+        "en": "Photographed in New York City, where trees, lawns, and water slow the frame down inside the park."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260407193943",
         "dateTaken": "2026-04-07T19:39:43.000Z",
@@ -417,12 +509,16 @@
     },
     {
       "key": "随手/20260407193601.jpeg",
-      "title": "",
+      "title": "中央公园春花与塔楼",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约，花树在城市边缘盛开，柔化了街景和天空。",
+        "en": "Photographed in New York City, where blossoms soften the city edge and the sky around it."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "春天"
+      ],
       "aiContext": {
         "currentTitle": "20260407193601",
         "dateTaken": "2026-04-07T19:36:01.000Z",
@@ -435,12 +531,16 @@
     },
     {
       "key": "随手/20260407185745.jpeg",
-      "title": "",
+      "title": "纽约街口春光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in New York City, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260407185745",
         "dateTaken": "2026-04-07T18:57:45.000Z",
@@ -453,12 +553,16 @@
     },
     {
       "key": "随手/20260407182729.jpeg",
-      "title": "",
+      "title": "时代广场咖啡",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约，饮品和周围环境一起记录了旅途中的短暂停留。",
+        "en": "Photographed in New York City, where a drink and its surroundings record a brief travel pause."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "随拍"
+      ],
       "aiContext": {
         "currentTitle": "20260407182729",
         "dateTaken": "2026-04-07T18:27:29.000Z",
@@ -471,12 +575,16 @@
     },
     {
       "key": "随手/20260407182109.jpeg",
-      "title": "",
+      "title": "时代广场人潮",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in New York City, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260407182109",
         "dateTaken": "2026-04-07T18:21:09.000Z",
@@ -489,12 +597,16 @@
     },
     {
       "key": "城市/20260406161109.jpeg",
-      "title": "",
+      "title": "曼哈顿桥晴空",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，桥梁与城市背景交织，线条把视线引向远处。",
+        "en": "Photographed in New York Harbor, where bridge lines lead the eye into the city beyond."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260406161109",
         "dateTaken": "2026-04-06T16:11:09.000Z",
@@ -507,12 +619,16 @@
     },
     {
       "key": "城市/20260406155216.jpeg",
-      "title": "",
+      "title": "自由女神像晴空",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in New York Harbor, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260406155216",
         "dateTaken": "2026-04-06T15:52:16.000Z",
@@ -525,12 +641,16 @@
     },
     {
       "key": "城市/20260406153854.jpeg",
-      "title": "",
+      "title": "纽约下城天际线",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，隔着水面望向高楼天际线，城市轮廓清晰展开。",
+        "en": "Photographed in New York Harbor, where the skyline opens across the water with a clear urban silhouette."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20260406153854",
         "dateTaken": "2026-04-06T15:38:54.000Z",
@@ -549,9 +669,9 @@
         "en": "Photographed on the Lower Manhattan waterfront, with the skyline stretching along the river under a clear blue sky."
       },
       "tags": [
+        "美国",
         "纽约",
-        "天际线",
-        "城市建筑"
+        "天际线"
       ],
       "aiContext": {
         "currentTitle": "纽约下城天际线",
@@ -568,12 +688,16 @@
     },
     {
       "key": "城市/20260406012707.jpeg",
-      "title": "",
+      "title": "纽约夜色水岸",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，夜色里的高楼灯光倒映在水面和街区之间。",
+        "en": "Photographed in New York Harbor, where night lights from the towers reflect across water and streets."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20260406012707",
         "dateTaken": "2026-04-06T01:27:07.000Z",
@@ -586,12 +710,16 @@
     },
     {
       "key": "随手/20260404221208.jpeg",
-      "title": "",
+      "title": "纽瓦克樱花小径",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽瓦克樱花公园，花树在城市边缘盛开，柔化了街景和天空。",
+        "en": "Photographed in Newark Branch Brook Park, where blossoms soften the city edge and the sky around it."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "新泽西",
+        "春天"
+      ],
       "aiContext": {
         "currentTitle": "20260404221208",
         "dateTaken": "2026-04-04T22:12:08.000Z",
@@ -604,12 +732,16 @@
     },
     {
       "key": "随手/20260404173524.jpeg",
-      "title": "",
+      "title": "枝头樱花盛开",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽瓦克樱花公园，花树在城市边缘盛开，柔化了街景和天空。",
+        "en": "Photographed in Newark Branch Brook Park, where blossoms soften the city edge and the sky around it."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "新泽西",
+        "春天"
+      ],
       "aiContext": {
         "currentTitle": "20260404173524",
         "dateTaken": "2026-04-04T17:35:24.000Z",
@@ -622,12 +754,16 @@
     },
     {
       "key": "城市/20260404140240.jpeg",
-      "title": "",
+      "title": "哈德逊河对岸天际线",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于新泽西哈德逊河畔，隔着水面望向高楼天际线，城市轮廓清晰展开。",
+        "en": "Photographed in the New Jersey waterfront, where the skyline opens across the water with a clear urban silhouette."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "新泽西",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20260404140240",
         "dateTaken": "2026-04-04T14:02:40.000Z",
@@ -640,12 +776,16 @@
     },
     {
       "key": "城市/20260404022724.jpeg",
-      "title": "",
+      "title": "新泽西夜望曼哈顿",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于新泽西哈德逊河畔，夜色里的高楼灯光倒映在水面和街区之间。",
+        "en": "Photographed in the New Jersey waterfront, where night lights from the towers reflect across water and streets."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "新泽西",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20260404022724",
         "dateTaken": "2026-04-04T02:27:24.000Z",
@@ -658,12 +798,16 @@
     },
     {
       "key": "随手/20260402195144.jpg",
-      "title": "",
+      "title": "伦敦大本钟黄昏",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20260402195144",
         "dateTaken": "2026-04-02T18:51:44.000Z",
@@ -676,12 +820,16 @@
     },
     {
       "key": "随手/20260402191024.jpg",
-      "title": "",
+      "title": "泰晤士河畔伦敦天际线",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，隔着水面望向高楼天际线，城市轮廓清晰展开。",
+        "en": "Photographed in London, where the skyline opens across the water with a clear urban silhouette."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20260402191024",
         "dateTaken": "2026-04-02T18:10:24.000Z",
@@ -694,12 +842,16 @@
     },
     {
       "key": "风光/20260330103304.jpg",
-      "title": "",
+      "title": "多佛白崖近景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于多佛白崖，白色海崖贴着海面展开，风和浪让画面更开阔。",
+        "en": "Photographed in the White Cliffs of Dover, where white cliffs stretch along the sea, opened by wind and waves."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "多佛",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260330103304",
         "dateTaken": "2026-03-30T09:33:04.000Z",
@@ -712,12 +864,16 @@
     },
     {
       "key": "随手/20260330092222.jpeg",
-      "title": "",
+      "title": "海面上的多佛白崖",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于多佛白崖，白色海崖贴着海面展开，风和浪让画面更开阔。",
+        "en": "Photographed in the White Cliffs of Dover, where white cliffs stretch along the sea, opened by wind and waves."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "多佛",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260330092222",
         "dateTaken": "2026-03-30T09:22:22.000Z",
@@ -730,12 +886,16 @@
     },
     {
       "key": "城市/20260330075251.jpg",
-      "title": "",
+      "title": "加来海岸晨光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于加来，港湾里的船只、水面和远山组成平静的旅行场景。",
+        "en": "Photographed in Calais, where boats, water, and distant hills form a calm harbor scene."
       },
-      "tags": [],
+      "tags": [
+        "法国",
+        "加来",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260330075251",
         "dateTaken": "2026-03-30T05:52:51.000Z",
@@ -748,12 +908,16 @@
     },
     {
       "key": "城市/20260329144101.jpg",
-      "title": "",
+      "title": "加来市政厅立面",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于加来，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Calais, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "法国",
+        "加来",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20260329144101",
         "dateTaken": "2026-03-29T12:41:01.000Z",
@@ -766,12 +930,16 @@
     },
     {
       "key": "城市/20260329142650.jpg",
-      "title": "",
+      "title": "加来教堂塔楼",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于加来，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Calais, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "法国",
+        "加来",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20260329142650",
         "dateTaken": "2026-03-29T12:26:50.000Z",
@@ -784,12 +952,16 @@
     },
     {
       "key": "城市/20260329133558.jpg",
-      "title": "",
+      "title": "加来街角纪念碑",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于加来，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Calais, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "法国",
+        "加来",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20260329133558",
         "dateTaken": "2026-03-29T11:35:58.000Z",
@@ -802,12 +974,16 @@
     },
     {
       "key": "风光/20260328185228.jpg",
-      "title": "",
+      "title": "英吉利海峡落日",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于加来，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Photographed in Calais, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "法国",
+        "加来",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260328185228",
         "dateTaken": "2026-03-28T17:52:28.000Z",
@@ -820,12 +996,16 @@
     },
     {
       "key": "风光/20260328182744.jpg",
-      "title": "",
+      "title": "白崖前的渡轮",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于加来，渡轮、码头和水面记录了城市之间的移动感。",
+        "en": "Photographed in Calais, where ferry, pier, and water record motion between places."
       },
-      "tags": [],
+      "tags": [
+        "法国",
+        "英国",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260328182744",
         "dateTaken": "2026-03-28T17:27:44.000Z",
@@ -838,12 +1018,16 @@
     },
     {
       "key": "风光/20260328165428.jpg",
-      "title": "",
+      "title": "海峡云隙光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于多佛白崖，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Photographed in the White Cliffs of Dover, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "多佛",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260328165428",
         "dateTaken": "2026-03-28T16:54:28.000Z",
@@ -856,12 +1040,16 @@
     },
     {
       "key": "风光/20260328164019.jpeg",
-      "title": "",
+      "title": "海峡风暴云",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于多佛白崖，海岸、云层和远处船影让画面保持柔和的流动感。",
+        "en": "Photographed in the White Cliffs of Dover, where coast, clouds, and distant ships keep a soft sense of movement."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "多佛",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260328164019",
         "dateTaken": "2026-03-28T16:40:19.000Z",
@@ -874,12 +1062,16 @@
     },
     {
       "key": "随手/20260328134207.jpg",
-      "title": "",
+      "title": "多佛港口渡轮",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于多佛白崖，渡轮、码头和水面记录了城市之间的移动感。",
+        "en": "Photographed in the White Cliffs of Dover, where ferry, pier, and water record motion between places."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "多佛",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260328134207",
         "dateTaken": "2026-03-28T13:42:07.000Z",
@@ -892,12 +1084,16 @@
     },
     {
       "key": "随手/20260328133445.jpg",
-      "title": "",
+      "title": "多佛草坡与海港",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于多佛白崖，白色海崖贴着海面展开，风和浪让画面更开阔。",
+        "en": "Photographed in the White Cliffs of Dover, where white cliffs stretch along the sea, opened by wind and waves."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "多佛",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260328133445",
         "dateTaken": "2026-03-28T13:34:45.000Z",
@@ -910,12 +1106,16 @@
     },
     {
       "key": "风光/20260328131541.jpg",
-      "title": "",
+      "title": "白崖边缘海水",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于多佛白崖，白色海崖贴着海面展开，风和浪让画面更开阔。",
+        "en": "Photographed in the White Cliffs of Dover, where white cliffs stretch along the sea, opened by wind and waves."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "多佛",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260328131541",
         "dateTaken": "2026-03-28T13:15:41.000Z",
@@ -928,12 +1128,16 @@
     },
     {
       "key": "无人机/DJI_20260314192519_0115_D.jpg",
-      "title": "",
+      "title": "伦敦夜航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，夜间航拍把街灯、路口和楼群压成明亮的图案。",
+        "en": "Photographed in London, where a night aerial view turns streets and towers into a bright pattern."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "DJI 20260314192519 0115 D",
         "dateTaken": "2026-03-14T19:25:19.000Z",
@@ -946,12 +1150,16 @@
     },
     {
       "key": "无人机/DJI_20260314192449_0105_D.jpg",
-      "title": "",
+      "title": "伦敦城市夜景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，夜间航拍把街灯、路口和楼群压成明亮的图案。",
+        "en": "Photographed in London, where a night aerial view turns streets and towers into a bright pattern."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "DJI 20260314192449 0105 D",
         "dateTaken": "2026-03-14T19:24:49.000Z",
@@ -964,12 +1172,16 @@
     },
     {
       "key": "随手/20260312182734.jpeg",
-      "title": "",
+      "title": "伦敦春夜路牌",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "20260312182734",
         "dateTaken": "2026-03-12T18:27:34.000Z",
@@ -982,12 +1194,16 @@
     },
     {
       "key": "随手/20260312180812.jpeg",
-      "title": "",
+      "title": "伦敦街边花树",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，花树在城市边缘盛开，柔化了街景和天空。",
+        "en": "Photographed in London, where blossoms soften the city edge and the sky around it."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "春天"
+      ],
       "aiContext": {
         "currentTitle": "20260312180812",
         "dateTaken": "2026-03-12T18:08:12.000Z",
@@ -1000,12 +1216,16 @@
     },
     {
       "key": "随手/20260311181229.jpg",
-      "title": "",
+      "title": "阿克斯布里奇公园",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，公园里的树影、草地和水面让画面放慢下来。",
+        "en": "Photographed in Uxbridge, London, where trees, lawns, and water slow the frame down inside the park."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260311181229",
         "dateTaken": "2026-03-11T18:12:29.000Z",
@@ -1018,12 +1238,16 @@
     },
     {
       "key": "无人机/20260311180216.jpg",
-      "title": "",
+      "title": "阿克斯布里奇运河船",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，运河边的窄船、树影和水面保留了安静的日常感。",
+        "en": "Photographed in Uxbridge, London, where narrowboats, trees, and water keep a quiet everyday mood by the canal."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260311180216",
         "dateTaken": "2026-03-11T18:02:16.000Z",
@@ -1036,12 +1260,16 @@
     },
     {
       "key": "无人机/20260311180202.jpg",
-      "title": "",
+      "title": "阿克斯布里奇船闸",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，运河边的窄船、树影和水面保留了安静的日常感。",
+        "en": "Photographed in Uxbridge, London, where narrowboats, trees, and water keep a quiet everyday mood by the canal."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260311180202",
         "dateTaken": "2026-03-11T18:02:02.000Z",
@@ -1054,12 +1282,16 @@
     },
     {
       "key": "无人机/20260311180007.jpg",
-      "title": "",
+      "title": "伦敦郊外日落航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in Uxbridge, London, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "日落"
+      ],
       "aiContext": {
         "currentTitle": "20260311180007",
         "dateTaken": "2026-03-11T18:00:07.000Z",
@@ -1072,12 +1304,16 @@
     },
     {
       "key": "无人机/20260305183315.jpg",
-      "title": "",
+      "title": "伯明翰夜间路口航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伯明翰，夜间航拍把街灯、路口和楼群压成明亮的图案。",
+        "en": "Photographed in Birmingham, where a night aerial view turns streets and towers into a bright pattern."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伯明翰",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "20260305183315",
         "dateTaken": "2026-03-05T18:33:15.000Z",
@@ -1090,12 +1326,16 @@
     },
     {
       "key": "无人机/20260305183256.jpg",
-      "title": "",
+      "title": "伯明翰夜色城区",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伯明翰，夜间航拍把街灯、路口和楼群压成明亮的图案。",
+        "en": "Photographed in Birmingham, where a night aerial view turns streets and towers into a bright pattern."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伯明翰",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "20260305183256",
         "dateTaken": "2026-03-05T18:32:56.000Z",
@@ -1108,12 +1348,16 @@
     },
     {
       "key": "无人机/20260305183105.jpg",
-      "title": "",
+      "title": "伯明翰蓝调航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伯明翰，夜间航拍把街灯、路口和楼群压成明亮的图案。",
+        "en": "Photographed in Birmingham, where a night aerial view turns streets and towers into a bright pattern."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伯明翰",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "20260305183105",
         "dateTaken": "2026-03-05T18:31:05.000Z",
@@ -1126,12 +1370,16 @@
     },
     {
       "key": "无人机/20260305182317.jpg",
-      "title": "",
+      "title": "伯明翰市中心夜景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伯明翰，夜间航拍把街灯、路口和楼群压成明亮的图案。",
+        "en": "Photographed in Birmingham, where a night aerial view turns streets and towers into a bright pattern."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伯明翰",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "20260305182317",
         "dateTaken": "2026-03-05T18:23:17.000Z",
@@ -1144,12 +1392,16 @@
     },
     {
       "key": "无人机/20260305182219.jpg",
-      "title": "",
+      "title": "伯明翰道路光流",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伯明翰，夜间航拍把街灯、路口和楼群压成明亮的图案。",
+        "en": "Photographed in Birmingham, where a night aerial view turns streets and towers into a bright pattern."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伯明翰",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "20260305182219",
         "dateTaken": "2026-03-05T18:22:19.000Z",
@@ -1162,12 +1414,16 @@
     },
     {
       "key": "随手/20260305163032.jpg",
-      "title": "",
+      "title": "伯明翰教堂尖顶",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伯明翰，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Birmingham, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伯明翰",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20260305163032",
         "dateTaken": "2026-03-05T16:30:32.000Z",
@@ -1180,12 +1436,16 @@
     },
     {
       "key": "随手/20260305133322.jpg",
-      "title": "",
+      "title": "伯明翰钟楼夹景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伯明翰，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Birmingham, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伯明翰",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20260305133322",
         "dateTaken": "2026-03-05T13:33:22.000Z",
@@ -1198,12 +1458,16 @@
     },
     {
       "key": "无人机/20260305115949.jpg",
-      "title": "",
+      "title": "伯明翰城市高处",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伯明翰，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in Birmingham, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伯明翰",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260305115949",
         "dateTaken": "2026-03-05T11:59:49.000Z",
@@ -1216,12 +1480,16 @@
     },
     {
       "key": "无人机/20260305101648.jpg",
-      "title": "",
+      "title": "伯明翰白日航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伯明翰，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in Birmingham, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伯明翰",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260305101648",
         "dateTaken": "2026-03-05T10:16:48.000Z",
@@ -1234,12 +1502,16 @@
     },
     {
       "key": "随手/20260304181033.jpg",
-      "title": "",
+      "title": "阿克斯布里奇站台晨光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，站台、轨道和天光组成出行中的安静间隔。",
+        "en": "Photographed in Uxbridge, London, where platform, tracks, and sky make a quiet interval in transit."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "旅途"
+      ],
       "aiContext": {
         "currentTitle": "20260304181033",
         "dateTaken": "2026-03-04T18:10:33.000Z",
@@ -1252,12 +1524,16 @@
     },
     {
       "key": "无人机/20260301171801.jpg",
-      "title": "",
+      "title": "伦敦阴天航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in London, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260301171801",
         "dateTaken": "2026-03-01T17:18:01.000Z",
@@ -1270,12 +1546,16 @@
     },
     {
       "key": "无人机/20260301171522.jpg",
-      "title": "",
+      "title": "伦敦城市塔楼",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in London, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260301171522",
         "dateTaken": "2026-03-01T17:15:22.000Z",
@@ -1288,12 +1568,16 @@
     },
     {
       "key": "无人机/20260225125917.jpg",
-      "title": "",
+      "title": "阿克斯布里奇绿地航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in Uxbridge, London, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260225125917",
         "dateTaken": "2026-02-25T12:59:17.000Z",
@@ -1306,12 +1590,16 @@
     },
     {
       "key": "无人机/20260225125511.jpg",
-      "title": "",
+      "title": "阿克斯布里奇车场航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，航拍视角把道路、楼群和城市肌理一起展开。",
+        "en": "Photographed in Uxbridge, London, where an aerial view lays out roads, towers, and the city texture."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20260225125511",
         "dateTaken": "2026-02-25T12:55:11.000Z",
@@ -1324,12 +1612,16 @@
     },
     {
       "key": "随手/20260222142211.jpeg",
-      "title": "",
+      "title": "国家美术馆前",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20260222142211",
         "dateTaken": "2026-02-22T14:22:11.000Z",
@@ -1342,12 +1634,16 @@
     },
     {
       "key": "随手/20260216152243.jpeg",
-      "title": "",
+      "title": "伦敦街头教堂尖顶",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in London, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20260216152243",
         "dateTaken": "2026-02-16T15:22:43.000Z",
@@ -1360,12 +1656,16 @@
     },
     {
       "key": "城市/20260117171806.jpeg",
-      "title": "",
+      "title": "伦敦水岸夜楼",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，夜色里的高楼灯光倒映在水面和街区之间。",
+        "en": "Photographed in London, where night lights from the towers reflect across water and streets."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20260117171806",
         "dateTaken": "2026-01-17T17:18:06.000Z",
@@ -1378,12 +1678,16 @@
     },
     {
       "key": "风光/20260116125810.jpeg",
-      "title": "",
+      "title": "阿克斯布里奇冬日运河",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，运河边的窄船、树影和水面保留了安静的日常感。",
+        "en": "Photographed in Uxbridge, London, where narrowboats, trees, and water keep a quiet everyday mood by the canal."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20260116125810",
         "dateTaken": "2026-01-16T12:58:10.000Z",
@@ -1396,12 +1700,16 @@
     },
     {
       "key": "随手/20260108110513.jpeg",
-      "title": "",
+      "title": "广州花都车站",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于广州花都，站台、轨道和天光组成出行中的安静间隔。",
+        "en": "Photographed in Huadu, Guangzhou, where platform, tracks, and sky make a quiet interval in transit."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "广州",
+        "旅途"
+      ],
       "aiContext": {
         "currentTitle": "20260108110513",
         "dateTaken": "2026-01-08T03:05:13.000Z",
@@ -1414,12 +1722,16 @@
     },
     {
       "key": "随手/20260101213228.jpeg",
-      "title": "",
+      "title": "江门夜空烟花",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于江门，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in Jiangmen, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "夜景",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20260101213228",
         "dateTaken": "2026-01-01T13:32:28.000Z",
@@ -1432,12 +1744,16 @@
     },
     {
       "key": "随手/20251229163804.jpeg",
-      "title": "",
+      "title": "维港夕阳水面",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于香港维多利亚港，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Photographed in Victoria Harbour, Hong Kong, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "香港",
+        "维多利亚港",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251229163804",
         "dateTaken": "2025-12-29T08:38:04.000Z",
@@ -1450,12 +1766,16 @@
     },
     {
       "key": "随手/20251228222500.jpeg",
-      "title": "",
+      "title": "深圳湾夜景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于深圳湾，夜色里的高楼灯光倒映在水面和街区之间。",
+        "en": "Photographed in Shenzhen Bay, where night lights from the towers reflect across water and streets."
       },
-      "tags": [],
+      "tags": [
+        "深圳",
+        "深圳湾",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20251228222500",
         "dateTaken": "2025-12-28T14:25:00.000Z",
@@ -1468,12 +1788,16 @@
     },
     {
       "key": "随手/20251228221148.jpeg",
-      "title": "",
+      "title": "深圳湾灯火倒影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于深圳湾，夜色里的高楼灯光倒映在水面和街区之间。",
+        "en": "Photographed in Shenzhen Bay, where night lights from the towers reflect across water and streets."
       },
-      "tags": [],
+      "tags": [
+        "深圳",
+        "深圳湾",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20251228221148",
         "dateTaken": "2025-12-28T14:11:48.000Z",
@@ -1486,12 +1810,16 @@
     },
     {
       "key": "随手/20251225184623.jpeg",
-      "title": "",
+      "title": "泰山夜登石阶",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于泰山，古建筑、石阶和山色把旅途的历史感留在画面里。",
+        "en": "Photographed in Mount Tai, where historic architecture, steps, and mountains keep a sense of place in the frame."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "泰山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20251225184623",
         "dateTaken": "2025-12-25T10:46:23.000Z",
@@ -1504,12 +1832,16 @@
     },
     {
       "key": "随手/20251225183430.jpeg",
-      "title": "",
+      "title": "泰山夜色山路",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于泰山，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Mount Tai, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "泰山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20251225183430",
         "dateTaken": "2025-12-25T10:34:30.000Z",
@@ -1522,12 +1854,16 @@
     },
     {
       "key": "风光/20251225183326.jpeg",
-      "title": "",
+      "title": "泰山电视塔夜色",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于泰山，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in Mount Tai, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "泰山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20251225183326",
         "dateTaken": "2025-12-25T10:33:26.000Z",
@@ -1540,12 +1876,16 @@
     },
     {
       "key": "随手/20251225174146.jpeg",
-      "title": "",
+      "title": "泰山山门夜影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于泰山，古建筑、石阶和山色把旅途的历史感留在画面里。",
+        "en": "Photographed in Mount Tai, where historic architecture, steps, and mountains keep a sense of place in the frame."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "泰山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20251225174146",
         "dateTaken": "2025-12-25T09:41:46.000Z",
@@ -1558,12 +1898,16 @@
     },
     {
       "key": "随手/20251225173435.jpeg",
-      "title": "",
+      "title": "泰山盘道石阶",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于泰山，古建筑、石阶和山色把旅途的历史感留在画面里。",
+        "en": "Photographed in Mount Tai, where historic architecture, steps, and mountains keep a sense of place in the frame."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "泰山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20251225173435",
         "dateTaken": "2025-12-25T09:34:35.000Z",
@@ -1576,12 +1920,16 @@
     },
     {
       "key": "风光/20251225171902.jpeg",
-      "title": "",
+      "title": "泰山晨昏山谷",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于泰山，晚霞从山脊背后展开，轮廓和云层都被染亮。",
+        "en": "Photographed in Mount Tai, where sunset spreads behind the ridges, lighting the silhouettes and clouds."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "泰山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20251225171902",
         "dateTaken": "2025-12-25T09:19:02.000Z",
@@ -1594,12 +1942,16 @@
     },
     {
       "key": "风光/20251225164808.jpeg",
-      "title": "",
+      "title": "泰山松影暮色",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于泰山，晚霞从山脊背后展开，轮廓和云层都被染亮。",
+        "en": "Photographed in Mount Tai, where sunset spreads behind the ridges, lighting the silhouettes and clouds."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "泰山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20251225164808",
         "dateTaken": "2025-12-25T08:48:08.000Z",
@@ -1612,12 +1964,16 @@
     },
     {
       "key": "风光/20251225163044.jpeg",
-      "title": "",
+      "title": "泰山岩壁冬色",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于泰山，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Mount Tai, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "泰山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20251225163044",
         "dateTaken": "2025-12-25T08:30:44.000Z",
@@ -1630,12 +1986,16 @@
     },
     {
       "key": "风光/20251225163034.jpeg",
-      "title": "",
+      "title": "泰山峭壁暖光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于泰山，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Mount Tai, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "泰山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20251225163034",
         "dateTaken": "2025-12-25T08:30:34.000Z",
@@ -1648,12 +2008,16 @@
     },
     {
       "key": "城市/20251225135236.jpeg",
-      "title": "",
+      "title": "泰山山门近景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于泰山，古建筑、石阶和山色把旅途的历史感留在画面里。",
+        "en": "Photographed in Mount Tai, where historic architecture, steps, and mountains keep a sense of place in the frame."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "泰山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20251225135236",
         "dateTaken": "2025-12-25T05:52:36.000Z",
@@ -1666,12 +2030,16 @@
     },
     {
       "key": "城市/20251223145645.jpeg",
-      "title": "",
+      "title": "济南趵突泉碑刻",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于济南趵突泉，古建筑、石碑和泉水庭院把城市的历史感留在画面里。",
+        "en": "Photographed at Baotu Spring in Jinan, where historic architecture, stone inscriptions, and the spring courtyard hold the city’s sense of history."
       },
-      "tags": [],
+      "tags": [
+        "山东",
+        "水面",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20251223145645",
         "dateTaken": "2025-12-23T06:56:45.000Z",
@@ -1684,12 +2052,16 @@
     },
     {
       "key": "随手/20251223081505.jpeg",
-      "title": "",
+      "title": "广州机场机位",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于广州花都，机场与机坪记录了出发或抵达前后的短暂停顿。",
+        "en": "Photographed in Huadu, Guangzhou, where the airport and apron capture a pause around departure or arrival."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "广州",
+        "机场"
+      ],
       "aiContext": {
         "currentTitle": "20251223081505",
         "dateTaken": "2025-12-23T00:15:05.000Z",
@@ -1702,12 +2074,16 @@
     },
     {
       "key": "随手/20251215173116.jpeg",
-      "title": "",
+      "title": "希思罗航站楼",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，机场与机坪记录了出发或抵达前后的短暂停顿。",
+        "en": "Photographed in Uxbridge, London, where the airport and apron capture a pause around departure or arrival."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "机场"
+      ],
       "aiContext": {
         "currentTitle": "20251215173116",
         "dateTaken": "2025-12-15T17:31:16.000Z",
@@ -1720,12 +2096,16 @@
     },
     {
       "key": "随手/20251213171233.jpeg",
-      "title": "",
+      "title": "伦敦节日橱窗",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20251213171233",
         "dateTaken": "2025-12-13T17:12:33.000Z",
@@ -1738,12 +2118,16 @@
     },
     {
       "key": "风光/20251210130629.jpg",
-      "title": "",
+      "title": "阿克斯布里奇运河桥",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为伦敦阿克斯布里奇，运河边的窄船、树影和水面保留了安静的日常感。",
+        "en": "Inferred from nearby photos and the image context as Uxbridge, London, where narrowboats, trees, and water keep a quiet everyday mood by the canal."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251210130629",
         "dateTaken": "2025-12-10T13:06:29.000Z",
@@ -1756,12 +2140,16 @@
     },
     {
       "key": "风光/20251210125945.jpg",
-      "title": "",
+      "title": "林间秋日小径",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为伦敦阿克斯布里奇，公园里的树影、草地和水面让画面放慢下来。",
+        "en": "Inferred from nearby photos and the image context as Uxbridge, London, where trees, lawns, and water slow the frame down inside the park."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251210125945",
         "dateTaken": "2025-12-10T12:59:45.000Z",
@@ -1774,12 +2162,16 @@
     },
     {
       "key": "风光/20251210125330.jpg",
-      "title": "",
+      "title": "阿克斯布里奇水边码头",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为伦敦阿克斯布里奇，运河边的窄船、树影和水面保留了安静的日常感。",
+        "en": "Inferred from nearby photos and the image context as Uxbridge, London, where narrowboats, trees, and water keep a quiet everyday mood by the canal."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251210125330",
         "dateTaken": "2025-12-10T12:53:30.000Z",
@@ -1792,12 +2184,16 @@
     },
     {
       "key": "风光/20251210125058.jpg",
-      "title": "",
+      "title": "阿克斯布里奇窄船水道",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为伦敦阿克斯布里奇，运河边的窄船、树影和水面保留了安静的日常感。",
+        "en": "Inferred from nearby photos and the image context as Uxbridge, London, where narrowboats, trees, and water keep a quiet everyday mood by the canal."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251210125058",
         "dateTaken": "2025-12-10T12:50:58.000Z",
@@ -1810,12 +2206,16 @@
     },
     {
       "key": "风光/20251210123810.jpg",
-      "title": "",
+      "title": "林间警示牌",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为伦敦阿克斯布里奇，近处细节被单独拎出，给旅途留下轻巧的注脚。",
+        "en": "Inferred from nearby photos and the image context as Uxbridge, London, where a close detail is singled out as a small note from the trip."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "随拍"
+      ],
       "aiContext": {
         "currentTitle": "20251210123810",
         "dateTaken": "2025-12-10T12:38:10.000Z",
@@ -1828,12 +2228,16 @@
     },
     {
       "key": "动图/20251210.heic",
-      "title": "",
+      "title": "阿克斯布里奇运河阳光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，运河边的窄船、树影和水面保留了安静的日常感。",
+        "en": "Photographed in Uxbridge, London, where narrowboats, trees, and water keep a quiet everyday mood by the canal."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251210",
         "dateTaken": "2025-12-10T12:36:43.000Z",
@@ -1846,12 +2250,16 @@
     },
     {
       "key": "风光/20251210123407.jpg",
-      "title": "",
+      "title": "运河边的窄船",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为伦敦阿克斯布里奇，运河边的窄船、树影和水面保留了安静的日常感。",
+        "en": "Inferred from nearby photos and the image context as Uxbridge, London, where narrowboats, trees, and water keep a quiet everyday mood by the canal."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251210123407",
         "dateTaken": "2025-12-10T12:34:07.000Z",
@@ -1864,12 +2272,16 @@
     },
     {
       "key": "风光/20251210122640.jpg",
-      "title": "",
+      "title": "逆光里的运河船",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为伦敦阿克斯布里奇，运河边的窄船、树影和水面保留了安静的日常感。",
+        "en": "Inferred from nearby photos and the image context as Uxbridge, London, where narrowboats, trees, and water keep a quiet everyday mood by the canal."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251210122640",
         "dateTaken": "2025-12-10T12:26:40.000Z",
@@ -1882,12 +2294,16 @@
     },
     {
       "key": "风光/20251210122439.jpg",
-      "title": "",
+      "title": "树干上的松鼠",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为伦敦阿克斯布里奇，小动物出现在自然边缘，给画面添了轻松的生命感。",
+        "en": "Inferred from nearby photos and the image context as Uxbridge, London, where a small animal appears at the edge of nature and livens the frame."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "自然"
+      ],
       "aiContext": {
         "currentTitle": "20251210122439",
         "dateTaken": "2025-12-10T12:24:39.000Z",
@@ -1900,12 +2316,16 @@
     },
     {
       "key": "随手/20251130152524.jpeg",
-      "title": "",
+      "title": "伦敦奥林匹克公园日落",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "日落"
+      ],
       "aiContext": {
         "currentTitle": "20251130152524",
         "dateTaken": "2025-11-30T15:25:24.000Z",
@@ -1918,12 +2338,16 @@
     },
     {
       "key": "动图/20251123.heic",
-      "title": "",
+      "title": "阿克斯布里奇站台",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦阿克斯布里奇，站台、轨道和天光组成出行中的安静间隔。",
+        "en": "Photographed in Uxbridge, London, where platform, tracks, and sky make a quiet interval in transit."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "旅途"
+      ],
       "aiContext": {
         "currentTitle": "20251123",
         "dateTaken": "2025-11-23T15:54:52.000Z",
@@ -1936,12 +2360,16 @@
     },
     {
       "key": "城市/20251120160038.jpeg",
-      "title": "",
+      "title": "伦敦黄昏街道",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20251120160038",
         "dateTaken": "2025-11-20T16:00:38.000Z",
@@ -1954,12 +2382,16 @@
     },
     {
       "key": "随手/20251120144154.jpeg",
-      "title": "",
+      "title": "伦敦白厅圣诞树",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20251120144154",
         "dateTaken": "2025-11-20T14:41:54.000Z",
@@ -1972,12 +2404,16 @@
     },
     {
       "key": "城市/20251120143738.jpeg",
-      "title": "",
+      "title": "伦敦古典建筑夹景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in London, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20251120143738",
         "dateTaken": "2025-11-20T14:37:38.000Z",
@@ -1990,12 +2426,16 @@
     },
     {
       "key": "随手/20251115172328.jpeg",
-      "title": "",
+      "title": "伦敦公园圣诞树",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20251115172328",
         "dateTaken": "2025-11-15T17:23:28.000Z",
@@ -2008,12 +2448,16 @@
     },
     {
       "key": "城市/20251115150155.jpeg",
-      "title": "",
+      "title": "伦敦雾中街景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20251115150155",
         "dateTaken": "2025-11-15T15:01:55.000Z",
@@ -2026,12 +2470,16 @@
     },
     {
       "key": "随手/20251113161216.jpeg",
-      "title": "",
+      "title": "牛津街节日灯饰",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20251113161216",
         "dateTaken": "2025-11-13T16:12:16.000Z",
@@ -2044,12 +2492,16 @@
     },
     {
       "key": "城市/20251113150238.jpeg",
-      "title": "",
+      "title": "泰晤士河金融城天际线",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，隔着水面望向高楼天际线，城市轮廓清晰展开。",
+        "en": "Photographed in London, where the skyline opens across the water with a clear urban silhouette."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20251113150238",
         "dateTaken": "2025-11-13T15:02:38.000Z",
@@ -2062,12 +2514,16 @@
     },
     {
       "key": "随手/20251108170701.jpeg",
-      "title": "",
+      "title": "摄政街节日灯光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20251108170701",
         "dateTaken": "2025-11-08T17:07:01.000Z",
@@ -2080,12 +2536,16 @@
     },
     {
       "key": "随手/20251108162502.jpeg",
-      "title": "",
+      "title": "伦敦街头节日灯带",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20251108162502",
         "dateTaken": "2025-11-08T16:25:02.000Z",
@@ -2098,12 +2558,16 @@
     },
     {
       "key": "风光/20251106112752.jpg",
-      "title": "",
+      "title": "湖区秋色山路",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，公园里的树影、草地和水面让画面放慢下来。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where trees, lawns, and water slow the frame down inside the park."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251106112752",
         "dateTaken": "2025-11-06T11:27:52.000Z",
@@ -2116,12 +2580,16 @@
     },
     {
       "key": "风光/20251105164957.jpg",
-      "title": "",
+      "title": "湖区傍晚码头",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105164957",
         "dateTaken": "2025-11-05T16:49:57.000Z",
@@ -2134,12 +2602,16 @@
     },
     {
       "key": "风光/20251105174409.jpg",
-      "title": "",
+      "title": "温德米尔码头游船",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105174409",
         "dateTaken": "2025-11-05T16:44:09.000Z",
@@ -2152,12 +2624,16 @@
     },
     {
       "key": "风光/20251105173653.jpg",
-      "title": "",
+      "title": "湖区小镇街道",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105173653",
         "dateTaken": "2025-11-05T16:36:53.000Z",
@@ -2170,12 +2646,16 @@
     },
     {
       "key": "风光/20251105173427.jpg",
-      "title": "",
+      "title": "温德米尔湖边水鸟",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，小动物出现在自然边缘，给画面添了轻松的生命感。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where a small animal appears at the edge of nature and livens the frame."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105173427",
         "dateTaken": "2025-11-05T16:34:27.000Z",
@@ -2188,12 +2668,16 @@
     },
     {
       "key": "风光/20251105173136.jpg",
-      "title": "",
+      "title": "温德米尔阴天湖面",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105173136",
         "dateTaken": "2025-11-05T16:31:36.000Z",
@@ -2206,12 +2690,16 @@
     },
     {
       "key": "随手/20251105172409.jpg",
-      "title": "",
+      "title": "湖区小店橱窗",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，橱窗和室内陈列捕捉了城市漫游中的小片段。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the shopfront and display catch a small fragment of city wandering."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105172409",
         "dateTaken": "2025-11-05T16:24:09.000Z",
@@ -2224,12 +2712,16 @@
     },
     {
       "key": "随手/20251105170545.jpg",
-      "title": "",
+      "title": "湖区湖畔草地",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105170545",
         "dateTaken": "2025-11-05T16:05:45.000Z",
@@ -2242,12 +2734,16 @@
     },
     {
       "key": "随手/20251105170521.jpg",
-      "title": "",
+      "title": "苔藓树桩纹理",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，近处细节被单独拎出，给旅途留下轻巧的注脚。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where a close detail is singled out as a small note from the trip."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105170521",
         "dateTaken": "2025-11-05T16:05:21.000Z",
@@ -2260,12 +2756,16 @@
     },
     {
       "key": "随手/20251105170349.jpg",
-      "title": "",
+      "title": "雨后木桩纹理",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，近处细节被单独拎出，给旅途留下轻巧的注脚。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where a close detail is singled out as a small note from the trip."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105170349",
         "dateTaken": "2025-11-05T16:03:49.000Z",
@@ -2278,12 +2778,16 @@
     },
     {
       "key": "动图/20251105.heic",
-      "title": "",
+      "title": "温德米尔湖面船影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Photographed in Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105",
         "dateTaken": "2025-11-05T15:56:14.000Z",
@@ -2296,12 +2800,16 @@
     },
     {
       "key": "风光/20251105163559.jpg",
-      "title": "",
+      "title": "湖区秋树草坡",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105163559",
         "dateTaken": "2025-11-05T15:35:59.000Z",
@@ -2314,12 +2822,16 @@
     },
     {
       "key": "风光/20251105162412.jpg",
-      "title": "",
+      "title": "温德米尔湖畔树影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105162412",
         "dateTaken": "2025-11-05T15:24:12.000Z",
@@ -2332,12 +2844,16 @@
     },
     {
       "key": "风光/20251105161630.jpg",
-      "title": "",
+      "title": "湖区湖边秋树",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105161630",
         "dateTaken": "2025-11-05T15:16:30.000Z",
@@ -2350,12 +2866,16 @@
     },
     {
       "key": "风光/20251105124230.jpg",
-      "title": "",
+      "title": "雾中温德米尔帆船",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105124230",
         "dateTaken": "2025-11-05T11:42:30.000Z",
@@ -2368,12 +2888,16 @@
     },
     {
       "key": "随手/20251105122940.jpg",
-      "title": "",
+      "title": "湖上船舱视角",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，渡轮、码头和水面记录了城市之间的移动感。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where ferry, pier, and water record motion between places."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105122940",
         "dateTaken": "2025-11-05T11:29:40.000Z",
@@ -2386,12 +2910,16 @@
     },
     {
       "key": "动图/20251105(1).heic",
-      "title": "",
+      "title": "温德米尔船尾水纹",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于英格兰湖区温德米尔，渡轮、码头和水面记录了城市之间的移动感。",
+        "en": "Photographed in Windermere in the Lake District, where ferry, pier, and water record motion between places."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105(1)",
         "dateTaken": "2025-11-05T11:19:29.000Z",
@@ -2404,12 +2932,16 @@
     },
     {
       "key": "风光/20251105121025.jpg",
-      "title": "",
+      "title": "温德米尔停泊帆船",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105121025",
         "dateTaken": "2025-11-05T11:10:25.000Z",
@@ -2422,12 +2954,16 @@
     },
     {
       "key": "风光/20251105120705.jpg",
-      "title": "",
+      "title": "温德米尔码头帆樯",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251105120705",
         "dateTaken": "2025-11-05T11:07:05.000Z",
@@ -2440,12 +2976,16 @@
     },
     {
       "key": "城市/20251104192450.jpg",
-      "title": "",
+      "title": "湖区雨夜街道",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为英格兰湖区温德米尔，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Inferred from nearby photos and the image context as Windermere in the Lake District, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "湖区",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251104192450",
         "dateTaken": "2025-11-04T18:24:50.000Z",
@@ -2458,12 +2998,16 @@
     },
     {
       "key": "动图/20251026.heic",
-      "title": "",
+      "title": "泰晤士河通勤船窗",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，渡轮、码头和水面记录了城市之间的移动感。",
+        "en": "Photographed in London, where ferry, pier, and water record motion between places."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251026",
         "dateTaken": "2025-10-26T11:13:58.000Z",
@@ -2476,12 +3020,16 @@
     },
     {
       "key": "随手/20251023162001.jpeg",
-      "title": "",
+      "title": "特拉法加广场人群",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20251023162001",
         "dateTaken": "2025-10-23T15:20:01.000Z",
@@ -2494,12 +3042,16 @@
     },
     {
       "key": "随手/20251023161243.jpeg",
-      "title": "",
+      "title": "特拉法加广场电话亭",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20251023161243",
         "dateTaken": "2025-10-23T15:12:43.000Z",
@@ -2512,12 +3064,16 @@
     },
     {
       "key": "随手/20251023161053.jpeg",
-      "title": "",
+      "title": "纳尔逊纪念柱窗景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20251023161053",
         "dateTaken": "2025-10-23T15:10:53.000Z",
@@ -2530,12 +3086,16 @@
     },
     {
       "key": "随手/20251023145246.jpeg",
-      "title": "",
+      "title": "美术馆里的向日葵",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，室内展品和观看的人群形成一个安静的观察瞬间。",
+        "en": "Photographed in London, where the artwork and viewers make a quiet moment of looking."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "随拍"
+      ],
       "aiContext": {
         "currentTitle": "20251023145246",
         "dateTaken": "2025-10-23T13:52:46.000Z",
@@ -2548,12 +3108,16 @@
     },
     {
       "key": "随手/20251016170828.jpeg",
-      "title": "",
+      "title": "伦敦酒馆街角",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20251016170828",
         "dateTaken": "2025-10-16T16:08:28.000Z",
@@ -2566,12 +3130,16 @@
     },
     {
       "key": "随手/20251012180917.jpeg",
-      "title": "",
+      "title": "牛津街暮色车流",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "日落"
+      ],
       "aiContext": {
         "currentTitle": "20251012180917",
         "dateTaken": "2025-10-12T17:09:17.000Z",
@@ -2584,12 +3152,16 @@
     },
     {
       "key": "随手/20251012172656.jpeg",
-      "title": "",
+      "title": "伦敦街头远望BT塔",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20251012172656",
         "dateTaken": "2025-10-12T16:26:56.000Z",
@@ -2602,12 +3174,16 @@
     },
     {
       "key": "随手/20251012151953.jpeg",
-      "title": "",
+      "title": "伦敦教堂街景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in London, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20251012151953",
         "dateTaken": "2025-10-12T14:19:53.000Z",
@@ -2620,12 +3196,16 @@
     },
     {
       "key": "随手/20251012151729.jpeg",
-      "title": "",
+      "title": "伦敦街边绿地",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，公园里的树影、草地和水面让画面放慢下来。",
+        "en": "Photographed in London, where trees, lawns, and water slow the frame down inside the park."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251012151729",
         "dateTaken": "2025-10-12T14:17:29.000Z",
@@ -2638,12 +3218,16 @@
     },
     {
       "key": "随手/20251011095128.jpeg",
-      "title": "",
+      "title": "威斯敏斯特大本钟",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20251011095128",
         "dateTaken": "2025-10-11T08:51:28.000Z",
@@ -2656,12 +3240,16 @@
     },
     {
       "key": "随手/20251011093801.jpeg",
-      "title": "",
+      "title": "泰晤士河畔议会大厦",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20251011093801",
         "dateTaken": "2025-10-11T08:38:01.000Z",
@@ -2674,12 +3262,16 @@
     },
     {
       "key": "随手/20251004122125.jpeg",
-      "title": "",
+      "title": "伦敦唐人街入口",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20251004122125",
         "dateTaken": "2025-10-04T11:21:25.000Z",
@@ -2692,12 +3284,16 @@
     },
     {
       "key": "动图/20250928.heic",
-      "title": "",
+      "title": "奥林匹克公园夕光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in London, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20250928",
         "dateTaken": "2025-09-28T17:18:04.000Z",
@@ -2710,12 +3306,16 @@
     },
     {
       "key": "随手/20250928150610.jpeg",
-      "title": "",
+      "title": "伦敦雾中出租车",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in London, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20250928150610",
         "dateTaken": "2025-09-28T14:06:10.000Z",
@@ -2728,12 +3328,16 @@
     },
     {
       "key": "随手/20250925070521.jpeg",
-      "title": "",
+      "title": "盖特威克停机坪",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于伦敦盖特威克机场，机坪与晨光记录了出发前后的短暂停顿。",
+        "en": "Photographed at London Gatwick Airport, where the apron and morning light capture a brief pause around travel."
       },
-      "tags": [],
+      "tags": [
+        "英国",
+        "伦敦",
+        "机场"
+      ],
       "aiContext": {
         "currentTitle": "20250925070521",
         "dateTaken": "2025-09-25T06:05:21.000Z",
@@ -2746,12 +3350,16 @@
     },
     {
       "key": "动图/20250925(2).heic",
-      "title": "",
+      "title": "云层上的机翼",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为航班途中，机窗外的天空、云层和机翼记录了旅途中的过渡时刻。",
+        "en": "Inferred from nearby photos and the image context as in flight, where sky, clouds, and wing outside the window mark an in-between travel moment."
       },
-      "tags": [],
+      "tags": [
+        "旅途",
+        "随拍",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20250925(2)",
         "dateTaken": "2025-09-25T05:15:13.000Z",
@@ -2764,12 +3372,16 @@
     },
     {
       "key": "随手/20250925011027.jpeg",
-      "title": "",
+      "title": "机窗边的香槟",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于广州花都，饮品和周围环境一起记录了旅途中的短暂停留。",
+        "en": "Photographed in Huadu, Guangzhou, where a drink and its surroundings record a brief travel pause."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "广州",
+        "旅途"
+      ],
       "aiContext": {
         "currentTitle": "20250925011027",
         "dateTaken": "2025-09-24T17:10:27.000Z",
@@ -2782,12 +3394,16 @@
     },
     {
       "key": "城市/20250727203236.jpeg",
-      "title": "",
+      "title": "维港夜色天际线",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于香港维多利亚港，夜色里的高楼灯光倒映在水面和街区之间。",
+        "en": "Photographed in Victoria Harbour, Hong Kong, where night lights from the towers reflect across water and streets."
       },
-      "tags": [],
+      "tags": [
+        "香港",
+        "维多利亚港",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20250727203236",
         "dateTaken": "2025-07-27T12:32:36.000Z",
@@ -2800,12 +3416,16 @@
     },
     {
       "key": "城市/20250727190018.jpeg",
-      "title": "",
+      "title": "维港暮色山影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于香港维多利亚港，隔着水面望向高楼天际线，城市轮廓清晰展开。",
+        "en": "Photographed in Victoria Harbour, Hong Kong, where the skyline opens across the water with a clear urban silhouette."
       },
-      "tags": [],
+      "tags": [
+        "香港",
+        "维多利亚港",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20250727190018",
         "dateTaken": "2025-07-27T11:00:18.000Z",
@@ -2818,12 +3438,16 @@
     },
     {
       "key": "城市/20250727185554.jpeg",
-      "title": "",
+      "title": "维港橙色落日",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于香港维多利亚港，夕阳下的城市天际线和水面形成温暖层次。",
+        "en": "Photographed in Victoria Harbour, Hong Kong, where the skyline and water are layered in warm sunset light."
       },
-      "tags": [],
+      "tags": [
+        "香港",
+        "维多利亚港",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20250727185554",
         "dateTaken": "2025-07-27T10:55:54.000Z",
@@ -2836,12 +3460,16 @@
     },
     {
       "key": "城市/20250727184844.jpeg",
-      "title": "",
+      "title": "维港金色岸线",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于香港维多利亚港，隔着水面望向高楼天际线，城市轮廓清晰展开。",
+        "en": "Photographed in Victoria Harbour, Hong Kong, where the skyline opens across the water with a clear urban silhouette."
       },
-      "tags": [],
+      "tags": [
+        "香港",
+        "维多利亚港",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20250727184844",
         "dateTaken": "2025-07-27T10:48:44.000Z",
@@ -2854,12 +3482,16 @@
     },
     {
       "key": "城市/20250727145052.jpeg",
-      "title": "",
+      "title": "太平山俯瞰香港",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于香港维多利亚港，高处视角把街区、楼群和天空组织成清晰层次。",
+        "en": "Photographed in Victoria Harbour, Hong Kong, where a higher viewpoint organizes blocks, towers, and sky into clear layers."
       },
-      "tags": [],
+      "tags": [
+        "香港",
+        "维多利亚港",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20250727145052",
         "dateTaken": "2025-07-27T06:50:52.000Z",
@@ -2872,12 +3504,16 @@
     },
     {
       "key": "城市/20250727103803.jpeg",
-      "title": "",
+      "title": "维港晴日水面",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于香港维多利亚港，隔着水面望向高楼天际线，城市轮廓清晰展开。",
+        "en": "Photographed in Victoria Harbour, Hong Kong, where the skyline opens across the water with a clear urban silhouette."
       },
-      "tags": [],
+      "tags": [
+        "香港",
+        "维多利亚港",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20250727103803",
         "dateTaken": "2025-07-27T02:38:03.000Z",
@@ -2890,12 +3526,16 @@
     },
     {
       "key": "城市/20250528141706.jpeg",
-      "title": "",
+      "title": "沈阳故宫屋檐",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于沈阳，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Shenyang, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "北京",
+        "辽宁",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20250528141706",
         "dateTaken": "2025-05-28T06:17:06.000Z",
@@ -2908,12 +3548,16 @@
     },
     {
       "key": "风光/20250523145949.jpeg",
-      "title": "",
+      "title": "长白山阴云峡谷",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于长白山，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Changbai Mountain, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "吉林",
+        "长白山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20250523145949",
         "dateTaken": "2025-05-23T06:59:49.000Z",
@@ -2926,12 +3570,16 @@
     },
     {
       "key": "风光/20250523145849.jpeg",
-      "title": "",
+      "title": "长白山雪壁瀑布",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于长白山，积雪覆盖山坡和树枝，冬日光线干净清透。",
+        "en": "Photographed in Changbai Mountain, where snow covers slopes and branches under clear winter light."
       },
-      "tags": [],
+      "tags": [
+        "吉林",
+        "长白山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20250523145849",
         "dateTaken": "2025-05-23T06:58:49.000Z",
@@ -2944,12 +3592,16 @@
     },
     {
       "key": "风光/20250523141511.jpeg",
-      "title": "",
+      "title": "长白山山间屋舍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于长白山，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Changbai Mountain, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "吉林",
+        "长白山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20250523141511",
         "dateTaken": "2025-05-23T06:15:11.000Z",
@@ -2962,12 +3614,16 @@
     },
     {
       "key": "风光/20250523134932.jpeg",
-      "title": "",
+      "title": "长白山雪坡远眺",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于长白山，积雪覆盖山坡和树枝，冬日光线干净清透。",
+        "en": "Photographed in Changbai Mountain, where snow covers slopes and branches under clear winter light."
       },
-      "tags": [],
+      "tags": [
+        "吉林",
+        "长白山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20250523134932",
         "dateTaken": "2025-05-23T05:49:32.000Z",
@@ -2980,12 +3636,16 @@
     },
     {
       "key": "风光/20250523133059.jpeg",
-      "title": "",
+      "title": "长白山雪谷",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于长白山，积雪覆盖山坡和树枝，冬日光线干净清透。",
+        "en": "Photographed in Changbai Mountain, where snow covers slopes and branches under clear winter light."
       },
-      "tags": [],
+      "tags": [
+        "吉林",
+        "长白山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20250523133059",
         "dateTaken": "2025-05-23T05:30:59.000Z",
@@ -2998,12 +3658,16 @@
     },
     {
       "key": "风光/20250503210545.jpeg",
-      "title": "",
+      "title": "深圳湾夜色海岸",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于深圳湾，夜色里的高楼灯光倒映在水面和街区之间。",
+        "en": "Photographed in Shenzhen Bay, where night lights from the towers reflect across water and streets."
       },
-      "tags": [],
+      "tags": [
+        "深圳",
+        "深圳湾",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20250503210545",
         "dateTaken": "2025-05-03T13:05:45.000Z",
@@ -3016,12 +3680,16 @@
     },
     {
       "key": "城市/20250503200206.jpeg",
-      "title": "",
+      "title": "深圳湾夜色建筑",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于深圳湾，夜色里的高楼灯光倒映在水面和街区之间。",
+        "en": "Photographed in Shenzhen Bay, where night lights from the towers reflect across water and streets."
       },
-      "tags": [],
+      "tags": [
+        "深圳",
+        "深圳湾",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20250503200206",
         "dateTaken": "2025-05-03T12:02:06.000Z",
@@ -3034,12 +3702,16 @@
     },
     {
       "key": "城市/20250502201728.jpeg",
-      "title": "",
+      "title": "珠海海岸夜景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于珠海，夜色里的高楼灯光倒映在水面和街区之间。",
+        "en": "Photographed in Zhuhai, where night lights from the towers reflect across water and streets."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "天际线",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20250502201728",
         "dateTaken": "2025-05-02T12:17:28.000Z",
@@ -3052,12 +3724,16 @@
     },
     {
       "key": "城市/20250322184242.jpeg",
-      "title": "",
+      "title": "珠江口傍晚车窗",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于佛山，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in Foshan, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "佛山",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20250322184242",
         "dateTaken": "2025-03-22T10:42:42.000Z",
@@ -3070,12 +3746,16 @@
     },
     {
       "key": "城市/20250322183034.jpeg",
-      "title": "",
+      "title": "佛山河岸拱桥",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于佛山，桥梁与城市背景交织，线条把视线引向远处。",
+        "en": "Photographed in Foshan, where bridge lines lead the eye into the city beyond."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "佛山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20250322183034",
         "dateTaken": "2025-03-22T10:30:34.000Z",
@@ -3088,12 +3768,16 @@
     },
     {
       "key": "城市/20250322175054.jpeg",
-      "title": "",
+      "title": "佛山河畔日落",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于佛山，夕阳下的城市天际线和水面形成温暖层次。",
+        "en": "Photographed in Foshan, where the skyline and water are layered in warm sunset light."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "佛山",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20250322175054",
         "dateTaken": "2025-03-22T09:50:54.000Z",
@@ -3106,12 +3790,16 @@
     },
     {
       "key": "城市/20250322175042.jpeg",
-      "title": "",
+      "title": "佛山水岸夕阳",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于佛山，夕阳下的城市天际线和水面形成温暖层次。",
+        "en": "Photographed in Foshan, where the skyline and water are layered in warm sunset light."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "佛山",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20250322175042",
         "dateTaken": "2025-03-22T09:50:42.000Z",
@@ -3124,12 +3812,16 @@
     },
     {
       "key": "城市/20250322165325.jpeg",
-      "title": "",
+      "title": "佛山江边灯塔",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于佛山，河道穿过楼群，水面和建筑形成纵深。",
+        "en": "Photographed in Foshan, where the river cuts through the buildings and adds depth to the scene."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "佛山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20250322165325",
         "dateTaken": "2025-03-22T08:53:25.000Z",
@@ -3142,12 +3834,16 @@
     },
     {
       "key": "城市/20250322163213.jpeg",
-      "title": "",
+      "title": "佛山桥塔花影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于佛山，桥梁与城市背景交织，线条把视线引向远处。",
+        "en": "Photographed in Foshan, where bridge lines lead the eye into the city beyond."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "佛山",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20250322163213",
         "dateTaken": "2025-03-22T08:32:13.000Z",
@@ -3160,12 +3856,16 @@
     },
     {
       "key": "随手/20241221210143.jpeg",
-      "title": "",
+      "title": "广州塔夜间灯幕",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于广州，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in Guangzhou, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "广州",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "20241221210143",
         "dateTaken": "2024-12-21T13:01:43.000Z",
@@ -3178,12 +3878,16 @@
     },
     {
       "key": "随手/20241221184532.jpeg",
-      "title": "",
+      "title": "广州塔灯光秀",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于广州，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in Guangzhou, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "广州",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20241221184532",
         "dateTaken": "2024-12-21T10:45:32.000Z",
@@ -3196,12 +3900,16 @@
     },
     {
       "key": "风光/20240825062936.jpg",
-      "title": "",
+      "title": "海陵岛海上日出",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阳江海陵岛，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Inferred from nearby photos and the image context as Hailing Island, Yangjiang, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "阳江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240825062936",
         "dateTaken": "2024-08-24T22:29:36.000Z",
@@ -3214,12 +3922,16 @@
     },
     {
       "key": "风光/20240825062553.jpg",
-      "title": "",
+      "title": "海陵岛云缝日光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阳江海陵岛，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Inferred from nearby photos and the image context as Hailing Island, Yangjiang, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "阳江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240825062553",
         "dateTaken": "2024-08-24T22:25:53.000Z",
@@ -3232,12 +3944,16 @@
     },
     {
       "key": "风光/20240825062405.jpg",
-      "title": "",
+      "title": "海陵岛橙色海面",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阳江海陵岛，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Inferred from nearby photos and the image context as Hailing Island, Yangjiang, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "阳江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240825062405",
         "dateTaken": "2024-08-24T22:24:05.000Z",
@@ -3250,12 +3966,16 @@
     },
     {
       "key": "风光/20240825055651.jpg",
-      "title": "",
+      "title": "海陵岛晨光海岸",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阳江海陵岛，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Inferred from nearby photos and the image context as Hailing Island, Yangjiang, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "阳江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240825055651",
         "dateTaken": "2024-08-24T21:56:51.000Z",
@@ -3268,12 +3988,16 @@
     },
     {
       "key": "风光/20240825055113.jpeg",
-      "title": "",
+      "title": "海陵岛海岸暮光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阳江海陵岛，海岸、云层和远处船影让画面保持柔和的流动感。",
+        "en": "Photographed in Hailing Island, Yangjiang, where coast, clouds, and distant ships keep a soft sense of movement."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "阳江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240825055113",
         "dateTaken": "2024-08-24T21:51:13.000Z",
@@ -3286,12 +4010,16 @@
     },
     {
       "key": "风光/20240824182644.jpg",
-      "title": "",
+      "title": "海面粉色云影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阳江海陵岛，海岸、云层和远处船影让画面保持柔和的流动感。",
+        "en": "Inferred from nearby photos and the image context as Hailing Island, Yangjiang, where coast, clouds, and distant ships keep a soft sense of movement."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "阳江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240824182644",
         "dateTaken": "2024-08-24T10:26:44.000Z",
@@ -3304,12 +4032,16 @@
     },
     {
       "key": "风光/20240824182043.jpg",
-      "title": "",
+      "title": "海上远船与薄雾",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阳江海陵岛，海岸、云层和远处船影让画面保持柔和的流动感。",
+        "en": "Inferred from nearby photos and the image context as Hailing Island, Yangjiang, where coast, clouds, and distant ships keep a soft sense of movement."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "阳江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240824182043",
         "dateTaken": "2024-08-24T10:20:43.000Z",
@@ -3322,12 +4054,16 @@
     },
     {
       "key": "风光/20240824180848.jpg",
-      "title": "",
+      "title": "海陵岛夏云",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阳江海陵岛，海岸、云层和远处船影让画面保持柔和的流动感。",
+        "en": "Inferred from nearby photos and the image context as Hailing Island, Yangjiang, where coast, clouds, and distant ships keep a soft sense of movement."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "阳江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240824180848",
         "dateTaken": "2024-08-24T10:08:48.000Z",
@@ -3340,12 +4076,16 @@
     },
     {
       "key": "风光/20240824180023.jpg",
-      "title": "",
+      "title": "海边云塔",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阳江海陵岛，海岸、云层和远处船影让画面保持柔和的流动感。",
+        "en": "Inferred from nearby photos and the image context as Hailing Island, Yangjiang, where coast, clouds, and distant ships keep a soft sense of movement."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "阳江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240824180023",
         "dateTaken": "2024-08-24T10:00:23.000Z",
@@ -3358,12 +4098,16 @@
     },
     {
       "key": "风光/20240809080947.jpeg",
-      "title": "",
+      "title": "富士山麓云海",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于富士河口湖，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Fujikawaguchiko, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "富士山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240809080947",
         "dateTaken": "2024-08-08T23:09:47.000Z",
@@ -3376,12 +4120,16 @@
     },
     {
       "key": "风光/20240809080657.jpeg",
-      "title": "",
+      "title": "河口湖镇上远云",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于富士河口湖，高处视角把街区、楼群和天空组织成清晰层次。",
+        "en": "Photographed in Fujikawaguchiko, where a higher viewpoint organizes blocks, towers, and sky into clear layers."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "富士山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240809080657",
         "dateTaken": "2024-08-08T23:06:57.000Z",
@@ -3394,12 +4142,16 @@
     },
     {
       "key": "风光/20240808165458.jpeg",
-      "title": "",
+      "title": "富士山脚雨云",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于富士河口湖，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Fujikawaguchiko, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "富士山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240808165458",
         "dateTaken": "2024-08-08T07:54:58.000Z",
@@ -3412,12 +4164,16 @@
     },
     {
       "key": "随手/20240808163151.jpeg",
-      "title": "",
+      "title": "富士山脚水渠",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于富士河口湖，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Fujikawaguchiko, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "富士山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240808163151",
         "dateTaken": "2024-08-08T07:31:51.000Z",
@@ -3430,12 +4186,16 @@
     },
     {
       "key": "随手/20240808162454.jpeg",
-      "title": "",
+      "title": "富士山脚绿谷",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于富士河口湖，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Fujikawaguchiko, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "富士山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240808162454",
         "dateTaken": "2024-08-08T07:24:54.000Z",
@@ -3448,12 +4208,16 @@
     },
     {
       "key": "随手/20240808152409.jpeg",
-      "title": "",
+      "title": "富士山麓神木",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于富士河口湖，鸟居、参道和树影把神社的安静气氛留住。",
+        "en": "Photographed in Fujikawaguchiko, where torii gates, paths, and trees preserve the shrine’s quiet atmosphere."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "富士山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240808152409",
         "dateTaken": "2024-08-08T06:24:09.000Z",
@@ -3466,12 +4230,16 @@
     },
     {
       "key": "随手/20240808152234.jpeg",
-      "title": "",
+      "title": "富士山神社鸟居",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于富士河口湖，鸟居、参道和树影把神社的安静气氛留住。",
+        "en": "Photographed in Fujikawaguchiko, where torii gates, paths, and trees preserve the shrine’s quiet atmosphere."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "富士山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240808152234",
         "dateTaken": "2024-08-08T06:22:34.000Z",
@@ -3484,12 +4252,16 @@
     },
     {
       "key": "随手/20240808151929.jpeg",
-      "title": "",
+      "title": "神社苔石细节",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于富士河口湖，近处细节被单独拎出，给旅途留下轻巧的注脚。",
+        "en": "Photographed in Fujikawaguchiko, where a close detail is singled out as a small note from the trip."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "富士山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240808151929",
         "dateTaken": "2024-08-08T06:19:29.000Z",
@@ -3502,12 +4274,16 @@
     },
     {
       "key": "随手/20240808151907.jpeg",
-      "title": "",
+      "title": "神社苔藓木桩",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于富士河口湖，近处细节被单独拎出，给旅途留下轻巧的注脚。",
+        "en": "Photographed in Fujikawaguchiko, where a close detail is singled out as a small note from the trip."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "富士山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240808151907",
         "dateTaken": "2024-08-08T06:19:07.000Z",
@@ -3520,12 +4296,16 @@
     },
     {
       "key": "风光/20240808151229.jpeg",
-      "title": "",
+      "title": "神社参道林荫",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于富士河口湖，鸟居、参道和树影把神社的安静气氛留住。",
+        "en": "Photographed in Fujikawaguchiko, where torii gates, paths, and trees preserve the shrine’s quiet atmosphere."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "富士山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240808151229",
         "dateTaken": "2024-08-08T06:12:29.000Z",
@@ -3538,12 +4318,16 @@
     },
     {
       "key": "风光/20240807165433.jpeg",
-      "title": "",
+      "title": "箱根芦之湖鸟居",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于箱根芦之湖，鸟居、参道和树影把神社的安静气氛留住。",
+        "en": "Photographed in Lake Ashi, Hakone, where torii gates, paths, and trees preserve the shrine’s quiet atmosphere."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "箱根",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240807165433",
         "dateTaken": "2024-08-07T07:54:33.000Z",
@@ -3556,12 +4340,16 @@
     },
     {
       "key": "随手/20240807162151.jpeg",
-      "title": "",
+      "title": "芦之湖水上鸟居",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于箱根芦之湖，鸟居、参道和树影把神社的安静气氛留住。",
+        "en": "Photographed in Lake Ashi, Hakone, where torii gates, paths, and trees preserve the shrine’s quiet atmosphere."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "箱根",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240807162151",
         "dateTaken": "2024-08-07T07:21:51.000Z",
@@ -3574,12 +4362,16 @@
     },
     {
       "key": "风光/20240807085059.jpeg",
-      "title": "",
+      "title": "箱根山间草坪",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于箱根芦之湖，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Lake Ashi, Hakone, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "箱根",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240807085059",
         "dateTaken": "2024-08-06T23:50:59.000Z",
@@ -3592,12 +4384,16 @@
     },
     {
       "key": "风光/20240807082358.jpeg",
-      "title": "",
+      "title": "箱根晴空草地",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于箱根芦之湖，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Lake Ashi, Hakone, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "箱根",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240807082358",
         "dateTaken": "2024-08-06T23:23:58.000Z",
@@ -3610,12 +4406,16 @@
     },
     {
       "key": "风光/20240806161034.jpeg",
-      "title": "",
+      "title": "芦之湖雾色水面",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于箱根芦之湖，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Photographed in Lake Ashi, Hakone, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "箱根",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240806161034",
         "dateTaken": "2024-08-06T07:10:34.000Z",
@@ -3628,12 +4428,16 @@
     },
     {
       "key": "风光/20240806154602.jpeg",
-      "title": "",
+      "title": "芦之湖阴天码头",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于箱根芦之湖，湖面、岸线和阴晴不定的天空组成安静风景。",
+        "en": "Photographed in Lake Ashi, Hakone, where the lake, shoreline, and shifting sky make a quiet landscape."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "箱根",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240806154602",
         "dateTaken": "2024-08-06T06:46:02.000Z",
@@ -3646,12 +4450,16 @@
     },
     {
       "key": "城市/20240805174619.jpeg",
-      "title": "",
+      "title": "东京街头路口",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于东京，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in Tokyo, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "东京",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20240805174619",
         "dateTaken": "2024-08-05T08:46:19.000Z",
@@ -3664,12 +4472,16 @@
     },
     {
       "key": "城市/20240804164059.jpeg",
-      "title": "",
+      "title": "东京高处城市景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于东京，高处视角把街区、楼群和天空组织成清晰层次。",
+        "en": "Photographed in Tokyo, where a higher viewpoint organizes blocks, towers, and sky into clear layers."
       },
-      "tags": [],
+      "tags": [
+        "日本",
+        "东京",
+        "高处视角"
+      ],
       "aiContext": {
         "currentTitle": "20240804164059",
         "dateTaken": "2024-08-04T07:40:59.000Z",
@@ -3682,12 +4494,16 @@
     },
     {
       "key": "随手/20240730115607.jpeg",
-      "title": "",
+      "title": "澳门海边岩壁",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于澳门，近处细节被单独拎出，给旅途留下轻巧的注脚。",
+        "en": "Photographed in Macau, where a close detail is singled out as a small note from the trip."
       },
-      "tags": [],
+      "tags": [
+        "澳门",
+        "水面",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20240730115607",
         "dateTaken": "2024-07-30T03:56:07.000Z",
@@ -3700,12 +4516,16 @@
     },
     {
       "key": "随手/20240729145857.jpeg",
-      "title": "",
+      "title": "澳门大三巴遗址",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于澳门，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Macau, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "澳门",
+        "历史建筑",
+        "城市"
+      ],
       "aiContext": {
         "currentTitle": "20240729145857",
         "dateTaken": "2024-07-29T06:58:57.000Z",
@@ -3718,12 +4538,16 @@
     },
     {
       "key": "城市/20240729145544.jpeg",
-      "title": "",
+      "title": "澳门山城步道",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于澳门，高处视角把街区、楼群和天空组织成清晰层次。",
+        "en": "Photographed in Macau, where a higher viewpoint organizes blocks, towers, and sky into clear layers."
       },
-      "tags": [],
+      "tags": [
+        "澳门",
+        "历史建筑",
+        "高处视角"
+      ],
       "aiContext": {
         "currentTitle": "20240729145544",
         "dateTaken": "2024-07-29T06:55:44.000Z",
@@ -3736,12 +4560,16 @@
     },
     {
       "key": "随手/20240709191010.jpg",
-      "title": "",
+      "title": "广州塔江畔傍晚",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于广州，河道穿过楼群，水面和建筑形成纵深。",
+        "en": "Photographed in Guangzhou, where the river cuts through the buildings and adds depth to the scene."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "广州",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240709191010",
         "dateTaken": "2024-07-09T11:10:10.000Z",
@@ -3754,12 +4582,16 @@
     },
     {
       "key": "随手/20240707190353.jpeg",
-      "title": "",
+      "title": "广州日落阳台",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于佛山，夕阳下的城市天际线和水面形成温暖层次。",
+        "en": "Photographed in Foshan, where the skyline and water are layered in warm sunset light."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "佛山",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20240707190353",
         "dateTaken": "2024-07-07T11:03:53.000Z",
@@ -3772,12 +4604,16 @@
     },
     {
       "key": "随手/20240215111534.jpeg",
-      "title": "",
+      "title": "梅州山城远眺",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于广东梅州一带，高处视角把山地、城镇和道路铺成开阔层次。",
+        "en": "Photographed around Meizhou, Guangdong, where a high viewpoint spreads mountains, town, and roads into open layers."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "山景",
+        "自然"
+      ],
       "aiContext": {
         "currentTitle": "20240215111534",
         "dateTaken": "2024-02-15T03:15:34.000Z",
@@ -3790,12 +4626,16 @@
     },
     {
       "key": "随手/20240201094538.jpeg",
-      "title": "",
+      "title": "阿尔山冬日溪流",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240201094538",
         "dateTaken": "2024-02-01T01:45:38.000Z",
@@ -3808,12 +4648,16 @@
     },
     {
       "key": "随手/20240201094114.jpeg",
-      "title": "",
+      "title": "阿尔山雾气河面",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240201094114",
         "dateTaken": "2024-02-01T01:41:14.000Z",
@@ -3826,12 +4670,16 @@
     },
     {
       "key": "随手/20240201093447.jpeg",
-      "title": "",
+      "title": "阿尔山雪河暖阳",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240201093447",
         "dateTaken": "2024-02-01T01:34:47.000Z",
@@ -3844,12 +4692,16 @@
     },
     {
       "key": "风光/20240201090119.jpg",
-      "title": "",
+      "title": "阿尔山雪原公路",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240201090119",
         "dateTaken": "2024-02-01T01:01:19.000Z",
@@ -3862,12 +4714,16 @@
     },
     {
       "key": "随手/20240131145813.jpeg",
-      "title": "",
+      "title": "阿尔山冰湖人影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20240131145813",
         "dateTaken": "2024-01-31T06:58:13.000Z",
@@ -3880,12 +4736,16 @@
     },
     {
       "key": "随手/20240131145810.jpeg",
-      "title": "",
+      "title": "阿尔山冰面剪影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240131145810",
         "dateTaken": "2024-01-31T06:58:10.000Z",
@@ -3898,12 +4758,16 @@
     },
     {
       "key": "风光/20240131131808.jpg",
-      "title": "",
+      "title": "阿尔山粉色雪原",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Inferred from nearby photos and the image context as Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240131131808",
         "dateTaken": "2024-01-31T05:18:08.000Z",
@@ -3916,12 +4780,16 @@
     },
     {
       "key": "风光/20240130170736.jpeg",
-      "title": "",
+      "title": "阿尔山雪路落日",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "日落"
+      ],
       "aiContext": {
         "currentTitle": "20240130170736",
         "dateTaken": "2024-01-30T09:07:36.000Z",
@@ -3934,12 +4802,16 @@
     },
     {
       "key": "风光/20240130164747.jpeg",
-      "title": "",
+      "title": "阿尔山冰原夕阳",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "日落"
+      ],
       "aiContext": {
         "currentTitle": "20240130164747",
         "dateTaken": "2024-01-30T08:47:47.000Z",
@@ -3952,12 +4824,16 @@
     },
     {
       "key": "风光/20240130164745.jpeg",
-      "title": "",
+      "title": "阿尔山雪原车影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240130164745",
         "dateTaken": "2024-01-30T08:47:45.000Z",
@@ -3970,12 +4846,16 @@
     },
     {
       "key": "风光/20240130161715.jpeg",
-      "title": "",
+      "title": "阿尔山雪路金光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240130161715",
         "dateTaken": "2024-01-30T08:17:15.000Z",
@@ -3988,12 +4868,16 @@
     },
     {
       "key": "风光/20240130160604.jpeg",
-      "title": "",
+      "title": "阿尔山雪地路标",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240130160604",
         "dateTaken": "2024-01-30T08:06:04.000Z",
@@ -4006,12 +4890,16 @@
     },
     {
       "key": "风光/20240130155956.jpeg",
-      "title": "",
+      "title": "阿尔山雪坡低阳",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240130155956",
         "dateTaken": "2024-01-30T07:59:56.000Z",
@@ -4024,12 +4912,16 @@
     },
     {
       "key": "风光/20240130155953.jpeg",
-      "title": "",
+      "title": "阿尔山雪原界桩",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240130155953",
         "dateTaken": "2024-01-30T07:59:53.000Z",
@@ -4042,12 +4934,16 @@
     },
     {
       "key": "风光/20240130151206.jpg",
-      "title": "",
+      "title": "阿尔山冰雪牧场",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Inferred from nearby photos and the image context as Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240130151206",
         "dateTaken": "2024-01-30T07:12:06.000Z",
@@ -4060,12 +4956,16 @@
     },
     {
       "key": "风光/20240130144151.jpg",
-      "title": "",
+      "title": "阿尔山雪地足迹",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240130144151",
         "dateTaken": "2024-01-30T06:41:51.000Z",
@@ -4078,12 +4978,16 @@
     },
     {
       "key": "风光/20240129165024.jpeg",
-      "title": "",
+      "title": "阿尔山山顶日落",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，积雪覆盖山坡和树枝，冬日光线干净清透。",
+        "en": "Photographed in Arxan, where snow covers slopes and branches under clear winter light."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "日落"
+      ],
       "aiContext": {
         "currentTitle": "20240129165024",
         "dateTaken": "2024-01-29T08:50:24.000Z",
@@ -4096,12 +5000,16 @@
     },
     {
       "key": "风光/20240129164618.jpeg",
-      "title": "",
+      "title": "阿尔山雪亭剪影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "地点按相邻照片与画面推断为阿尔山，积雪覆盖山坡和树枝，冬日光线干净清透。",
+        "en": "Inferred from nearby photos and the image context as Arxan, where snow covers slopes and branches under clear winter light."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240129164618",
         "dateTaken": "2024-01-29T08:46:18.000Z",
@@ -4114,12 +5022,16 @@
     },
     {
       "key": "风光/20240129160317.jpeg",
-      "title": "",
+      "title": "阿尔山雾凇白树",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，积雪覆盖山坡和树枝，冬日光线干净清透。",
+        "en": "Photographed in Arxan, where snow covers slopes and branches under clear winter light."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240129160317",
         "dateTaken": "2024-01-29T08:03:17.000Z",
@@ -4132,12 +5044,16 @@
     },
     {
       "key": "风光/20240129155549.jpeg",
-      "title": "",
+      "title": "阿尔山冬山远眺",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，积雪覆盖山坡和树枝，冬日光线干净清透。",
+        "en": "Photographed in Arxan, where snow covers slopes and branches under clear winter light."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240129155549",
         "dateTaken": "2024-01-29T07:55:49.000Z",
@@ -4150,12 +5066,16 @@
     },
     {
       "key": "风光/20240129155238.jpeg",
-      "title": "",
+      "title": "阿尔山雪山日光",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，积雪覆盖山坡和树枝，冬日光线干净清透。",
+        "en": "Photographed in Arxan, where snow covers slopes and branches under clear winter light."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240129155238",
         "dateTaken": "2024-01-29T07:52:38.000Z",
@@ -4168,12 +5088,16 @@
     },
     {
       "key": "风光/20240128092721.jpeg",
-      "title": "",
+      "title": "阿尔山雪中小站",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，站台、轨道和天光组成出行中的安静间隔。",
+        "en": "Photographed in Arxan, where platform, tracks, and sky make a quiet interval in transit."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240128092721",
         "dateTaken": "2024-01-28T01:27:21.000Z",
@@ -4186,12 +5110,16 @@
     },
     {
       "key": "风光/20240128082819.jpeg",
-      "title": "",
+      "title": "阿尔山冬日湿地",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿尔山，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Arxan, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "内蒙古",
+        "阿尔山",
+        "雪景"
+      ],
       "aiContext": {
         "currentTitle": "20240128082819",
         "dateTaken": "2024-01-28T00:28:19.000Z",
@@ -4204,12 +5132,16 @@
     },
     {
       "key": "城市/20240127195700.jpeg",
-      "title": "",
+      "title": "沈阳夜色车站",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于沈阳，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Shenyang, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "辽宁",
+        "街景",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "20240127195700",
         "dateTaken": "2024-01-27T11:57:00.000Z",
@@ -4222,12 +5154,16 @@
     },
     {
       "key": "城市/20231223232937.jpeg",
-      "title": "",
+      "title": "澳门巴黎人铁塔",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于澳门，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in Macau, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "澳门",
+        "历史建筑",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20231223232937",
         "dateTaken": "2023-12-23T15:29:37.000Z",
@@ -4240,12 +5176,16 @@
     },
     {
       "key": "随手/20231223200903.jpeg",
-      "title": "",
+      "title": "澳门室内演出",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于澳门，舞台光线和观众席把现场氛围压缩在一帧里。",
+        "en": "Photographed in Macau, where stage light and audience compress the live atmosphere into one frame."
       },
-      "tags": [],
+      "tags": [
+        "澳门",
+        "历史建筑",
+        "旅途"
+      ],
       "aiContext": {
         "currentTitle": "20231223200903",
         "dateTaken": "2023-12-23T12:09:03.000Z",
@@ -4258,12 +5198,16 @@
     },
     {
       "key": "城市/20231223165020.jpeg",
-      "title": "",
+      "title": "澳门历史街口",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于澳门，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Macau, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "澳门",
+        "历史建筑",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20231223165020",
         "dateTaken": "2023-12-23T08:50:20.000Z",
@@ -4276,12 +5220,16 @@
     },
     {
       "key": "风光/20230813105708.jpeg",
-      "title": "",
+      "title": "上海温室绿意",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于上海松江，公园里的树影、草地和水面让画面放慢下来。",
+        "en": "Photographed in Songjiang, Shanghai, where trees, lawns, and water slow the frame down inside the park."
       },
-      "tags": [],
+      "tags": [
+        "上海",
+        "松江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20230813105708",
         "dateTaken": "2023-08-13T02:57:08.000Z",
@@ -4294,12 +5242,16 @@
     },
     {
       "key": "城市/20230812172729.jpeg",
-      "title": "",
+      "title": "上海松江酒店山景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于上海松江，高处视角把街区、楼群和天空组织成清晰层次。",
+        "en": "Photographed in Songjiang, Shanghai, where a higher viewpoint organizes blocks, towers, and sky into clear layers."
       },
-      "tags": [],
+      "tags": [
+        "上海",
+        "松江",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20230812172729",
         "dateTaken": "2023-08-12T09:27:29.000Z",
@@ -4312,12 +5264,16 @@
     },
     {
       "key": "城市/20230811142638.jpeg",
-      "title": "",
+      "title": "上海武康大楼街角",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于上海，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Shanghai, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "上海",
+        "水面",
+        "历史建筑"
+      ],
       "aiContext": {
         "currentTitle": "20230811142638",
         "dateTaken": "2023-08-11T06:26:38.000Z",
@@ -4330,12 +5286,16 @@
     },
     {
       "key": "城市/20230810213918.jpeg",
-      "title": "",
+      "title": "上海外滩夜景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于上海，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Shanghai, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "上海",
+        "水面",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "20230810213918",
         "dateTaken": "2023-08-10T13:39:18.000Z",
@@ -4348,12 +5308,16 @@
     },
     {
       "key": "城市/20230810193911.jpeg",
-      "title": "",
+      "title": "上海桥上夜景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于上海，桥梁与城市背景交织，线条把视线引向远处。",
+        "en": "Photographed in Shanghai, where bridge lines lead the eye into the city beyond."
       },
-      "tags": [],
+      "tags": [
+        "上海",
+        "水面",
+        "夜景"
+      ],
       "aiContext": {
         "currentTitle": "20230810193911",
         "dateTaken": "2023-08-10T11:39:11.000Z",
@@ -4366,12 +5330,16 @@
     },
     {
       "key": "城市/20230810190440.jpeg",
-      "title": "",
+      "title": "陆家嘴夜色天际线",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于上海，夜色里的高楼灯光倒映在水面和街区之间。",
+        "en": "Photographed in Shanghai, where night lights from the towers reflect across water and streets."
       },
-      "tags": [],
+      "tags": [
+        "上海",
+        "天际线",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20230810190440",
         "dateTaken": "2023-08-10T11:04:40.000Z",
@@ -4384,12 +5352,16 @@
     },
     {
       "key": "城市/20230727163103.jpeg",
-      "title": "",
+      "title": "澳门大三巴正面",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于澳门，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Macau, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "澳门",
+        "历史建筑",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20230727163103",
         "dateTaken": "2023-07-27T08:31:03.000Z",
@@ -4402,12 +5374,16 @@
     },
     {
       "key": "城市/20230716164243.jpeg",
-      "title": "",
+      "title": "佛山广场云色",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于佛山，高处视角把街区、楼群和天空组织成清晰层次。",
+        "en": "Photographed in Foshan, where a higher viewpoint organizes blocks, towers, and sky into clear layers."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "佛山",
+        "高处视角"
+      ],
       "aiContext": {
         "currentTitle": "20230716164243",
         "dateTaken": "2023-07-16T08:42:43.000Z",
@@ -4420,12 +5396,16 @@
     },
     {
       "key": "风光/20230710162648.jpeg",
-      "title": "",
+      "title": "黄果树瀑布近景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于黄果树瀑布，瀑布从山体和绿意间铺开，水雾让画面更有力量。",
+        "en": "Photographed in Huangguoshu Waterfall, where waterfalls spread through the green cliffs with a forceful mist."
       },
-      "tags": [],
+      "tags": [
+        "贵州",
+        "黄果树",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20230710162648",
         "dateTaken": "2023-07-10T08:26:48.000Z",
@@ -4438,12 +5418,16 @@
     },
     {
       "key": "风光/20230710162205.jpeg",
-      "title": "",
+      "title": "黄果树瀑布全景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于黄果树瀑布，瀑布从山体和绿意间铺开，水雾让画面更有力量。",
+        "en": "Photographed in Huangguoshu Waterfall, where waterfalls spread through the green cliffs with a forceful mist."
       },
-      "tags": [],
+      "tags": [
+        "贵州",
+        "黄果树",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20230710162205",
         "dateTaken": "2023-07-10T08:22:05.000Z",
@@ -4456,12 +5440,16 @@
     },
     {
       "key": "城市/20230708195007.jpeg",
-      "title": "",
+      "title": "贵阳甲秀楼暮色",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于贵阳，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Guiyang, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "贵州",
+        "贵阳",
+        "日落"
+      ],
       "aiContext": {
         "currentTitle": "20230708195007",
         "dateTaken": "2023-07-08T11:50:07.000Z",
@@ -4474,12 +5462,16 @@
     },
     {
       "key": "城市/20230707205326.jpg",
-      "title": "",
+      "title": "贵阳雨云双塔",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于贵阳，高处视角把街区、楼群和天空组织成清晰层次。",
+        "en": "Photographed in Guiyang, where a higher viewpoint organizes blocks, towers, and sky into clear layers."
       },
-      "tags": [],
+      "tags": [
+        "贵州",
+        "贵阳",
+        "高处视角"
+      ],
       "aiContext": {
         "currentTitle": "20230707205326",
         "dateTaken": "2023-07-07T12:53:26.000Z",
@@ -4492,12 +5484,16 @@
     },
     {
       "key": "城市/20230325102504.jpeg",
-      "title": "",
+      "title": "阴天维多利亚港",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于香港维多利亚港，隔着水面望向高楼天际线，城市轮廓清晰展开。",
+        "en": "Photographed in Victoria Harbour, Hong Kong, where the skyline opens across the water with a clear urban silhouette."
       },
-      "tags": [],
+      "tags": [
+        "香港",
+        "维多利亚港",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20230325102504",
         "dateTaken": "2023-03-25T02:25:04.000Z",
@@ -4510,12 +5506,16 @@
     },
     {
       "key": "城市/20230325101949.jpeg",
-      "title": "",
+      "title": "香港铜锣湾街角",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于香港维多利亚港，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in Victoria Harbour, Hong Kong, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "香港",
+        "维多利亚港",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20230325101949",
         "dateTaken": "2023-03-25T02:19:49.000Z",
@@ -4528,12 +5528,16 @@
     },
     {
       "key": "随手/20221030180155.jpeg",
-      "title": "",
+      "title": "广州窗外晚霞",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于佛山，夕阳下的城市天际线和水面形成温暖层次。",
+        "en": "Photographed in Foshan, where the skyline and water are layered in warm sunset light."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "佛山",
+        "天际线"
+      ],
       "aiContext": {
         "currentTitle": "20221030180155",
         "dateTaken": "2022-10-30T10:01:55.000Z",
@@ -4546,12 +5550,16 @@
     },
     {
       "key": "随手/20220813124634.jpeg",
-      "title": "",
+      "title": "合肥赛车展品",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于合肥，近处细节被单独拎出，给旅途留下轻巧的注脚。",
+        "en": "Photographed in Hefei, where a close detail is singled out as a small note from the trip."
       },
-      "tags": [],
+      "tags": [
+        "安徽",
+        "随拍",
+        "旅途"
+      ],
       "aiContext": {
         "currentTitle": "20220813124634",
         "dateTaken": "2022-08-13T04:46:34.000Z",
@@ -4564,12 +5572,16 @@
     },
     {
       "key": "风光/20220811104743.jpeg",
-      "title": "",
+      "title": "黄山云雾奇峰",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于黄山，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Huangshan, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "安徽",
+        "黄山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20220811104743",
         "dateTaken": "2022-08-11T02:47:43.000Z",
@@ -4582,12 +5594,16 @@
     },
     {
       "key": "风光/20220811104421.jpeg",
-      "title": "",
+      "title": "黄山松与云",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于黄山，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Huangshan, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "安徽",
+        "黄山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20220811104421",
         "dateTaken": "2022-08-11T02:44:21.000Z",
@@ -4600,12 +5616,16 @@
     },
     {
       "key": "风光/20220811103942.jpeg",
-      "title": "",
+      "title": "黄山云瀑山峰",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于黄山，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in Huangshan, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "安徽",
+        "黄山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20220811103942",
         "dateTaken": "2022-08-11T02:39:42.000Z",
@@ -4618,12 +5638,16 @@
     },
     {
       "key": "风光/20220811053702.jpeg",
-      "title": "",
+      "title": "黄山日出峰影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于黄山，晚霞从山脊背后展开，轮廓和云层都被染亮。",
+        "en": "Photographed in Huangshan, where sunset spreads behind the ridges, lighting the silhouettes and clouds."
       },
-      "tags": [],
+      "tags": [
+        "安徽",
+        "黄山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20220811053702",
         "dateTaken": "2022-08-10T21:37:02.000Z",
@@ -4636,12 +5660,16 @@
     },
     {
       "key": "风光/20220810185919.jpeg",
-      "title": "",
+      "title": "黄山晚霞山色",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于黄山，晚霞从山脊背后展开，轮廓和云层都被染亮。",
+        "en": "Photographed in Huangshan, where sunset spreads behind the ridges, lighting the silhouettes and clouds."
       },
-      "tags": [],
+      "tags": [
+        "安徽",
+        "黄山",
+        "山景"
+      ],
       "aiContext": {
         "currentTitle": "20220810185919",
         "dateTaken": "2022-08-10T10:59:19.000Z",
@@ -4654,12 +5682,16 @@
     },
     {
       "key": "城市/20220629110228.jpeg",
-      "title": "",
+      "title": "三亚海棠湾酒店",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于三亚，高处视角把街区、楼群和天空组织成清晰层次。",
+        "en": "Photographed in Sanya, where a higher viewpoint organizes blocks, towers, and sky into clear layers."
       },
-      "tags": [],
+      "tags": [
+        "海南",
+        "三亚",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20220629110228",
         "dateTaken": "2022-06-29T03:02:28.000Z",
@@ -4672,12 +5704,16 @@
     },
     {
       "key": "风光/20220627110853.jpeg",
-      "title": "",
+      "title": "三亚高处看海",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于三亚，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Photographed in Sanya, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "海南",
+        "三亚",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20220627110853",
         "dateTaken": "2022-06-27T03:08:53.000Z",
@@ -4690,12 +5726,16 @@
     },
     {
       "key": "风光/20220626170343.jpeg",
-      "title": "",
+      "title": "三亚椰影海湾",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于三亚，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Photographed in Sanya, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "海南",
+        "三亚",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20220626170343",
         "dateTaken": "2022-06-26T09:03:43.000Z",
@@ -4708,12 +5748,16 @@
     },
     {
       "key": "城市/20220624202712.jpeg",
-      "title": "",
+      "title": "海口骑楼老街",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于海口，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Haikou, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "海南",
+        "海口",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20220624202712",
         "dateTaken": "2022-06-24T12:27:12.000Z",
@@ -4726,12 +5770,16 @@
     },
     {
       "key": "随手/20220624174305.jpeg",
-      "title": "",
+      "title": "海口港口渡船",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于海口，渡轮、码头和水面记录了城市之间的移动感。",
+        "en": "Photographed in Haikou, where ferry, pier, and water record motion between places."
       },
-      "tags": [],
+      "tags": [
+        "海南",
+        "海口",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20220624174305",
         "dateTaken": "2022-06-24T09:43:05.000Z",
@@ -4744,12 +5792,16 @@
     },
     {
       "key": "风光/20210814190511.jpg",
-      "title": "",
+      "title": "粤东北山谷小镇",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于粤东北山区，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in the mountains of northeastern Guangdong, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "山景",
+        "自然"
+      ],
       "aiContext": {
         "currentTitle": "20210814190511",
         "dateTaken": "2021-08-14T11:05:11.000Z",
@@ -4762,12 +5814,16 @@
     },
     {
       "key": "风光/20210501183243.jpg",
-      "title": "",
+      "title": "澳门山城夕阳",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于澳门，夕阳下的城市天际线和水面形成温暖层次。",
+        "en": "Photographed in Macau, where the skyline and water are layered in warm sunset light."
       },
-      "tags": [],
+      "tags": [
+        "澳门",
+        "天际线",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20210501183243",
         "dateTaken": "2021-05-01T10:32:43.000Z",
@@ -4780,12 +5836,16 @@
     },
     {
       "key": "城市/20210501172011.jpg",
-      "title": "",
+      "title": "澳门大三巴雨天",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于澳门，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Macau, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "澳门",
+        "历史建筑",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20210501172011",
         "dateTaken": "2021-05-01T09:20:11.000Z",
@@ -4798,12 +5858,16 @@
     },
     {
       "key": "城市/20201221204601.jpg",
-      "title": "",
+      "title": "上海夜色航拍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于上海，夜间航拍把街灯、路口和楼群压成明亮的图案。",
+        "en": "Photographed in Shanghai, where a night aerial view turns streets and towers into a bright pattern."
       },
-      "tags": [],
+      "tags": [
+        "上海",
+        "街景",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20201221204601",
         "dateTaken": "2020-12-21T12:46:01.000Z",
@@ -4816,12 +5880,16 @@
     },
     {
       "key": "城市/20201221160327.jpeg",
-      "title": "",
+      "title": "上海双塔仰望",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于上海，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in Shanghai, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "上海",
+        "水面",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20201221160327",
         "dateTaken": "2020-12-21T08:03:27.000Z",
@@ -4834,12 +5902,16 @@
     },
     {
       "key": "城市/20201221115704.jpeg",
-      "title": "",
+      "title": "上海浦东天际线",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于上海，隔着水面望向高楼天际线，城市轮廓清晰展开。",
+        "en": "Photographed in Shanghai, where the skyline opens across the water with a clear urban silhouette."
       },
-      "tags": [],
+      "tags": [
+        "上海",
+        "天际线",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20201221115704",
         "dateTaken": "2020-12-21T03:57:04.000Z",
@@ -4852,12 +5924,16 @@
     },
     {
       "key": "风光/20200729115443.jpg",
-      "title": "",
+      "title": "粤东北山岭风机",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于粤东北山区，山体、树木和云雾铺开了层次丰富的自然风景。",
+        "en": "Photographed in the mountains of northeastern Guangdong, where mountains, trees, and mist build a layered natural scene."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "山景",
+        "自然"
+      ],
       "aiContext": {
         "currentTitle": "20200729115443",
         "dateTaken": "2020-07-29T03:54:43.000Z",
@@ -4870,12 +5946,16 @@
     },
     {
       "key": "风光/20200728185613.jpeg",
-      "title": "",
+      "title": "粤东北山间落日",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于粤东北山区，晚霞从山脊背后展开，轮廓和云层都被染亮。",
+        "en": "Photographed in the mountains of northeastern Guangdong, where sunset spreads behind the ridges, lighting the silhouettes and clouds."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "山景",
+        "日落"
+      ],
       "aiContext": {
         "currentTitle": "20200728185613",
         "dateTaken": "2020-07-28T10:56:13.000Z",
@@ -4888,12 +5968,16 @@
     },
     {
       "key": "风光/20200728183217.jpeg",
-      "title": "",
+      "title": "粤东北芦草夕阳",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于粤东北山区，晚霞从山脊背后展开，轮廓和云层都被染亮。",
+        "en": "Photographed in the mountains of northeastern Guangdong, where sunset spreads behind the ridges, lighting the silhouettes and clouds."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "山景",
+        "日落"
+      ],
       "aiContext": {
         "currentTitle": "20200728183217",
         "dateTaken": "2020-07-28T10:32:17.000Z",
@@ -4906,12 +5990,16 @@
     },
     {
       "key": "随手/20191228153658.jpg",
-      "title": "",
+      "title": "深圳展厅屏幕",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于深圳湾，近处细节被单独拎出，给旅途留下轻巧的注脚。",
+        "en": "Photographed in Shenzhen Bay, where a close detail is singled out as a small note from the trip."
       },
-      "tags": [],
+      "tags": [
+        "深圳",
+        "深圳湾",
+        "随拍"
+      ],
       "aiContext": {
         "currentTitle": "20191228153658",
         "dateTaken": "2019-12-28T07:36:58.000Z",
@@ -4924,12 +6012,16 @@
     },
     {
       "key": "随手/20191228153207.jpg",
-      "title": "",
+      "title": "深圳蔚来中心",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于深圳湾，橱窗和室内陈列捕捉了城市漫游中的小片段。",
+        "en": "Photographed in Shenzhen Bay, where the shopfront and display catch a small fragment of city wandering."
       },
-      "tags": [],
+      "tags": [
+        "深圳",
+        "深圳湾",
+        "随拍"
+      ],
       "aiContext": {
         "currentTitle": "20191228153207",
         "dateTaken": "2019-12-28T07:32:07.000Z",
@@ -4942,12 +6034,16 @@
     },
     {
       "key": "风光/20191225141229.jpg",
-      "title": "",
+      "title": "德天瀑布远景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于德天瀑布，瀑布从山体和绿意间铺开，水雾让画面更有力量。",
+        "en": "Photographed in Detian Waterfall, where waterfalls spread through the green cliffs with a forceful mist."
       },
-      "tags": [],
+      "tags": [
+        "广西",
+        "德天瀑布",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20191225141229",
         "dateTaken": "2019-12-25T06:12:29.000Z",
@@ -4960,12 +6056,16 @@
     },
     {
       "key": "风光/20191225132758.jpg",
-      "title": "",
+      "title": "德天瀑布水潭",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于德天瀑布，瀑布从山体和绿意间铺开，水雾让画面更有力量。",
+        "en": "Photographed in Detian Waterfall, where waterfalls spread through the green cliffs with a forceful mist."
       },
-      "tags": [],
+      "tags": [
+        "广西",
+        "德天瀑布",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20191225132758",
         "dateTaken": "2019-12-25T05:27:58.000Z",
@@ -4978,12 +6078,16 @@
     },
     {
       "key": "风光/20191225110635.jpg",
-      "title": "",
+      "title": "崇左喀斯特田园",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于广西崇左一带，喀斯特山影、田地和薄雾构成柔和的边境风景。",
+        "en": "Photographed around Chongzuo, Guangxi, where karst hills, fields, and mist create a soft borderland landscape."
       },
-      "tags": [],
+      "tags": [
+        "广西",
+        "山景",
+        "自然"
+      ],
       "aiContext": {
         "currentTitle": "20191225110635",
         "dateTaken": "2019-12-25T03:06:35.000Z",
@@ -4996,12 +6100,16 @@
     },
     {
       "key": "城市/20190728042344.jpg",
-      "title": "",
+      "title": "纽约时报广场高楼",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in New York City, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20190728042344",
         "dateTaken": "2019-07-28T08:23:44.000Z",
@@ -5014,12 +6122,16 @@
     },
     {
       "key": "城市/20190727232605.jpg",
-      "title": "",
+      "title": "自由女神像水上远望",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in New York Harbor, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20190727232605",
         "dateTaken": "2019-07-28T03:26:05.000Z",
@@ -5032,12 +6144,16 @@
     },
     {
       "key": "城市/20190727220611.jpg",
-      "title": "",
+      "title": "纽约证券交易所街景",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于纽约港，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in New York Harbor, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "纽约",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20190727220611",
         "dateTaken": "2019-07-28T02:06:11.000Z",
@@ -5050,12 +6166,16 @@
     },
     {
       "key": "随手/20190726202523.jpg",
-      "title": "",
+      "title": "波特兰机场雨天",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于波特兰，机场与机坪记录了出发或抵达前后的短暂停顿。",
+        "en": "Photographed in Portland, where the airport and apron capture a pause around departure or arrival."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "俄勒冈",
+        "机场"
+      ],
       "aiContext": {
         "currentTitle": "20190726202523",
         "dateTaken": "2019-07-27T03:25:23.000Z",
@@ -5068,12 +6188,16 @@
     },
     {
       "key": "城市/20190721061206.jpg",
-      "title": "",
+      "title": "波特兰清晨路灯",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于波特兰，街头建筑、人流和光线构成旅途中的城市切片。",
+        "en": "Photographed in Portland, where street architecture, people, and light form a compact travel moment."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "俄勒冈",
+        "街景"
+      ],
       "aiContext": {
         "currentTitle": "20190721061206",
         "dateTaken": "2019-07-21T13:12:06.000Z",
@@ -5086,12 +6210,16 @@
     },
     {
       "key": "随手/20190719203408.jpg",
-      "title": "",
+      "title": "迪士尼银河边缘",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于阿纳海姆迪士尼乐园，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in Disneyland Anaheim, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "美国",
+        "水面",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20190719203408",
         "dateTaken": "2019-07-20T03:34:08.000Z",
@@ -5104,12 +6232,16 @@
     },
     {
       "key": "风光/20190120181337.jpg",
-      "title": "",
+      "title": "亚庇海滩夕阳",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于亚庇，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Photographed in Kota Kinabalu, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "水面",
+        "日落",
+        "自然"
+      ],
       "aiContext": {
         "currentTitle": "20190120181337",
         "dateTaken": "2019-01-20T10:13:37.000Z",
@@ -5122,12 +6254,16 @@
     },
     {
       "key": "随手/20181231154252.jpg",
-      "title": "",
+      "title": "粤东北寒雾树影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于粤东北山区，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in the mountains of northeastern Guangdong, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "广东",
+        "雪景",
+        "冬天"
+      ],
       "aiContext": {
         "currentTitle": "20181231154252",
         "dateTaken": "2018-12-31T07:42:52.000Z",
@@ -5140,12 +6276,16 @@
     },
     {
       "key": "随手/20180803181039.jpg",
-      "title": "",
+      "title": "北京圆明园遗址",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于北京，历史建筑与街头人群并置，形成层次鲜明的城市记忆。",
+        "en": "Photographed in Beijing, where historic architecture and street life create a layered city memory."
       },
-      "tags": [],
+      "tags": [
+        "北京",
+        "历史建筑",
+        "城市"
+      ],
       "aiContext": {
         "currentTitle": "20180803181039",
         "dateTaken": "2018-08-03T10:10:39.000Z",
@@ -5158,12 +6298,16 @@
     },
     {
       "key": "随手/20180801095820.jpg",
-      "title": "",
+      "title": "北京天坛祈年殿",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于北京，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in Beijing, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "北京",
+        "历史建筑",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20180801095820",
         "dateTaken": "2018-08-01T01:58:20.000Z",
@@ -5176,12 +6320,16 @@
     },
     {
       "key": "随手/20180731094558.jpg",
-      "title": "",
+      "title": "北京故宫午门",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于北京，地标建筑占据画面中心，现场氛围清晰可见。",
+        "en": "Photographed in Beijing, where a landmark anchors the frame with the surrounding atmosphere intact."
       },
-      "tags": [],
+      "tags": [
+        "北京",
+        "历史建筑",
+        "地标"
+      ],
       "aiContext": {
         "currentTitle": "20180731094558",
         "dateTaken": "2018-07-31T01:45:58.000Z",
@@ -5194,12 +6342,16 @@
     },
     {
       "key": "随手/20160713192105.jpg",
-      "title": "",
+      "title": "济州岛雾中海岸",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于济州岛，海岸、云层和远处船影让画面保持柔和的流动感。",
+        "en": "Photographed in Jeju Island, where coast, clouds, and distant ships keep a soft sense of movement."
       },
-      "tags": [],
+      "tags": [
+        "韩国",
+        "济州岛",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20160713192105",
         "dateTaken": "2016-07-13T10:21:05.000Z",
@@ -5212,12 +6364,16 @@
     },
     {
       "key": "随手/20160712113146.jpg",
-      "title": "",
+      "title": "济州岛绿地松影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于济州岛，公园里的树影、草地和水面让画面放慢下来。",
+        "en": "Photographed in Jeju Island, where trees, lawns, and water slow the frame down inside the park."
       },
-      "tags": [],
+      "tags": [
+        "韩国",
+        "济州岛",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20160712113146",
         "dateTaken": "2016-07-12T02:31:46.000Z",
@@ -5230,12 +6386,16 @@
     },
     {
       "key": "风光/20160712092621.jpg",
-      "title": "",
+      "title": "济州岛黑礁海岸",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于济州岛，海岸、云层和远处船影让画面保持柔和的流动感。",
+        "en": "Photographed in Jeju Island, where coast, clouds, and distant ships keep a soft sense of movement."
       },
-      "tags": [],
+      "tags": [
+        "韩国",
+        "济州岛",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20160712092621",
         "dateTaken": "2016-07-12T00:26:21.000Z",
@@ -5248,12 +6408,16 @@
     },
     {
       "key": "风光/20150203085149.jpg",
-      "title": "",
+      "title": "哈尔滨雪原村舍",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于哈尔滨，雪地、低阳和远处地平线让画面显得清冽开阔。",
+        "en": "Photographed in Harbin, where snow, low sun, and horizon give the scene a crisp openness."
       },
-      "tags": [],
+      "tags": [
+        "雪景",
+        "冬天",
+        "自然"
+      ],
       "aiContext": {
         "currentTitle": "20150203085149",
         "dateTaken": "2015-02-03T00:51:49.000Z",
@@ -5266,12 +6430,16 @@
     },
     {
       "key": "风光/20140805183814.jpg",
-      "title": "",
+      "title": "三亚海面剪影",
       "descriptions": {
-        "zh-CN": "",
-        "en": ""
+        "zh-CN": "拍摄于三亚，海面接住落日和云层的暖光，气氛安静而开阔。",
+        "en": "Photographed in Sanya, where the sea catches warm sunset light under layered clouds."
       },
-      "tags": [],
+      "tags": [
+        "海南",
+        "三亚",
+        "水面"
+      ],
       "aiContext": {
         "currentTitle": "20140805183814",
         "dateTaken": "2014-08-05T10:38:14.000Z",
