@@ -50,6 +50,17 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
         {/* Social media links */}
         {siteConfig.social && (
           <div className="mt-1 mb-3 flex items-center justify-center gap-3">
+            {siteConfig.social.instagram && (
+              <a
+                href={siteConfig.social.instagram}
+                target="_blank"
+                rel="noreferrer"
+                className="text-text-secondary flex items-center justify-center p-2 duration-200 hover:text-[#E1306C]"
+                title="Instagram"
+              >
+                <i className="i-mingcute-instagram-fill text-sm" />
+              </a>
+            )}
             {siteConfig.social.github && (
               <a
                 href={`https://github.com/${siteConfig.social.github}`}
