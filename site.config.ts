@@ -39,6 +39,7 @@ interface Author {
 interface Social {
   twitter?: string
   github?: string
+  instagram?: string
   rss?: boolean
 }
 
