@@ -1,0 +1,47 @@
+name: Notify IndexNow
+
+on:
+  workflow_run:
+    workflows:
+      - Deploy
+    types:
+      - completed
+  workflow_dispatch:
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  notify-indexnow:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event != 'pull_request' &&
+        github.event.workflow_run.head_branch == 'main'
+      )
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://photo.jackyw.cn
+      SITEMAP_PATH: ./web/googlesitemap.xml
+      HAS_INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY != '' }}
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Check IndexNow key
+        if: env.HAS_INDEXNOW_KEY != 'true'
+        run: |
+          echo "INDEXNOW_KEY is not set; skipping IndexNow notification."
+
+      - name: Notify Bing IndexNow
+        if: env.HAS_INDEXNOW_KEY == 'true'
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: node .github/scripts/notify-search-engines.mjs

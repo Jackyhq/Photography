@@ -88,8 +88,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     env:
-      SITE_URL: https://photo.jackyw.cn
-      SITEMAP_PATH: ./web/googlesitemap.xml
       HAS_INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY != '' }}
     steps:
       - name: Checkout
@@ -182,11 +180,6 @@ jobs:
           commit_message: "chore: update photos and build output"
           file_pattern: 'photos/** web/**'
           add_options: '-A'
-
-      - name: Notify Bing IndexNow
-        env:
-          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
-        run: node .github/scripts/notify-search-engines.mjs
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
