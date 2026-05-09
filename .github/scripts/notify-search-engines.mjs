@@ -5,26 +5,15 @@ const DEFAULT_SITEMAP_PATH = './web/googlesitemap.xml'
 const DEFAULT_INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow'
 const DEFAULT_INDEXNOW_MAX_ATTEMPTS = 4
 const DEFAULT_INDEXNOW_RETRY_DELAY_MS = 30000
-const DEFAULT_DEPLOYMENT_MAX_ATTEMPTS = 24
-const DEFAULT_DEPLOYMENT_RETRY_DELAY_MS = 30000
 
 const siteUrl = trimTrailingSlash(process.env.SITE_URL || DEFAULT_SITE_URL)
 const sitemapPath = process.env.SITEMAP_PATH || DEFAULT_SITEMAP_PATH
-const publicSitemapUrl = process.env.PUBLIC_SITEMAP_URL || `${siteUrl}/googlesitemap.xml`
 const indexNowKey = process.env.INDEXNOW_KEY || ''
 const indexNowEndpoint = process.env.INDEXNOW_ENDPOINT || DEFAULT_INDEXNOW_ENDPOINT
 const indexNowMaxAttempts = parsePositiveInteger(process.env.INDEXNOW_MAX_ATTEMPTS, DEFAULT_INDEXNOW_MAX_ATTEMPTS)
 const indexNowRetryDelayMs = parsePositiveInteger(
   process.env.INDEXNOW_RETRY_DELAY_MS,
   DEFAULT_INDEXNOW_RETRY_DELAY_MS,
-)
-const deploymentMaxAttempts = parsePositiveInteger(
-  process.env.INDEXNOW_DEPLOYMENT_MAX_ATTEMPTS,
-  DEFAULT_DEPLOYMENT_MAX_ATTEMPTS,
-)
-const deploymentRetryDelayMs = parsePositiveInteger(
-  process.env.INDEXNOW_DEPLOYMENT_RETRY_DELAY_MS,
-  DEFAULT_DEPLOYMENT_RETRY_DELAY_MS,
 )
 
 const sitemapXml = await readFile(sitemapPath, 'utf8')
@@ -52,61 +41,10 @@ async function submitIndexNowUrls() {
     return
   }
 
-  const deploymentReady = await waitForPublicDeployment()
-
-  if (!deploymentReady) {
-    console.warn('Skipping IndexNow submission: public deployment was not ready before the wait timeout.')
-    return
-  }
-
   const chunks = chunk(urls, 10000)
 
   for (const [index, urlList] of chunks.entries()) {
     await submitIndexNowChunk(host, urlList, index + 1, chunks.length)
-  }
-}
-
-async function waitForPublicDeployment() {
-  for (let attempt = 1; attempt <= deploymentMaxAttempts; attempt += 1) {
-    const [keyFileReady, sitemapReady] = await Promise.all([isPublicKeyFileReady(), isPublicSitemapReady()])
-
-    if (keyFileReady && sitemapReady) {
-      console.info('Public deployment is ready for IndexNow submission.')
-      return true
-    }
-
-    if (attempt < deploymentMaxAttempts) {
-      console.info(
-        `Waiting for public deployment before IndexNow submission (${attempt}/${deploymentMaxAttempts}); retrying in ${
-          deploymentRetryDelayMs / 1000
-        }s.`,
-      )
-      await sleep(deploymentRetryDelayMs)
-    }
-  }
-
-  return false
-}
-
-async function isPublicKeyFileReady() {
-  try {
-    const response = await fetch(`${siteUrl}/${indexNowKey}.txt`, noCacheRequestOptions())
-
-    return response.ok && (await response.text()).trim() === indexNowKey
-  } catch (error) {
-    console.warn(`IndexNow key file check failed: ${getErrorMessage(error)}`)
-    return false
-  }
-}
-
-async function isPublicSitemapReady() {
-  try {
-    const response = await fetch(publicSitemapUrl, noCacheRequestOptions())
-
-    return response.ok && normalizeXml(await response.text()) === normalizeXml(sitemapXml)
-  } catch (error) {
-    console.warn(`Public sitemap check failed: ${getErrorMessage(error)}`)
-    return false
   }
 }
 
@@ -167,24 +105,6 @@ function decodeXml(value) {
     .replaceAll('&quot;', '"')
     .replaceAll('&apos;', "'")
     .replaceAll('&amp;', '&')
-}
-
-function normalizeXml(value) {
-  return value.trim()
-}
-
-function noCacheRequestOptions() {
-  return {
-    cache: 'no-store',
-    headers: {
-      'Cache-Control': 'no-cache',
-      Pragma: 'no-cache',
-    },
-  }
-}
-
-function getErrorMessage(error) {
-  return error instanceof Error ? error.message : String(error)
 }
 
 function trimTrailingSlash(value) {

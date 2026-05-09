@@ -40,6 +40,10 @@ jobs:
         run: |
           echo "INDEXNOW_KEY is not set; skipping IndexNow notification."
 
+      - name: Wait for public web sync
+        if: env.HAS_INDEXNOW_KEY == 'true'
+        run: sleep 1200
+
       - name: Notify Bing IndexNow
         if: env.HAS_INDEXNOW_KEY == 'true'
         env:
