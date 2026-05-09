@@ -5,44 +5,14 @@ const DEFAULT_SITEMAP_PATH = './web/googlesitemap.xml'
 const DEFAULT_INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow'
 
 const siteUrl = trimTrailingSlash(process.env.SITE_URL || DEFAULT_SITE_URL)
-const sitemapUrl = process.env.SITEMAP_URL || `${siteUrl}/googlesitemap.xml`
 const sitemapPath = process.env.SITEMAP_PATH || DEFAULT_SITEMAP_PATH
-const googleSiteUrl = process.env.GOOGLE_SEARCH_CONSOLE_SITE_URL || `${siteUrl}/`
-const googleAccessToken = process.env.GOOGLE_ACCESS_TOKEN || ''
 const indexNowKey = process.env.INDEXNOW_KEY || ''
 const indexNowEndpoint = process.env.INDEXNOW_ENDPOINT || DEFAULT_INDEXNOW_ENDPOINT
 
 const sitemapXml = await readFile(sitemapPath, 'utf8')
 const sitemapUrls = extractSitemapUrls(sitemapXml)
 
-await submitGoogleSitemap()
 await submitIndexNowUrls()
-
-async function submitGoogleSitemap() {
-  if (!googleAccessToken) {
-    console.info('Skipping Google Search Console sitemap submission: GOOGLE_ACCESS_TOKEN is not set.')
-    return
-  }
-
-  const endpoint = new URL(
-    `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(googleSiteUrl)}/sitemaps/${encodeURIComponent(
-      sitemapUrl,
-    )}`,
-  )
-
-  const response = await fetch(endpoint, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${googleAccessToken}`,
-    },
-  })
-
-  if (!response.ok) {
-    throw new Error(`Google sitemap submission failed with ${response.status}: ${await response.text()}`)
-  }
-
-  console.info(`Submitted sitemap to Google Search Console: ${sitemapUrl}`)
-}
 
 async function submitIndexNowUrls() {
   if (!indexNowKey) {

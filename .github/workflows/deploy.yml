@@ -89,10 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SITE_URL: https://photo.jackyw.cn
-      SITEMAP_URL: https://photo.jackyw.cn/googlesitemap.xml
       SITEMAP_PATH: ./web/googlesitemap.xml
-      GOOGLE_SEARCH_CONSOLE_SITE_URL: ${{ vars.GOOGLE_SEARCH_CONSOLE_SITE_URL || 'https://photo.jackyw.cn/' }}
-      HAS_GOOGLE_SEARCH_CONSOLE_CREDENTIALS: ${{ secrets.GOOGLE_SEARCH_CONSOLE_CREDENTIALS != '' }}
       HAS_INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY != '' }}
     steps:
       - name: Checkout
@@ -186,18 +183,8 @@ jobs:
           file_pattern: 'photos/** web/**'
           add_options: '-A'
 
-      - name: Authenticate Google Search Console
-        id: google-auth
-        if: env.HAS_GOOGLE_SEARCH_CONSOLE_CREDENTIALS == 'true'
-        uses: google-github-actions/auth@v3
-        with:
-          credentials_json: ${{ secrets.GOOGLE_SEARCH_CONSOLE_CREDENTIALS }}
-          token_format: access_token
-          access_token_scopes: https://www.googleapis.com/auth/webmasters
-
-      - name: Notify search engines
+      - name: Notify Bing IndexNow
         env:
-          GOOGLE_ACCESS_TOKEN: ${{ steps.google-auth.outputs.access_token }}
           INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
         run: node .github/scripts/notify-search-engines.mjs
 
