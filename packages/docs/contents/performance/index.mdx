@@ -2,7 +2,7 @@
 title: Performance
 description: Mobile-first loading and image performance notes for Jacky's Photography.
 createdAt: 2026-04-27T00:00:00+01:00
-lastModified: 2026-04-29T04:05:16+08:00
+lastModified: 2026-05-10T05:45:29+08:00
 ---
 
 # Performance
@@ -40,9 +40,15 @@ The masonry gallery treats the first six items as first-screen candidates:
 
 ## Manifest Loading
 
-The build embeds a lightweight manifest into `index.html` for the gallery grid and emits the full manifest as a hashed JSON asset. The lightweight manifest keeps fields needed for sorting, filtering, thumbnails, camera/lens display names, and first-screen rendering. Detail-heavy views, such as the manifest inspection page and photo detail data, fetch the full manifest through `__FULL_MANIFEST_URL__` only when needed.
+The build embeds a lightweight manifest into `index.html` for the gallery grid and emits the full manifest as a hashed JSON asset. The lightweight manifest keeps fields needed for sorting, filtering, thumbnails, localized descriptions, camera/lens display names, and first-screen rendering. Detail-heavy views, such as the manifest inspection page and photo detail data, fetch the full manifest through `__FULL_MANIFEST_URL__` only when needed.
 
 This keeps the initial viewport image budget low while preserving compatibility for browsers that cannot use WebP.
+
+## Static Photo Metadata
+
+Production builds also generate static HTML shells for every photo detail route at `photos/<photo-id>/index.html`. These files reuse the SPA entrypoint but replace the title, description, canonical URL, OpenGraph tags, and Twitter Card tags with photo-specific metadata.
+
+That metadata is generated from the manifest after `photo-descriptions.json` has been merged, so crawlers and link unfurlers can read localized manual descriptions before React loads. The feature adds HTML files to the static output, but it does not add extra JavaScript to the homepage path.
 
 ## JavaScript Loading
 
@@ -77,4 +83,5 @@ Before publishing a performance change, check:
 - Live Photo and Motion Photo items still load their media.
 - Map markers and the manifest page still have usable thumbnails through `thumbnailUrl`.
 - `index.html` contains image preloads for the first two homepage thumbnails.
+- `/photos/<photo-id>/index.html` files contain photo-specific title, description, canonical URL, and social image tags.
 - `registerSW.js` is loaded with `defer`.

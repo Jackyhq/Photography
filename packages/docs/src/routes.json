@@ -6,7 +6,7 @@
       "title": "Overview",
       "description": "Project overview for Jacky's Photography, a customized Afilmory-powered photo gallery.",
       "createdAt": "2025-07-20T22:35:03+08:00",
-      "lastModified": "2026-04-29T04:05:16+08:00"
+      "lastModified": "2026-05-09T00:00:00+01:00"
     }
   },
   {
@@ -16,27 +16,7 @@
       "title": "Deployment",
       "description": "Guide to deploying Jacky's Photography in production environments.",
       "createdAt": "2025-07-20T22:35:03+08:00",
-      "lastModified": "2026-04-27T06:26:20+08:00"
-    }
-  },
-  {
-    "path": "/deployment/cloudflare-pages",
-    "title": "Cloudflare Pages",
-    "meta": {
-      "title": "Cloudflare Pages",
-      "description": "Guide to deploying Jacky's Photography via Cloudflare Pages.",
-      "createdAt": "2025-07-20T22:35:03+08:00",
-      "lastModified": "2026-04-29T04:05:16+08:00"
-    }
-  },
-  {
-    "path": "/deployment/docker",
-    "title": "Docker",
-    "meta": {
-      "title": "Docker",
-      "description": "Guide to packaging Jacky's Photography as a static Docker image.",
-      "createdAt": "2025-07-20T22:35:03+08:00",
-      "lastModified": "2026-04-29T04:05:16+08:00"
+      "lastModified": "2026-05-09T00:00:00+01:00"
     }
   },
   {
@@ -46,7 +26,7 @@
       "title": "GitHub Action",
       "description": "Guide to the GitHub Actions deployment workflow used by Jacky's Photography.",
       "createdAt": "2025-07-20T22:35:03+08:00",
-      "lastModified": "2026-04-29T04:05:16+08:00"
+      "lastModified": "2026-05-09T00:00:00+01:00"
     }
   },
   {
@@ -60,23 +40,13 @@
     }
   },
   {
-    "path": "/deployment/vercel",
-    "title": "Vercel",
-    "meta": {
-      "title": "Vercel",
-      "description": "Guide to deploying Jacky's Photography via Vercel.",
-      "createdAt": "2025-07-20T22:35:03+08:00",
-      "lastModified": "2026-04-29T04:05:16+08:00"
-    }
-  },
-  {
     "path": "/docs-site",
     "title": "Docs site",
     "meta": {
       "title": "Docs site",
       "description": "How to maintain the Jacky's Photography documentation site.",
       "createdAt": "2025-09-11T17:05:55+08:00",
-      "lastModified": "2026-04-29T04:05:16+08:00"
+      "lastModified": "2026-05-09T00:00:00+01:00"
     }
   },
   {
@@ -86,7 +56,17 @@
       "title": "Performance",
       "description": "Mobile-first loading and image performance notes for Jacky's Photography.",
       "createdAt": "2026-04-27T00:00:00+01:00",
-      "lastModified": "2026-04-29T04:05:16+08:00"
+      "lastModified": "2026-05-09T00:00:00+01:00"
+    }
+  },
+  {
+    "path": "/photo-metadata",
+    "title": "Photo Metadata",
+    "meta": {
+      "title": "Photo Metadata",
+      "description": "Manual photo descriptions, tags, manifest merge behavior, and SEO metadata workflow.",
+      "createdAt": "2026-05-09T00:00:00+01:00",
+      "lastModified": "2026-05-09T00:00:00+01:00"
     }
   },
   {

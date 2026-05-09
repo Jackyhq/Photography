@@ -1,15 +1,17 @@
 # <p align="center">Jacky's Photography</p>
 
+![Jacky's Photography preview](./web/readme-og-image.png)
+
 > [!IMPORTANT]
 > 本项目由 [Jackyhq](https://github.com/Jackyhq) 基于原仓库 [Afilmory/afilmory](https://github.com/Afilmory/afilmory) 进行深度定制与二次开发。
 > 在保留原项目核心优势的基础上，本项目包含了由 Jackyhq 独立开发的自动化部署、构建优化、照片标准化和交互体验增强。
 >
 > **版权声明：**
-> 仓库中 `photos/` 目录下的所有照片均为 **Jackyhq 个人拍摄的作品**。这些照片**不属于开源范围**，未经明确书面许可，严禁以任何形式（包括但不限于商业用途、二次分发、个人展示等）进行转载、引用或使用。
+> 仓库中 `photos/` 目录下的所有照片，以及由这些照片生成的缩略图、OG 图、README 预览图等媒体文件，均为 **Jackyhq 个人拍摄作品或其衍生媒体**。这些资产**不属于开源范围**，未经明确书面许可，严禁以任何形式（包括但不限于商业用途、二次分发、个人展示、公开展示等）进行转载、引用或使用。
 
 Afilmory (/əˈfɪlməri/) 是一个专为个人摄影网站创造的词汇，融合了自动对焦（AF）、光圈（Aperture，光影控制）、胶片（Film，复古媒介）和记忆（Memory，定格瞬间）。
 
-这是一个基于 React、TypeScript、Vite 和 pnpm workspaces 构建的个人摄影画廊。项目以纯客户端 SPA 的形式发布，照片元数据由 `@afilmory/builder` 在构建前生成，前端通过静态 `photos-manifest.json` 提供瀑布流浏览、全屏查看、EXIF 展示、地图探索、Live Photo 和 HDR 等体验。
+这是一个基于 React、TypeScript、Vite 和 pnpm workspaces 构建的个人摄影画廊。项目以纯客户端 SPA 的形式发布，照片元数据由 `@afilmory/builder` 在构建前生成，前端通过静态 `photos-manifest.json` 提供瀑布流浏览、全屏查看、EXIF 展示、地图探索、Live Photo、HDR、双语描述和照片级 SEO 等体验。
 
 演示画廊：
 
@@ -22,9 +24,12 @@ Afilmory (/əˈfɪlməri/) 是一个专为个人摄影网站创造的词汇，�
 - **高性能图片查看器**：`@afilmory/webgl-viewer` 提供流畅的缩放和平移体验，移动端可回退到 DOM 查看器。
 - **响应式瀑布流布局**：基于 Masonic，适配桌面和移动端。
 - **全屏照片详情**：支持 EXIF、直方图、胶片模拟信息、Live Photo、HDR 标识和缩略图导航。
-- **命令面板与筛选**：支持按标题、标签、相机和镜头信息检索照片。
+- **命令面板与筛选**：支持按标题、双语描述、标签、相机和镜头信息检索照片，并支持标签并集/交集筛选。
 - **地图探索**：使用 MapLibre 展示带 GPS 信息的照片位置，并支持聚合与缩略图预览。
 - **国际化**：基于 i18next，支持多语言文案。
+- **本地化可访问性与分享信息**：照片 alt 文本、详情页描述和页面 meta 会按当前语言选择人工描述，并回退到标题或照片 ID。
+- **照片级静态 meta 页面**：生产构建会为 `/photos/:id` 生成带独立标题、描述、canonical、OpenGraph 和 Twitter Card 的 HTML。
+- **个人主页社交链接**：首页资料卡支持 GitHub、Instagram、Twitter、RSS 和作者主页链接。
 - **移动端首屏优化**：首页缩略图使用响应式 WebP 资源，关键首屏图片会在 HTML 阶段预加载，详情页、命令面板和特殊格式转换逻辑按需加载。
 
 ### 构建与处理
@@ -34,6 +39,8 @@ Afilmory (/əˈfɪlməri/) 是一个专为个人摄影网站创造的词汇，�
 - **格式处理**：支持 JPEG、PNG、HEIC/HEIF、TIFF、BMP 等常见照片格式的读取与转换。
 - **缩略图与占位图**：生成 `360w`/`640w` WebP 缩略图、`640w` JPEG fallback、Thumbhash 和色调分析数据。
 - **照片标准化**：`photos/incoming` 中的照片可按 EXIF 时间自动重命名并移动到分类目录。
+- **人工照片描述合并**：`photo-descriptions.json` 可维护标题、`zh-CN`/`en` 描述和人工标签，构建时由 builder 插件合并进 manifest。
+- **轻量首屏 manifest**：构建时将首页所需的轻量 manifest 注入 HTML，并额外输出完整 manifest JSON，详情视图和 manifest 页面按需加载完整数据。
 - **并发处理**：支持 worker/cluster 模式，适合批量照片处理。
 
 ## 技术栈
@@ -95,7 +102,7 @@ pnpm build
 pnpm docs:build
 ```
 
-构建产物位于 `apps/web/dist/`。GitHub Actions 会额外把该目录同步到根目录 `web/`，便于 Cloudflare Pages 等静态平台直接指向。
+构建产物位于 `apps/web/dist/`。GitHub Actions 会额外把该目录同步到根目录 `web/`，用于提交和保存当前静态输出。
 
 ## 常用命令
 
@@ -121,6 +128,10 @@ pnpm run build:manifest -- --config
 # 照片入库标准化
 pnpm run photos:standardize
 
+# 根据当前 manifest 同步人工照片描述 sidecar
+pnpm run photos:descriptions:sync
+pnpm run photos:descriptions:sync -- --prune
+
 # 质量检查
 pnpm lint
 pnpm format
@@ -139,6 +150,12 @@ pnpm --filter web type-check
   "title": "Jackywhq's Photography",
   "url": "https://photo.jackyw.cn",
   "accentColor": "#007bff",
+  "social": {
+    "github": "Jackyhq",
+    "instagram": "https://www.instagram.com/jackywhq/",
+    "twitter": "",
+    "rss": false
+  },
   "map": ["maplibre"],
   "mapStyle": "builtin",
   "mapProjection": "mercator"
@@ -161,6 +178,7 @@ export default defineBuilderConfig(() => ({
     baseUrl: 'https://photos3.jackyw.cn/photos/',
     excludeRegex: '^incoming($|/.*)',
   },
+  plugins: [new URL('plugins/builder/photo-descriptions.ts', import.meta.url).href],
 }))
 ```
 
@@ -177,8 +195,15 @@ export default defineBuilderConfig(() => ({
 
 1. 将新照片放入 `photos/incoming/`，或直接放入 `photos/<分类>/`。
 2. 运行 `pnpm run photos:standardize`。脚本会读取 EXIF 时间，将文件重命名为 `YYYYMMDDHHmmss.ext`，并移动到目标分类目录；直接放在 `incoming` 根目录的文件会进入 `photos/随手/`。
-3. 运行 `pnpm run build:manifest`。构建器会扫描照片、提取 EXIF、生成缩略图和 manifest。
-4. 运行 `pnpm dev` 预览，或运行 `pnpm build` 生成静态站点。
+3. 运行 `pnpm run build:manifest`。构建器会扫描照片、提取 EXIF、生成缩略图，并把 `photo-descriptions.json` 中匹配到的人工标题、双语描述和标签合并进 manifest。
+4. 需要补充新照片描述时，运行 `pnpm run photos:descriptions:sync` 根据当前 manifest 同步 `photo-descriptions.json`，填写 `title`、`descriptions.zh-CN`、`descriptions.en` 和精简标签后再次运行 `pnpm run build:manifest`。
+5. 运行 `pnpm dev` 预览，或运行 `pnpm build` 生成静态站点。
+
+`photo-descriptions.json` 使用照片存储路径作为 `key`。同步脚本会保留未匹配的旧条目；如需移除已经不在 manifest 中的旧照片条目，可运行：
+
+```bash
+pnpm run photos:descriptions:sync -- --prune
+```
 
 当缩略图策略或 manifest 结构变更时，使用完整重建命令确保生成物与前端代码一致：
 
@@ -190,7 +215,9 @@ pnpm build
 
 ## 自动部署
 
-`.github/workflows/deploy.yml` 在推送到 `main` 且相关路径变更时运行，也支持手动触发。流程包括：
+`.github/workflows/deploy.yml` 在推送到 `main` 且相关路径变更时部署，也支持手动触发。Pull Request 会运行同一套标准化、manifest 和 web 构建校验，但不会发布 GitHub Pages 或提交构建产物。
+
+触发路径包括 `.github/workflows/deploy.yml`、`photos/**`、`apps/**`、`packages/**`、`package.json`、`pnpm-lock.yaml`、`config.json`、`builder.config.ts` 和 `site.config.ts`。部署流程包括：
 
 1. 安装 pnpm 与 Node.js 24。
 2. 执行 `pnpm install`。
@@ -201,15 +228,20 @@ pnpm build
 7. 将构建产物同步到根目录 `web/` 并提交 `photos/**` 和 `web/**`。
 8. 上传 `apps/web/dist/` 到 GitHub Pages 并部署。
 
+PR 校验会按 PR 编号设置并发分组并取消过期运行；部署任务使用 Pages 权限，只在非 PR 事件中执行。
+
 ## 文档
 
 - 文档站源码位于 `packages/docs/contents/`。
 - 新建文档可运行 `pnpm create:doc`。
 - 文档站开发命令为 `pnpm docs:dev`，生产构建为 `pnpm docs:build`。
+- 照片描述、人工标签和照片级 SEO 工作流记录在 `packages/docs/contents/photo-metadata/index.mdx`。
 - 移动端性能、响应式缩略图和分包策略记录在 `packages/docs/contents/performance/index.mdx`。
 
 ## 许可证
 
 本项目代码遵循 [Attribution Network License (ANL) v1.0](LICENSE)。
+
+`photos/**`、`web/thumbnails/**`、`apps/web/public/thumbnails/**`、`web/og-image-*.png`、`apps/web/public/og-image-*.png`、`web/readme-og-image.png` 以及其他由个人照片生成的媒体资产不属于开源授权范围，详见 [LICENSE](LICENSE) 的 Documentation & Media 排除条款。
 
 Copyright (c) 2025-2026 Jackyhq. All rights reserved.

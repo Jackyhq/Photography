@@ -2,7 +2,7 @@
 title: Docs site
 description: How to maintain the Jacky's Photography documentation site.
 createdAt: 2025-09-11T17:05:55+08:00
-lastModified: 2026-04-29T04:05:16+08:00
+lastModified: 2026-05-10T05:45:29+08:00
 ---
 
 # Docs Site
@@ -14,6 +14,7 @@ The documentation site is a Vite, React, and MDX static site in `packages/docs`.
 Documentation pages live in `packages/docs/contents/`:
 
 - `index.mdx` introduces the project, photo pipeline, and deployment flow.
+- `photo-metadata/index.mdx` documents manual descriptions, tag curation, manifest merge behavior, and photo SEO output.
 - `storage/index.mdx` documents supported builder storage providers.
 - `performance/index.mdx` records image loading, manifest, and chunk-splitting decisions.
 - `deployment/*.mdx` contains platform-specific deployment notes.
@@ -23,6 +24,7 @@ Route generation follows the file system:
 
 - `contents/index.mdx` becomes `/`.
 - `contents/storage/index.mdx` becomes `/storage`.
+- `contents/photo-metadata/index.mdx` becomes `/photo-metadata`.
 - `contents/deployment/github-pages.mdx` becomes `/deployment/github-pages`.
 
 The route generator writes `src/routes.ts` and `src/routes.json`; treat both as generated files.
@@ -70,6 +72,8 @@ Use `pnpm create:doc` for new pages when you want the scaffolded frontmatter and
 
 - Keep examples aligned with Node.js 24, pnpm 10.19.0, React 19, Vite, and the current workspace packages.
 - Document the static SPA workflow: `pnpm build` produces `apps/web/dist/`, and GitHub Actions mirrors that output into root `web/`.
+- Keep photo metadata docs aligned with `photo-descriptions.json`, `scripts/sync-photo-descriptions.ts`, and `plugins/builder/photo-descriptions.ts`.
+- When describing profile links, use the current `siteConfig.social` fields, including `instagram`.
 - Do not describe `photos/` as reusable sample assets; those files are personal copyrighted works.
 - Prefer short, operational sections over generic product copy.
 - When changing `packages/docs/contents/deployment/*`, verify the commands against `.github/workflows/deploy.yml` and root `package.json`.

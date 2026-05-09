@@ -66,9 +66,19 @@ This project may include components under other licenses. You must comply with t
 
 ## 2C) Documentation & Media
 
-Unless stated otherwise, **project documentation** is licensed under **CC BY 4.0**, and **non-code media assets** (images, icons, diagrams) are licensed under **CC BY 4.0**. 
+Unless stated otherwise, **project documentation** is licensed under **CC BY 4.0**, and **non-code media assets** (images, icons, diagrams) are licensed under **CC BY 4.0**, except for the excluded assets below.
 
-**EXCLUSION:** All photography files located within the `photos/` directory are **NOT** licensed under CC BY 4.0 or any other open-source license. These are the proprietary creative works of **Jackyhq**, and all rights are reserved. No permission is granted for reproduction, distribution, or use of these files without explicit written consent.
+**EXCLUSION:** All photography files located within the `photos/` directory, and all media files derived from those photographs, are **NOT** licensed under CC BY 4.0 or any other open-source license. These are the proprietary creative works of **Jackyhq**, and all rights are reserved. No permission is granted for reproduction, distribution, public display, sublicensing, or use of these files without explicit written consent.
+
+This exclusion includes, without limitation:
+
+- `photos/**`
+- `apps/web/public/thumbnails/**`
+- `web/thumbnails/**`
+- `apps/web/public/og-image-*.png`
+- `web/og-image-*.png`
+- `web/readme-og-image.png`
+- any other generated thumbnails, previews, cover images, social sharing images, or README preview images derived from the photographs
 
 ---
 

@@ -2,12 +2,12 @@
 title: Overview
 description: Project overview for Jacky's Photography, a customized Afilmory-powered photo gallery.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2026-04-29T04:05:16+08:00
+lastModified: 2026-05-10T05:45:29+08:00
 ---
 
 # Jacky's Photography
 
-Jacky's Photography is a customized personal photo gallery based on [Afilmory](https://github.com/Afilmory/afilmory). It keeps the core static-gallery workflow from Afilmory while adding project-specific automation, deployment, photo standardization, map exploration, and presentation refinements for [photo.jackyw.cn](https://photo.jackyw.cn).
+Jacky's Photography is a customized personal photo gallery based on [Afilmory](https://github.com/Afilmory/afilmory). It keeps the core static-gallery workflow from Afilmory while adding project-specific automation, deployment, photo standardization, bilingual photo metadata, map exploration, and presentation refinements for [photo.jackyw.cn](https://photo.jackyw.cn).
 
 > Photos under `photos/` are Jackyhq's personal works and are not part of the open-source license. Do not reuse, redistribute, or publish them without explicit written permission.
 
@@ -21,9 +21,12 @@ Core user-facing features:
 - Responsive WebP thumbnails with JPEG fallback and first-screen image preloads.
 - Fullscreen photo viewer with WebGL zoom and pan.
 - EXIF, histogram, camera, lens, tag, Live Photo, HDR, and Fujifilm recipe display.
-- Command palette and gallery controls for searching, sorting, and changing layout.
+- Command palette and gallery controls for searching by title, localized description, tag, camera, and lens.
 - MapLibre-based location explorer for photos with GPS metadata.
-- OpenGraph, sitemap, RSS utilities, and static deployment output.
+- Localized photo alt text, description fallback, and photo detail page metadata.
+- Static per-photo HTML pages for `/photos/:id` with canonical, OpenGraph, and Twitter Card metadata.
+- Profile links for GitHub, Instagram, Twitter, RSS, and the author homepage.
+- RSS, sitemap, PWA assets, and static deployment output.
 
 ## Repository Layout
 
@@ -76,6 +79,7 @@ Useful commands:
 
 ```bash
 pnpm run photos:standardize
+pnpm run photos:descriptions:sync
 pnpm run build:manifest -- --force
 pnpm run build:manifest -- --force-thumbnails
 pnpm run build:manifest -- --force-manifest
@@ -88,18 +92,20 @@ pnpm --filter web type-check
 
 `pnpm dev` and `pnpm build` run the web precheck, which calls the builder CLI before Vite starts or builds.
 
-For mobile loading details, responsive thumbnails, and chunk-splitting expectations, see [Performance](/performance).
+For manual photo descriptions, tag curation, and SEO metadata, see [Photo Metadata](/photo-metadata). For mobile loading details, responsive thumbnails, and chunk-splitting expectations, see [Performance](/performance).
 
 ## Photo Workflow
 
 1. Put new photos in `photos/incoming/` or directly in a category folder under `photos/`.
 2. Run `pnpm run photos:standardize` to rename incoming files from EXIF timestamps and move them into category folders.
-3. Run `pnpm run build:manifest` to scan photos, extract metadata, generate thumbnails, and generate the local `apps/web/src/data/photos-manifest.json`.
-4. Run `pnpm dev` for local preview or `pnpm build` for static production output.
+3. Run `pnpm run build:manifest` to scan photos, extract metadata, generate thumbnails, and merge any existing manual metadata from `photo-descriptions.json`.
+4. Run `pnpm run photos:descriptions:sync` when new manifest photos need sidecar entries, then fill in titles, `zh-CN`/`en` descriptions, and short editorial tags.
+5. Run `pnpm run build:manifest` again after editing `photo-descriptions.json` so the builder plugin can merge those values into the manifest.
+6. Run `pnpm dev` for local preview or `pnpm build` for static production output.
 
 ## Deployment
 
-The repository includes `.github/workflows/deploy.yml`. On pushes to `main` that touch photos, app code, packages, or project configuration, the workflow:
+The repository includes `.github/workflows/deploy.yml`. Pull requests run the same standardization, manifest, and web build validation without deploying. Pushes to `main` that touch photos, app code, packages, `config.json`, or project configuration run the deployment job:
 
 1. Installs pnpm and Node.js 24.
 2. Installs dependencies.
@@ -110,7 +116,7 @@ The repository includes `.github/workflows/deploy.yml`. On pushes to `main` that
 7. Syncs `apps/web/dist/` into the root `web/` directory and commits generated photo and `web/` output changes.
 8. Deploys `apps/web/dist/` to GitHub Pages.
 
-The committed `web/` directory can also be used as a static output target for platforms such as Cloudflare Pages.
+The committed `web/` directory is kept as the repository copy of the latest static output.
 
 ## License
 
