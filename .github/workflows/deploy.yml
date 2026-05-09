@@ -87,6 +87,10 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://photo.jackyw.cn
+      SITEMAP_PATH: ./web/googlesitemap.xml
+      HAS_INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -152,6 +156,20 @@ jobs:
           cp "$latest_og_image" web/readme-og-image.png
           echo "Copied $latest_og_image to web/readme-og-image.png"
 
+      - name: Publish IndexNow key file
+        if: env.HAS_INDEXNOW_KEY == 'true'
+        shell: bash
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: |
+          if [[ ! "$INDEXNOW_KEY" =~ ^[A-Za-z0-9-]{8,128}$ ]]; then
+            echo "INDEXNOW_KEY must be 8-128 characters and contain only letters, numbers, or dashes."
+            exit 1
+          fi
+
+          printf '%s' "$INDEXNOW_KEY" > "./web/${INDEXNOW_KEY}.txt"
+          echo "Created IndexNow key file in /web."
+
       - name: Pull latest changes to avoid non-fast-forward rejection
         run: |
           git config user.name "github-actions[bot]"
@@ -164,6 +182,11 @@ jobs:
           commit_message: "chore: update photos and build output"
           file_pattern: 'photos/** web/**'
           add_options: '-A'
+
+      - name: Notify Bing IndexNow
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: node .github/scripts/notify-search-engines.mjs
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
