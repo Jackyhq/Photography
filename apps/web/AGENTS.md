@@ -35,7 +35,6 @@ pnpm type-check
 - `src/pages/(main)/photos/[photoId]/index.tsx` is the photo detail route.
 - `src/pages/explory/index.tsx` is the map exploration route.
 - `src/pages/(data)/manifest.tsx` exposes the manifest inspection/download page.
-- `src/pages/(debug)/*` contains debug-only routes.
 - Route groups in parentheses do not add URL segments; `[param]` becomes a React Router dynamic segment.
 
 ## Feature Areas

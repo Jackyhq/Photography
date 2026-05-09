@@ -1,0 +1,132 @@
+---
+title: Photo Metadata
+description: Manual photo descriptions, tags, manifest merge behavior, and SEO metadata workflow.
+createdAt: 2026-05-09T00:00:00+01:00
+lastModified: 2026-05-10T05:45:29+08:00
+---
+
+# Photo Metadata
+
+Jacky's Photography keeps generated camera metadata in the builder manifest and keeps human-written copy in `photo-descriptions.json`. The sidecar file is merged into the manifest during `pnpm run build:manifest`, so editorial descriptions can improve search, alt text, detail pages, and social sharing without hand-editing generated manifest output.
+
+## Sidecar Shape
+
+`photo-descriptions.json` is versioned JSON at the repository root. Each entry is matched by storage key, normalized without a leading `photos/` prefix.
+
+```json
+{
+  "version": 1,
+  "photos": [
+    {
+      "key": "随手/20260508120000.jpg",
+      "title": "Window Light",
+      "descriptions": {
+        "zh-CN": "一束光落在窗边，给日常留下安静的边缘。",
+        "en": "A quiet window-lit frame from an ordinary afternoon."
+      },
+      "tags": ["window", "light", "daily", "color"],
+      "aiContext": {
+        "currentTitle": "",
+        "dateTaken": "2026-05-08T12:00:00.000Z",
+        "camera": "FUJIFILM X-T5",
+        "lens": "FUJIFILM XF35mmF1.4 R",
+        "categoryTags": ["随手"]
+      }
+    }
+  ]
+}
+```
+
+Field behavior:
+
+- `key` identifies the photo by manifest `s3Key` after path normalization.
+- `title` replaces the generated title when it is non-empty.
+- `descriptions.zh-CN` and `descriptions.en` are the maintained localized descriptions.
+- `tags` are merged into generated tags while preserving order and removing duplicates.
+- `aiContext` is helper context from the current manifest and is not merged into the public manifest.
+
+The current editorial convention is to keep manual tags short and focused, usually no more than four tags per photo.
+
+## Sync Workflow
+
+Run the builder first so the manifest reflects the current photo set:
+
+```bash
+pnpm run build:manifest
+```
+
+Then sync the sidecar file:
+
+```bash
+pnpm run photos:descriptions:sync
+```
+
+The sync script reads `apps/web/src/data/photos-manifest.json`, creates missing sidecar entries, preserves existing `title`, `descriptions`, and `tags`, and refreshes `aiContext` from the latest manifest data. By default it keeps stale entries that are no longer present in the manifest.
+
+Use pruning only when old sidecar entries should be removed:
+
+```bash
+pnpm run photos:descriptions:sync -- --prune
+```
+
+After editing titles, descriptions, or tags, run the builder again:
+
+```bash
+pnpm run build:manifest
+```
+
+## Manifest Merge
+
+`builder.config.ts` registers `plugins/builder/photo-descriptions.ts`. The plugin runs before the manifest is saved:
+
+- Missing `photo-descriptions.json` is allowed; the build skips manual metadata.
+- Sidecar keys are normalized by removing leading slashes and an optional `photos/` prefix.
+- Matching entries can update `title`, `descriptions`, fallback `description`, and `tags`.
+- `description` falls back to `descriptions["zh-CN"]`, then `descriptions.en`.
+- Manual tags are appended after existing tags and deduplicated.
+
+The public manifest therefore exposes both:
+
+```ts
+interface PhotoInfo {
+  description: string
+  descriptions?: Record<string, string>
+}
+```
+
+`description` remains the compatibility field. `descriptions` is used by localized UI and SEO behavior.
+
+## Frontend Usage
+
+The web app resolves descriptions through `apps/web/src/lib/photo-description.ts`:
+
+- Chinese locales prefer the exact locale, then `zh-CN`, then `en`.
+- English locales prefer the exact locale, then `en`, then `zh-CN`.
+- Other locales try the exact locale, base language, `en`, then `zh-CN`.
+- Alt text falls back from localized description to title, then photo ID.
+
+Current consumers include:
+
+- masonry thumbnails and manifest cards through localized alt text
+- command palette photo search across every available description
+- photo detail route meta via `usePageMeta`
+- map markers and cluster thumbnails through localized alt text
+- static per-photo build output through `photo-page-meta`
+
+## SEO Output
+
+During production builds, `apps/web/plugins/vite/photo-page-meta.ts` reads the manifest and writes an HTML file for each photo at:
+
+```plain
+photos/<photo-id>/index.html
+```
+
+Each generated page keeps the SPA shell but replaces page metadata with photo-specific values:
+
+- `<title>`
+- `meta[name="description"]`
+- `link[rel="canonical"]`
+- `og:type`, `og:url`, `og:title`, `og:description`, `og:image`
+- `twitter:url`, `twitter:title`, `twitter:description`, `twitter:image`
+
+The sitemap plugin also includes photo detail URLs, so the generated metadata is available to crawlers and social link unfurlers before the client app hydrates.

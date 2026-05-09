@@ -137,6 +137,21 @@ jobs:
           cp -rp ./apps/web/dist/. web/
           echo "Copied build output to /web directory"
 
+      - name: Prepare README preview image
+        shell: bash
+        run: |
+          shopt -s nullglob
+          og_images=(web/og-image-*.png)
+
+          if [ ${#og_images[@]} -eq 0 ]; then
+            echo "No generated OG image found."
+            exit 1
+          fi
+
+          latest_og_image="${og_images[$((${#og_images[@]} - 1))]}"
+          cp "$latest_og_image" web/readme-og-image.png
+          echo "Copied $latest_og_image to web/readme-og-image.png"
+
       - name: Pull latest changes to avoid non-fast-forward rejection
         run: |
           git config user.name "github-actions[bot]"

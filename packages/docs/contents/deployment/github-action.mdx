@@ -2,28 +2,41 @@
 title: GitHub Action
 description: Guide to the GitHub Actions deployment workflow used by Jacky's Photography.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2026-04-29T04:05:16+08:00
+lastModified: 2026-05-10T05:45:29+08:00
 ---
 
 # GitHub Action Deployment
 
-This repository includes a production deployment workflow at `.github/workflows/deploy.yml`. It is designed for a static SPA deployment and currently publishes `apps/web/dist/` to GitHub Pages.
+This repository includes a deployment and validation workflow at `.github/workflows/deploy.yml`. It is designed for a static SPA deployment, validates pull requests, and publishes `apps/web/dist/` to GitHub Pages on non-PR events.
 
-The workflow runs on pushes to `main` when these paths change:
+The workflow runs on pushes and pull requests targeting `main` when these paths change:
 
+- `.github/workflows/deploy.yml`
 - `photos/**`
 - `apps/**`
 - `packages/**`
 - `package.json`
 - `pnpm-lock.yaml`
+- `config.json`
 - `builder.config.ts`
 - `site.config.ts`
 
 It can also be started manually through `workflow_dispatch`.
 
+## Jobs
+
+Pull requests run the `validate` job only. It standardizes photos, builds the manifest, builds the web app, and checks that `apps/web/dist/` exists. It does not copy output into `web/`, commit generated files, upload a Pages artifact, or deploy.
+
+Pushes to `main` and manual runs use the `build-and-deploy` job. This job performs the same build validation, mirrors the output into `web/`, commits generated `photos/**` and `web/**` changes, uploads the Pages artifact, and deploys it.
+
+The workflow uses separate concurrency groups:
+
+- Pull requests use `pr-<number>` and cancel stale runs for that PR.
+- Non-PR deployment events use the `pages` group.
+
 ## Build Steps
 
-The workflow performs the following steps:
+Both jobs perform the shared build steps:
 
 1. Check out the repository.
 2. Install pnpm `10.19.0`.
@@ -33,15 +46,19 @@ The workflow performs the following steps:
 6. Run `pnpm run build:manifest`.
 7. Run `pnpm run build`.
 8. Verify that `apps/web/dist/` exists.
-9. Copy `sitemap.xml` to `googlesitemap.xml` when it exists.
-10. Copy the built web output to the root `web/` directory.
-11. Commit generated photo and `web/` output changes.
-12. Upload `apps/web/dist/` as a GitHub Pages artifact.
-13. Deploy the artifact to GitHub Pages.
+
+The deploy job then performs these additional steps:
+
+1. Copy `sitemap.xml` to `googlesitemap.xml` when it exists.
+2. Copy the built web output to the root `web/` directory.
+3. Pull latest changes with rebase and autostash to avoid non-fast-forward rejections.
+4. Commit generated photo and `web/` output changes with the message `chore: update photos and build output`.
+5. Upload `apps/web/dist/` as a GitHub Pages artifact.
+6. Deploy the artifact to GitHub Pages.
 
 ## Permissions
 
-The workflow needs:
+The workflow defaults to `contents: read`. The deploy job expands permissions only when it needs to publish:
 
 - `contents: write` to commit generated output back to the repository.
 - `pages: write` to publish GitHub Pages.
@@ -61,7 +78,7 @@ The workflow also mirrors that static output to:
 web/
 ```
 
-This makes it possible to point another static host, such as Cloudflare Pages, at `web/` while GitHub Pages continues to deploy from `apps/web/dist/`.
+This keeps the latest static output committed for repository inspection and for the README preview image workflow.
 
 ## Notes
 

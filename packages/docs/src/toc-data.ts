@@ -86,82 +86,6 @@ export const tocData: FileToc[] = [
     ],
   },
   {
-    file: 'deployment/cloudflare-pages.mdx',
-    path: '/deployment/cloudflare-pages',
-    title: 'Cloudflare Pages',
-    toc: [
-      {
-        id: 'heading-cloudflare-pages-deployment',
-        level: 1,
-        text: 'Cloudflare Pages Deployment',
-        children: [
-          {
-            id: 'heading-recommended-settings',
-            level: 2,
-            text: 'Recommended Settings',
-            children: [],
-          },
-          {
-            id: 'heading-build-on-cloudflare-instead',
-            level: 2,
-            text: 'Build On Cloudflare Instead',
-            children: [],
-          },
-          {
-            id: 'heading-custom-domain',
-            level: 2,
-            text: 'Custom Domain',
-            children: [],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    file: 'deployment/docker.mdx',
-    path: '/deployment/docker',
-    title: 'Docker',
-    toc: [
-      {
-        id: 'heading-docker-deployment',
-        level: 1,
-        text: 'Docker Deployment',
-        children: [
-          {
-            id: 'heading-prerequisites',
-            level: 2,
-            text: 'Prerequisites',
-            children: [],
-          },
-          {
-            id: 'heading-static-nginx-image',
-            level: 2,
-            text: 'Static NGINX Image',
-            children: [],
-          },
-          {
-            id: 'heading-image-contents',
-            level: 2,
-            text: 'Image Contents',
-            children: [],
-          },
-          {
-            id: 'heading-configuration-notes',
-            level: 2,
-            text: 'Configuration Notes',
-            children: [],
-          },
-          {
-            id: 'heading-verification',
-            level: 2,
-            text: 'Verification',
-            children: [],
-          },
-        ],
-      },
-    ],
-  },
-  {
     file: 'deployment/github-action.mdx',
     path: '/deployment/github-action',
     title: 'GitHub Action',
@@ -171,6 +95,12 @@ export const tocData: FileToc[] = [
         level: 1,
         text: 'GitHub Action Deployment',
         children: [
+          {
+            id: 'heading-jobs',
+            level: 2,
+            text: 'Jobs',
+            children: [],
+          },
           {
             id: 'heading-build-steps',
             level: 2,
@@ -231,32 +161,6 @@ export const tocData: FileToc[] = [
             id: 'heading-custom-domain',
             level: 2,
             text: 'Custom Domain',
-            children: [],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    file: 'deployment/vercel.mdx',
-    path: '/deployment/vercel',
-    title: 'Vercel',
-    toc: [
-      {
-        id: 'heading-vercel-deployment',
-        level: 1,
-        text: 'Vercel Deployment',
-        children: [
-          {
-            id: 'heading-project-settings',
-            level: 2,
-            text: 'Project Settings',
-            children: [],
-          },
-          {
-            id: 'heading-notes',
-            level: 2,
-            text: 'Notes',
             children: [],
           },
         ],
@@ -336,6 +240,12 @@ export const tocData: FileToc[] = [
             children: [],
           },
           {
+            id: 'heading-static-photo-metadata',
+            level: 2,
+            text: 'Static Photo Metadata',
+            children: [],
+          },
+          {
             id: 'heading-javascript-loading',
             level: 2,
             text: 'JavaScript Loading',
@@ -351,6 +261,50 @@ export const tocData: FileToc[] = [
             id: 'heading-validation-checklist',
             level: 2,
             text: 'Validation Checklist',
+            children: [],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    file: 'photo-metadata/index.mdx',
+    path: '/photo-metadata',
+    title: 'Photo Metadata',
+    toc: [
+      {
+        id: 'heading-photo-metadata',
+        level: 1,
+        text: 'Photo Metadata',
+        children: [
+          {
+            id: 'heading-sidecar-shape',
+            level: 2,
+            text: 'Sidecar Shape',
+            children: [],
+          },
+          {
+            id: 'heading-sync-workflow',
+            level: 2,
+            text: 'Sync Workflow',
+            children: [],
+          },
+          {
+            id: 'heading-manifest-merge',
+            level: 2,
+            text: 'Manifest Merge',
+            children: [],
+          },
+          {
+            id: 'heading-frontend-usage',
+            level: 2,
+            text: 'Frontend Usage',
+            children: [],
+          },
+          {
+            id: 'heading-seo-output',
+            level: 2,
+            text: 'SEO Output',
             children: [],
           },
         ],
