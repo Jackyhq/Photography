@@ -8,6 +8,7 @@ import { gallerySettingAtom } from '~/atoms/app'
 import { siteConfig } from '~/config'
 import { useMobile } from '~/hooks/useMobile'
 import { getFilteredPhotos, usePhotos, usePhotoViewer } from '~/hooks/usePhotoViewer'
+import { getPhotoDetailPath } from '~/lib/photo-route'
 import { MasonryRoot } from '~/modules/gallery/MasonryRoot'
 import { PhotosProvider } from '~/providers/photos-provider'
 
@@ -124,7 +125,7 @@ const useSyncStateToUrl = () => {
       const targetPhoto = photos[currentIndex]
       if (!targetPhoto) return
 
-      const targetPathname = `/photos/${targetPhoto.id}`
+      const targetPathname = getPhotoDetailPath(targetPhoto.id)
       if (location.pathname !== targetPathname) {
         navigate(targetPathname)
       }

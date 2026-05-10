@@ -10,6 +10,7 @@ import { gallerySettingAtom } from '~/atoms/app'
 import { usePhotoViewer } from '~/hooks/usePhotoViewer'
 import { MageLens } from '~/icons'
 import { getLocalizedPhotoDescription, getPhotoAltText, getSearchablePhotoDescriptions } from '~/lib/photo-description'
+import { getPhotoDetailPath } from '~/lib/photo-route'
 
 // Command types
 type CommandType = 'search' | 'filter' | 'action' | 'photo'
@@ -283,7 +284,7 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
             const photoIndex = allPhotos.findIndex((p) => p.id === photo.id)
             if (photoIndex !== -1) {
               openViewer(photoIndex)
-              navigate(`/photos/${photo.id}`)
+              navigate(getPhotoDetailPath(photo.id))
               onClose()
             }
           },
