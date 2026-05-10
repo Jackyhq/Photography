@@ -17,7 +17,10 @@
   <script>
     (() => {
       const siteUrl = '<%- siteUrl %>'.replace(/\/+$/, '')
-      const pathname = window.location.pathname.replace(/\/+$/, '')
+      const currentPathname = window.location.pathname
+      const trimmedPathname = currentPathname.replace(/\/+$/, '')
+      const isPhotoDetailPath = /^\/photos\/[^/?#]+\/?$/.test(currentPathname)
+      const pathname = isPhotoDetailPath ? `${trimmedPathname}/` : trimmedPathname
       const canonicalUrl = pathname && pathname !== '/' ? `${siteUrl}${pathname}` : siteUrl
       let canonical = document.querySelector('link[rel="canonical"]')
       if (!canonical) {

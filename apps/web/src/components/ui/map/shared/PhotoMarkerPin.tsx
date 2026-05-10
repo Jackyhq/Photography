@@ -5,6 +5,7 @@ import { Marker } from 'react-map-gl/maplibre'
 import { Link } from 'react-router'
 
 import { getPhotoAltText } from '~/lib/photo-description'
+import { getPhotoDetailPath } from '~/lib/photo-route'
 
 import type { PhotoMarkerPinProps } from './types'
 
@@ -120,7 +121,7 @@ export const PhotoMarkerPin = ({ marker, isSelected = false, onClick, onClose }:
             <div className="space-y-3 p-4">
               {/* Title with link */}
               <Link
-                to={`/photos/${marker.photo.id}`}
+                to={getPhotoDetailPath(marker.photo.id)}
                 target="_blank"
                 className="group/link hover:text-blue flex items-center gap-2 transition-colors"
               >

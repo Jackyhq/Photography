@@ -10,6 +10,7 @@ import { useContextPhotos, usePhotoViewer } from '~/hooks/usePhotoViewer'
 import { useTitle } from '~/hooks/useTitle'
 import { deriveAccentFromSources } from '~/lib/color'
 import { getLocalizedPhotoDescription } from '~/lib/photo-description'
+import { getPhotoDetailPath } from '~/lib/photo-route'
 
 const PhotoViewer = lazy(() =>
   import('~/components/ui/photo-viewer/PhotoViewer').then((module) => ({ default: module.PhotoViewer })),
@@ -33,7 +34,7 @@ export const Component = () => {
     title: currentPhoto?.title || currentPhoto?.id,
     description: currentPhoto ? getLocalizedPhotoDescription(currentPhoto, i18n.language) : undefined,
     image: currentPhoto?.thumbnailUrl || currentPhoto?.originalUrl,
-    url: currentPhoto ? `/photos/${currentPhoto.id}` : undefined,
+    url: currentPhoto ? getPhotoDetailPath(currentPhoto.id) : undefined,
     type: currentPhoto?.mediaType === 'video' ? 'video.other' : 'article',
   })
 

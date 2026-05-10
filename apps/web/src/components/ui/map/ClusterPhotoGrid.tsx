@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { getPhotoAltText } from '~/lib/photo-description'
+import { getPhotoDetailPath } from '~/lib/photo-route'
 import type { PhotoMarker } from '~/types/map'
 
 interface ClusterPhotoGridProps {
@@ -46,7 +47,7 @@ export const ClusterPhotoGrid = ({ photos, onPhotoClick }: ClusterPhotoGridProps
             className="group relative aspect-square overflow-hidden rounded-lg"
           >
             <Link
-              to={`/photos/${photoMarker.photo.id}`}
+              to={getPhotoDetailPath(photoMarker.photo.id)}
               target="_blank"
               onClick={(e) => {
                 e.stopPropagation()

@@ -52,7 +52,7 @@ function createPhotoPageMeta(photo: PhotoManifestItem, siteConfig: SiteConfig): 
   return {
     title,
     description: getPhotoDescription(photo) || siteConfig.description,
-    url: `${baseUrl}/photos/${photo.id}`,
+    url: `${baseUrl}/photos/${photo.id}/`,
     image: toAbsoluteUrl(photo.thumbnailUrl || photo.originalUrl, siteConfig.url),
   }
 }
