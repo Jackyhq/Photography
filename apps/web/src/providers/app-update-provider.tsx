@@ -33,8 +33,8 @@ export const AppUpdateProvider = ({ children }: PropsWithChildren) => {
 
     try {
       await registration.update()
-    } catch (error) {
-      console.error('Service worker update check failed', error)
+    } catch {
+      // Service worker updates are an enhancement; some crawlers and restricted browser contexts reject them.
     }
   }, [])
 
@@ -77,8 +77,8 @@ export const AppUpdateProvider = ({ children }: PropsWithChildren) => {
 
         registration.addEventListener('updatefound', handleUpdateFound)
         void checkForUpdate(true)
-      } catch (error) {
-        console.error('SW registration failed', error)
+      } catch {
+        // Ignore registration failures in restricted contexts such as Search Console live tests.
       }
     }
 

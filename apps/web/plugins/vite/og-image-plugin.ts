@@ -75,7 +75,6 @@ export function ogImagePlugin(options: OGImagePluginOptions = {}): Plugin {
     <meta property="twitter:image" content="${siteUrl}${ogImagePath}" />
 
     <!-- Additional meta tags -->
-    <meta name="description" content="${description}" />
     <meta name="author" content="${siteName}" />
     <meta name="generator" content="Vite + React" />
     <meta name="robots" content="index, follow" />
