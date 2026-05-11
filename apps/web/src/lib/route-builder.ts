@@ -1,10 +1,11 @@
 import { get, omit } from 'es-toolkit/compat'
-import { Fragment } from 'react/jsx-runtime'
+import { createElement, Fragment } from 'react'
 import type { RouteObject } from 'react-router'
 
 type NestedStructure = { [key: string]: NestedStructure }
 
 const MainGroupSegment = '(main)'
+const routeHydrateFallbackElement = createElement(Fragment)
 
 function nestPaths(paths: string[]): NestedStructure {
   const result: NestedStructure = {}
@@ -101,6 +102,7 @@ export function buildGlobRoutes(glob: Record<string, () => Promise<any>>): Route
         children.push({
           path: '',
           lazy: globGetter,
+          hydrateFallbackElement: routeHydrateFallbackElement,
           children: childrenChildren,
           handle: {
             fs: segmentPathKey,
@@ -122,6 +124,7 @@ export function buildGlobRoutes(glob: Record<string, () => Promise<any>>): Route
         children.push({
           path: '',
           lazy: globGetter,
+          hydrateFallbackElement: routeHydrateFallbackElement,
           children: childrenChildren,
           handle: {
             fs: segmentPathKey,
@@ -149,6 +152,7 @@ export function buildGlobRoutes(glob: Record<string, () => Promise<any>>): Route
           children.push({
             path: normalizeKey,
             lazy: globGetter,
+            hydrateFallbackElement: routeHydrateFallbackElement,
             handle: {
               fs: `${segmentPathKey}/${normalizeKey}`,
               fullPath: `${parentPath}/${normalizeKey}`,
