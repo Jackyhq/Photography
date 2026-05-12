@@ -124,7 +124,7 @@ function resolvePhotoPagePath(photosOutputDirectory: string, photoId: string): s
   const filePath = path.join(photosOutputDirectory, safePhotoId, 'index.html')
   const relativePath = path.relative(photosOutputDirectory, filePath)
 
-  if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
+  if (relativePath === '..' || relativePath.startsWith(`..${path.sep}`) || path.isAbsolute(relativePath)) {
     throw new Error(`Refusing to write photo page outside photos output directory for id: ${photoId}`)
   }
 
