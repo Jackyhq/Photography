@@ -58,6 +58,11 @@ const ReactCompilerConfig = {
 
 const BUILD_FOR_SERVER_SERVE = process.env.BUILD_FOR_SERVER_SERVE === '1'
 
+const escapedSiteUrlJson = JSON.stringify(siteConfig.url)
+  .replaceAll('<', '\\u003C')
+  .replaceAll('\u2028', '\\u2028')
+  .replaceAll('\u2029', '\\u2029')
+
 const staticWebBuildPlugins: PluginOption[] = [
   manifestInjectPlugin(),
   siteConfigInjectPlugin(),
@@ -154,7 +159,7 @@ const staticWebBuildPlugins: PluginOption[] = [
       data: {
         title: siteConfig.title,
         description: siteConfig.description,
-        siteUrl: siteConfig.url,
+        siteUrlJson: escapedSiteUrlJson,
       },
     },
   }),
