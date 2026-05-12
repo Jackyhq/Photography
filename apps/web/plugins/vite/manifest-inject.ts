@@ -95,6 +95,15 @@ function compactObject<T extends Record<string, unknown>>(value: T): Partial<T> 
   return Object.fromEntries(Object.entries(value).filter(([, entryValue]) => entryValue !== undefined)) as Partial<T>
 }
 
+function serializeForInlineScript(value: unknown): string {
+  return JSON.stringify(value)
+    .replaceAll('<', '\\u003c')
+    .replaceAll('>', '\\u003e')
+    .replaceAll('&', '\\u0026')
+    .replaceAll('\u2028', '\\u2028')
+    .replaceAll('\u2029', '\\u2029')
+}
+
 function createLightManifest(manifest: FullManifest) {
   return {
     version: manifest.version,
@@ -285,7 +294,7 @@ export function manifestInjectPlugin(): Plugin {
         command === 'build' && buildPayload ? buildPayload : buildManifestPayload(command)
 
       // 将 manifest 内容注入到 script#manifest 标签中
-      const scriptContent = `window.__MANIFEST__=${JSON.stringify(lightManifest)};window.__FULL_MANIFEST_URL__=${JSON.stringify(fullManifestUrl)};`
+      const scriptContent = `window.__MANIFEST__=${serializeForInlineScript(lightManifest)};window.__FULL_MANIFEST_URL__=${serializeForInlineScript(fullManifestUrl)};`
       const preloadLinks = createThumbnailPreloadLinks(lightManifest)
 
       return html.replace(
