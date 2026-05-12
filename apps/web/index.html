@@ -16,7 +16,7 @@
   <title><%- title %></title>
   <script>
     (() => {
-      const siteUrl = '<%- siteUrl %>'.replace(/\/+$/, '')
+      const siteUrl = (<%- siteUrlJson %>).replace(/\/+$/, '')
       const currentPathname = window.location.pathname
       const trimmedPathname = currentPathname.replace(/\/+$/, '')
       const isPhotoDetailPath = /^\/photos\/[^/?#]+\/?$/.test(currentPathname)
