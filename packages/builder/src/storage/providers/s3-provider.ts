@@ -163,8 +163,15 @@ export class S3StorageProvider implements StorageProvider {
 
     const listResponse = await this.s3Client.send(listCommand)
     const objects = listResponse.Contents || []
+    const excludeRegex = this.config.excludeRegex ? new RegExp(this.config.excludeRegex) : null
 
-    return objects.map((obj) => convertS3ObjectToStorageObject(obj))
+    return objects
+      .filter((obj: _Object) => {
+        if (!obj.Key) return false
+        if (excludeRegex && excludeRegex.test(obj.Key)) return false
+        return true
+      })
+      .map((obj) => convertS3ObjectToStorageObject(obj))
   }
 
   generatePublicUrl(key: string): string {
