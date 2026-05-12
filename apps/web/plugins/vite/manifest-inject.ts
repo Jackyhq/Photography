@@ -186,6 +186,15 @@ function normalizeBase(base: string): string {
   return base.endsWith('/') ? base : `${base}/`
 }
 
+function serializeForInlineScript(value: unknown): string {
+  return JSON.stringify(value)
+    .replaceAll('<', '\\u003C')
+    .replaceAll('>', '\\u003E')
+    .replaceAll('&', '\\u0026')
+    .replaceAll('\u2028', '\\u2028')
+    .replaceAll('\u2029', '\\u2029')
+}
+
 export function manifestInjectPlugin(): Plugin {
   let embedManifest: boolean | undefined
   let resolvedConfig: ResolvedConfig | undefined
@@ -285,7 +294,7 @@ export function manifestInjectPlugin(): Plugin {
         command === 'build' && buildPayload ? buildPayload : buildManifestPayload(command)
 
       // 将 manifest 内容注入到 script#manifest 标签中
-      const scriptContent = `window.__MANIFEST__=${JSON.stringify(lightManifest)};window.__FULL_MANIFEST_URL__=${JSON.stringify(fullManifestUrl)};`
+      const scriptContent = `window.__MANIFEST__=${serializeForInlineScript(lightManifest)};window.__FULL_MANIFEST_URL__=${serializeForInlineScript(fullManifestUrl)};`
       const preloadLinks = createThumbnailPreloadLinks(lightManifest)
 
       return html.replace(
