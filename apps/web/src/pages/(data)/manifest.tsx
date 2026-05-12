@@ -11,6 +11,13 @@ const EMPTY_PHOTOS: AfilmoryManifest['data'] = []
 // JSON 语法高亮组件
 const JsonHighlight = ({ data }: { data: any }) => {
   const jsonString = JSON.stringify(data, null, 2)
+  const escapeHtml = (value: string) =>
+    value
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;')
 
   const highlightJson = (str: string) => {
     return str.replaceAll(
@@ -30,7 +37,7 @@ const JsonHighlight = ({ data }: { data: any }) => {
         } else {
           cls = 'text-orange-400' // 数字
         }
-        return `<span class="${cls}">${match}</span>`
+        return `<span class="${cls}">${escapeHtml(match)}</span>`
       },
     )
   }
