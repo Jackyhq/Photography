@@ -17,11 +17,12 @@ const THUMBNAIL_WEBP_WIDTHS = [360, 640] as const
 
 // 获取缩略图路径信息
 export function getThumbnailSources(photoId: string) {
-  const filename = `${photoId}.jpg`
+  const encodedPhotoId = encodeURIComponent(photoId)
+  const filename = `${encodedPhotoId}.jpg`
   const thumbnailUrl = `/thumbnails/${filename}`
   const thumbnailSrcSet = `${thumbnailUrl} ${THUMBNAIL_FALLBACK_WIDTH}w`
   const thumbnailWebpSrcSet = THUMBNAIL_WEBP_WIDTHS.map(
-    (width) => `/thumbnails/${photoId}-${width}.webp ${width}w`,
+    (width) => `/thumbnails/${encodedPhotoId}-${width}.webp ${width}w`,
   ).join(', ')
 
   return { thumbnailUrl, thumbnailSrcSet, thumbnailWebpSrcSet }
