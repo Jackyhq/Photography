@@ -229,6 +229,8 @@ pnpm build
 8. 将构建产物同步到 [`Jackyhq/Photography-Web`](https://github.com/Jackyhq/Photography-Web)。
 9. 上传 `apps/web/dist/` 到 GitHub Pages 并部署。
 
+源码仓库仍会在 `INDEXNOW_KEY` 存在时把验证文件写入 `apps/web/dist/`，但 IndexNow 通知已移动到 [`Jackyhq/Photography-Web`](https://github.com/Jackyhq/Photography-Web) 的 `.github/workflows/notify-indexnow.yml`，由前端产物仓库在收到新 sitemap 后执行。
+
 PR 校验会按 PR 编号设置并发分组并取消过期运行；部署任务使用 Pages 权限，只在非 PR 事件中执行。
 
 ## 文档
