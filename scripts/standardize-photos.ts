@@ -7,6 +7,7 @@ import { exiftool } from 'exiftool-vendored'
 const PHOTOS_ROOT = path.resolve(process.cwd(), 'photos')
 const INCOMING_DIR = path.resolve(PHOTOS_ROOT, 'incoming')
 const DEFAULT_TARGET_DIR = path.resolve(PHOTOS_ROOT, '随手')
+const ALLOWED_MEDIA_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.heic', '.mov', '.mp4', '.webm', '.m4v'])
 
 async function standardize() {
   try {
@@ -26,6 +27,7 @@ async function standardize() {
         await processDirectory(categoryIncomingDir, targetDir)
       } else if (entry.isFile()) {
         // 2b. 处理直接放在 incoming 根目录的文件 -> 默认移动到 photos/随手
+        if (!isAllowedMediaFile(entry.name)) continue
         await processSingleFile(path.join(INCOMING_DIR, entry.name), DEFAULT_TARGET_DIR)
       }
     }
@@ -41,10 +43,7 @@ async function standardize() {
  */
 async function processDirectory(sourceDir: string, targetDir: string) {
   const files = await readdir(sourceDir)
-  const imageFiles = files.filter((file) => {
-    const ext = path.extname(file).toLowerCase()
-    return ['.jpg', '.jpeg', '.png', '.heic', '.mov', '.mp4', '.webm', '.m4v'].includes(ext)
-  })
+  const imageFiles = files.filter(isAllowedMediaFile)
 
   if (imageFiles.length === 0) return
 
@@ -116,6 +115,10 @@ async function fileExists(filePath: string): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+function isAllowedMediaFile(fileName: string): boolean {
+  return ALLOWED_MEDIA_EXTENSIONS.has(path.extname(fileName).toLowerCase())
 }
 
 standardize()
