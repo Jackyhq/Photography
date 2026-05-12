@@ -27,6 +27,7 @@ export function createPhotoPageMetaPlugin(siteConfig: SiteConfig): Plugin {
       if (!indexAsset || indexAsset.type !== 'asset' || typeof indexAsset.source !== 'string') return
 
       const outputDirectory = options.dir ? path.resolve(options.dir) : path.resolve('dist')
+      const photosOutputDirectory = path.join(outputDirectory, 'photos')
 
       const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf-8')) as ManifestFile
       const photos = Array.isArray(manifest.data) ? manifest.data : []
@@ -34,7 +35,7 @@ export function createPhotoPageMetaPlugin(siteConfig: SiteConfig): Plugin {
       for (const photo of photos) {
         const meta = createPhotoPageMeta(photo, siteConfig)
         const html = applyPhotoPageMeta(indexAsset.source, meta)
-        const filePath = path.join(outputDirectory, 'photos', photo.id, 'index.html')
+        const filePath = resolvePhotoPagePath(photosOutputDirectory, photo.id)
 
         mkdirSync(path.dirname(filePath), { recursive: true })
         writeFileSync(filePath, html)
@@ -52,7 +53,7 @@ function createPhotoPageMeta(photo: PhotoManifestItem, siteConfig: SiteConfig): 
   return {
     title,
     description: getPhotoDescription(photo) || siteConfig.description,
-    url: `${baseUrl}/photos/${photo.id}/`,
+    url: `${baseUrl}/photos/${toSafePathSegment(photo.id)}/`,
     image: toAbsoluteUrl(photo.thumbnailUrl || photo.originalUrl, siteConfig.url),
   }
 }
@@ -118,6 +119,21 @@ function upsertLink(html: string, rel: string, href: string): string {
   )
 }
 
+function resolvePhotoPagePath(photosOutputDirectory: string, photoId: string): string {
+  const safePhotoId = toSafePathSegment(photoId)
+  const filePath = path.join(photosOutputDirectory, safePhotoId, 'index.html')
+  const relativePath = path.relative(photosOutputDirectory, filePath)
+
+  if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
+    throw new Error(`Refusing to write photo page outside photos output directory for id: ${photoId}`)
+  }
+
+  return filePath
+}
+
+function toSafePathSegment(value: string): string {
+  return encodeURIComponent(value)
+}
 function getPhotoDescription(photo: PhotoManifestItem): string {
   return photo.descriptions?.['zh-CN']?.trim() || photo.descriptions?.en?.trim() || photo.description?.trim() || ''
 }
