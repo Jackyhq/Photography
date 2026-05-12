@@ -571,22 +571,38 @@ interface SVGTextOptions {
   lineHeight?: number
 }
 
-export function renderSVGText(
-  text: string,
-  x: number,
-  y: number,
-  options: SVGTextOptions = {},
-): string {
-  const {
-    fontSize = 48,
-    fontWeight = 'normal',
-    color = 'white',
-    letterSpacing = 0,
-    lineHeight = 1.2,
-  } = options
+function escapeXML(text: string): string {
+  return text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;')
+}
+
+function hasUnsupportedGlyph(text: string): boolean {
+  for (const char of text) {
+    if (char === '\n') continue
+    if (!HELVETICA_CHARACTERS[char]) return true
+  }
+  return false
+}
+
+export function renderSVGText(text: string, x: number, y: number, options: SVGTextOptions = {}): string {
+  const { fontSize = 48, fontWeight = 'normal', color = 'white', letterSpacing = 0, lineHeight = 1.2 } = options
 
   const scale = fontSize / 100
   const lines = text.split('\n')
+
+  if (hasUnsupportedGlyph(text)) {
+    return lines
+      .map((line, lineIndex) => {
+        const currentY = y + lineIndex * fontSize * lineHeight
+        const escapedLine = escapeXML(line)
+        return `<text x="${x}" y="${currentY}" fill="${color}" font-size="${fontSize}" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" letter-spacing="${letterSpacing}">${escapedLine}</text>`
+      })
+      .join('')
+  }
 
   let svgPaths = ''
 
@@ -619,14 +635,12 @@ export function renderSVGText(
   return svgPaths
 }
 
-export function measureSVGText(
-  text: string,
-  options: SVGTextOptions = {},
-): { width: number; height: number } {
+export function measureSVGText(text: string, options: SVGTextOptions = {}): { width: number; height: number } {
   const { fontSize = 48, letterSpacing = 0, lineHeight = 1.2 } = options
 
   const scale = fontSize / 100
   const lines = text.split('\n')
+  const hasUnsupported = hasUnsupportedGlyph(text)
 
   let maxWidth = 0
   const height = lines.length * fontSize * lineHeight
@@ -634,8 +648,12 @@ export function measureSVGText(
   lines.forEach((line) => {
     let lineWidth = 0
     for (const char of line) {
-      const charData = HELVETICA_CHARACTERS[char] || HELVETICA_CHARACTERS[' ']
-      lineWidth += charData.advanceWidth * scale + letterSpacing
+      if (hasUnsupported && !HELVETICA_CHARACTERS[char]) {
+        lineWidth += fontSize + letterSpacing
+      } else {
+        const charData = HELVETICA_CHARACTERS[char] || HELVETICA_CHARACTERS[' ']
+        lineWidth += charData.advanceWidth * scale + letterSpacing
+      }
     }
     maxWidth = Math.max(maxWidth, lineWidth - letterSpacing)
   })
@@ -643,11 +661,7 @@ export function measureSVGText(
   return { width: maxWidth, height }
 }
 
-export function wrapSVGText(
-  text: string,
-  maxWidth: number,
-  options: SVGTextOptions = {},
-): string {
+export function wrapSVGText(text: string, maxWidth: number, options: SVGTextOptions = {}): string {
   const words = text.split(' ')
   const lines: string[] = []
   let currentLine = ''
