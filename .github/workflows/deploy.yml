@@ -7,10 +7,21 @@ on:
     paths:
       - '.github/workflows/deploy.yml'
       - 'photos/**'
-      - 'apps/**'
-      - 'packages/**'
+      - 'photo-descriptions.json'
+      - 'apps/web/**'
+      - 'packages/builder/**'
+      - 'packages/data/**'
+      - 'packages/hooks/**'
+      - 'packages/sdk/**'
+      - 'packages/ui/**'
+      - 'packages/utils/**'
+      - 'packages/webgl-viewer/**'
+      - 'plugins/builder/**'
+      - 'scripts/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'tsconfig.json'
       - 'config.json'
       - 'builder.config.ts'
       - 'site.config.ts'
@@ -20,10 +31,21 @@ on:
     paths:
       - '.github/workflows/deploy.yml'
       - 'photos/**'
-      - 'apps/**'
-      - 'packages/**'
+      - 'photo-descriptions.json'
+      - 'apps/web/**'
+      - 'packages/builder/**'
+      - 'packages/data/**'
+      - 'packages/hooks/**'
+      - 'packages/sdk/**'
+      - 'packages/ui/**'
+      - 'packages/utils/**'
+      - 'packages/webgl-viewer/**'
+      - 'plugins/builder/**'
+      - 'scripts/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'tsconfig.json'
       - 'config.json'
       - 'builder.config.ts'
       - 'site.config.ts'
@@ -37,10 +59,16 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  NODE_VERSION: '24'
+  PNPM_VERSION: '10.19.0'
+  DEPLOY_REPOSITORY: Jackyhq/Photography-Web
+
 jobs:
   validate:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -48,24 +76,49 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 10.19.0
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Standardize Photos
         run: pnpm run photos:standardize
 
+      - name: Restore gallery generated cache
+        id: gallery-cache
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            apps/web/src/data/photos-manifest.json
+            apps/web/public/thumbnails/
+          key: gallery-${{ runner.os }}-${{ hashFiles('photos/**', 'photo-descriptions.json', 'builder.config.ts', 'plugins/builder/**', 'packages/builder/**', 'packages/utils/**', 'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'tsconfig.json') }}
+          restore-keys: |
+            gallery-${{ runner.os }}-
+
       - name: Build manifest
+        if: steps.gallery-cache.outputs.cache-hit != 'true'
         run: pnpm run build:manifest
 
+      - name: Save gallery generated cache
+        if: steps.gallery-cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            apps/web/src/data/photos-manifest.json
+            apps/web/public/thumbnails/
+          key: ${{ steps.gallery-cache.outputs.cache-primary-key }}
+
       - name: Build web app
+        env:
+          AFILMORY_SKIP_MANIFEST_PRECHECK: 'true'
         run: pnpm run build
 
       - name: Check build output
@@ -87,13 +140,15 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     env:
       HAS_INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY != '' }}
       HAS_DEPLOY_REPO_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN != '' }}
-      DEPLOY_REPOSITORY: Jackyhq/Photography-Web
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
 
       - name: Check deployment repository token
         if: env.HAS_DEPLOY_REPO_TOKEN != 'true'
@@ -101,27 +156,63 @@ jobs:
           echo "DEPLOY_REPO_TOKEN is required to push build output to ${DEPLOY_REPOSITORY}."
           exit 1
 
+      - name: Configure Git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync latest source branch
+        if: github.ref_type == 'branch'
+        run: |
+          git fetch origin "${GITHUB_REF_NAME}"
+          git merge --ff-only "origin/${GITHUB_REF_NAME}"
+
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 10.19.0
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Standardize Photos
         run: pnpm run photos:standardize
 
+      - name: Restore gallery generated cache
+        id: gallery-cache
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            apps/web/src/data/photos-manifest.json
+            apps/web/public/thumbnails/
+          key: gallery-${{ runner.os }}-${{ hashFiles('photos/**', 'photo-descriptions.json', 'builder.config.ts', 'plugins/builder/**', 'packages/builder/**', 'packages/utils/**', 'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'tsconfig.json') }}
+          restore-keys: |
+            gallery-${{ runner.os }}-
+
       - name: Build manifest
+        if: steps.gallery-cache.outputs.cache-hit != 'true'
         run: pnpm run build:manifest
 
+      - name: Save gallery generated cache
+        if: steps.gallery-cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            apps/web/src/data/photos-manifest.json
+            apps/web/public/thumbnails/
+          key: ${{ steps.gallery-cache.outputs.cache-primary-key }}
+
       - name: Build web app
+        env:
+          AFILMORY_SKIP_MANIFEST_PRECHECK: 'true'
         run: pnpm run build
 
       - name: Check build output
@@ -169,12 +260,6 @@ jobs:
 
           printf '%s' "$INDEXNOW_KEY" > "./apps/web/dist/${INDEXNOW_KEY}.txt"
           echo "Created IndexNow key file in apps/web/dist."
-
-      - name: Pull latest changes to avoid non-fast-forward rejection
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase --autostash
 
       - name: Commit standardized photos
         uses: stefanzweifel/git-auto-commit-action@v7
