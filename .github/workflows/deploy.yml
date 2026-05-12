@@ -89,9 +89,17 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HAS_INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY != '' }}
+      HAS_DEPLOY_REPO_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN != '' }}
+      DEPLOY_REPOSITORY: Jackyhq/Photography-Web
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Check deployment repository token
+        if: env.HAS_DEPLOY_REPO_TOKEN != 'true'
+        run: |
+          echo "DEPLOY_REPO_TOKEN is required to push build output to ${DEPLOY_REPOSITORY}."
+          exit 1
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
@@ -131,19 +139,13 @@ jobs:
             cp ./apps/web/dist/sitemap.xml ./apps/web/dist/googlesitemap.xml
             echo "Copied sitemap.xml to googlesitemap.xml"
           fi
-
-      - name: Copy build output to /web
-        run: |
-          mkdir -p web
-          rm -rf web/*
-          cp -rp ./apps/web/dist/. web/
-          echo "Copied build output to /web directory"
+          touch ./apps/web/dist/.nojekyll
 
       - name: Prepare README preview image
         shell: bash
         run: |
           shopt -s nullglob
-          og_images=(web/og-image-*.png)
+          og_images=(apps/web/dist/og-image-*.png)
 
           if [ ${#og_images[@]} -eq 0 ]; then
             echo "No generated OG image found."
@@ -151,8 +153,8 @@ jobs:
           fi
 
           latest_og_image="${og_images[$((${#og_images[@]} - 1))]}"
-          cp "$latest_og_image" web/readme-og-image.png
-          echo "Copied $latest_og_image to web/readme-og-image.png"
+          cp "$latest_og_image" apps/web/dist/readme-og-image.png
+          echo "Copied $latest_og_image to apps/web/dist/readme-og-image.png"
 
       - name: Publish IndexNow key file
         if: env.HAS_INDEXNOW_KEY == 'true'
@@ -165,8 +167,8 @@ jobs:
             exit 1
           fi
 
-          printf '%s' "$INDEXNOW_KEY" > "./web/${INDEXNOW_KEY}.txt"
-          echo "Created IndexNow key file in /web."
+          printf '%s' "$INDEXNOW_KEY" > "./apps/web/dist/${INDEXNOW_KEY}.txt"
+          echo "Created IndexNow key file in apps/web/dist."
 
       - name: Pull latest changes to avoid non-fast-forward rejection
         run: |
@@ -174,12 +176,41 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase --autostash
 
-      - name: Commit all changes
+      - name: Commit standardized photos
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: "chore: update photos and build output"
-          file_pattern: 'photos/** web/**'
+          commit_message: "chore: update standardized photos"
+          file_pattern: 'photos/**'
           add_options: '-A'
+
+      - name: Checkout deployment repository
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ env.DEPLOY_REPOSITORY }}
+          token: ${{ secrets.DEPLOY_REPO_TOKEN }}
+          path: output-repo
+
+      - name: Sync build output to deployment repository
+        run: |
+          rsync -a --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='README.md' \
+            --exclude='LICENSE' \
+            ./apps/web/dist/ ./output-repo/
+
+      - name: Commit deployment repository changes
+        working-directory: output-repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No deployment repository changes."
+          else
+            git commit -m "chore: update site from ${GITHUB_SHA}"
+            git push
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v6

@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 
 const DEFAULT_SITE_URL = 'https://photo.jackyw.cn'
-const DEFAULT_SITEMAP_PATH = './web/googlesitemap.xml'
+const DEFAULT_SITEMAP_PATH = './apps/web/dist/googlesitemap.xml'
 const DEFAULT_INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow'
 const DEFAULT_INDEXNOW_MAX_ATTEMPTS = 4
 const DEFAULT_INDEXNOW_RETRY_DELAY_MS = 30000

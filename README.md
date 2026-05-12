@@ -1,6 +1,6 @@
 # <p align="center">Jacky's Photography</p>
 
-![Jacky's Photography preview](./web/readme-og-image.png)
+![Jacky's Photography preview](https://photo.jackyw.cn/readme-og-image.png)
 
 > [!IMPORTANT]
 > 本项目由 [Jackyhq](https://github.com/Jackyhq) 基于原仓库 [Afilmory/afilmory](https://github.com/Afilmory/afilmory) 进行深度定制与二次开发。
@@ -102,7 +102,7 @@ pnpm build
 pnpm docs:build
 ```
 
-构建产物位于 `apps/web/dist/`。GitHub Actions 会额外把该目录同步到根目录 `web/`，用于提交和保存当前静态输出。
+构建产物位于 `apps/web/dist/`。GitHub Actions 会额外把该目录同步到 [`Jackyhq/Photography-Web`](https://github.com/Jackyhq/Photography-Web)，用于保存当前静态输出。
 
 ## 常用命令
 
@@ -225,8 +225,9 @@ pnpm build
 4. 执行 `pnpm run build:manifest`。
 5. 执行 `pnpm run build`。
 6. 校验 `apps/web/dist/`，复制 sitemap 为 `googlesitemap.xml`。
-7. 将构建产物同步到根目录 `web/` 并提交 `photos/**` 和 `web/**`。
-8. 上传 `apps/web/dist/` 到 GitHub Pages 并部署。
+7. 将照片标准化产生的 `photos/**` 变更提交回源码仓库。
+8. 将构建产物同步到 [`Jackyhq/Photography-Web`](https://github.com/Jackyhq/Photography-Web)。
+9. 上传 `apps/web/dist/` 到 GitHub Pages 并部署。
 
 PR 校验会按 PR 编号设置并发分组并取消过期运行；部署任务使用 Pages 权限，只在非 PR 事件中执行。
 
@@ -242,6 +243,6 @@ PR 校验会按 PR 编号设置并发分组并取消过期运行；部署任务�
 
 本项目代码遵循 [Attribution Network License (ANL) v1.0](LICENSE)。
 
-`photos/**`、`web/thumbnails/**`、`apps/web/public/thumbnails/**`、`web/og-image-*.png`、`apps/web/public/og-image-*.png`、`web/readme-og-image.png` 以及其他由个人照片生成的媒体资产不属于开源授权范围，详见 [LICENSE](LICENSE) 的 Documentation & Media 排除条款。
+`photos/**`、`apps/web/public/thumbnails/**`、部署仓库中的缩略图、OG 图、README 预览图以及其他由个人照片生成的媒体资产不属于开源授权范围，详见 [LICENSE](LICENSE) 的 Documentation & Media 排除条款。
 
 Copyright (c) 2025-2026 Jackyhq. All rights reserved.

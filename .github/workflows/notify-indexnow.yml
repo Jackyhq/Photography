@@ -27,8 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SITE_URL: https://photo.jackyw.cn
-      SITEMAP_PATH: ./web/googlesitemap.xml
+      SITEMAP_PATH: ./output-repo/googlesitemap.xml
       HAS_INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY != '' }}
+      HAS_DEPLOY_REPO_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN != '' }}
+      DEPLOY_REPOSITORY: Jackyhq/Photography-Web
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v6
@@ -39,6 +41,20 @@ jobs:
         if: env.HAS_INDEXNOW_KEY != 'true'
         run: |
           echo "INDEXNOW_KEY is not set; skipping IndexNow notification."
+
+      - name: Check deployment repository token
+        if: env.HAS_INDEXNOW_KEY == 'true' && env.HAS_DEPLOY_REPO_TOKEN != 'true'
+        run: |
+          echo "DEPLOY_REPO_TOKEN is required to read sitemap output from ${DEPLOY_REPOSITORY}."
+          exit 1
+
+      - name: Checkout deployment repository
+        if: env.HAS_INDEXNOW_KEY == 'true'
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ env.DEPLOY_REPOSITORY }}
+          token: ${{ secrets.DEPLOY_REPO_TOKEN }}
+          path: output-repo
 
       - name: Wait for public web sync
         if: env.HAS_INDEXNOW_KEY == 'true'
