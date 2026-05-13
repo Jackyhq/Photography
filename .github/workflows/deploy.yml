@@ -91,30 +91,8 @@ jobs:
       - name: Standardize Photos
         run: pnpm run photos:standardize
 
-      - name: Restore gallery generated cache
-        id: gallery-cache
-        uses: actions/cache/restore@v5
-        with:
-          path: |
-            apps/web/src/data/photos-manifest.json
-            apps/web/public/thumbnails/
-          key: gallery-${{ runner.os }}-${{ hashFiles('photos/**', 'photo-descriptions.json', 'builder.config.ts', 'plugins/builder/**', 'packages/builder/**', 'packages/utils/**', 'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'tsconfig.json') }}
-          restore-keys: |
-            gallery-${{ runner.os }}-
-
       - name: Build manifest
-        if: steps.gallery-cache.outputs.cache-hit != 'true'
         run: pnpm run build:manifest
-
-      - name: Save gallery generated cache
-        if: steps.gallery-cache.outputs.cache-hit != 'true'
-        continue-on-error: true
-        uses: actions/cache/save@v5
-        with:
-          path: |
-            apps/web/src/data/photos-manifest.json
-            apps/web/public/thumbnails/
-          key: ${{ steps.gallery-cache.outputs.cache-primary-key }}
 
       - name: Build web app
         env:
@@ -185,30 +163,8 @@ jobs:
       - name: Standardize Photos
         run: pnpm run photos:standardize
 
-      - name: Restore gallery generated cache
-        id: gallery-cache
-        uses: actions/cache/restore@v5
-        with:
-          path: |
-            apps/web/src/data/photos-manifest.json
-            apps/web/public/thumbnails/
-          key: gallery-${{ runner.os }}-${{ hashFiles('photos/**', 'photo-descriptions.json', 'builder.config.ts', 'plugins/builder/**', 'packages/builder/**', 'packages/utils/**', 'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'tsconfig.json') }}
-          restore-keys: |
-            gallery-${{ runner.os }}-
-
       - name: Build manifest
-        if: steps.gallery-cache.outputs.cache-hit != 'true'
         run: pnpm run build:manifest
-
-      - name: Save gallery generated cache
-        if: steps.gallery-cache.outputs.cache-hit != 'true'
-        continue-on-error: true
-        uses: actions/cache/save@v5
-        with:
-          path: |
-            apps/web/src/data/photos-manifest.json
-            apps/web/public/thumbnails/
-          key: ${{ steps.gallery-cache.outputs.cache-primary-key }}
 
       - name: Build web app
         env:
