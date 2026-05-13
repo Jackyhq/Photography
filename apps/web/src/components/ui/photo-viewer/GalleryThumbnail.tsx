@@ -2,7 +2,7 @@ import { Thumbhash } from '@afilmory/ui'
 import { clsxm, Spring } from '@afilmory/utils'
 import { m } from 'motion/react'
 import type { FC } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useMobile } from '~/hooks/useMobile'
@@ -25,6 +25,27 @@ const thumbnailPaddingSize = {
   desktop: 16,
 }
 
+const thumbnailOverscanSize = {
+  mobile: 8,
+  desktop: 10,
+}
+
+interface ThumbnailRange {
+  start: number
+  end: number
+}
+
+const getInitialThumbnailRange = (currentIndex: number, itemCount: number, overscan: number): ThumbnailRange => {
+  if (itemCount === 0) {
+    return { start: 0, end: -1 }
+  }
+
+  return {
+    start: Math.max(0, currentIndex - overscan),
+    end: Math.min(itemCount - 1, currentIndex + overscan),
+  }
+}
+
 export const GalleryThumbnail: FC<{
   currentIndex: number
   photos: PhotoManifest[]
@@ -36,41 +57,110 @@ export const GalleryThumbnail: FC<{
   const isMobile = useMobile()
   const { i18n } = useTranslation()
 
+  const itemSize = isMobile ? thumbnailSize.mobile : thumbnailSize.desktop
+  const itemGap = isMobile ? thumbnailGapSize.mobile : thumbnailGapSize.desktop
+  const itemPadding = isMobile ? thumbnailPaddingSize.mobile : thumbnailPaddingSize.desktop
+  const overscan = isMobile ? thumbnailOverscanSize.mobile : thumbnailOverscanSize.desktop
+  const itemStride = itemSize + itemGap
+  const trackWidth = photos.length > 0 ? photos.length * itemSize + (photos.length - 1) * itemGap : 0
+
+  const hasPositionedInitialIndexRef = useRef(false)
   const [scrollContainerWidth, setScrollContainerWidth] = useState(0)
+  const [visibleRange, setVisibleRange] = useState<ThumbnailRange>(() =>
+    getInitialThumbnailRange(currentIndex, photos.length, overscan),
+  )
 
-  useEffect(() => {
+  const updateVisibleRange = useCallback(() => {
     const scrollContainer = scrollContainerRef.current
-    if (scrollContainer) {
-      setScrollContainerWidth(scrollContainer.clientWidth)
-      const handleResize = () => {
-        setScrollContainerWidth(scrollContainer.clientWidth)
-      }
-      scrollContainer.addEventListener('resize', handleResize)
-      return () => {
-        scrollContainer.removeEventListener('resize', handleResize)
-      }
+
+    if (!scrollContainer || photos.length === 0) {
+      setVisibleRange({ start: 0, end: -1 })
+      return
     }
-  }, [])
 
-  useEffect(() => {
-    const scrollContainer = scrollContainerRef.current
+    if (!hasPositionedInitialIndexRef.current) {
+      const nextRange = getInitialThumbnailRange(currentIndex, photos.length, overscan)
+      setVisibleRange((previous) => {
+        if (previous.start === nextRange.start && previous.end === nextRange.end) {
+          return previous
+        }
 
-    if (scrollContainer) {
-      const containerWidth = scrollContainerWidth
-      const thumbnailLeft =
-        currentIndex * (isMobile ? thumbnailSize.mobile : thumbnailSize.desktop) +
-        (isMobile ? thumbnailGapSize.mobile : thumbnailGapSize.desktop) * currentIndex
-      const thumbnailWidth = isMobile ? thumbnailSize.mobile : thumbnailSize.desktop
-
-      const scrollLeft = thumbnailLeft - containerWidth / 2 + thumbnailWidth / 2
-      nextFrame(() => {
-        scrollContainer.scrollTo({
-          left: scrollLeft,
-          behavior: 'smooth',
-        })
+        return nextRange
       })
+      return
     }
-  }, [currentIndex, isMobile, scrollContainerWidth])
+
+    const viewportStart = Math.max(0, scrollContainer.scrollLeft - itemPadding)
+    const viewportEnd = Math.max(viewportStart, scrollContainer.scrollLeft + scrollContainer.clientWidth - itemPadding)
+    const start = Math.max(0, Math.floor(viewportStart / itemStride) - overscan)
+    const end = Math.min(photos.length - 1, Math.ceil(viewportEnd / itemStride) + overscan)
+
+    setVisibleRange((previous) => {
+      if (previous.start === start && previous.end === end) {
+        return previous
+      }
+
+      return { start, end }
+    })
+  }, [currentIndex, itemPadding, itemStride, overscan, photos.length])
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current
+    if (!scrollContainer) return
+
+    const handleResize = () => {
+      setScrollContainerWidth(scrollContainer.clientWidth)
+      updateVisibleRange()
+    }
+
+    handleResize()
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', handleResize)
+      return () => {
+        window.removeEventListener('resize', handleResize)
+      }
+    }
+
+    const resizeObserver = new ResizeObserver(handleResize)
+    resizeObserver.observe(scrollContainer)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [updateVisibleRange])
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current
+    if (!scrollContainer) return
+
+    const handleScroll = () => updateVisibleRange()
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true })
+    updateVisibleRange()
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll)
+    }
+  }, [updateVisibleRange])
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current
+    if (!scrollContainer || scrollContainerWidth === 0 || photos.length === 0) return
+
+    const thumbnailLeft = itemPadding + currentIndex * itemStride
+    const scrollLeft = thumbnailLeft - scrollContainerWidth / 2 + itemSize / 2
+    const behavior: ScrollBehavior = hasPositionedInitialIndexRef.current ? 'smooth' : 'auto'
+
+    hasPositionedInitialIndexRef.current = true
+
+    nextFrame(() => {
+      scrollContainer.scrollTo({
+        left: Math.max(0, scrollLeft),
+        behavior,
+      })
+      updateVisibleRange()
+    })
+  }, [currentIndex, itemPadding, itemSize, itemStride, photos.length, scrollContainerWidth, updateVisibleRange])
 
   // 处理鼠标滚轮事件，映射为横向滚动
   useEffect(() => {
@@ -119,48 +209,56 @@ export const GalleryThumbnail: FC<{
       />
       <div
         ref={scrollContainerRef}
-        className="scrollbar-none relative z-10 flex overflow-x-auto"
+        className="scrollbar-none relative z-10 overflow-x-auto"
         style={{
-          gap: isMobile ? thumbnailGapSize.mobile : thumbnailGapSize.desktop,
-          padding: isMobile ? thumbnailPaddingSize.mobile : thumbnailPaddingSize.desktop,
+          padding: itemPadding,
         }}
       >
-        {photos.map((photo, index) => (
-          <button
-            type="button"
-            key={photo.id}
-            className={clsxm(
-              'contain-intrinsic-size relative shrink-0 overflow-hidden rounded-lg border-2 transition-all',
-              index === currentIndex
-                ? 'scale-110 border-accent shadow-[0_0_20px_color-mix(in_srgb,var(--color-accent)_20%,transparent)]'
-                : 'grayscale-50 border-accent/20 hover:border-accent hover:grayscale-0',
-            )}
-            style={
-              isMobile
-                ? {
-                    width: thumbnailSize.mobile,
-                    height: thumbnailSize.mobile,
-                  }
-                : {
-                    width: thumbnailSize.desktop,
-                    height: thumbnailSize.desktop,
-                  }
-            }
-            onClick={() => onIndexChange(index)}
-          >
-            {photo.thumbHash && <Thumbhash thumbHash={photo.thumbHash} className="size-fill absolute inset-0" />}
-            <img
-              src={photo.thumbnailUrl}
-              alt={getPhotoAltText(photo, i18n.language)}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            {photo.mediaType === 'video' && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20 text-white">
-                <i className="i-mingcute-play-fill size-5" />
-              </div>
-            )}
-          </button>
-        ))}
+        <div
+          className="relative"
+          style={{
+            width: trackWidth,
+            height: itemSize,
+          }}
+        >
+          {photos.slice(visibleRange.start, visibleRange.end + 1).map((photo, offset) => {
+            const index = visibleRange.start + offset
+
+            return (
+              <button
+                type="button"
+                key={photo.id}
+                className={clsxm(
+                  'contain-intrinsic-size absolute top-0 overflow-hidden rounded-lg border-2 transition-all',
+                  index === currentIndex
+                    ? 'scale-110 border-accent shadow-[0_0_20px_color-mix(in_srgb,var(--color-accent)_20%,transparent)]'
+                    : 'grayscale-50 border-accent/20 hover:border-accent hover:grayscale-0',
+                )}
+                style={{
+                  left: index * itemStride,
+                  width: itemSize,
+                  height: itemSize,
+                }}
+                onClick={() => onIndexChange(index)}
+              >
+                {photo.thumbHash && <Thumbhash thumbHash={photo.thumbHash} className="size-fill absolute inset-0" />}
+                <img
+                  src={photo.thumbnailUrl}
+                  alt={getPhotoAltText(photo, i18n.language)}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                  fetchPriority={index === currentIndex ? 'high' : 'auto'}
+                />
+                {photo.mediaType === 'video' && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 text-white">
+                    <i className="i-mingcute-play-fill size-5" />
+                  </div>
+                )}
+              </button>
+            )
+          })}
+        </div>
       </div>
     </m.div>
   )

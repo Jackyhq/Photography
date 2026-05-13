@@ -344,6 +344,7 @@ export const PhotoViewer = ({
                   >
                     {photos.map((photo, index) => {
                       const isCurrentImage = index === currentIndex
+                      const shouldRenderSlideMedia = Math.abs(index - currentIndex) <= 1
                       const hideCurrentImage = isEntryAnimating && isCurrentImage
                       return (
                         <SwiperSlide key={photo.id} className="flex items-center justify-center" virtualIndex={index}>
@@ -357,13 +358,13 @@ export const PhotoViewer = ({
                               visibility: hideCurrentImage ? 'hidden' : 'visible',
                             }}
                           >
-                            {photo.mediaType === 'video' ? (
+                            {shouldRenderSlideMedia && photo.mediaType === 'video' ? (
                               <VideoViewer
                                 media={photo}
                                 isCurrent={isCurrentImage}
                                 className="h-full w-full object-contain"
                               />
-                            ) : (
+                            ) : shouldRenderSlideMedia ? (
                               <ProgressiveImage
                                 loadingIndicatorRef={loadingIndicatorRef}
                                 isCurrentImage={isCurrentImage}
@@ -375,7 +376,7 @@ export const PhotoViewer = ({
                                 className="h-full w-full object-contain"
                                 enablePan={isCurrentImage ? !isMobile || isImageZoomed : true}
                                 enableZoom={true}
-                                shouldRenderHighRes={isViewerContentVisible && isOpen}
+                                shouldRenderHighRes={isCurrentImage && isViewerContentVisible && isOpen}
                                 onZoomChange={isCurrentImage ? handleZoomChange : undefined}
                                 onBlobSrcChange={isCurrentImage ? handleBlobSrcChange : undefined}
                                 // Video source (Live Photo or Motion Photo)
@@ -399,7 +400,7 @@ export const PhotoViewer = ({
                                 // HDR props
                                 isHDR={photo.isHDR}
                               />
-                            )}
+                            ) : null}
                           </m.div>
                         </SwiperSlide>
                       )
