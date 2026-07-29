@@ -10,6 +10,7 @@ import { exiftool } from 'exiftool-vendored'
 import type { AfilmoryBuilder, BuilderOptions } from '../builder/builder.js'
 import { VIDEO_MIME_TYPES } from '../constants/index.js'
 import { logger } from '../logger/index.js'
+import { coerceCaptureDate, extractDateFromKey, UNKNOWN_CAPTURE_DATE } from '../media/capture-date.js'
 import { generateMediaId } from '../media/id.js'
 import { processThumbnailAndBlurhash } from '../photo/data-processors.js'
 import { createStorageKeyNormalizer, runWithPhotoExecutionContext } from '../photo/execution-context.js'
@@ -166,7 +167,7 @@ async function executeVideoProcessingPipeline({
       extractVideoDate(metadata) ??
       fileCreatedAt ??
       obj.lastModified?.toISOString() ??
-      new Date().toISOString()
+      UNKNOWN_CAPTURE_DATE
     const mimeType = readString(metadata.MIMEType) ?? VIDEO_MIME_TYPES[ext] ?? 'video/mp4'
     const videoSize = typeof obj.size === 'number' && obj.size > 0 ? obj.size : videoBuffer.byteLength
 
@@ -216,23 +217,6 @@ async function extractVideoPoster(videoPath: string, posterPath: string): Promis
   ])
 }
 
-function extractDateFromKey(key: string): string | null {
-  const fileName = path.basename(key, path.extname(key))
-  const compactDateMatch = fileName.match(/(?:^|\D)(\d{4})(\d{2})(\d{2})(?:(\d{2})(\d{2})(\d{2}))?(?:\D|$)/)
-  if (compactDateMatch) {
-    const [, year, month, day, hour = '00', minute = '00', second = '00'] = compactDateMatch
-    return coerceDate(`${year}-${month}-${day}T${hour}:${minute}:${second}`)?.toISOString() ?? null
-  }
-
-  const dashedDateMatch = fileName.match(/(?:^|\D)(\d{4})-(\d{2})-(\d{2})(?:\D|$)/)
-  if (dashedDateMatch) {
-    const [, year, month, day] = dashedDateMatch
-    return coerceDate(`${year}-${month}-${day}T00:00:00`)?.toISOString() ?? null
-  }
-
-  return null
-}
-
 function readNumber(value: unknown): number | null {
   if (typeof value === 'number' && Number.isFinite(value)) return value
   if (typeof value === 'string') {
@@ -272,27 +256,10 @@ function extractVideoDate(metadata: Record<string, unknown>): string | null {
   const candidates = [metadata.MediaCreateDate, metadata.CreateDate, metadata.TrackCreateDate, metadata.ModifyDate]
 
   for (const value of candidates) {
-    const date = coerceDate(value)
+    const date = coerceCaptureDate(value)
     if (date) {
       return date.toISOString()
     }
-  }
-
-  return null
-}
-
-function coerceDate(value: unknown): Date | null {
-  if (value instanceof Date && !Number.isNaN(value.getTime())) return value
-
-  if (value && typeof value === 'object' && 'toDate' in value && typeof value.toDate === 'function') {
-    const date = value.toDate()
-    return date instanceof Date && !Number.isNaN(date.getTime()) ? date : null
-  }
-
-  if (typeof value === 'string') {
-    const normalized = value.replace(/^(\d{4}):(\d{2}):(\d{2})/, '$1-$2-$3')
-    const date = new Date(normalized)
-    return Number.isNaN(date.getTime()) ? null : date
   }
 
   return null

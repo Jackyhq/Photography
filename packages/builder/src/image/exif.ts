@@ -1,7 +1,8 @@
-import { mkdir, unlink, writeFile } from 'node:fs/promises'
+import fs from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 
-import { isNil, noop } from 'es-toolkit'
+import { isNil } from 'es-toolkit'
 import type { ExifDateTime, Tags } from 'exiftool-vendored'
 import { exiftool } from 'exiftool-vendored'
 import type { Metadata } from 'sharp'
@@ -17,45 +18,27 @@ export async function extractExifData(imageBuffer: Buffer, originalBuffer?: Buff
   try {
     log.info('开始提取 EXIF 数据')
 
-    // 首先尝试从处理后的图片中提取 EXIF
-    let metadata = await sharp(imageBuffer).metadata()
+    // Sharp 只读取已转换图像的尺寸。原始 HEIC 的 EXIF 由 ExifTool
+    // 直接读取，避免被 Sharp/libheif 的解码安全限制阻断。
+    const metadata = await sharp(imageBuffer).metadata()
+    const tempDirectory = await fs.mkdtemp(path.join(os.tmpdir(), 'afilmory-exif-'))
+    const tempImagePath = path.join(tempDirectory, `${crypto.randomUUID()}.jpg`)
 
-    // 如果处理后的图片没有 EXIF 数据，且提供了原始 buffer，尝试从原始图片提取
-    if (!metadata.exif && originalBuffer) {
-      log.info('处理后的图片缺少 EXIF 数据，尝试从原始图片提取')
-      try {
-        metadata = await sharp(originalBuffer).metadata()
-      } catch (error) {
-        log.warn('从原始图片提取 EXIF 失败，可能是不支持的格式：', error)
+    try {
+      await fs.writeFile(tempImagePath, originalBuffer ?? imageBuffer)
+      const exifData = await exiftool.read(tempImagePath)
+
+      if (!metadata.exif && !hasPickedExifData(exifData)) {
+        log.warn('未找到 EXIF 数据')
+        return null
       }
+
+      const result = handleExifData(exifData, metadata)
+      log.success('EXIF 数据提取完成')
+      return result
+    } finally {
+      await fs.rm(tempDirectory, { recursive: true, force: true })
     }
-
-    if (!metadata.exif) {
-      log.warn('未找到 EXIF 数据')
-      return null
-    }
-
-    await mkdir('/tmp/image_process', { recursive: true })
-    const tempImagePath = path.resolve('/tmp/image_process', `${crypto.randomUUID()}.jpg`)
-
-    await writeFile(tempImagePath, originalBuffer || imageBuffer)
-    const exifData = await exiftool.read(tempImagePath)
-    const result = handleExifData(exifData, metadata)
-
-    await unlink(tempImagePath).catch(noop)
-
-    if (!exifData) {
-      log.warn('EXIF 数据解析失败')
-      return null
-    }
-
-    // 清理 EXIF 数据中的空字符和无用数据
-
-    delete exifData.warnings
-    delete exifData.errors
-
-    log.success('EXIF 数据提取完成')
-    return result
   } catch (error) {
     log.error('提取 EXIF 数据失败:', error)
     return null
@@ -125,6 +108,17 @@ const pickKeys: Array<keyof Tags | (string & {})> = [
   // HDR相关字段
   'MPImageType',
 ]
+
+function hasPickedExifData(exifData: Tags): boolean {
+  const values = exifData as unknown as Record<string, unknown>
+  const keys = ['DateTimeOriginal', 'DateTimeDigitized', ...pickKeys]
+
+  return keys.some((key) => {
+    const value = values[key]
+    return !isNil(value) && value !== ''
+  })
+}
+
 function handleExifData(exifData: Tags, metadata: Metadata): PickedExif {
   const date = {
     DateTimeOriginal: formatExifDate(exifData.DateTimeOriginal),

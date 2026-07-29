@@ -1,5 +1,6 @@
 import path from 'node:path'
 
+import { resolveCaptureDate } from '../media/capture-date.js'
 import type { PhotoInfo, PickedExif } from '../types/photo.js'
 import { getPhotoExecutionContext } from './execution-context.js'
 import { getGlobalLoggers } from './logger-adapter.js'
@@ -19,7 +20,6 @@ export function extractPhotoInfo(key: string, exifData?: PickedExif | null): Pho
 
   // 尝试从文件名解析信息，格式示例："2024-01-15_城市夜景_1250views"
   let title = fileName
-  let dateTaken = new Date().toISOString()
   let views = 0
   let tags: string[] = []
 
@@ -38,28 +38,13 @@ export function extractPhotoInfo(key: string, exifData?: PickedExif | null): Pho
     }
   }
 
-  // 优先使用 EXIF 中的 DateTimeOriginal
-  if (exifData?.DateTimeOriginal) {
-    try {
-      const dateTimeOriginal = new Date(exifData.DateTimeOriginal)
-
-      // 如果是 Date 对象，直接使用
-      if (dateTimeOriginal instanceof Date) {
-        dateTaken = dateTimeOriginal.toISOString()
-        log.info('使用 EXIF Date 对象作为拍摄时间')
-      } else {
-        log?.warn(`未知的 DateTimeOriginal 类型：${typeof dateTimeOriginal}`, dateTimeOriginal)
-      }
-    } catch (error) {
-      log?.warn(`解析 EXIF DateTimeOriginal 失败：${exifData.DateTimeOriginal}`, error)
-    }
+  const captureDate = resolveCaptureDate(keyForParsing, exifData?.DateTimeOriginal)
+  if (captureDate.source === 'metadata') {
+    log.info('使用 EXIF DateTimeOriginal 作为拍摄时间')
+  } else if (captureDate.source === 'filename') {
+    log.info(`从文件名提取拍摄时间：${captureDate.dateTaken}`)
   } else {
-    // 如果 EXIF 中没有日期，尝试从文件名解析
-    const dateMatch = fileName.match(/(\d{4}-\d{2}-\d{2})/)
-    if (dateMatch) {
-      dateTaken = new Date(dateMatch[1]).toISOString()
-      log.info(`从文件名提取拍摄时间：${dateMatch[1]}`)
-    }
+    log.warn(`缺少有效拍摄时间，使用稳定的最小排序时间：${captureDate.dateTaken}`)
   }
 
   // 如果文件名包含浏览次数
@@ -85,7 +70,7 @@ export function extractPhotoInfo(key: string, exifData?: PickedExif | null): Pho
 
   return {
     title,
-    dateTaken,
+    dateTaken: captureDate.dateTaken,
     tags,
     description: '', // 可以从 EXIF 或其他元数据中获取
   }
