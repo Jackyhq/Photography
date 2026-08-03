@@ -2,8 +2,8 @@ import { useScrollViewElement } from '@afilmory/ui'
 import { clsxm, Spring } from '@afilmory/utils'
 import { useAtomValue } from 'jotai'
 import { AnimatePresence, m } from 'motion/react'
-import type { RefObject } from 'react'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { KeyboardEvent, RefObject } from 'react'
+import { createContext, memo, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { gallerySettingAtom } from '~/atoms/app'
 import { DateRangeIndicator } from '~/components/ui/date-range-indicator'
@@ -18,16 +18,34 @@ import type { PanelType } from './ActionPanel'
 import { ActionPanel } from './ActionPanel'
 import type { MasonryRef } from './Masonic'
 import { Masonry } from './Masonic'
+import type { MasonryNavigationDirection } from './masonry-keyboard-navigation'
+import { findNextMasonryItemIndex } from './masonry-keyboard-navigation'
 import { MasonryHeaderMasonryItem } from './MasonryHeaderMasonryItem'
 import { MasonryPhotoItem } from './MasonryPhotoItem'
 
 class MasonryHeaderItem {
   static default = new MasonryHeaderItem()
+
+  readonly kind = 'masonry-header'
 }
 
 type MasonryItemType = PhotoManifest | MasonryHeaderItem
 
 const FIRST_SCREEN_ITEMS_COUNT = 30
+const PHOTO_KEYBOARD_DIRECTIONS = {
+  ArrowLeft: 'left',
+  ArrowRight: 'right',
+  ArrowUp: 'up',
+  ArrowDown: 'down',
+} as const satisfies Record<string, MasonryNavigationDirection>
+
+interface MasonryKeyboardNavigationContextValue {
+  tabStopPhotoId: string | null
+  onPhotoFocus: (photoId: string) => void
+  onPhotoKeyDown: (event: KeyboardEvent<HTMLButtonElement>, index: number) => void
+}
+
+const MasonryKeyboardNavigationContext = createContext<MasonryKeyboardNavigationContextValue | null>(null)
 
 const COLUMN_WIDTH_CONFIG = {
   auto: {
@@ -54,6 +72,8 @@ export const MasonryRoot = () => {
 
   const photos = useContextPhotos()
   const masonryRef = useRef<MasonryRef>(null)
+  const focusRequestFrameRef = useRef(0)
+  const [tabStopPhotoId, setTabStopPhotoId] = useState<string | null>(null)
 
   const { dateRange, handleRender } = useVisiblePhotosDateRange(photos)
   const scrollElement = useScrollViewElement()
@@ -65,6 +85,89 @@ export const MasonryRoot = () => {
 
   const [activePanel, setActivePanel] = useState<PanelType | null>(null)
   const masonryItems = useMemo(() => (isMobile ? photos : [MasonryHeaderItem.default, ...photos]), [photos, isMobile])
+  const resolvedTabStopPhotoId = useMemo(() => {
+    if (tabStopPhotoId && photos.some((photo) => photo.id === tabStopPhotoId)) return tabStopPhotoId
+    return photos[0]?.id ?? null
+  }, [photos, tabStopPhotoId])
+
+  const focusPhotoAtIndex = useCallback(
+    (targetIndex: number) => {
+      const target = masonryItems[targetIndex]
+      if (!target || target instanceof MasonryHeaderItem) return
+
+      window.cancelAnimationFrame(focusRequestFrameRef.current)
+      setTabStopPhotoId(target.id)
+
+      let attempts = 0
+      let didRequestScroll = false
+      const focusWhenRendered = () => {
+        const photoButton = Array.from(
+          containerRef.current?.querySelectorAll<HTMLButtonElement>('[data-photo-id]') ?? [],
+        ).find((element) => element.dataset.photoId === target.id)
+
+        if (photoButton) {
+          photoButton.focus({ preventScroll: true })
+          photoButton.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+          focusRequestFrameRef.current = 0
+          return
+        }
+
+        if (!didRequestScroll) {
+          didRequestScroll = true
+          masonryRef.current?.scrollToIndex(targetIndex)
+        }
+
+        attempts++
+        if (attempts < 120) focusRequestFrameRef.current = window.requestAnimationFrame(focusWhenRendered)
+      }
+
+      focusWhenRendered()
+    },
+    [masonryItems],
+  )
+
+  const handlePhotoKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLButtonElement>, currentIndex: number) => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return
+
+      const direction = PHOTO_KEYBOARD_DIRECTIONS[event.key as keyof typeof PHOTO_KEYBOARD_DIRECTIONS]
+      if (!direction) return
+
+      const positioner = masonryRef.current?.getPositioner()
+      if (!positioner) return
+
+      const targetIndex = findNextMasonryItemIndex({
+        currentIndex,
+        direction,
+        positioner,
+        isNavigable: (index) => {
+          const item = masonryItems[index]
+          return !!item && !(item instanceof MasonryHeaderItem)
+        },
+      })
+      if (targetIndex === null) return
+
+      event.preventDefault()
+      focusPhotoAtIndex(targetIndex)
+    },
+    [focusPhotoAtIndex, masonryItems],
+  )
+
+  useEffect(
+    () => () => {
+      window.cancelAnimationFrame(focusRequestFrameRef.current)
+    },
+    [],
+  )
+
+  const keyboardNavigationContext = useMemo<MasonryKeyboardNavigationContextValue>(
+    () => ({
+      tabStopPhotoId: resolvedTabStopPhotoId,
+      onPhotoFocus: setTabStopPhotoId,
+      onPhotoKeyDown: handlePhotoKeyDown,
+    }),
+    [handlePhotoKeyDown, resolvedTabStopPhotoId],
+  )
 
   // 动态计算列宽
   const columnWidth = useMemo(() => {
@@ -139,37 +242,40 @@ export const MasonryRoot = () => {
 
       <div ref={containerRef} className="p-1 **:select-none! lg:px-0 lg:pb-0">
         {isMobile && <MasonryHeaderMasonryItem className="mb-1" />}
-        <Masonry<MasonryItemType>
-          ref={masonryRef}
-          items={masonryItems}
-          render={useCallback(
-            (props) => (
-              <MasonryItem
-                {...props}
-                hasAnimated={hasAnimatedRef.current}
-                onAnimationComplete={handleAnimationComplete}
-              />
-            ),
-            [handleAnimationComplete],
-          )}
-          onRender={useCallback(
-            (startIndex, stopIndex, items) => {
-              handleRender(startIndex, stopIndex, items)
-              prefetchUpcomingThumbnails(stopIndex, items)
-            },
-            [handleRender, prefetchUpcomingThumbnails],
-          )}
-          columnWidth={columnWidth}
-          columnGutter={4}
-          rowGutter={4}
-          itemHeightEstimate={400}
-          itemKey={useCallback((data, _index) => {
-            if (data instanceof MasonryHeaderItem) {
-              return 'header'
-            }
-            return (data as PhotoManifest).id
-          }, [])}
-        />
+        <MasonryKeyboardNavigationContext value={keyboardNavigationContext}>
+          <Masonry<MasonryItemType>
+            ref={masonryRef}
+            items={masonryItems}
+            tabIndex={-1}
+            render={useCallback(
+              (props) => (
+                <MasonryItem
+                  {...props}
+                  hasAnimated={hasAnimatedRef.current}
+                  onAnimationComplete={handleAnimationComplete}
+                />
+              ),
+              [handleAnimationComplete],
+            )}
+            onRender={useCallback(
+              (startIndex, stopIndex, items) => {
+                handleRender(startIndex, stopIndex, items)
+                prefetchUpcomingThumbnails(stopIndex, items)
+              },
+              [handleRender, prefetchUpcomingThumbnails],
+            )}
+            columnWidth={columnWidth}
+            columnGutter={4}
+            rowGutter={4}
+            itemHeightEstimate={400}
+            itemKey={useCallback((data, _index) => {
+              if (data instanceof MasonryHeaderItem) {
+                return 'header'
+              }
+              return (data as PhotoManifest).id
+            }, [])}
+          />
+        </MasonryKeyboardNavigationContext>
       </div>
 
       <ActionPanel
@@ -200,6 +306,9 @@ export const MasonryItem = memo(
     hasAnimated: boolean
     onAnimationComplete: () => void
   }) => {
+    const keyboardNavigation = use(MasonryKeyboardNavigationContext)
+    if (!keyboardNavigation) throw new Error('Masonry keyboard navigation context is missing')
+
     // 为每个 item 生成唯一的 key 用于追踪
     const itemKey = useMemo(() => {
       if (data instanceof MasonryHeaderItem) {
@@ -245,7 +354,14 @@ export const MasonryItem = memo(
           animate="visible"
           onAnimationComplete={shouldAnimate ? onAnimationComplete : undefined}
         >
-          <MasonryPhotoItem data={data as PhotoManifest} width={width} index={index} />
+          <MasonryPhotoItem
+            data={data as PhotoManifest}
+            width={width}
+            index={index}
+            tabIndex={(data as PhotoManifest).id === keyboardNavigation.tabStopPhotoId ? 0 : -1}
+            onFocus={keyboardNavigation.onPhotoFocus}
+            onKeyDown={keyboardNavigation.onPhotoKeyDown}
+          />
         </m.div>
       )
     }

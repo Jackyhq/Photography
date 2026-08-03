@@ -12,6 +12,8 @@ import { createIndexOrderedRange } from './masonry-range'
 
 export interface MasonryRef {
   reposition: () => void
+  scrollToIndex: (index: number) => void
+  getPositioner: () => Positioner
 }
 
 /**
@@ -81,12 +83,6 @@ export const Masonry = <Item,>(props: MasonryProps<Item> & { ref?: React.Ref<Mas
 
   const [positionIndex, setPositionIndex] = React.useState(0)
 
-  React.useImperativeHandle(props.ref, () => ({
-    reposition: () => {
-      setPositionIndex((i) => i + 1)
-    },
-  }))
-
   // Workaround for https://github.com/jaredLunde/masonic/issues/12
   const itemCounter = React.useRef<number>(props.items.length)
 
@@ -108,6 +104,7 @@ export const Masonry = <Item,>(props: MasonryProps<Item> & { ref?: React.Ref<Mas
   const scrollToIndex = useScrollToIndex(nextProps.positioner, {
     height: nextProps.height,
     offset: containerPos.offset,
+    element: scrollElement,
     align: typeof props.scrollToIndex === 'object' ? props.scrollToIndex.align : void 0,
   })
   const index =
@@ -116,6 +113,18 @@ export const Masonry = <Item,>(props: MasonryProps<Item> & { ref?: React.Ref<Mas
   React.useEffect(() => {
     if (index !== void 0) scrollToIndex(index)
   }, [index, scrollToIndex])
+
+  React.useImperativeHandle(
+    props.ref,
+    () => ({
+      reposition: () => {
+        setPositionIndex((i) => i + 1)
+      },
+      scrollToIndex,
+      getPositioner: () => nextProps.positioner,
+    }),
+    [nextProps.positioner, scrollToIndex],
+  )
 
   return <MasonryScroller {...nextProps} />
 }

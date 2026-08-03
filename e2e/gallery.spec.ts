@@ -85,6 +85,57 @@ test('keeps desktop header controls before photos in the keyboard order', async 
   expect(headerControlsComeFirst).toBe(true)
 })
 
+test('moves focus horizontally between masonry photos with arrow keys', async ({ page }) => {
+  await page.goto('/')
+
+  const firstPhoto = page.locator('[data-photo-id]').first()
+  await expect(firstPhoto).toBeVisible()
+  await focusByTab(page, firstPhoto)
+
+  const firstPhotoId = await firstPhoto.getAttribute('data-photo-id')
+  const firstBox = await firstPhoto.boundingBox()
+  expect(firstPhotoId).toBeTruthy()
+  expect(firstBox).not.toBeNull()
+
+  await expect.poll(() => page.locator('[data-photo-id][tabindex="0"]').count()).toBe(1)
+
+  await page.keyboard.press('ArrowRight')
+  const rightPhoto = page.locator('[data-photo-id]:focus')
+  await expect(rightPhoto).toBeVisible()
+  await expect(rightPhoto).not.toHaveAttribute('data-photo-id', firstPhotoId!)
+  const rightBox = await rightPhoto.boundingBox()
+  expect(rightBox).not.toBeNull()
+  expect(rightBox!.x).toBeGreaterThan(firstBox!.x)
+
+  await page.keyboard.press('ArrowLeft')
+  await expect(firstPhoto).toBeFocused()
+})
+
+test('moves focus vertically between masonry photos with arrow keys', async ({ page }) => {
+  await page.setViewportSize({ width: 280, height: 800 })
+  await page.goto('/')
+
+  const firstPhoto = page.locator('[data-photo-id]').first()
+  await expect(firstPhoto).toBeVisible()
+  await focusByTab(page, firstPhoto)
+
+  const firstPhotoId = await firstPhoto.getAttribute('data-photo-id')
+  const firstBox = await firstPhoto.boundingBox()
+  expect(firstPhotoId).toBeTruthy()
+  expect(firstBox).not.toBeNull()
+
+  await page.keyboard.press('ArrowDown')
+  const lowerPhoto = page.locator('[data-photo-id]:focus')
+  await expect(lowerPhoto).toBeVisible()
+  await expect(lowerPhoto).not.toHaveAttribute('data-photo-id', firstPhotoId!)
+  const lowerBox = await lowerPhoto.boundingBox()
+  expect(lowerBox).not.toBeNull()
+  expect(lowerBox!.y).toBeGreaterThan(firstBox!.y)
+
+  await page.keyboard.press('ArrowUp')
+  await expect(firstPhoto).toBeFocused()
+})
+
 test('keeps the preview visible and reports when the original image is blocked', async ({ page }) => {
   await page.goto('/')
 

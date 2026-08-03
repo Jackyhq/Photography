@@ -1,7 +1,7 @@
 import { Thumbhash } from '@afilmory/ui'
 import clsx from 'clsx'
 import { m } from 'motion/react'
-import type { PointerEvent as ReactPointerEvent } from 'react'
+import type { KeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'
 import { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -118,7 +118,16 @@ const formatDuration = (duration: number) => {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
-const MasonryPhotoItemBase = ({ data, width, index }: { data: PhotoManifest; width: number; index: number }) => {
+interface MasonryPhotoItemProps {
+  data: PhotoManifest
+  width: number
+  index: number
+  tabIndex: number
+  onFocus: (photoId: string) => void
+  onKeyDown: (event: KeyboardEvent<HTMLButtonElement>, index: number) => void
+}
+
+const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown }: MasonryPhotoItemProps) => {
   const { i18n } = useTranslation()
   const { openViewerByPhotoId } = useOpenPhotoViewer()
   const [imageLoaded, setImageLoaded] = useState(false)
@@ -156,6 +165,14 @@ const MasonryPhotoItemBase = ({ data, width, index }: { data: PhotoManifest; wid
 
   const handleClick = () => {
     openViewerByPhotoId(data.id, { element: itemRef.current ?? undefined })
+  }
+
+  const handleFocus = () => {
+    onFocus(data.id)
+  }
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    onKeyDown(event, index)
   }
 
   // 计算基于宽度的高度
@@ -440,7 +457,10 @@ const MasonryPhotoItemBase = ({ data, width, index }: { data: PhotoManifest; wid
         height: calculatedHeight,
       }}
       data-photo-id={data.id}
+      tabIndex={tabIndex}
       onClick={handleClick}
+      onFocus={handleFocus}
+      onKeyDown={handleKeyDown}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onPointerDown={handlePointerDown}
@@ -581,5 +601,11 @@ const MasonryPhotoItemBase = ({ data, width, index }: { data: PhotoManifest; wid
 
 export const MasonryPhotoItem = memo(
   MasonryPhotoItemBase,
-  (previous, next) => previous.data === next.data && previous.width === next.width && previous.index === next.index,
+  (previous, next) =>
+    previous.data === next.data &&
+    previous.width === next.width &&
+    previous.index === next.index &&
+    previous.tabIndex === next.tabIndex &&
+    previous.onFocus === next.onFocus &&
+    previous.onKeyDown === next.onKeyDown,
 )
