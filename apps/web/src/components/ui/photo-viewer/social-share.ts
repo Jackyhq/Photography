@@ -1,4 +1,4 @@
-const ALLOWED_SOCIAL_SHARE_HOSTS = new Set(['twitter.com', 'www.facebook.com', 't.me', 'service.weibo.com'])
+const ALLOWED_SOCIAL_SHARE_HOSTS = new Set(['www.instagram.com', 'twitter.com', 'www.facebook.com', 't.me'])
 
 interface SocialShareValues {
   url: string

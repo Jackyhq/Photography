@@ -43,6 +43,21 @@ test('renders the masonry gallery and opens the photo viewer', async ({ page }, 
   }
 })
 
+test('shows Instagram as the first social sharing option', async ({ page }) => {
+  await page.goto('/')
+
+  await page.locator('[data-photo-id]').first().click()
+  await page.getByRole('button', { name: /share photo|分享照片|分享相片/i }).click()
+
+  const socialHeading = page.getByRole('heading', {
+    name: /social media|社交媒体|社交媒體|ソーシャルメディア|소셜 미디어/i,
+  })
+  const socialOptions = socialHeading.locator('..').locator('..').getByRole('button')
+
+  await expect(socialOptions.first()).toHaveText('Instagram')
+  await expect(page.getByRole('button', { name: /weibo|微博/i })).toHaveCount(0)
+})
+
 test('keeps desktop header controls before photos in the keyboard order', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'Desktop masonry includes the header card')
 

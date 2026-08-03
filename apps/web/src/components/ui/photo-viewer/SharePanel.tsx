@@ -29,14 +29,49 @@ interface ShareOption {
   bgColor?: string
 }
 
-interface SocialShareOption {
-  id: string
+interface SocialShareOptionBase {
   label: string
   icon: string
-  url: string
   color: string
   bgColor: string
 }
+
+type SocialShareOption = SocialShareOptionBase &
+  ({ id: 'instagram'; url?: never } | { id: 'twitter' | 'facebook' | 'telegram'; url: string })
+
+const SOCIAL_SHARE_OPTIONS = [
+  {
+    id: 'instagram',
+    label: 'Instagram',
+    icon: 'i-mingcute-instagram-line',
+    color: 'text-white',
+    bgColor: 'bg-gradient-to-br from-[#833AB4] via-[#E1306C] to-[#FCAF45]',
+  },
+  {
+    id: 'twitter',
+    label: 'Twitter',
+    icon: 'i-mingcute-twitter-fill',
+    url: 'https://twitter.com/intent/tweet?text={text}&url={url}',
+    color: 'text-white',
+    bgColor: 'bg-sky-500',
+  },
+  {
+    id: 'facebook',
+    label: 'Facebook',
+    icon: 'i-mingcute-facebook-line',
+    url: 'https://www.facebook.com/sharer/sharer.php?u={url}',
+    color: 'text-white',
+    bgColor: 'bg-[#1877F2]',
+  },
+  {
+    id: 'telegram',
+    label: 'Telegram',
+    icon: 'i-mingcute-telegram-line',
+    url: 'https://t.me/share/url?url={url}&text={text}',
+    color: 'text-white',
+    bgColor: 'bg-[#0088CC]',
+  },
+] satisfies readonly SocialShareOption[]
 
 export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
   const { i18n, t } = useTranslation()
@@ -44,42 +79,6 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
   const [isPreparingShare, setIsPreparingShare] = useState(false)
   const shareAbortControllerRef = useRef<AbortController | null>(null)
   const localizedTitle = getLocalizedPhotoTitle(photo, i18n.resolvedLanguage ?? i18n.language)
-
-  // 社交媒体分享选项
-  const socialOptions: SocialShareOption[] = [
-    {
-      id: 'twitter',
-      label: 'Twitter',
-      icon: 'i-mingcute-twitter-fill',
-      url: 'https://twitter.com/intent/tweet?text={text}&url={url}',
-      color: 'text-white',
-      bgColor: 'bg-sky-500',
-    },
-    {
-      id: 'facebook',
-      label: 'Facebook',
-      icon: 'i-mingcute-facebook-line',
-      url: 'https://www.facebook.com/sharer/sharer.php?u={url}',
-      color: 'text-white',
-      bgColor: 'bg-[#1877F2]',
-    },
-    {
-      id: 'telegram',
-      label: 'Telegram',
-      icon: 'i-mingcute-telegram-line',
-      url: 'https://t.me/share/url?url={url}&text={text}',
-      color: 'text-white',
-      bgColor: 'bg-[#0088CC]',
-    },
-    {
-      id: 'weibo',
-      label: t('photo.share.weibo'),
-      icon: 'i-mingcute-weibo-line',
-      url: 'https://service.weibo.com/share/share.php?url={url}&title={text}',
-      color: 'text-white',
-      bgColor: 'bg-[#E6162D]',
-    },
-  ]
 
   const handleNativeShare = useCallback(async () => {
     const shareUrl = window.location.href
@@ -192,6 +191,24 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
     [localizedTitle, t],
   )
 
+  const handleInstagramShare = useCallback(async () => {
+    if (typeof navigator.share === 'function') {
+      await handleNativeShare()
+      return
+    }
+
+    // Instagram does not expose a browser share-intent URL. Open Instagram and
+    // copy the photo link so desktop users still have a useful fallback.
+    openSocialShareWindow('https://www.instagram.com/')
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      toast.success(t('photo.share.instagram.link.copied'))
+    } catch {
+      toast.info(t('photo.share.instagram.opened'))
+    }
+    setIsOpen(false)
+  }, [handleNativeShare, t])
+
   // 功能选项
   const actionOptions: ShareOption[] = [
     ...(typeof navigator !== 'undefined' && 'share' in navigator
@@ -268,12 +285,16 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
                     </h4>
                   </div>
                   <div className="flex gap-6 px-2">
-                    {socialOptions.map((option) => (
+                    {SOCIAL_SHARE_OPTIONS.map((option) => (
                       <button
                         key={option.id}
                         type="button"
                         className="group flex flex-col items-center gap-2"
-                        onClick={() => handleSocialShare(option.url)}
+                        onClick={() =>
+                          option.id === 'instagram' ? void handleInstagramShare() : handleSocialShare(option.url)
+                        }
+                        disabled={option.id === 'instagram' && isPreparingShare}
+                        aria-busy={option.id === 'instagram' && isPreparingShare}
                       >
                         <div
                           className={clsxm(
@@ -283,7 +304,16 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
                             'shadow-lg',
                           )}
                         >
-                          <i className={clsxm(option.icon, 'size-5', option.color)} />
+                          <i
+                            className={clsxm(
+                              option.id === 'instagram' && isPreparingShare
+                                ? 'i-mingcute-loading-3-line animate-spin'
+                                : option.icon,
+                              'size-5',
+                              option.color,
+                            )}
+                            aria-hidden="true"
+                          />
                         </div>
                         <span className="text-text-secondary text-xs font-medium">{option.label}</span>
                       </button>

@@ -20,6 +20,19 @@ describe('social sharing', () => {
 
     expect(() => createSocialShareUrl('https://evil.example/?url={url}', values)).toThrow('Unsupported')
     expect(() => createSocialShareUrl('http://twitter.com/?url={url}', values)).toThrow('Unsupported')
+    expect(() => createSocialShareUrl('https://service.weibo.com/share/share.php?url={url}', values)).toThrow(
+      'Unsupported',
+    )
+  })
+
+  it('allows the Instagram fallback destination', () => {
+    const url = createSocialShareUrl('https://www.instagram.com/', {
+      url: 'https://photo.example',
+      title: 'Photo',
+      text: 'Photo',
+    })
+
+    expect(url).toBe('https://www.instagram.com/')
   })
 
   it('opens an isolated window and clears the opener defensively', () => {
