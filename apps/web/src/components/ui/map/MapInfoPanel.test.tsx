@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import * as React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -17,35 +17,20 @@ vi.mock('motion/react', () => ({
   ),
 }))
 
-const bounds = {
-  minLat: 22.25,
-  maxLat: 31.23,
-  minLng: 114.17,
-  maxLng: 121.47,
-}
-
 describe('MapInfoPanel', () => {
-  it('keeps collapsed details out of the accessibility tree', () => {
-    render(<MapInfoPanel markersCount={2} bounds={bounds} />)
+  it('renders the compact map summary', () => {
+    render(<MapInfoPanel markersCount={2} />)
 
-    const toggle = screen.getByRole('button', { name: 'explory.info.expand' })
-    const details = document.querySelector<HTMLElement>(`[id="${toggle.getAttribute('aria-controls')}"]`)
-    if (!details) throw new Error('Map details region was not rendered')
-
-    expect(toggle.getAttribute('aria-expanded')).toBe('false')
-    expect(details.getAttribute('aria-hidden')).toBe('true')
-    expect(details.hasAttribute('inert')).toBe(true)
-
-    fireEvent.click(toggle)
-
-    expect(screen.getByRole('button', { name: 'explory.info.collapse' }).getAttribute('aria-expanded')).toBe('true')
-    expect(details.getAttribute('aria-hidden')).toBe('false')
-    expect(details.hasAttribute('inert')).toBe(false)
+    expect(screen.getByRole('heading', { name: 'explory.explore.map' })).toBeDefined()
+    expect(screen.getByText('explory.found.locations')).toBeDefined()
   })
 
-  it('does not present the inaccurate rectangular coverage metric', () => {
-    render(<MapInfoPanel markersCount={2} bounds={bounds} />)
+  it('does not expose the removed range details or toggle', () => {
+    render(<MapInfoPanel markersCount={2} />)
 
-    expect(screen.queryByText(/Coverage|km²/i)).toBeNull()
+    expect(screen.queryByRole('button')).toBeNull()
+    expect(screen.queryByText('explory.shooting.range')).toBeNull()
+    expect(screen.queryByText('explory.info.latitude')).toBeNull()
+    expect(screen.queryByText('explory.info.longitude')).toBeNull()
   })
 })

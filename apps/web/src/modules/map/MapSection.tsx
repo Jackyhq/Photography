@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
 
 import { GenericMap, MapBackButton, MapInfoPanel, MapLoadingState } from '~/components/ui/map'
-import { calculateMapBounds, convertPhotosToMarkersFromEXIF, getInitialViewStateForMarkers } from '~/lib/map-utils'
+import { convertPhotosToMarkersFromEXIF, getInitialViewStateForMarkers } from '~/lib/map-utils'
 import { MapProvider } from '~/modules/map/MapProvider'
-import type { MapBounds, PhotoMarker } from '~/types/map'
+import type { PhotoMarker } from '~/types/map'
 
 export const MapSection = () => {
   return (
@@ -52,11 +52,6 @@ const MapSectionContent = () => {
     },
     [searchParams, setSearchParams],
   )
-  const bounds = useMemo<MapBounds | null>(() => {
-    if (markers.length === 0) return null
-    return calculateMapBounds(markers)
-  }, [markers])
-
   // Load photo markers effect
   useEffect(() => {
     const loadPhotoMarkersData = async () => {
@@ -151,7 +146,7 @@ const MapSectionContent = () => {
       <MapBackButton />
 
       {/* Map info panel */}
-      <MapInfoPanel markersCount={markers.length} bounds={bounds} />
+      <MapInfoPanel markersCount={markers.length} />
 
       {/* Generic Map component */}
       <m.div
