@@ -180,7 +180,7 @@ test('keeps the preview visible and reports when the original image is blocked',
   expect(originalUrl).toBeTruthy()
 
   await page.route(originalUrl!, (route) => route.abort('blockedbyclient'))
-  await firstPhoto.click()
+  await page.goto(`/photos/${encodeURIComponent(photoId!)}/`)
 
   const viewer = page.getByRole('dialog')
   await expect(viewer).toBeVisible()
