@@ -1,8 +1,18 @@
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+
 import type { PhotoManifestItem } from '@afilmory/builder'
 import { describe, expect, it } from 'vitest'
 
 import type { SiteConfig } from '../../../../site.config'
-import { applyPhotoPageMeta, createPhotoPageMeta, createPhotoPreloadLink } from './photo-page-meta'
+import {
+  applyPhotoPageMeta,
+  createPhotoPageMeta,
+  createPhotoPreloadLink,
+  STATIC_APP_ROUTES,
+  writeStaticAppRoutePages,
+} from './photo-page-meta'
 
 const siteConfig: SiteConfig = {
   name: 'Gallery',
@@ -72,5 +82,27 @@ describe('photo-page-meta', () => {
     expect(html).toContain('"@type":"VideoObject"')
     expect(html).toContain('"duration":"PT12.5S"')
     expect(html).toContain('<video controls')
+  })
+
+  it('writes static entry pages for client routes without relying on an SPA fallback', () => {
+    const outputDirectory = mkdtempSync(path.join(tmpdir(), 'afilmory-static-routes-'))
+    const baseHtml = `<!doctype html><html><head><link rel="canonical" href="https://photos.example.com/"><meta property="og:url" content="https://photos.example.com/"><meta property="twitter:url" content="https://photos.example.com/"><link rel="preload" as="image" data-afilmory-preload="gallery" href="/gallery.webp"></head><body><div id="root"></div></body></html>`
+
+    try {
+      expect(writeStaticAppRoutePages(outputDirectory, baseHtml, siteConfig)).toBe(STATIC_APP_ROUTES.length)
+
+      for (const routePath of STATIC_APP_ROUTES) {
+        const html = readFileSync(path.join(outputDirectory, routePath, 'index.html'), 'utf-8')
+        const expectedUrl = `https://photos.example.com/${routePath}/`
+
+        expect(html).toContain('<div id="root"></div>')
+        expect(html).toContain(`rel="canonical" href="${expectedUrl}"`)
+        expect(html).toContain(`property="og:url" content="${expectedUrl}"`)
+        expect(html).toContain(`property="twitter:url" content="${expectedUrl}"`)
+        expect(html).not.toContain('data-afilmory-preload="gallery"')
+      }
+    } finally {
+      rmSync(outputDirectory, { force: true, recursive: true })
+    }
   })
 })

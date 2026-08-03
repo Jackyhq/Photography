@@ -2,13 +2,13 @@ import { DOMParser } from 'linkedom'
 import type { Plugin } from 'vite'
 
 import { siteConfig } from '../../../../site.config'
+import { serializeForInlineScript } from './inline-script'
 
 const CONFIG_SCRIPT_ID = 'config'
 const INJECTED_SCRIPT_ID = 'config-runtime'
 
 export function siteConfigInjectPlugin(): Plugin {
-  const siteConfigPayload = JSON.stringify(siteConfig)
-  const scriptContent = `window.__SITE_CONFIG__ = ${siteConfigPayload};`
+  const scriptContent = createSiteConfigScript(siteConfig)
   const parser = new DOMParser()
 
   return {
@@ -37,4 +37,8 @@ export function siteConfigInjectPlugin(): Plugin {
       return document.toString()
     },
   }
+}
+
+export function createSiteConfigScript(config: unknown): string {
+  return `window.__SITE_CONFIG__ = ${serializeForInlineScript(config)};`
 }

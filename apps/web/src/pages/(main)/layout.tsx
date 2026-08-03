@@ -18,6 +18,7 @@ export const Component = () => {
   const { photoId } = useParams()
   const isDirectPhotoRouteRef = useRef(Boolean(photoId))
   const isMobile = useMobile()
+  const { isOpen: isPhotoViewerOpen } = usePhotoViewerState()
 
   const photos = usePhotos()
   const shouldRenderGallery = !photoId || !isDirectPhotoRouteRef.current
@@ -40,7 +41,12 @@ export const Component = () => {
         )}
 
         {shouldRenderGallery && (
-          <>
+          <div
+            className="contents"
+            data-testid="gallery-content"
+            aria-hidden={isPhotoViewerOpen}
+            inert={isPhotoViewerOpen}
+          >
             {isMobile ? (
               <ScrollElementContext value={document.body}>
                 <MasonryRoot />
@@ -50,7 +56,7 @@ export const Component = () => {
                 <MasonryRoot />
               </ScrollArea>
             )}
-          </>
+          </div>
         )}
 
         <Outlet />

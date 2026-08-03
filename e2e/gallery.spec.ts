@@ -19,15 +19,46 @@ async function expectFocusToRemainInside(page: Page, dialog: Locator, presses = 
   }
 }
 
-test('renders the masonry gallery and opens the photo viewer', async ({ page }) => {
+test('renders the masonry gallery and opens the photo viewer', async ({ page }, testInfo) => {
   await page.goto('/')
 
   const firstPhoto = page.locator('[data-photo-id]').first()
   await expect(firstPhoto).toBeVisible()
 
   await firstPhoto.click()
+  const viewer = page.getByRole('dialog')
   await expect(page).toHaveURL(PHOTO_ROUTE)
   await expect(page.getByLabel(/close photo viewer/i)).toBeVisible()
+  await expect(viewer.locator('button[aria-current="true"]')).toHaveCount(1)
+  await expect(page.locator('article[aria-labelledby="photo-detail-heading"]')).toHaveAttribute('aria-hidden', 'true')
+  await expect(page.locator('article[aria-labelledby="photo-detail-heading"]')).toHaveAttribute('inert', '')
+  await expect(page.getByTestId('gallery-content')).toHaveAttribute('aria-hidden', 'true')
+  await expect(page.getByTestId('gallery-content')).toHaveAttribute('inert', '')
+
+  if (testInfo.project.name === 'desktop') {
+    await expect(page.getByRole('button', { name: /raw exif|原始 exif/i })).toBeVisible()
+  } else {
+    await page.getByRole('button', { name: /toggle photo information|切换照片信息/i }).click()
+    await expect(page.getByRole('button', { name: /close photo information|关闭照片信息/i })).toBeVisible()
+  }
+})
+
+test('keeps desktop header controls before photos in the keyboard order', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'Desktop masonry includes the header card')
+
+  await page.goto('/')
+  await expect(page.locator('[data-photo-id]').first()).toBeVisible()
+
+  const headerControlsComeFirst = await page.evaluate(() => {
+    const searchButton = document.querySelector('[data-testid="command-palette-trigger"]')
+    const firstPhoto = document.querySelector('[data-photo-id]')
+
+    if (!searchButton || !firstPhoto) return false
+
+    return Boolean(searchButton.compareDocumentPosition(firstPhoto) & Node.DOCUMENT_POSITION_FOLLOWING)
+  })
+
+  expect(headerControlsComeFirst).toBe(true)
 })
 
 test('keeps the preview visible and reports when the original image is blocked', async ({ page }) => {
@@ -218,4 +249,7 @@ test('loads the map route', async ({ page }) => {
   await page.goto('/explory')
 
   await expect(page.getByRole('heading', { name: /map|地图|地圖|マップ|지도/i })).toBeVisible()
+  await expect(page.locator('.maplibregl-marker').first()).toBeVisible()
+  await expect(page.locator('.maplibregl-marker[role="button"]')).toHaveCount(0)
+  await expect(page.locator('.maplibregl-marker button').first()).toBeVisible()
 })

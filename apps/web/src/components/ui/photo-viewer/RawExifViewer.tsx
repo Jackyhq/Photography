@@ -337,12 +337,14 @@ export const RawExifViewer: React.FC<RawExifViewerProps> = ({ currentPhoto }) =>
           type="button"
           onClick={handleOpenModal}
           disabled={isLoading}
+          aria-label={t('exif.raw.title', { defaultValue: 'Raw EXIF Data' })}
+          title={t('exif.raw.title', { defaultValue: 'Raw EXIF Data' })}
           className="cursor-pointer text-white/70 duration-200 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? (
-            <i className="i-mingcute-loading-3-line animate-spin" />
+            <i className="i-mingcute-loading-3-line animate-spin" aria-hidden="true" />
           ) : (
-            <i className="i-mingcute-braces-line" />
+            <i className="i-mingcute-braces-line" aria-hidden="true" />
           )}
         </button>
       </DialogTrigger>

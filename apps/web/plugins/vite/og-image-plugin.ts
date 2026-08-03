@@ -23,6 +23,7 @@ export function ogImagePlugin(options: OGImagePluginOptions = {}): Plugin {
 
   return {
     name: 'og-image-plugin',
+    apply: 'build',
     async buildStart() {
       // 在构建开始时生成 OG 图片
       const timestamp = Date.now()

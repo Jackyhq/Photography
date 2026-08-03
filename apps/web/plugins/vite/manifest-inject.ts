@@ -4,6 +4,9 @@ import { readFileSync } from 'node:fs'
 import type { Plugin, ResolvedConfig } from 'vite'
 
 import { MANIFEST_PATH } from './__internal__/constants'
+import { serializeForInlineScript } from './inline-script'
+
+export { serializeForInlineScript } from './inline-script'
 
 interface PreloadManifestItem {
   thumbnailUrl?: string
@@ -252,15 +255,6 @@ function normalizeBase(base: string): string {
 
 function encodePhotoTextRoute(language: string): string {
   return `${PHOTO_TEXT_ROUTE_PREFIX}${encodeURIComponent(language)}.json`
-}
-
-export function serializeForInlineScript(value: unknown): string {
-  return JSON.stringify(value)
-    .replaceAll('<', '\\u003C')
-    .replaceAll('>', '\\u003E')
-    .replaceAll('&', '\\u0026')
-    .replaceAll('\u2028', '\\u2028')
-    .replaceAll('\u2029', '\\u2029')
 }
 
 export function createManifestBootstrapScript(

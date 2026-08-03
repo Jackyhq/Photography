@@ -1,8 +1,10 @@
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync } from 'node:fs'
 import path, { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import sharp from 'sharp'
+
+import { writeAssetIfChanged } from './write-asset.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = path.resolve(__dirname, '../..')
@@ -82,8 +84,8 @@ export async function generateFavicons() {
       const roundedBuffer = await addRoundedCorners(resizedBuffer, size)
 
       const outputPath = join(outputDir, name)
-      writeFileSync(outputPath, roundedBuffer)
-      console.info(`✅ Generated favicon: ${name} (${size}x${size})`)
+      const changed = writeAssetIfChanged(outputPath, roundedBuffer)
+      console.info(`${changed ? '✅ Generated' : '↪️ Unchanged'} favicon: ${name} (${size}x${size})`)
     }
 
     // Maskable icons must keep the artwork inside the central safe zone and
@@ -114,8 +116,10 @@ export async function generateFavicons() {
       ])
       .png({ quality: 100, compressionLevel: 6 })
       .toBuffer()
-    writeFileSync(join(outputDir, 'android-chrome-maskable-512x512.png'), maskableBuffer)
-    console.info('✅ Generated maskable icon: android-chrome-maskable-512x512.png (512x512)')
+    const maskableChanged = writeAssetIfChanged(join(outputDir, 'android-chrome-maskable-512x512.png'), maskableBuffer)
+    console.info(
+      `${maskableChanged ? '✅ Generated' : '↪️ Unchanged'} maskable icon: android-chrome-maskable-512x512.png (512x512)`,
+    )
 
     // 生成主 favicon.ico（使用 32x32）
     const faviconResizedBuffer = await sharp(logoBuffer)
@@ -133,8 +137,8 @@ export async function generateFavicons() {
     const faviconBuffer = await addRoundedCorners(faviconResizedBuffer, 32)
 
     const faviconPath = join(outputDir, 'favicon.ico')
-    writeFileSync(faviconPath, faviconBuffer)
-    console.info(`✅ Generated main favicon: favicon.ico`)
+    const faviconChanged = writeAssetIfChanged(faviconPath, faviconBuffer)
+    console.info(`${faviconChanged ? '✅ Generated' : '↪️ Unchanged'} main favicon: favicon.ico`)
 
     // PWA manifest 由 vite-plugin-pwa 生成，这里不再生成重复的文件
 

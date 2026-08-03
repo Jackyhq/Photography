@@ -6,10 +6,13 @@ import type { Plugin } from 'vite'
 
 import type { SiteConfig } from '../../../../site.config'
 import { MANIFEST_PATH } from './__internal__/constants'
+import { serializeForInlineScript } from './inline-script'
 
 interface ManifestFile {
   data?: PhotoManifestItem[]
 }
+
+export const STATIC_APP_ROUTES = ['explory', 'manifest'] as const
 
 interface PhotoPageMeta {
   title: string
@@ -45,9 +48,36 @@ export function createPhotoPageMetaPlugin(siteConfig: SiteConfig): Plugin {
         writeFileSync(filePath, html)
       }
 
-      console.info(`Generated ${photos.length} static photo pages`)
+      const staticAppRouteCount = writeStaticAppRoutePages(outputDirectory, indexAsset.source, siteConfig)
+
+      console.info(`Generated ${photos.length} static photo pages and ${staticAppRouteCount} static app route pages`)
     },
   }
+}
+
+export function writeStaticAppRoutePages(outputDirectory: string, indexHtml: string, siteConfig: SiteConfig): number {
+  for (const routePath of STATIC_APP_ROUTES) {
+    const html = applyStaticAppRouteMeta(indexHtml, routePath, siteConfig)
+    const filePath = resolveStaticAppRoutePagePath(outputDirectory, routePath)
+
+    mkdirSync(path.dirname(filePath), { recursive: true })
+    writeFileSync(filePath, html)
+  }
+
+  return STATIC_APP_ROUTES.length
+}
+
+export function applyStaticAppRouteMeta(html: string, routePath: string, siteConfig: SiteConfig): string {
+  const baseUrl = siteConfig.url.replace(/\/+$/, '')
+  const normalizedRoutePath = routePath.replaceAll(/^\/+|\/+$/g, '')
+  const url = `${baseUrl}/${normalizedRoutePath}/`
+
+  let next = html.replaceAll(/<link[^>]+data-afilmory-preload=["']gallery["'][^>]*>/gi, '')
+  next = upsertMeta(next, 'property', 'og:url', url)
+  next = upsertMeta(next, 'property', 'twitter:url', url)
+  next = upsertLink(next, 'canonical', url)
+
+  return next
 }
 
 export function createPhotoPageMeta(photo: PhotoManifestItem, siteConfig: SiteConfig): PhotoPageMeta {
@@ -185,12 +215,7 @@ function createPhotoNoscriptFigure(photo: PhotoManifestItem, description: string
 }
 
 function serializeJsonLd(value: unknown): string {
-  return JSON.stringify(value)
-    .replaceAll('<', '\\u003C')
-    .replaceAll('>', '\\u003E')
-    .replaceAll('&', '\\u0026')
-    .replaceAll('\u2028', '\\u2028')
-    .replaceAll('\u2029', '\\u2029')
+  return serializeForInlineScript(value)
 }
 
 function getFirstSrcFromSrcSet(srcSet: string): string {
@@ -250,6 +275,23 @@ function resolvePhotoPagePath(photosOutputDirectory: string, photoId: string): s
 
   if (relativePath === '..' || relativePath.startsWith(`..${path.sep}`) || path.isAbsolute(relativePath)) {
     throw new Error(`Refusing to write photo page outside photos output directory for id: ${photoId}`)
+  }
+
+  return filePath
+}
+
+function resolveStaticAppRoutePagePath(outputDirectory: string, routePath: string): string {
+  const normalizedRoutePath = routePath.replaceAll(/^\/+|\/+$/g, '')
+  const filePath = path.resolve(outputDirectory, normalizedRoutePath, 'index.html')
+  const relativePath = path.relative(outputDirectory, filePath)
+
+  if (
+    !normalizedRoutePath ||
+    relativePath === '..' ||
+    relativePath.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(relativePath)
+  ) {
+    throw new Error(`Refusing to write static app route outside output directory: ${routePath}`)
   }
 
   return filePath

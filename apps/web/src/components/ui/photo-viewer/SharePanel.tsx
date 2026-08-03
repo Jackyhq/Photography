@@ -2,13 +2,17 @@ import { RootPortal } from '@afilmory/ui'
 import { clsxm, Spring } from '@afilmory/utils'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { AnimatePresence, m } from 'motion/react'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { injectConfig, siteConfig } from '~/config'
+import { isAbortError } from '~/lib/abort-error'
 import { getLocalizedPhotoTitle } from '~/lib/photo-description'
 import type { PhotoManifest } from '~/types/photo'
+
+import { fetchShareMediaBlob, openNativeShare } from './share-media'
+import { createSocialShareUrl, openSocialShareWindow } from './social-share'
 
 interface SharePanelProps {
   photo: PhotoManifest
@@ -37,6 +41,8 @@ interface SocialShareOption {
 export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
   const { i18n, t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
+  const [isPreparingShare, setIsPreparingShare] = useState(false)
+  const shareAbortControllerRef = useRef<AbortController | null>(null)
   const localizedTitle = getLocalizedPhotoTitle(photo, i18n.resolvedLanguage ?? i18n.language)
 
   // 社交媒体分享选项
@@ -81,40 +87,70 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
     const shareText = t('photo.share.text', { title: shareTitle })
     const isVideoMedia = photo.mediaType === 'video'
 
+    const abortController = new AbortController()
+    shareAbortControllerRef.current?.abort()
+    shareAbortControllerRef.current = abortController
+    setIsPreparingShare(true)
+
     try {
       // 图片优先使用 blobSrc（转换后的图片）；独立视频始终分享原视频。
       const mediaUrl = isVideoMedia ? photo.videoUrl || photo.originalUrl : blobSrc || photo.originalUrl
-      const response = await fetch(mediaUrl)
-      const blob = await response.blob()
-      const fallbackExtension = isVideoMedia ? getExtension(mediaUrl) || 'mp4' : 'jpg'
-      const file = new File([blob], `${localizedTitle || (isVideoMedia ? 'video' : 'photo')}.${fallbackExtension}`, {
-        type: blob.type || photo.mimeType || (isVideoMedia ? 'video/mp4' : 'image/jpeg'),
-      })
+      let file: File | undefined
+
+      try {
+        const blob = await fetchShareMediaBlob(mediaUrl, isVideoMedia ? 'video' : 'image', abortController.signal)
+        const fallbackExtension = isVideoMedia ? getExtension(mediaUrl) || 'mp4' : 'jpg'
+        file = new File([blob], `${localizedTitle || (isVideoMedia ? 'video' : 'photo')}.${fallbackExtension}`, {
+          type: blob.type || photo.mimeType || (isVideoMedia ? 'video/mp4' : 'image/jpeg'),
+        })
+      } catch (error) {
+        if (isAbortError(error)) throw error
+        // A link share is still useful when media preparation fails or is too large.
+        console.warn('Unable to prepare media for native sharing; sharing the link instead.', error)
+      }
 
       // 检查是否支持文件分享
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          title: shareTitle,
-          text: shareText,
-          url: shareUrl,
-          files: [file],
-        })
-      } else {
-        // 不支持文件分享，只分享链接
-        await navigator.share({
-          title: shareTitle,
-          text: shareText,
-          url: shareUrl,
-        })
+      const shareResult = await openNativeShare(
+        navigator.share.bind(navigator),
+        file && navigator.canShare?.({ files: [file] })
+          ? {
+              title: shareTitle,
+              text: shareText,
+              url: shareUrl,
+              files: [file],
+            }
+          : {
+              title: shareTitle,
+              text: shareText,
+              url: shareUrl,
+            },
+      )
+      if (shareResult === 'cancelled') return
+
+      setIsOpen(false)
+    } catch (error) {
+      if (!isAbortError(error)) {
+        toast.error(t('photo.share.failed'))
       }
-      setIsOpen(false)
-    } catch {
-      // 如果分享失败，复制链接
-      await navigator.clipboard.writeText(shareUrl)
-      toast.success(t('photo.share.link.copied'))
-      setIsOpen(false)
+    } finally {
+      if (shareAbortControllerRef.current === abortController) {
+        shareAbortControllerRef.current = null
+        setIsPreparingShare(false)
+      }
     }
   }, [photo.mediaType, photo.videoUrl, photo.originalUrl, photo.mimeType, localizedTitle, blobSrc, t])
+
+  const handleOpenChange = useCallback((open: boolean) => {
+    if (!open) shareAbortControllerRef.current?.abort()
+    setIsOpen(open)
+  }, [])
+
+  useEffect(
+    () => () => {
+      shareAbortControllerRef.current?.abort()
+    },
+    [],
+  )
 
   const handleCopyLink = useCallback(async () => {
     try {
@@ -141,15 +177,16 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
   }, [t])
 
   const handleSocialShare = useCallback(
-    (url: string) => {
-      const shareUrl = encodeURIComponent(window.location.href)
+    (template: string) => {
       const defaultTitle = t('photo.share.default.title')
-      const shareTitle = encodeURIComponent(localizedTitle || defaultTitle)
-      const shareText = encodeURIComponent(t('photo.share.text', { title: localizedTitle || defaultTitle }))
+      const shareTitle = localizedTitle || defaultTitle
+      const finalUrl = createSocialShareUrl(template, {
+        url: window.location.href,
+        title: shareTitle,
+        text: t('photo.share.text', { title: shareTitle }),
+      })
 
-      const finalUrl = url.replace('{url}', shareUrl).replace('{title}', shareTitle).replace('{text}', shareText)
-
-      window.open(finalUrl, '_blank', 'width=600,height=400')
+      openSocialShareWindow(finalUrl)
       setIsOpen(false)
     },
     [localizedTitle, t],
@@ -184,7 +221,7 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
   ]
 
   return (
-    <DropdownMenuPrimitive.Root open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenuPrimitive.Root open={isOpen} onOpenChange={handleOpenChange}>
       <DropdownMenuPrimitive.Trigger asChild>{trigger}</DropdownMenuPrimitive.Trigger>
 
       <AnimatePresence>
@@ -311,12 +348,27 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
                           type="button"
                           className="glassmorphic-btn group relative flex cursor-pointer items-center rounded-lg px-2 py-2 text-sm transition-all duration-200 outline-none select-none"
                           onClick={() => option.action()}
+                          disabled={option.id === 'native-share' && isPreparingShare}
+                          aria-busy={option.id === 'native-share' && isPreparingShare}
                         >
                           <div className="flex items-center gap-2">
                             <div className="bg-accent/10 flex size-7 items-center justify-center rounded-full transition-colors duration-200">
-                              <i className={clsxm(option.icon, 'size-3.5', option.color || 'text-text-secondary')} />
+                              <i
+                                className={clsxm(
+                                  option.id === 'native-share' && isPreparingShare
+                                    ? 'i-mingcute-loading-3-line animate-spin'
+                                    : option.icon,
+                                  'size-3.5',
+                                  option.color || 'text-text-secondary',
+                                )}
+                                aria-hidden="true"
+                              />
                             </div>
-                            <span className="text-text text-xs font-medium">{option.label}</span>
+                            <span className="text-text text-xs font-medium">
+                              {option.id === 'native-share' && isPreparingShare
+                                ? t('photo.share.preparing')
+                                : option.label}
+                            </span>
                           </div>
                         </button>
                       ))}

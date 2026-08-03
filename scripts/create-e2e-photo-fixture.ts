@@ -4,6 +4,7 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 import { promisify } from 'node:util'
 
+import { exiftool } from 'exiftool-vendored'
 import sharp from 'sharp'
 
 import { resolveE2EFixtureRoot } from './e2e-fixture-path.js'
@@ -18,12 +19,14 @@ const fixtures = [
     fileName: '2026-01-01_fixture-landscape.jpg',
     label: 'Synthetic Landscape',
     colors: ['#172554', '#38bdf8'],
+    coordinates: { latitude: 31.2304, longitude: 121.4737 },
     livePhoto: true,
   },
   {
     fileName: '2026-01-02_fixture-portrait.jpg',
     label: 'Synthetic Portrait',
     colors: ['#4c0519', '#fb7185'],
+    coordinates: { latitude: 31.2989, longitude: 120.5853 },
     livePhoto: false,
   },
 ] as const
@@ -35,7 +38,7 @@ async function createFixture(): Promise<void> {
   await fs.mkdir(categoryDirectory, { recursive: true })
 
   await Promise.all(
-    fixtures.map(async ({ fileName, label, colors, livePhoto }) => {
+    fixtures.map(async ({ fileName, label, colors, coordinates, livePhoto }) => {
       const svg = Buffer.from(`
         <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
           <defs>
@@ -52,7 +55,18 @@ async function createFixture(): Promise<void> {
         </svg>
       `)
 
-      await sharp(svg).jpeg({ quality: 86 }).toFile(path.join(categoryDirectory, fileName))
+      const imagePath = path.join(categoryDirectory, fileName)
+      await sharp(svg).jpeg({ quality: 86 }).toFile(imagePath)
+      await exiftool.write(
+        imagePath,
+        {
+          GPSLatitude: coordinates.latitude,
+          GPSLatitudeRef: 'N',
+          GPSLongitude: coordinates.longitude,
+          GPSLongitudeRef: 'E',
+        },
+        { writeArgs: ['-overwrite_original'] },
+      )
 
       if (livePhoto) {
         const videoPath = path.join(categoryDirectory, `${path.parse(fileName).name}.mov`)
@@ -79,4 +93,4 @@ async function createFixture(): Promise<void> {
   )
 }
 
-void createFixture()
+void createFixture().finally(() => exiftool.end())

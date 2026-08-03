@@ -8,9 +8,12 @@ import { createResizeObserver, useMasonry, usePositioner, useScrollToIndex } fro
 import { useForceUpdate } from 'motion/react'
 import * as React from 'react'
 
+import { createIndexOrderedRange } from './masonry-range'
+
 export interface MasonryRef {
   reposition: () => void
 }
+
 /**
  * A "batteries included" masonry grid which includes all of the implementation details below. This component is the
  * easiest way to get off and running in your app, before switching to more advanced implementations, if necessary.
@@ -123,6 +126,14 @@ function MasonryScroller<Item>(
     isScrolling: boolean
   },
 ) {
+  const positioner = React.useMemo<Positioner>(
+    () => ({
+      ...props.positioner,
+      range: createIndexOrderedRange(props.positioner.range),
+    }),
+    [props.positioner],
+  )
+
   // We put this in its own layer because it's the thing that will trigger the most updates
   // and we don't want to slower ourselves by cycling through all the functions, objects, and effects
   // of other hooks
@@ -134,7 +145,7 @@ function MasonryScroller<Item>(
   return useMasonry<Item>({
     scrollTop: props.scrollTop,
     isScrolling: props.isScrolling,
-    positioner: props.positioner,
+    positioner,
     resizeObserver: props.resizeObserver,
     items: props.items,
     onRender: props.onRender,

@@ -5,6 +5,7 @@ import { workdir } from '@afilmory/builder/path.js'
 import type { _Object } from '@aws-sdk/client-s3'
 
 import { atomicWriteFile } from '../fs/atomic-write.js'
+import { getThumbnailDirectory } from '../image/thumbnail-paths.js'
 import { logger } from '../logger/index.js'
 import type { AfilmoryManifest, CameraInfo, LensInfo } from '../types/manifest.js'
 import type { PhotoManifestItem } from '../types/photo.js'
@@ -123,7 +124,7 @@ export async function saveManifest(
 // 检测并处理已删除的图片
 export async function handleDeletedPhotos(items: PhotoManifestItem[]): Promise<number> {
   logger.main.info('🔍 检查已删除的图片...')
-  const thumbnailsDir = path.join(workdir, 'public/thumbnails')
+  const thumbnailsDir = getThumbnailDirectory()
   if (items.length === 0) {
     // Clear all thumbnails
     await fs.rm(thumbnailsDir, { recursive: true, force: true })

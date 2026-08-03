@@ -1,12 +1,12 @@
 import { GlassButton, HoverCard, HoverCardContent, HoverCardTrigger, LazyImage } from '@afilmory/ui'
 import { m } from 'motion/react'
 import { useTranslation } from 'react-i18next'
-import { Marker } from 'react-map-gl/maplibre'
 import { Link } from 'react-router'
 
 import { getLocalizedPhotoTitle, getPhotoAltText } from '~/lib/photo-description'
 import { getPhotoDetailPath } from '~/lib/photo-route'
 
+import { MapMarker } from './MapMarker'
 import type { PhotoMarkerPinProps } from './types'
 
 export const PhotoMarkerPin = ({ marker, isSelected = false, onClick, onClose }: PhotoMarkerPinProps) => {
@@ -25,7 +25,7 @@ export const PhotoMarkerPin = ({ marker, isSelected = false, onClick, onClose }:
   }
 
   return (
-    <Marker key={marker.id} longitude={marker.longitude} latitude={marker.latitude}>
+    <MapMarker key={marker.id} longitude={marker.longitude} latitude={marker.latitude}>
       <HoverCard
         open={isSelected ? true : undefined} // 当选中时强制打开
         openDelay={isSelected ? 0 : 400} // 选中时立即打开
@@ -189,6 +189,6 @@ export const PhotoMarkerPin = ({ marker, isSelected = false, onClick, onClose }:
           </div>
         </HoverCardContent>
       </HoverCard>
-    </Marker>
+    </MapMarker>
   )
 }

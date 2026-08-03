@@ -3,6 +3,7 @@ import path from 'node:path'
 import { SUPPORTED_VIDEO_FORMATS } from '../constants/index.js'
 import { thumbnailExists } from '../image/thumbnail.js'
 import { logger } from '../logger/index.js'
+import { commitManifestThenCleanup } from '../manifest/commit.js'
 import { handleDeletedPhotos, loadExistingManifest, needsUpdate, saveManifest } from '../manifest/manager.js'
 import { CURRENT_MANIFEST_VERSION } from '../manifest/version.js'
 import { generateMediaId } from '../media/id.js'
@@ -481,34 +482,40 @@ export class AfilmoryBuilder {
         )
       }
 
-      // 检测并处理已删除的图片
-      deletedCount = await handleDeletedPhotos(manifest)
-
-      await this.emitPluginEvent(runState, 'afterCleanup', {
-        options,
-        manifest,
-        deletedCount,
-      })
-
       // 生成相机和镜头集合
       const cameras = this.generateCameraCollection(manifest)
       const lenses = this.generateLensCollection(manifest)
 
-      await this.emitPluginEvent(runState, 'beforeSaveManifest', {
-        options,
-        manifest,
-        cameras,
-        lenses,
-      })
+      deletedCount = await commitManifestThenCleanup(
+        async () => {
+          await this.emitPluginEvent(runState, 'beforeSaveManifest', {
+            options,
+            manifest,
+            cameras,
+            lenses,
+          })
 
-      await saveManifest(manifest, cameras, lenses)
+          await saveManifest(manifest, cameras, lenses)
 
-      await this.emitPluginEvent(runState, 'afterSaveManifest', {
-        options,
-        manifest,
-        cameras,
-        lenses,
-      })
+          await this.emitPluginEvent(runState, 'afterSaveManifest', {
+            options,
+            manifest,
+            cameras,
+            lenses,
+          })
+        },
+        async () => {
+          const cleanupCount = await handleDeletedPhotos(manifest)
+
+          await this.emitPluginEvent(runState, 'afterCleanup', {
+            options,
+            manifest,
+            deletedCount: cleanupCount,
+          })
+
+          return cleanupCount
+        },
+      )
 
       if (this.config.system.observability.showDetailedStats) {
         this.logBuildResults(

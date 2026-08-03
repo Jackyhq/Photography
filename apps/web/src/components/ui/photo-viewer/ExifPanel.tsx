@@ -105,8 +105,9 @@ export const ExifPanel: FC<{
             type="button"
             className="glassmorphic-btn border-accent/20 flex size-6 items-center justify-center rounded-full border text-white/70 duration-200 hover:text-white"
             onClick={onClose}
+            aria-label={t('photo.viewer.closeInfo')}
           >
-            <i className="i-mingcute-close-line text-sm" />
+            <i className="i-mingcute-close-line text-sm" aria-hidden="true" />
           </button>
         )}
       </div>

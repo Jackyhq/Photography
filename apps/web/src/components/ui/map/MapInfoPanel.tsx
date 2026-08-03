@@ -1,5 +1,5 @@
 import { m } from 'motion/react'
-import { useState } from 'react'
+import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 
 interface MapInfoPanelProps {
@@ -14,7 +14,9 @@ interface MapInfoPanelProps {
 
 export const MapInfoPanel = ({ markersCount, bounds }: MapInfoPanelProps) => {
   const { t } = useTranslation()
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = React.useState(false)
+  const detailsId = React.useId()
+  const showDetails = isExpanded && Boolean(bounds)
 
   return (
     <m.div
@@ -34,7 +36,7 @@ export const MapInfoPanel = ({ markersCount, bounds }: MapInfoPanelProps) => {
           >
             {/* Icon container with enhanced styling */}
             <div className="bg-blue/10 ring-blue/20 flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl ring-1 ring-inset">
-              <i className="i-mingcute-map-line text-blue text-lg" />
+              <i className="i-mingcute-map-line text-blue text-lg" aria-hidden="true" />
             </div>
 
             <div className="min-w-0 flex-1">
@@ -45,14 +47,18 @@ export const MapInfoPanel = ({ markersCount, bounds }: MapInfoPanelProps) => {
                 {/* Collapse/Expand Button */}
                 <button
                   type="button"
-                  onClick={() => setIsExpanded(!isExpanded)}
+                  onClick={() => setIsExpanded((expanded) => !expanded)}
                   className="bg-fill-secondary/50 ring-fill-tertiary/20 hover:bg-fill-tertiary relative -top-2 -mb-2 flex size-8 flex-shrink-0 items-center justify-center rounded-xl ring-1 transition-all duration-200 ring-inset"
-                  aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                  aria-label={t(isExpanded ? 'explory.info.collapse' : 'explory.info.expand')}
+                  aria-expanded={showDetails}
+                  aria-controls={detailsId}
+                  disabled={!bounds}
                 >
                   <m.i
                     className="i-mingcute-down-line text-text-secondary text-base"
                     animate={{ rotate: isExpanded ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
+                    aria-hidden="true"
                   />
                 </button>
               </div>
@@ -70,19 +76,22 @@ export const MapInfoPanel = ({ markersCount, bounds }: MapInfoPanelProps) => {
 
         {/* Coordinates Section - Collapsible */}
         <m.div
+          id={detailsId}
           initial={false}
           animate={{
-            height: isExpanded && bounds ? 'auto' : 0,
-            opacity: isExpanded && bounds ? 1 : 0,
+            height: showDetails ? 'auto' : 0,
+            opacity: showDetails ? 1 : 0,
           }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
           className="overflow-hidden"
+          aria-hidden={!showDetails}
+          inert={!showDetails}
         >
           {bounds && (
             <div className="border-fill-secondary border-t px-5 pt-4 pb-5">
               {/* Section header */}
               <div className="mb-4 flex items-center gap-2.5">
-                <i className="i-mingcute-location-line text-text-secondary" />
+                <i className="i-mingcute-location-line text-text-secondary" aria-hidden="true" />
                 <span className="text-text text-sm font-medium tracking-tight">{t('explory.shooting.range')}</span>
               </div>
 
@@ -91,16 +100,16 @@ export const MapInfoPanel = ({ markersCount, bounds }: MapInfoPanelProps) => {
                 {/* Min coordinates */}
                 <div className="bg-fill-vibrant-quinary border-fill-tertiary rounded-xl border p-4">
                   <div className="text-text-secondary mb-2 flex items-center gap-2 text-xs font-medium tracking-wide uppercase">
-                    <i className="i-mingcute-arrow-left-down-line text-sm" />
-                    Southwest
+                    <i className="i-mingcute-arrow-left-down-line text-sm" aria-hidden="true" />
+                    {t('explory.info.southwest')}
                   </div>
                   <div className="space-y-1">
                     <div className="text-text flex items-center justify-between">
-                      <span className="text-xs font-medium">Lat</span>
+                      <span className="text-xs font-medium">{t('explory.info.latitude')}</span>
                       <span className="font-mono text-sm tabular-nums">{bounds.minLat.toFixed(6)}°</span>
                     </div>
                     <div className="text-text flex items-center justify-between">
-                      <span className="text-xs font-medium">Lng</span>
+                      <span className="text-xs font-medium">{t('explory.info.longitude')}</span>
                       <span className="font-mono text-sm tabular-nums">{bounds.minLng.toFixed(6)}°</span>
                     </div>
                   </div>
@@ -109,31 +118,19 @@ export const MapInfoPanel = ({ markersCount, bounds }: MapInfoPanelProps) => {
                 {/* Max coordinates */}
                 <div className="bg-fill-vibrant-quinary border-fill-tertiary rounded-xl border p-4">
                   <div className="text-text-secondary mb-2 flex items-center gap-2 text-xs font-medium tracking-wide uppercase">
-                    <i className="i-mingcute-arrow-right-up-line text-sm" />
-                    Northeast
+                    <i className="i-mingcute-arrow-right-up-line text-sm" aria-hidden="true" />
+                    {t('explory.info.northeast')}
                   </div>
                   <div className="space-y-1">
                     <div className="text-text flex items-center justify-between">
-                      <span className="text-xs font-medium">Lat</span>
+                      <span className="text-xs font-medium">{t('explory.info.latitude')}</span>
                       <span className="font-mono text-sm tabular-nums">{bounds.maxLat.toFixed(6)}°</span>
                     </div>
                     <div className="text-text flex items-center justify-between">
-                      <span className="text-xs font-medium">Lng</span>
+                      <span className="text-xs font-medium">{t('explory.info.longitude')}</span>
                       <span className="font-mono text-sm tabular-nums">{bounds.maxLng.toFixed(6)}°</span>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Coverage area calculation */}
-              <div className="bg-gray/5 mt-4 rounded-xl p-3">
-                <div className="text-text-secondary flex items-center gap-2 text-xs">
-                  <i className="i-mingcute-grid-line" />
-                  <span className="font-medium">
-                    Coverage: ~
-                    {Math.abs((bounds.maxLat - bounds.minLat) * (bounds.maxLng - bounds.minLng) * 111 * 111).toFixed(1)}{' '}
-                    km²
-                  </span>
                 </div>
               </div>
             </div>

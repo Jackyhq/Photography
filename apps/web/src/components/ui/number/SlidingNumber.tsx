@@ -153,35 +153,40 @@ function SlidingNumber({
 
   const newDecValue = newDecStrRaw ? Number.parseInt(newDecStrRaw, 10) : 0
   const prevDecValue = adjustedPrevDec ? Number.parseInt(adjustedPrevDec, 10) : 0
+  const sign = isInView && Number(number) < 0 ? '-' : ''
+  const accessibleNumber = `${sign}${newIntStr ?? '0'}${newDecStrRaw ? `${decimalSeparator}${newDecStrRaw}` : ''}`
 
   return (
     <span ref={localRef} data-slot="sliding-number" className={clsxm('flex items-center', className)} {...props}>
-      {isInView && Number(number) < 0 && <span className="mr-1">-</span>}
+      <span className="sr-only">{accessibleNumber}</span>
+      <span className="contents" aria-hidden="true">
+        {sign && <span className="mr-1">-</span>}
 
-      {intPlaces.map((place) => (
-        <SlidingNumberRoller
-          key={`int-${place}`}
-          prevValue={Number.parseInt(adjustedPrevInt, 10)}
-          value={Number.parseInt(newIntStr ?? '0', 10)}
-          place={place}
-          transition={transition}
-        />
-      ))}
+        {intPlaces.map((place) => (
+          <SlidingNumberRoller
+            key={`int-${place}`}
+            prevValue={Number.parseInt(adjustedPrevInt, 10)}
+            value={Number.parseInt(newIntStr ?? '0', 10)}
+            place={place}
+            transition={transition}
+          />
+        ))}
 
-      {newDecStrRaw && (
-        <>
-          <span>{decimalSeparator}</span>
-          {decPlaces.map((place) => (
-            <SlidingNumberRoller
-              key={`dec-${place}`}
-              prevValue={prevDecValue}
-              value={newDecValue}
-              place={place}
-              transition={transition}
-            />
-          ))}
-        </>
-      )}
+        {newDecStrRaw && (
+          <>
+            <span>{decimalSeparator}</span>
+            {decPlaces.map((place) => (
+              <SlidingNumberRoller
+                key={`dec-${place}`}
+                prevValue={prevDecValue}
+                value={newDecValue}
+                place={place}
+                transition={transition}
+              />
+            ))}
+          </>
+        )}
+      </span>
     </span>
   )
 }

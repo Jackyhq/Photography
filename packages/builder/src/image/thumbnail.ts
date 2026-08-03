@@ -1,16 +1,15 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { workdir } from '@afilmory/builder/path.js'
 import sharp from 'sharp'
 
 import { atomicWriteFile } from '../fs/atomic-write.js'
 import { getGlobalLoggers } from '../photo/logger-adapter.js'
 import type { ThumbnailResult } from '../types/photo.js'
 import { generateBlurhash } from './blurhash.js'
+import { getThumbnailDirectory, getThumbnailUrlPrefix } from './thumbnail-paths.js'
 
 // 常量定义
-const THUMBNAIL_DIR = path.join(workdir, 'public/thumbnails')
 const THUMBNAIL_JPEG_QUALITY = 78
 const THUMBNAIL_WEBP_QUALITY = 76
 const THUMBNAIL_FALLBACK_WIDTH = 640
@@ -19,11 +18,12 @@ const THUMBNAIL_WEBP_WIDTHS = [360, 640] as const
 // 获取缩略图路径信息
 export function getThumbnailSources(photoId: string) {
   const encodedPhotoId = encodeURIComponent(photoId)
+  const thumbnailUrlPrefix = getThumbnailUrlPrefix()
   const filename = `${encodedPhotoId}.jpg`
-  const thumbnailUrl = `/thumbnails/${filename}`
+  const thumbnailUrl = `${thumbnailUrlPrefix}/${filename}`
   const thumbnailSrcSet = `${thumbnailUrl} ${THUMBNAIL_FALLBACK_WIDTH}w`
   const thumbnailWebpSrcSet = THUMBNAIL_WEBP_WIDTHS.map(
-    (width) => `/thumbnails/${encodedPhotoId}-${width}.webp ${width}w`,
+    (width) => `${thumbnailUrlPrefix}/${encodedPhotoId}-${width}.webp ${width}w`,
   ).join(', ')
 
   return { thumbnailUrl, thumbnailSrcSet, thumbnailWebpSrcSet }
@@ -31,8 +31,9 @@ export function getThumbnailSources(photoId: string) {
 
 function getThumbnailPaths(photoId: string) {
   const sources = getThumbnailSources(photoId)
-  const fallbackPath = path.join(THUMBNAIL_DIR, `${photoId}.jpg`)
-  const webpPaths = THUMBNAIL_WEBP_WIDTHS.map((width) => path.join(THUMBNAIL_DIR, `${photoId}-${width}.webp`))
+  const thumbnailDirectory = getThumbnailDirectory()
+  const fallbackPath = path.join(thumbnailDirectory, `${photoId}.jpg`)
+  const webpPaths = THUMBNAIL_WEBP_WIDTHS.map((width) => path.join(thumbnailDirectory, `${photoId}-${width}.webp`))
 
   return { ...sources, fallbackPath, webpPaths }
 }
@@ -67,7 +68,7 @@ function createSuccessResult(
 
 // 确保缩略图目录存在
 async function ensureThumbnailDir(): Promise<void> {
-  await fs.mkdir(THUMBNAIL_DIR, { recursive: true })
+  await fs.mkdir(getThumbnailDirectory(), { recursive: true })
 }
 
 // 检查缩略图是否存在

@@ -75,7 +75,12 @@ export const Component = () => {
 
   return (
     <>
-      <article className="sr-only" aria-labelledby="photo-detail-heading">
+      <article
+        className="sr-only"
+        aria-labelledby="photo-detail-heading"
+        aria-hidden={photoViewer.isOpen}
+        inert={photoViewer.isOpen}
+      >
         <h1 id="photo-detail-heading">{pageTitle}</h1>
         {pageDescription && <p>{pageDescription}</p>}
         <p>{getPhotoAltText(currentPhoto, locale)}</p>

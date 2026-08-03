@@ -23,6 +23,7 @@ import { localesJsonPlugin } from './plugins/vite/locales-json'
 import { manifestInjectPlugin } from './plugins/vite/manifest-inject'
 import { ogImagePlugin } from './plugins/vite/og-image-plugin'
 import { createPhotoPageMetaPlugin } from './plugins/vite/photo-page-meta'
+import { createPhotoRuntimeCaching } from './plugins/vite/photo-runtime-cache'
 import { photosStaticPlugin } from './plugins/vite/photos-static'
 import { siteConfigInjectPlugin } from './plugins/vite/site-config-inject'
 
@@ -121,40 +122,10 @@ const staticWebBuildPlugins: PluginOption[] = [
     },
     workbox: {
       maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB
+      importScripts: ['pwa-cache-migration.js'],
       globPatterns: ['index.html', '**/*.{js,css,ico,svg}'],
       globIgnores: ['photos/**/*.html', 'thumbnails/**/*', '**/*.{jpg,jpeg,png,webp,avif,gif,mp4,mov,webm}'],
-      runtimeCaching: [
-        {
-          urlPattern: /^https?:\/\/[^/]+\/thumbnails\/.*\.(?:jpe?g|webp)(?:\?.*)?$/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'photo-thumbnails-v1',
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-            expiration: {
-              maxEntries: 240,
-              maxAgeSeconds: 60 * 60 * 24 * 30, // <== 30 days
-              purgeOnQuotaError: true,
-            },
-          },
-        },
-        {
-          urlPattern: /^https?:\/\/[^/]+\/photos\/.*\.(?:avif|gif|heic|heif|jpe?g|png|tif|tiff|webp)(?:\?.*)?$/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'photo-originals-v1',
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-            expiration: {
-              maxEntries: 12,
-              maxAgeSeconds: 60 * 60 * 24 * 7,
-              purgeOnQuotaError: true,
-            },
-          },
-        },
-      ],
+      runtimeCaching: createPhotoRuntimeCaching(),
     },
     devOptions: {
       enabled: false, // 开发环境不启用 PWA

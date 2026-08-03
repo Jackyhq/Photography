@@ -269,6 +269,12 @@
           }
         }
 
+        @media (prefers-reduced-motion: reduce) {
+          #splash-screen [style*='animation:'] {
+            animation: none !important;
+          }
+        }
+
         /* 响应式设计 */
         @media (max-width: 640px) {
           #splash-screen h1 {

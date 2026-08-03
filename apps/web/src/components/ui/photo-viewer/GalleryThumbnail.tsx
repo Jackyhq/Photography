@@ -229,6 +229,7 @@ export const GalleryThumbnail: FC<{
               <button
                 type="button"
                 key={photo.id}
+                aria-current={index === currentIndex ? 'true' : undefined}
                 className={clsxm(
                   'contain-intrinsic-size absolute top-0 overflow-hidden rounded-lg border-2 transition-all',
                   index === currentIndex
