@@ -53,7 +53,12 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
 
         {/* Social media links */}
         {siteConfig.social && (
-          <div className="mt-1 mb-3 flex items-center justify-center gap-3">
+          <div
+            className="mt-1 mb-3 flex items-center justify-center gap-3"
+            role="group"
+            aria-label={t('gallery.social.links')}
+            data-gallery-keyboard-group="social"
+          >
             {siteConfig.social.instagram && (
               <a
                 href={siteConfig.social.instagram}
@@ -123,7 +128,7 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
 
       {/* Controls section */}
       <div className="px-6 pb-6">
-        <ActionGroup />
+        <ActionGroup keyboardNavigationGroup />
       </div>
 
       {/* Footer with build date and ICP */}

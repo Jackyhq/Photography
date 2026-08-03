@@ -85,6 +85,35 @@ test('keeps desktop header controls before photos in the keyboard order', async 
   expect(headerControlsComeFirst).toBe(true)
 })
 
+test('enters and traverses header keyboard navigation with arrow keys', async ({ page }) => {
+  await page.goto('/')
+
+  const firstPhoto = page.locator('[data-photo-id]').first()
+  const instagram = page.getByRole('link', { name: 'Instagram' })
+  const github = page.getByRole('link', { name: 'GitHub' })
+  const map = page.getByTestId('map-explore-trigger').first()
+  const search = page.getByTestId('command-palette-trigger').first()
+
+  await expect(firstPhoto).toBeVisible()
+  await page.keyboard.press('ArrowDown')
+  await expect(instagram).toBeFocused()
+
+  await page.keyboard.press('ArrowRight')
+  await expect(github).toBeFocused()
+
+  await page.keyboard.press('ArrowDown')
+  await expect(map).toBeFocused()
+
+  await page.keyboard.press('ArrowLeft')
+  await expect(search).toBeFocused()
+
+  await page.keyboard.press('ArrowDown')
+  await expect(firstPhoto).toBeFocused()
+
+  await page.keyboard.press('ArrowUp')
+  await expect(search).toBeFocused()
+})
+
 test('moves focus horizontally between masonry photos with arrow keys', async ({ page }) => {
   await page.goto('/')
 

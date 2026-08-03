@@ -16,6 +16,7 @@ import type { PhotoManifest } from '~/types/photo'
 import { ActionGroup } from './ActionGroup'
 import type { PanelType } from './ActionPanel'
 import { ActionPanel } from './ActionPanel'
+import { handleGalleryArrowNavigation } from './gallery-keyboard-navigation'
 import type { MasonryRef } from './Masonic'
 import { Masonry } from './Masonic'
 import type { MasonryNavigationDirection } from './masonry-keyboard-navigation'
@@ -125,6 +126,28 @@ export const MasonryRoot = () => {
     },
     [masonryItems],
   )
+
+  useEffect(() => {
+    const firstPhotoIndex = masonryItems.findIndex((item) => !(item instanceof MasonryHeaderItem))
+
+    const handleGlobalKeyDown = (event: globalThis.KeyboardEvent) => {
+      const container = containerRef.current
+      if (!container) return
+
+      handleGalleryArrowNavigation({
+        event,
+        container,
+        focusFirstPhoto: () => {
+          if (firstPhotoIndex === -1) return false
+          focusPhotoAtIndex(firstPhotoIndex)
+          return true
+        },
+      })
+    }
+
+    window.addEventListener('keydown', handleGlobalKeyDown)
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown)
+  }, [focusPhotoAtIndex, masonryItems])
 
   const handlePhotoKeyDown = useCallback(
     (event: KeyboardEvent<HTMLButtonElement>, currentIndex: number) => {

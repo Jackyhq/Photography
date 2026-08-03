@@ -10,7 +10,7 @@ import { gallerySettingAtom, isCommandPaletteOpenAtom } from '~/atoms/app'
 import { ResponsiveActionButton } from './components/ActionButton'
 import { ViewPanel } from './panels/ViewPanel'
 
-export const ActionGroup = () => {
+export const ActionGroup = ({ keyboardNavigationGroup = false }: { keyboardNavigationGroup?: boolean }) => {
   const { i18n, t } = useTranslation()
   const [gallerySetting] = useAtom(gallerySettingAtom)
   const setCommandPaletteOpen = useSetAtom(isCommandPaletteOpenAtom)
@@ -58,7 +58,12 @@ export const ActionGroup = () => {
   }
 
   return (
-    <div className="flex items-center justify-center gap-3">
+    <div
+      className="flex items-center justify-center gap-3"
+      role="group"
+      aria-label={t('gallery.actions')}
+      data-gallery-keyboard-group={keyboardNavigationGroup ? 'actions' : undefined}
+    >
       {/* 搜索和过滤按钮 - 打开命令面板 */}
       <Button
         variant="ghost"
@@ -84,6 +89,7 @@ export const ActionGroup = () => {
         variant="ghost"
         size="sm"
         onClick={() => navigate('/explory')}
+        data-testid="map-explore-trigger"
         className="h-10 w-10 rounded-full border-0 bg-gray-100 transition-all duration-200 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
         title={t('action.map.explore')}
         aria-label={t('action.map.explore')}
