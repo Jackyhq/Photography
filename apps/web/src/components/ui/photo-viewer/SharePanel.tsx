@@ -11,6 +11,7 @@ import { isAbortError } from '~/lib/abort-error'
 import { getLocalizedPhotoTitle } from '~/lib/photo-description'
 import type { PhotoManifest } from '~/types/photo'
 
+import { openInstagramShare } from './instagram-share'
 import { fetchShareMediaBlob, openNativeShare } from './share-media'
 import { createSocialShareUrl, openSocialShareWindow } from './social-share'
 
@@ -191,23 +192,31 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
     [localizedTitle, t],
   )
 
-  const handleInstagramShare = useCallback(async () => {
-    if (typeof navigator.share === 'function') {
-      await handleNativeShare()
-      return
-    }
+  const handleInstagramShare = useCallback(() => {
+    const shareTitle = localizedTitle || t('photo.share.default.title')
+    setIsPreparingShare(true)
 
-    // Instagram does not expose a browser share-intent URL. Open Instagram and
-    // copy the photo link so desktop users still have a useful fallback.
-    openSocialShareWindow('https://www.instagram.com/')
-    try {
-      await navigator.clipboard.writeText(window.location.href)
-      toast.success(t('photo.share.instagram.link.copied'))
-    } catch {
-      toast.info(t('photo.share.instagram.opened'))
-    }
-    setIsOpen(false)
-  }, [handleNativeShare, t])
+    // Do not await before invoking openInstagramShare: navigator.share needs
+    // the transient user activation from this click handler.
+    void openInstagramShare({
+      title: shareTitle,
+      text: t('photo.share.text', { title: shareTitle }),
+      url: window.location.href,
+    })
+      .then((result) => {
+        if (result === 'cancelled') return
+        if (result === 'fallback-copied') {
+          toast.success(t('photo.share.instagram.link.copied'))
+        } else if (result === 'fallback-opened') {
+          toast.info(t('photo.share.instagram.opened'))
+        }
+        setIsOpen(false)
+      })
+      .catch((error) => {
+        if (!isAbortError(error)) toast.error(t('photo.share.failed'))
+      })
+      .finally(() => setIsPreparingShare(false))
+  }, [localizedTitle, t])
 
   // 功能选项
   const actionOptions: ShareOption[] = [
