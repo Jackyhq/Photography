@@ -1,4 +1,5 @@
 import { thumbnailExists } from '../image/thumbnail.js'
+import type { StorageObject } from '../storage/interfaces.js'
 import type { PhotoManifestItem } from '../types/photo.js'
 import type { PhotoProcessorOptions } from './processor.js'
 
@@ -19,7 +20,7 @@ export interface CacheableData {
 export async function shouldProcessPhoto(
   photoId: string,
   existingItem: PhotoManifestItem | undefined,
-  obj: { LastModified?: Date; ETag?: string },
+  obj: Pick<StorageObject, 'lastModified' | 'etag'>,
   options: PhotoProcessorOptions,
 ): Promise<{ shouldProcess: boolean; reason: string }> {
   // 强制模式下总是处理
@@ -33,7 +34,7 @@ export async function shouldProcessPhoto(
   }
 
   // 检查文件是否更新
-  const fileNeedsUpdate = existingItem.lastModified !== obj.LastModified?.toISOString()
+  const fileNeedsUpdate = existingItem.lastModified !== obj.lastModified?.toISOString()
 
   if (fileNeedsUpdate || options.isForceManifest) {
     return {

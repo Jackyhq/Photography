@@ -1,4 +1,5 @@
 import { photoLoader } from '@afilmory/data'
+import { glassInnerGlowBackground, glassSurfaceStyle, MageLens } from '@afilmory/ui'
 import * as DialogPrimitive from '@afilmory/ui/dialog/radix'
 import { clsxm } from '@afilmory/utils'
 import { useAtom } from 'jotai'
@@ -9,24 +10,11 @@ import { useLocation, useNavigate } from 'react-router'
 
 import { gallerySettingAtom } from '~/atoms/app'
 import { useOpenPhotoViewer } from '~/hooks/usePhotoViewer'
-import { MageLens } from '~/icons'
 import { getLocalizedPhotoDescription, getLocalizedPhotoTitle, getPhotoAltText } from '~/lib/photo-description'
 import { getPhotoDetailPath } from '~/lib/photo-route'
 
-// Command types
-type CommandType = 'search' | 'filter' | 'action' | 'photo'
-
-interface Command {
-  id: string
-  type: CommandType
-  title: string
-  subtitle?: string
-  icon: string | React.ReactNode
-  action: () => void
-  keywords?: string[]
-  badge?: string | number
-  active?: boolean
-}
+import type { Command, GalleryFilterField } from './command-palette-commands'
+import { createGalleryFilterCommands } from './command-palette-commands'
 
 interface CommandPaletteProps {
   isOpen: boolean
@@ -97,6 +85,21 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
     [setGallerySetting],
   )
 
+  const toggleGalleryFilter = useCallback(
+    (field: GalleryFilterField, value: string) => {
+      setGallerySetting((prev) => {
+        const selectedValues = prev[field]
+        return {
+          ...prev,
+          [field]: selectedValues.includes(value)
+            ? selectedValues.filter((selectedValue) => selectedValue !== value)
+            : [...selectedValues, value],
+        }
+      })
+    },
+    [setGallerySetting],
+  )
+
   const handleReset = useCallback(() => {
     setQuery('')
     setSelectedIndex(0)
@@ -144,75 +147,23 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
 
     const cmds: Command[] = []
 
-    // Filter commands - Tags
-    if (allTags.length > 0) {
-      allTags.forEach((tag) => {
-        const isActive = gallerySetting.selectedTags.includes(tag)
-        cmds.push({
-          id: `tag-${tag}`,
-          type: 'filter',
-          title: tag,
-          subtitle: t('action.tag.filter'),
-          icon: 'i-mingcute-tag-line',
-          active: isActive,
-          action: () => {
-            setGallerySetting((prev) => ({
-              ...prev,
-              selectedTags: isActive ? prev.selectedTags.filter((t) => t !== tag) : [...prev.selectedTags, tag],
-            }))
-          },
-          keywords: ['tag', 'filter', tag],
-        })
-      })
-    }
-
-    // Filter commands - Cameras
-    if (allCameras.length > 0) {
-      allCameras.forEach((camera) => {
-        const isActive = gallerySetting.selectedCameras.includes(camera.displayName)
-        cmds.push({
-          id: `camera-${camera.displayName}`,
-          type: 'filter',
-          title: camera.displayName,
-          subtitle: t('action.camera.filter'),
-          icon: 'i-mingcute-camera-line',
-          active: isActive,
-          action: () => {
-            setGallerySetting((prev) => ({
-              ...prev,
-              selectedCameras: isActive
-                ? prev.selectedCameras.filter((c) => c !== camera.displayName)
-                : [...prev.selectedCameras, camera.displayName],
-            }))
-          },
-          keywords: ['camera', 'filter', camera.displayName, camera.make, camera.model],
-        })
-      })
-    }
-
-    // Filter commands - Lenses
-    if (allLenses.length > 0) {
-      allLenses.forEach((lens) => {
-        const isActive = gallerySetting.selectedLenses.includes(lens.displayName)
-        cmds.push({
-          id: `lens-${lens.displayName}`,
-          type: 'filter',
-          title: lens.displayName,
-          subtitle: t('action.lens.filter'),
-          icon: <MageLens />,
-          active: isActive,
-          action: () => {
-            setGallerySetting((prev) => ({
-              ...prev,
-              selectedLenses: isActive
-                ? prev.selectedLenses.filter((l) => l !== lens.displayName)
-                : [...prev.selectedLenses, lens.displayName],
-            }))
-          },
-          keywords: ['lens', 'filter', lens.displayName],
-        })
-      })
-    }
+    cmds.push(
+      ...createGalleryFilterCommands({
+        tags: allTags,
+        cameras: allCameras,
+        lenses: allLenses,
+        selectedTags: gallerySetting.selectedTags,
+        selectedCameras: gallerySetting.selectedCameras,
+        selectedLenses: gallerySetting.selectedLenses,
+        labels: {
+          tag: t('action.tag.filter'),
+          camera: t('action.camera.filter'),
+          lens: t('action.lens.filter'),
+        },
+        lensIcon: <MageLens />,
+        onToggle: toggleGalleryFilter,
+      }),
+    )
 
     // Tag filter mode toggle
     if (allTags.length > 0) {
@@ -318,6 +269,7 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
     setGallerySetting,
     openViewerByPhotoId,
     updateTagFilterMode,
+    toggleGalleryFilter,
     searchTextRevision,
   ])
 
@@ -431,12 +383,7 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
             })
           }}
           className="animate-in fade-in slide-in-from-bottom-4 border-accent/20 lg:slide-in-from-top-4 fixed right-0 bottom-0 left-0 z-10000 mx-auto w-full max-w-2xl overflow-hidden rounded-2xl rounded-b-none border backdrop-blur-2xl duration-200 lg:top-[15vh] lg:right-auto lg:bottom-auto lg:left-1/2 lg:-translate-x-1/2 lg:rounded-2xl!"
-          style={{
-            backgroundImage:
-              'linear-gradient(to bottom right, color-mix(in srgb, var(--color-background) 98%, transparent), color-mix(in srgb, var(--color-background) 95%, transparent))',
-            boxShadow:
-              '0 8px 32px color-mix(in srgb, var(--color-accent) 8%, transparent), 0 4px 16px color-mix(in srgb, var(--color-accent) 6%, transparent), 0 2px 8px rgba(0, 0, 0, 0.1)',
-          }}
+          style={glassSurfaceStyle}
         >
           <DialogPrimitive.Title asChild>
             <h2 id={dialogTitleId} className="sr-only">
@@ -446,10 +393,7 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
           {/* Inner glow layer */}
           <div
             className="pointer-events-none absolute inset-0 rounded-2xl"
-            style={{
-              background:
-                'linear-gradient(to bottom right, color-mix(in srgb, var(--color-accent) 5%, transparent), transparent, color-mix(in srgb, var(--color-accent) 5%, transparent))',
-            }}
+            style={{ background: glassInnerGlowBackground }}
           />
           {/* Search Input */}
           <div className="border-accent/20 relative flex items-center gap-3 border-b px-4 py-4">

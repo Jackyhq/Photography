@@ -1,4 +1,10 @@
-import { Thumbhash } from '@afilmory/ui'
+import {
+  CarbonIsoOutline,
+  MaterialSymbolsShutterSpeed,
+  StreamlineImageAccessoriesLensesPhotosCameraShutterPicturePhotographyPicturesPhotoLens,
+  TablerAperture,
+  Thumbhash,
+} from '@afilmory/ui'
 import clsx from 'clsx'
 import { m } from 'motion/react'
 import type { KeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'
@@ -6,14 +12,9 @@ import { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useOpenPhotoViewer } from '~/hooks/usePhotoViewer'
-import {
-  CarbonIsoOutline,
-  MaterialSymbolsShutterSpeed,
-  StreamlineImageAccessoriesLensesPhotosCameraShutterPicturePhotographyPicturesPhotoLens,
-  TablerAperture,
-} from '~/icons'
 import { isAbortError } from '~/lib/abort-error'
 import { isMobileDevice } from '~/lib/device-viewport'
+import { formatDuration } from '~/lib/format-duration'
 import type { ImageLoaderManager } from '~/lib/image-loader-manager'
 import { getImageFormat } from '~/lib/image-utils'
 import { getLocalizedPhotoTitle, getPhotoAltText } from '~/lib/photo-description'
@@ -103,19 +104,6 @@ const LivePhotoIndicator = ({
       )}
     </div>
   )
-}
-
-const formatDuration = (duration: number) => {
-  const totalSeconds = Math.max(0, Math.round(duration))
-  const hours = Math.floor(totalSeconds / 3600)
-  const minutes = Math.floor((totalSeconds % 3600) / 60)
-  const seconds = totalSeconds % 60
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-  }
-
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
 interface MasonryPhotoItemProps {

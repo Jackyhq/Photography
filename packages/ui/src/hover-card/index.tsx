@@ -3,6 +3,8 @@ import * as HoverCardPrimitive from '@radix-ui/react-hover-card'
 import { m } from 'motion/react'
 import * as React from 'react'
 
+import { glassInnerGlowBackground, glassSurfaceStyle } from '../styles/glass'
+
 const HoverCard = HoverCardPrimitive.Root
 
 const HoverCardTrigger = HoverCardPrimitive.Trigger
@@ -35,12 +37,7 @@ const HoverCardContent = ({
     >
       <m.div
         className="border-accent/20 border"
-        style={{
-          backgroundImage:
-            'linear-gradient(to bottom right, color-mix(in srgb, var(--color-background) 98%, transparent), color-mix(in srgb, var(--color-background) 95%, transparent))',
-          boxShadow:
-            '0 8px 32px color-mix(in srgb, var(--color-accent) 8%, transparent), 0 4px 16px color-mix(in srgb, var(--color-accent) 6%, transparent), 0 2px 8px rgba(0, 0, 0, 0.1)',
-        }}
+        style={glassSurfaceStyle}
         initial={{ opacity: 0, scale: 0.95, y: 4 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 4 }}
@@ -49,10 +46,7 @@ const HoverCardContent = ({
         {/* Inner glow layer */}
         <div
           className="pointer-events-none absolute inset-0 rounded-2xl"
-          style={{
-            background:
-              'linear-gradient(to bottom right, color-mix(in srgb, var(--color-accent) 5%, transparent), transparent, color-mix(in srgb, var(--color-accent) 5%, transparent))',
-          }}
+          style={{ background: glassInnerGlowBackground }}
         />
 
         {/* Content */}

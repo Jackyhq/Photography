@@ -1,5 +1,4 @@
 import { compressUint8Array } from '@afilmory/utils'
-import type { _Object } from '@aws-sdk/client-s3'
 import sharp from 'sharp'
 
 import type { BuilderOptions } from '../builder/builder.js'
@@ -12,6 +11,7 @@ import {
 import { generateMediaId } from '../media/id.js'
 import type { PluginRunState } from '../plugins/manager.js'
 import { THUMBNAIL_PLUGIN_DATA_KEY } from '../plugins/thumbnail-storage/shared.js'
+import type { StorageObject } from '../storage/interfaces.js'
 import type { PhotoManifestItem, ProcessPhotoResult } from '../types/photo.js'
 import { shouldProcessPhoto } from './cache-manager.js'
 import { processExifData, processThumbnailAndBlurhash, processToneAnalysis } from './data-processors.js'
@@ -30,9 +30,9 @@ export interface ProcessedImageData {
 
 export interface PhotoProcessingContext {
   photoKey: string
-  obj: _Object
+  obj: StorageObject
   existingItem: PhotoManifestItem | undefined
-  livePhotoMap: Map<string, _Object>
+  livePhotoMap: Map<string, StorageObject>
   options: PhotoProcessorOptions
   pluginData: Record<string, unknown>
 }
@@ -210,8 +210,8 @@ export async function executePhotoProcessingPipeline(
       height: metadata.height,
       aspectRatio,
       s3Key: photoKey,
-      lastModified: obj.LastModified?.toISOString() || new Date().toISOString(),
-      size: obj.Size || 0,
+      lastModified: obj.lastModified?.toISOString() || new Date().toISOString(),
+      size: obj.size || 0,
       exif: exifData,
       toneAnalysis,
       // Video source (Motion Photo or Live Photo)

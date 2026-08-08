@@ -1,4 +1,4 @@
-import { RootPortal } from '@afilmory/ui'
+import { glassInnerGlowBackground, glassSurfaceStyle, RootPortal } from '@afilmory/ui'
 import { clsxm, Spring } from '@afilmory/utils'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { AnimatePresence, m } from 'motion/react'
@@ -265,20 +265,12 @@ export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
                 transition={Spring.presets.smooth}
                 className="border-accent/20 rounded-2xl border p-4 backdrop-blur-2xl"
-                style={{
-                  backgroundImage:
-                    'linear-gradient(to bottom right, color-mix(in srgb, var(--color-background) 98%, transparent), color-mix(in srgb, var(--color-background) 95%, transparent))',
-                  boxShadow:
-                    '0 8px 32px color-mix(in srgb, var(--color-accent) 8%, transparent), 0 4px 16px color-mix(in srgb, var(--color-accent) 6%, transparent), 0 2px 8px rgba(0, 0, 0, 0.1)',
-                }}
+                style={glassSurfaceStyle}
               >
                 {/* Inner glow layer */}
                 <div
                   className="pointer-events-none absolute inset-0 rounded-2xl"
-                  style={{
-                    background:
-                      'linear-gradient(to bottom right, color-mix(in srgb, var(--color-accent) 5%, transparent), transparent, color-mix(in srgb, var(--color-accent) 5%, transparent))',
-                  }}
+                  style={{ background: glassInnerGlowBackground }}
                 />
                 {/* 标题区域 */}
                 <div className="relative mb-4 text-center">

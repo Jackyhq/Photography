@@ -6,6 +6,7 @@ import type { Plugin } from 'vite'
 
 import type { SiteConfig } from '../../../../site.config'
 import { MANIFEST_PATH } from './__internal__/constants'
+import { getPreferredPhotoDescription, getPreferredPhotoTitle } from './__internal__/photo-text'
 import { serializeForInlineScript } from './inline-script'
 
 interface ManifestFile {
@@ -81,9 +82,9 @@ export function applyStaticAppRouteMeta(html: string, routePath: string, siteCon
 }
 
 export function createPhotoPageMeta(photo: PhotoManifestItem, siteConfig: SiteConfig): PhotoPageMeta {
-  const title = `${getPhotoTitle(photo) || photo.id} | ${siteConfig.name}`
+  const title = `${getPreferredPhotoTitle(photo, photo.id)} | ${siteConfig.name}`
   const baseUrl = siteConfig.url.replace(/\/+$/, '')
-  const description = getPhotoDescription(photo) || siteConfig.description
+  const description = getPreferredPhotoDescription(photo, siteConfig.description)
   const url = `${baseUrl}/photos/${toSafePathSegment(photo.id)}/`
   const mediaType = photo.mediaType === 'video' ? 'video' : 'photo'
 
@@ -97,10 +98,6 @@ export function createPhotoPageMeta(photo: PhotoManifestItem, siteConfig: SiteCo
     preload: createPhotoPreloadLink(photo),
     noscript: createPhotoNoscriptFigure(photo, description),
   }
-}
-
-function getPhotoTitle(photo: PhotoManifestItem): string {
-  return photo.titles?.['zh-CN']?.trim() || photo.titles?.en?.trim() || photo.title?.trim() || ''
 }
 
 export function applyPhotoPageMeta(html: string, meta: PhotoPageMeta): string {
@@ -187,7 +184,7 @@ function createPhotoStructuredData(
 }
 
 function createPhotoNoscriptFigure(photo: PhotoManifestItem, description: string): string {
-  const title = getPhotoTitle(photo) || photo.id
+  const title = getPreferredPhotoTitle(photo, photo.id)
   const caption = description && description !== title ? `${title} — ${description}` : title
   const dimensions = [
     photo.width > 0 ? `width="${photo.width}"` : '',
@@ -300,10 +297,6 @@ function resolveStaticAppRoutePagePath(outputDirectory: string, routePath: strin
 function toSafePathSegment(value: string): string {
   return encodeURIComponent(value)
 }
-function getPhotoDescription(photo: PhotoManifestItem): string {
-  return photo.descriptions?.['zh-CN']?.trim() || photo.descriptions?.en?.trim() || photo.description?.trim() || ''
-}
-
 function toAbsoluteUrl(value: string | undefined, baseUrl: string): string | undefined {
   if (!value) return undefined
 

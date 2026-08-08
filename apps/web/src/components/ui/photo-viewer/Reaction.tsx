@@ -1,3 +1,4 @@
+import { glassSurfaceStyle } from '@afilmory/ui'
 import { clsxm, Spring } from '@afilmory/utils'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { produce } from 'immer'
@@ -213,12 +214,7 @@ export const ReactionButton = ({ className, disabled = false, photoId, style }: 
                 animate="open"
                 exit="closed"
                 className={styles.reactionsContainer()}
-                style={{
-                  backgroundImage:
-                    'linear-gradient(to bottom right, color-mix(in srgb, var(--color-background) 98%, transparent), color-mix(in srgb, var(--color-background) 95%, transparent))',
-                  boxShadow:
-                    '0 8px 32px color-mix(in srgb, var(--color-accent) 8%, transparent), 0 4px 16px color-mix(in srgb, var(--color-accent) 6%, transparent), 0 2px 8px rgba(0, 0, 0, 0.1)',
-                }}
+                style={glassSurfaceStyle}
               >
                 {reactions.map((reaction) => (
                   <DropdownMenu.Item key={reaction} asChild>

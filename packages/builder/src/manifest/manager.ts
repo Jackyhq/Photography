@@ -1,12 +1,11 @@
 import fs from 'node:fs/promises'
 import path, { basename } from 'node:path'
 
-import { workdir } from '@afilmory/builder/path.js'
-import type { _Object } from '@aws-sdk/client-s3'
-
 import { atomicWriteFile } from '../fs/atomic-write.js'
 import { getThumbnailDirectory } from '../image/thumbnail-paths.js'
 import { logger } from '../logger/index.js'
+import { workdir } from '../path.js'
+import type { StorageObject } from '../storage/interfaces.js'
 import type { AfilmoryManifest, CameraInfo, LensInfo } from '../types/manifest.js'
 import type { PhotoManifestItem } from '../types/photo.js'
 import { migrateManifestFileIfNeeded } from './migrate.js'
@@ -77,14 +76,17 @@ export async function loadExistingManifest(): Promise<AfilmoryManifest> {
 }
 
 // 检查照片是否需要更新（基于最后修改时间）
-export function needsUpdate(existingItem: PhotoManifestItem | undefined, s3Object: _Object): boolean {
+export function needsUpdate(
+  existingItem: PhotoManifestItem | undefined,
+  object: Pick<StorageObject, 'lastModified'>,
+): boolean {
   if (!existingItem) return true
-  if (!s3Object.LastModified) return true
+  if (!object.lastModified) return true
 
   const existingModified = new Date(existingItem.lastModified)
-  const s3Modified = s3Object.LastModified
+  const storageModified = object.lastModified
 
-  return s3Modified > existingModified
+  return storageModified > existingModified
 }
 
 // 保存 manifest

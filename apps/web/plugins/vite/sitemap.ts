@@ -1,6 +1,7 @@
 import type { PhotoManifestItem } from '@afilmory/builder'
 
 import type { SiteConfig } from '../../../../site.config'
+import { getPreferredPhotoDescription, getPreferredPhotoTitle } from './__internal__/photo-text'
 
 const SEARCH_INDEXABLE_IMAGE_EXTENSION = /\.(?:avif|bmp|gif|jpe?g|png|svg|webp)$/i
 
@@ -44,8 +45,8 @@ export function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig)
       const date = photo.lastModified || photo.dateTaken
       const lastmod = date ? new Date(date).toISOString() : now
       const imageUrl = toAbsoluteUrl(getSitemapImageSource(photo), baseUrl)
-      const imageTitle = getPhotoTitle(photo)
-      const imageCaption = getPhotoDescription(photo)
+      const imageTitle = getPreferredPhotoTitle(photo)
+      const imageCaption = getPreferredPhotoDescription(photo)
       const imageXml = imageUrl
         ? `
     <image:image>
@@ -93,14 +94,6 @@ function isSearchIndexableImageUrl(value: string | undefined): boolean {
   } catch {
     return SEARCH_INDEXABLE_IMAGE_EXTENSION.test(value.split(/[?#]/, 1)[0] ?? '')
   }
-}
-
-function getPhotoTitle(photo: PhotoManifestItem): string {
-  return photo.titles?.['zh-CN']?.trim() || photo.titles?.en?.trim() || photo.title?.trim() || ''
-}
-
-function getPhotoDescription(photo: PhotoManifestItem): string {
-  return photo.descriptions?.['zh-CN']?.trim() || photo.descriptions?.en?.trim() || photo.description?.trim() || ''
 }
 
 function toAbsoluteUrl(value: string | undefined, baseUrl: string): string | undefined {

@@ -1,7 +1,17 @@
 import './PhotoViewer.css'
 
 import type { PhotoManifestItem, PickedExif } from '@afilmory/builder'
-import { MotionButtonBase, ScrollArea } from '@afilmory/ui'
+import {
+  CarbonIsoOutline,
+  glassInnerGlowBackground,
+  glassSurfaceBoxShadow,
+  MaterialSymbolsExposure,
+  MaterialSymbolsShutterSpeed,
+  MotionButtonBase,
+  ScrollArea,
+  StreamlineImageAccessoriesLensesPhotosCameraShutterPicturePhotographyPicturesPhotoLens,
+  TablerAperture,
+} from '@afilmory/ui'
 import { Spring } from '@afilmory/utils'
 import { isNil } from 'es-toolkit/compat'
 import { m } from 'motion/react'
@@ -10,13 +20,7 @@ import { Fragment, lazy, Suspense, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useMobile } from '~/hooks/useMobile'
-import {
-  CarbonIsoOutline,
-  MaterialSymbolsExposure,
-  MaterialSymbolsShutterSpeed,
-  StreamlineImageAccessoriesLensesPhotosCameraShutterPicturePhotographyPicturesPhotoLens,
-  TablerAperture,
-} from '~/icons'
+import { formatDuration } from '~/lib/format-duration'
 import { getImageFormat } from '~/lib/image-utils'
 import { convertExifGPSToDecimal } from '~/lib/map-utils'
 import { getLocalizedPhotoDescription, getLocalizedPhotoTitle } from '~/lib/photo-description'
@@ -81,18 +85,11 @@ export const ExifPanel: FC<{
         pointerEvents: visible ? 'auto' : 'none',
         backgroundImage:
           'linear-gradient(to bottom right, rgba(var(--color-materialMedium)), rgba(var(--color-materialThick)), transparent)',
-        boxShadow:
-          '0 8px 32px color-mix(in srgb, var(--color-accent) 8%, transparent), 0 4px 16px color-mix(in srgb, var(--color-accent) 6%, transparent), 0 2px 8px rgba(0, 0, 0, 0.1)',
+        boxShadow: glassSurfaceBoxShadow,
       }}
     >
       {/* Inner glow layer */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            'linear-gradient(to bottom right, color-mix(in srgb, var(--color-accent) 5%, transparent), transparent, color-mix(in srgb, var(--color-accent) 5%, transparent))',
-        }}
-      />
+      <div className="pointer-events-none absolute inset-0" style={{ background: glassInnerGlowBackground }} />
       <div className="relative z-10 mb-4 flex shrink-0 items-center justify-between p-4 pb-0">
         <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold`}>{t('exif.header.title')}</h3>
         {!isMobile && !isLoadingDetails && currentPhoto.s3Key && (
@@ -462,19 +459,6 @@ export const ExifPanel: FC<{
       </ScrollArea>
     </m.div>
   )
-}
-
-const formatDuration = (duration: number) => {
-  const totalSeconds = Math.max(0, Math.round(duration))
-  const hours = Math.floor(totalSeconds / 3600)
-  const minutes = Math.floor((totalSeconds % 3600) / 60)
-  const seconds = totalSeconds % 60
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-  }
-
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
 const formatManifestDateTime = (value: string | null | undefined, locale: string) => {

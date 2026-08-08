@@ -1,64 +1,49 @@
+import { glassMenuItemStyle } from '@afilmory/ui'
 import { useAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
 
 import { gallerySettingAtom } from '~/atoms/app'
+
+const SORT_OPTIONS = [
+  {
+    order: 'desc',
+    icon: 'i-mingcute-sort-descending-line',
+    label: 'action.sort.newest.first',
+  },
+  {
+    order: 'asc',
+    icon: 'i-mingcute-sort-ascending-line',
+    label: 'action.sort.oldest.first',
+  },
+] as const
 
 export const SortPanel = () => {
   const { t } = useTranslation()
   const [gallerySetting, setGallerySetting] = useAtom(gallerySettingAtom)
 
   const setSortOrder = (order: 'asc' | 'desc') => {
-    setGallerySetting({
-      ...gallerySetting,
+    setGallerySetting((current) => ({
+      ...current,
       sortOrder: order,
-    })
+    }))
   }
+
   return (
     <div className="-mx-2 flex flex-col p-0 text-sm lg:p-0">
-      <div
-        className="group flex cursor-pointer items-center gap-2 rounded-lg bg-transparent px-2 py-2 transition-all duration-200 lg:py-1"
-        style={{
-          // @ts-ignore - CSS variable for hover state
-          '--highlight-bg':
-            'linear-gradient(to right, color-mix(in srgb, var(--color-accent) 8%, transparent), color-mix(in srgb, var(--color-accent) 5%, transparent))',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background =
-            'linear-gradient(to right, color-mix(in srgb, var(--color-accent) 8%, transparent), color-mix(in srgb, var(--color-accent) 5%, transparent))'
-          e.currentTarget.style.color = 'var(--color-accent)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent'
-          e.currentTarget.style.color = ''
-        }}
-        onClick={() => setSortOrder('desc')}
-      >
-        <i className="i-mingcute-sort-descending-line" />
-        <span>{t('action.sort.newest.first')}</span>
-        {gallerySetting.sortOrder === 'desc' && <i className="i-mingcute-check-line ml-auto" />}
-      </div>
-      <div
-        className="group flex cursor-pointer items-center gap-2 rounded-lg bg-transparent px-2 py-2 transition-all duration-200 lg:py-1"
-        style={{
-          // @ts-ignore - CSS variable for hover state
-          '--highlight-bg':
-            'linear-gradient(to right, color-mix(in srgb, var(--color-accent) 8%, transparent), color-mix(in srgb, var(--color-accent) 5%, transparent))',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background =
-            'linear-gradient(to right, color-mix(in srgb, var(--color-accent) 8%, transparent), color-mix(in srgb, var(--color-accent) 5%, transparent))'
-          e.currentTarget.style.color = 'var(--color-accent)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent'
-          e.currentTarget.style.color = ''
-        }}
-        onClick={() => setSortOrder('asc')}
-      >
-        <i className="i-mingcute-sort-ascending-line" />
-        <span>{t('action.sort.oldest.first')}</span>
-        {gallerySetting.sortOrder === 'asc' && <i className="i-mingcute-check-line ml-auto" />}
-      </div>
+      {SORT_OPTIONS.map(({ order, icon, label }) => (
+        <button
+          key={order}
+          type="button"
+          className="group hover:text-accent flex w-full cursor-pointer items-center gap-2 rounded-lg bg-transparent px-2 py-2 text-left transition-all duration-200 hover:[background:var(--highlight-bg)] lg:py-1"
+          style={glassMenuItemStyle}
+          aria-pressed={gallerySetting.sortOrder === order}
+          onClick={() => setSortOrder(order)}
+        >
+          <i className={icon} />
+          <span>{t(label)}</span>
+          {gallerySetting.sortOrder === order && <i className="i-mingcute-check-line ml-auto" />}
+        </button>
+      ))}
     </div>
   )
 }

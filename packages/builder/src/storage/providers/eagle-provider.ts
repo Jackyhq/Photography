@@ -1,11 +1,10 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { SUPPORTED_FORMATS } from '@afilmory/builder/constants/index.js'
-import { workdir } from '@afilmory/builder/path.js'
-import { getGlobalLoggers } from '@afilmory/builder/photo/logger-adapter.js'
-
+import { SUPPORTED_FORMATS } from '../../constants/index.js'
 import { logger } from '../../logger/index.js'
+import { workdir } from '../../path.js'
+import { getGlobalLoggers } from '../../photo/logger-adapter.js'
 import type { EagleConfig, EagleRule, StorageObject, StorageProvider, StorageUploadOptions } from '../interfaces.js'
 
 const EAGLE_VERSION = '4.0.0'

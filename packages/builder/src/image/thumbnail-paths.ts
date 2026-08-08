@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { workdir } from '@afilmory/builder/path.js'
+import { workdir } from '../path.js'
 
 const DEFAULT_DIRECTORY = 'thumbnails'
 const FIXTURE_DIRECTORY = '__fixtures/thumbnails'

@@ -2,6 +2,8 @@ import { clsxm } from '@afilmory/utils'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import * as React from 'react'
 
+import { glassMenuItemStyle, glassSurfaceStyle } from './styles/glass'
+
 const DropdownMenu: typeof DropdownMenuPrimitive.Root = (props) => {
   return <DropdownMenuPrimitive.Root {...props} />
 }
@@ -57,12 +59,7 @@ const DropdownMenuContent = ({
           'backdrop-blur-2xl text-text z-60 min-w-32 overflow-hidden rounded-xl p-1 relative border border-accent/20',
           className,
         )}
-        style={{
-          backgroundImage:
-            'linear-gradient(to bottom right, color-mix(in srgb, var(--color-background) 98%, transparent), color-mix(in srgb, var(--color-background) 95%, transparent))',
-          boxShadow:
-            '0 8px 32px color-mix(in srgb, var(--color-accent) 8%, transparent), 0 4px 16px color-mix(in srgb, var(--color-accent) 6%, transparent), 0 2px 8px rgba(0, 0, 0, 0.1)',
-        }}
+        style={glassSurfaceStyle}
         {...props}
       />
     </DropdownMenuPrimitive.Portal>
@@ -98,11 +95,7 @@ const DropdownMenuItem = ({
       inset && 'pl-8',
       className,
     )}
-    style={{
-      // @ts-ignore - CSS variable for data-highlighted state
-      '--highlight-bg':
-        'linear-gradient(to right, color-mix(in srgb, var(--color-accent) 8%, transparent), color-mix(in srgb, var(--color-accent) 5%, transparent))',
-    }}
+    style={glassMenuItemStyle}
     {...props}
   >
     {!!icon && (
@@ -138,11 +131,7 @@ const DropdownMenuCheckboxItem = ({
       className,
     )}
     checked={checked}
-    style={{
-      // @ts-ignore - CSS variable for data-highlighted state
-      '--highlight-bg':
-        'linear-gradient(to right, color-mix(in srgb, var(--color-accent) 8%, transparent), color-mix(in srgb, var(--color-accent) 5%, transparent))',
-    }}
+    style={glassMenuItemStyle}
     {...props}
   >
     {!!icon && <span className="mr-1.5 inline-flex size-4 items-center justify-center">{icon}</span>}

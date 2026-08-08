@@ -430,6 +430,9 @@ importers:
 
   packages/builder:
     dependencies:
+      '@afilmory/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@aws-sdk/client-s3':
         specifier: 3.1041.0
         version: 3.1041.0
@@ -473,9 +476,6 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
     devDependencies:
-      '@afilmory/utils':
-        specifier: workspace:*
-        version: link:../utils
       tsdown:
         specifier: 0.15.12
         version: 0.15.12(typescript@5.9.3)

@@ -3,20 +3,21 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { CompatibleLoggerAdapter } from '@afilmory/builder/photo/logger-adapter.js'
 import consola from 'consola'
 
-import { SUPPORTED_FORMATS } from '../../constants/index.js'
 import { logger } from '../../logger/index.js'
-import type { LocalConfig, StorageObject, StorageProvider, StorageUploadOptions } from '../interfaces'
+import { CompatibleLoggerAdapter } from '../../photo/logger-adapter.js'
+import type {
+  LocalConfig,
+  ProgressCallback,
+  ScanProgress,
+  StorageObject,
+  StorageProvider,
+  StorageUploadOptions,
+} from '../interfaces'
+import { filterSupportedImages, findLivePhotoPairs } from '../media-files.js'
 
-export interface ScanProgress {
-  currentPath: string
-  filesScanned: number
-  totalFiles?: number
-}
-
-export type ProgressCallback = (progress: ScanProgress) => void
+export type { ProgressCallback, ScanProgress } from '../interfaces'
 
 export class LocalStorageProvider implements StorageProvider {
   private config: LocalConfig
@@ -102,13 +103,7 @@ export class LocalStorageProvider implements StorageProvider {
   }
 
   async listImages(): Promise<StorageObject[]> {
-    const allFiles = await this.listAllFiles()
-
-    // 过滤出图片文件
-    return allFiles.filter((file) => {
-      const ext = path.extname(file.key).toLowerCase()
-      return SUPPORTED_FORMATS.has(ext)
-    })
+    return filterSupportedImages(await this.listAllFiles())
   }
 
   async listAllFiles(progressCallback?: ProgressCallback): Promise<StorageObject[]> {
@@ -314,36 +309,7 @@ export class LocalStorageProvider implements StorageProvider {
   }
 
   detectLivePhotos(allObjects: StorageObject[]): Map<string, StorageObject> {
-    const livePhotos = new Map<string, StorageObject>()
-
-    // 创建一个映射来快速查找文件
-    const fileMap = new Map<string, StorageObject>()
-    allObjects.forEach((obj) => {
-      fileMap.set(obj.key.toLowerCase(), obj)
-    })
-
-    // 查找 Live Photos 配对
-    allObjects.forEach((obj) => {
-      const ext = path.extname(obj.key).toLowerCase()
-
-      // 如果是图片文件，查找对应的视频文件
-      if (SUPPORTED_FORMATS.has(ext)) {
-        // use path.parse to get the name without extension to avoid issues
-        // when the file extension has different casing (e.g. .HEIC)
-        const baseName = path.parse(obj.key).name
-        const dirName = path.dirname(obj.key)
-
-        // 查找对应的 .mov 文件
-        const videoKey = path.join(dirName, `${baseName}.mov`).replaceAll('\\', '/')
-        const videoObj = fileMap.get(videoKey.toLowerCase())
-
-        if (videoObj) {
-          livePhotos.set(obj.key, videoObj)
-        }
-      }
-    })
-
-    return livePhotos
+    return findLivePhotoPairs(allObjects, (object) => object.key)
   }
 
   /**

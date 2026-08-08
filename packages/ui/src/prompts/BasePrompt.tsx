@@ -1,11 +1,8 @@
-import { useState } from 'react'
-
-import { Button } from '../button/Button'
-import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../dialog'
-import { Modal } from '../modal'
+import { DialogDescription, DialogHeader, DialogTitle } from '../dialog'
 import type { ModalComponent, ModalComponentProps } from '../modal/types'
-
-type PromptVariant = 'danger' | 'info'
+import type { PromptVariant } from './PromptActions'
+import { PromptActions } from './PromptActions'
+import { usePromptActions } from './usePromptActions'
 
 export type PromptOptions = {
   title: string
@@ -30,25 +27,7 @@ export const BasePrompt: ModalComponent<PromptOptions> = ({
   onCancel,
   content,
 }: ModalComponentProps & PromptOptions) => {
-  const [submitting, setSubmitting] = useState(false)
-
-  const handleCancel = async () => {
-    try {
-      await onCancel?.()
-    } finally {
-      dismiss()
-    }
-  }
-
-  const handleConfirm = async () => {
-    try {
-      setSubmitting(true)
-      await onConfirm?.()
-    } finally {
-      setSubmitting(false)
-      Modal.dismiss(modalId)
-    }
-  }
+  const { handleCancel, handleConfirm, submitting } = usePromptActions({ modalId, dismiss, onConfirm, onCancel })
 
   return (
     <div>
@@ -57,24 +36,18 @@ export const BasePrompt: ModalComponent<PromptOptions> = ({
         {description ? <DialogDescription className="text-text-secondary">{description}</DialogDescription> : null}
       </DialogHeader>
       {content && <div className="mt-4">{content}</div>}
-      <DialogFooter className="mt-4">
-        <Button size="sm" variant="secondary" onClick={handleCancel} disabled={submitting}>
-          {onCancelText}
-        </Button>
-        <Button
-          size="sm"
-          variant={variant === 'danger' ? 'destructive' : 'primary'}
-          onClick={handleConfirm}
-          isLoading={submitting}
-          loadingText={onConfirmText}
-        >
-          {onConfirmText}
-        </Button>
-      </DialogFooter>
+      <PromptActions
+        submitting={submitting}
+        variant={variant}
+        confirmText={onConfirmText}
+        cancelText={onCancelText}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </div>
   )
 }
 
 BasePrompt.contentClassName = 'max-w-sm'
 
-export type { PromptVariant }
+export type { PromptVariant } from './PromptActions'

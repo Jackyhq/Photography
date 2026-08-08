@@ -334,30 +334,13 @@ export class AfilmoryBuilder {
           results = await workerPool.execute(async (taskIndex, workerId) => {
             const obj = tasksToProcess[taskIndex]
 
-            const legacyObj = {
-              Key: obj.key,
-              Size: obj.size,
-              LastModified: obj.lastModified,
-              ETag: obj.etag,
-            }
-
-            const legacyLivePhotoMap = new Map()
-            for (const [key, value] of livePhotoMap) {
-              legacyLivePhotoMap.set(key, {
-                Key: value.key,
-                Size: value.size,
-                LastModified: value.lastModified,
-                ETag: value.etag,
-              })
-            }
-
             return await processPhoto(
-              legacyObj,
+              obj,
               taskIndex,
               workerId,
               tasksToProcess.length,
               existingManifestMap,
-              legacyLivePhotoMap,
+              livePhotoMap,
               processorOptions,
               this,
               {
@@ -791,14 +774,7 @@ export class AfilmoryBuilder {
       }
 
       // 检查是否需要更新（基于修改时间）
-      const legacyObj = {
-        Key: key,
-        Size: obj.size,
-        LastModified: obj.lastModified,
-        ETag: obj.etag,
-      }
-
-      if (needsUpdate(existingItem, legacyObj)) {
+      if (needsUpdate(existingItem, obj)) {
         tasksToProcess.push(obj)
         continue
       }
@@ -854,14 +830,7 @@ export class AfilmoryBuilder {
         continue
       }
 
-      const legacyObj = {
-        Key: key,
-        Size: obj.size,
-        LastModified: obj.lastModified,
-        ETag: obj.etag,
-      }
-
-      if (needsUpdate(existingItem, legacyObj)) {
+      if (needsUpdate(existingItem, obj)) {
         tasksToProcess.push(obj)
         continue
       }

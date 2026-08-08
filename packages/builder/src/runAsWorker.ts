@@ -58,72 +58,51 @@ export async function runAsWorker() {
     isInitialized = true
   }
 
+  const assertInitialized = () => {
+    if (!isInitialized) {
+      throw new Error('Worker 未初始化，请先发送 init 消息')
+    }
+  }
+
+  const processTask = async (taskIndex: number) => {
+    assertInitialized()
+
+    const obj = imageObjects[taskIndex]
+    if (!obj) {
+      throw new Error(`Invalid taskIndex: ${taskIndex}`)
+    }
+
+    const processorOptions = {
+      isForceMode: process.env.FORCE_MODE === 'true',
+      isForceManifest: process.env.FORCE_MANIFEST === 'true',
+      isForceThumbnails: process.env.FORCE_THUMBNAILS === 'true',
+    }
+    const builderOptions: BuilderOptions = {
+      ...processorOptions,
+      concurrencyLimit: undefined,
+    }
+
+    // 动态导入 processPhoto，避免在 worker 消息监听器注册前阻塞。
+    const { processPhoto } = await import('./photo/processor.js')
+    return await processPhoto(
+      obj,
+      taskIndex,
+      workerId,
+      imageObjects.length,
+      existingManifestMap,
+      livePhotoMap,
+      processorOptions,
+      builder,
+      {
+        runState: pluginRunState,
+        builderOptions,
+      },
+    )
+  }
+
   const handleTask = async (message: TaskMessage): Promise<void> => {
     try {
-      // 确保 worker 已初始化
-      if (!isInitialized) {
-        throw new Error('Worker 未初始化，请先发送 init 消息')
-      }
-
-      // 动态导入 processPhoto（放在这里以避免阻塞消息监听）
-      const { processPhoto } = await import('./photo/processor.js')
-
-      const { taskIndex } = message
-
-      // 根据 taskIndex 获取对应的图片对象
-      const obj = imageObjects[taskIndex]
-      if (!obj) {
-        throw new Error(`Invalid taskIndex: ${taskIndex}`)
-      }
-
-      // 转换 StorageObject 到旧的 _Object 格式以兼容现有的 processPhoto 函数
-      const legacyObj = {
-        Key: obj.key,
-        Size: obj.size,
-        LastModified: obj.lastModified,
-        ETag: obj.etag,
-      }
-
-      // 转换 Live Photo Map
-      const legacyLivePhotoMap = new Map()
-      for (const [key, value] of livePhotoMap) {
-        legacyLivePhotoMap.set(key, {
-          Key: value.key,
-          Size: value.size,
-          LastModified: value.lastModified,
-          ETag: value.etag,
-        })
-      }
-
-      // 处理器选项（这些可以作为环境变量传递或使用默认值）
-      const processorOptions = {
-        isForceMode: process.env.FORCE_MODE === 'true',
-        isForceManifest: process.env.FORCE_MANIFEST === 'true',
-        isForceThumbnails: process.env.FORCE_THUMBNAILS === 'true',
-      }
-
-      const builderOptions: BuilderOptions = {
-        isForceMode: processorOptions.isForceMode,
-        isForceManifest: processorOptions.isForceManifest,
-        isForceThumbnails: processorOptions.isForceThumbnails,
-        concurrencyLimit: undefined,
-      }
-
-      // 处理照片
-      const result = await processPhoto(
-        legacyObj,
-        taskIndex,
-        workerId,
-        imageObjects.length,
-        existingManifestMap,
-        legacyLivePhotoMap,
-        processorOptions,
-        builder,
-        {
-          runState: pluginRunState,
-          builderOptions,
-        },
-      )
+      const result = await processTask(message.taskIndex)
 
       // 发送结果回主进程
       const response: TaskResult = {
@@ -152,66 +131,16 @@ export async function runAsWorker() {
   // 批量任务处理函数
   const handleBatchTask = async (message: BatchTaskMessage): Promise<void> => {
     try {
-      // 确保已初始化
-      if (!isInitialized) {
-        throw new Error('Worker 未初始化，请先发送 init 消息')
-      }
+      assertInitialized()
 
       const results: TaskResult[] = []
       const taskPromises: Promise<void>[] = []
-      const batchProcessorOptions = {
-        isForceMode: process.env.FORCE_MODE === 'true',
-        isForceManifest: process.env.FORCE_MANIFEST === 'true',
-        isForceThumbnails: process.env.FORCE_THUMBNAILS === 'true',
-      }
-      const batchBuilderOptions: BuilderOptions = {
-        isForceMode: batchProcessorOptions.isForceMode,
-        isForceManifest: batchProcessorOptions.isForceManifest,
-        isForceThumbnails: batchProcessorOptions.isForceThumbnails,
-        concurrencyLimit: undefined,
-      }
 
       // 创建所有任务的并发执行 Promise
       for (const task of message.tasks) {
         const taskPromise = (async () => {
           try {
-            const obj = imageObjects[task.taskIndex]
-
-            // 转换 StorageObject 到旧的 _Object 格式以兼容现有的 processPhoto 函数
-            const legacyObj = {
-              Key: obj.key,
-              Size: obj.size,
-              LastModified: obj.lastModified,
-              ETag: obj.etag,
-            }
-
-            // 转换 Live Photo Map
-            const legacyLivePhotoMap = new Map()
-            for (const [key, value] of livePhotoMap) {
-              legacyLivePhotoMap.set(key, {
-                Key: value.key,
-                Size: value.size,
-                LastModified: value.lastModified,
-                ETag: value.etag,
-              })
-            }
-
-            // 处理照片
-            const { processPhoto } = await import('./photo/processor.js')
-            const result = await processPhoto(
-              legacyObj,
-              task.taskIndex,
-              workerId,
-              imageObjects.length,
-              existingManifestMap,
-              legacyLivePhotoMap,
-              batchProcessorOptions,
-              builder,
-              {
-                runState: pluginRunState,
-                builderOptions: batchBuilderOptions,
-              },
-            )
+            const result = await processTask(task.taskIndex)
 
             // 添加成功结果
             results.push({

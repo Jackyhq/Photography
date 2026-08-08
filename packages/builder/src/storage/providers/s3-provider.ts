@@ -1,14 +1,11 @@
-import path from 'node:path'
-
+import { backoffDelay, Semaphore, sleep } from '@afilmory/utils'
 import type { _Object, S3Client } from '@aws-sdk/client-s3'
 import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from '@aws-sdk/client-s3'
 
-import { backoffDelay, sleep } from '../../../../utils/src/backoff.js'
-import { Semaphore } from '../../../../utils/src/semaphore.js'
-import { SUPPORTED_FORMATS } from '../../constants/index.js'
 import { logger } from '../../logger/index.js'
 import { createS3Client } from '../../s3/client.js'
 import type { ProgressCallback, S3Config, StorageObject, StorageProvider, StorageUploadOptions } from '../interfaces'
+import { findLivePhotoPairs, isSupportedImageKey } from '../media-files.js'
 
 // 将 AWS S3 对象转换为通用存储对象
 function convertS3ObjectToStorageObject(s3Object: _Object): StorageObject {
@@ -176,8 +173,7 @@ export class S3StorageProvider implements StorageProvider {
         if (!obj.Key) return false
         if (excludeRegex && excludeRegex.test(obj.Key)) return false
 
-        const ext = path.extname(obj.Key).toLowerCase()
-        return SUPPORTED_FORMATS.has(ext)
+        return isSupportedImageKey(obj.Key)
       })
       .map((obj) => convertS3ObjectToStorageObject(obj))
 
@@ -234,51 +230,7 @@ export class S3StorageProvider implements StorageProvider {
   }
 
   detectLivePhotos(allObjects: StorageObject[]): Map<string, StorageObject> {
-    const livePhotoMap = new Map<string, StorageObject>() // image key -> video object
-
-    // 按目录和基础文件名分组所有文件
-    const fileGroups = new Map<string, StorageObject[]>()
-
-    for (const obj of allObjects) {
-      if (!obj.key) continue
-
-      const dir = path.dirname(obj.key)
-      const basename = path.parse(obj.key).name
-      const groupKey = `${dir}/${basename}`
-
-      if (!fileGroups.has(groupKey)) {
-        fileGroups.set(groupKey, [])
-      }
-      fileGroups.get(groupKey)!.push(obj)
-    }
-
-    // 在每个分组中寻找图片 + 视频配对
-    for (const files of fileGroups.values()) {
-      let imageFile: StorageObject | null = null
-      let videoFile: StorageObject | null = null
-
-      for (const file of files) {
-        if (!file.key) continue
-
-        const ext = path.extname(file.key).toLowerCase()
-
-        // 检查是否为支持的图片格式
-        if (SUPPORTED_FORMATS.has(ext)) {
-          imageFile = file
-        }
-        // 检查是否为 .mov 视频文件
-        else if (ext === '.mov') {
-          videoFile = file
-        }
-      }
-
-      // 如果找到配对，记录为 live photo
-      if (imageFile && videoFile && imageFile.key) {
-        livePhotoMap.set(imageFile.key, videoFile)
-      }
-    }
-
-    return livePhotoMap
+    return findLivePhotoPairs(allObjects, (object) => object.key)
   }
 
   async deleteFile(key: string): Promise<void> {

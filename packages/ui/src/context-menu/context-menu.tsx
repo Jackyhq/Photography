@@ -2,6 +2,8 @@ import { clsxm } from '@afilmory/utils'
 import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
 import * as React from 'react'
 
+import { glassMenuItemStyle, glassSurfaceStyle } from '../styles/glass'
+
 const ContextMenu = ContextMenuPrimitive.Root
 const ContextMenuTrigger = ContextMenuPrimitive.Trigger
 const ContextMenuGroup = ContextMenuPrimitive.Group
@@ -54,12 +56,7 @@ const ContextMenuSubContent = ({
         'z-10061',
         className,
       )}
-      style={{
-        backgroundImage:
-          'linear-gradient(to bottom right, color-mix(in srgb, var(--color-background) 98%, transparent), color-mix(in srgb, var(--color-background) 95%, transparent))',
-        boxShadow:
-          '0 8px 32px color-mix(in srgb, var(--color-accent) 8%, transparent), 0 4px 16px color-mix(in srgb, var(--color-accent) 6%, transparent), 0 2px 8px rgba(0, 0, 0, 0.1)',
-      }}
+      style={glassSurfaceStyle}
       {...props}
     />
   </RootPortal>
@@ -81,12 +78,7 @@ const ContextMenuContent = ({
         'motion-scale-in-75 motion-duration-150 text-body lg:animate-none',
         className,
       )}
-      style={{
-        backgroundImage:
-          'linear-gradient(to bottom right, color-mix(in srgb, var(--color-background) 98%, transparent), color-mix(in srgb, var(--color-background) 95%, transparent))',
-        boxShadow:
-          '0 8px 32px color-mix(in srgb, var(--color-accent) 8%, transparent), 0 4px 16px color-mix(in srgb, var(--color-accent) 6%, transparent), 0 2px 8px rgba(0, 0, 0, 0.1)',
-      }}
+      style={glassSurfaceStyle}
       {...props}
     />
   </RootPortal>
@@ -113,11 +105,7 @@ const ContextMenuItem = ({
       inset && 'pl-8',
       className,
     )}
-    style={{
-      // @ts-ignore - CSS variable for data-highlighted state
-      '--highlight-bg':
-        'linear-gradient(to right, color-mix(in srgb, var(--color-accent) 8%, transparent), color-mix(in srgb, var(--color-accent) 5%, transparent))',
-    }}
+    style={glassMenuItemStyle}
     {...props}
   />
 )
@@ -142,11 +130,7 @@ const ContextMenuCheckboxItem = ({
       className,
     )}
     checked={checked}
-    style={{
-      // @ts-ignore - CSS variable for data-highlighted state
-      '--highlight-bg':
-        'linear-gradient(to right, color-mix(in srgb, var(--color-accent) 8%, transparent), color-mix(in srgb, var(--color-accent) 5%, transparent))',
-    }}
+    style={glassMenuItemStyle}
     {...props}
   >
     <span className="absolute left-2 flex items-center justify-center">

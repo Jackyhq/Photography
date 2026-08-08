@@ -1,8 +1,7 @@
-import type { _Object } from '@aws-sdk/client-s3'
-
 import type { AfilmoryBuilder, BuilderOptions } from '../builder/builder.js'
 import { logger } from '../logger/index.js'
 import type { PluginRunState } from '../plugins/manager.js'
+import type { StorageObject } from '../storage/interfaces.js'
 import type { PhotoManifestItem, ProcessPhotoResult } from '../types/photo.js'
 import { createStorageKeyNormalizer, runWithPhotoExecutionContext } from './execution-context.js'
 import type { PhotoProcessingContext } from './image-pipeline.js'
@@ -17,12 +16,12 @@ export interface PhotoProcessorOptions {
 
 // 处理单张照片
 export async function processPhoto(
-  obj: _Object,
+  obj: StorageObject,
   index: number,
   workerId: number,
   totalImages: number,
   existingManifestMap: Map<string, PhotoManifestItem>,
-  livePhotoMap: Map<string, _Object>,
+  livePhotoMap: Map<string, StorageObject>,
   options: PhotoProcessorOptions,
   builder: AfilmoryBuilder,
   pluginRuntime: {
@@ -30,9 +29,9 @@ export async function processPhoto(
     builderOptions: BuilderOptions
   },
 ): Promise<ProcessPhotoResult> {
-  const key = obj.Key
+  const { key } = obj
   if (!key) {
-    logger.image.warn(`跳过没有 Key 的对象`)
+    logger.image.warn(`跳过没有 key 的对象`)
     return { item: null, type: 'failed' }
   }
 

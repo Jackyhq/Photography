@@ -1,8 +1,8 @@
 import path from 'node:path'
 
-import { workdir } from '@afilmory/builder/path.js'
 import { describe, expect, it } from 'vitest'
 
+import { workdir } from '../path.js'
 import { getThumbnailDirectory, getThumbnailUrlPrefix } from './thumbnail-paths.js'
 
 describe('thumbnail paths', () => {

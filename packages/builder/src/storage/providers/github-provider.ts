@@ -1,8 +1,4 @@
-import path from 'node:path'
-
-import { getGlobalLoggers } from '@afilmory/builder/photo/logger-adapter.js'
-
-import { SUPPORTED_FORMATS } from '../../constants/index.js'
+import { getGlobalLoggers } from '../../photo/logger-adapter.js'
 import type {
   GitHubConfig,
   ProgressCallback,
@@ -10,6 +6,7 @@ import type {
   StorageProvider,
   StorageUploadOptions,
 } from '../interfaces.js'
+import { filterSupportedImages, findLivePhotoPairs } from '../media-files.js'
 
 // GitHub API 响应类型
 interface GitHubFileContent {
@@ -162,13 +159,7 @@ export class GitHubStorageProvider implements StorageProvider {
   }
 
   async listImages(): Promise<StorageObject[]> {
-    const allFiles = await this.listAllFiles()
-
-    // 过滤出图片文件
-    return allFiles.filter((file) => {
-      const ext = path.extname(file.key).toLowerCase()
-      return SUPPORTED_FORMATS.has(ext)
-    })
+    return filterSupportedImages(await this.listAllFiles())
   }
 
   async listAllFiles(progressCallback?: ProgressCallback): Promise<StorageObject[]> {
@@ -308,51 +299,6 @@ export class GitHubStorageProvider implements StorageProvider {
   }
 
   detectLivePhotos(allObjects: StorageObject[]): Map<string, StorageObject> {
-    const livePhotoMap = new Map<string, StorageObject>()
-
-    // 按目录和基础文件名分组所有文件
-    const fileGroups = new Map<string, StorageObject[]>()
-
-    for (const obj of allObjects) {
-      if (!obj.key) continue
-
-      const dir = path.dirname(obj.key)
-      // use path.parse to safely get the filename without extension (case-insensitive extension handling)
-      const basename = path.parse(obj.key).name
-      const groupKey = `${dir}/${basename}`
-
-      if (!fileGroups.has(groupKey)) {
-        fileGroups.set(groupKey, [])
-      }
-      fileGroups.get(groupKey)!.push(obj)
-    }
-
-    // 在每个分组中寻找图片 + 视频配对
-    for (const files of fileGroups.values()) {
-      let imageFile: StorageObject | null = null
-      let videoFile: StorageObject | null = null
-
-      for (const file of files) {
-        if (!file.key) continue
-
-        const ext = path.extname(file.key).toLowerCase()
-
-        // 检查是否为支持的图片格式
-        if (SUPPORTED_FORMATS.has(ext)) {
-          imageFile = file
-        }
-        // 检查是否为 .mov 视频文件
-        else if (ext === '.mov') {
-          videoFile = file
-        }
-      }
-
-      // 如果找到配对，记录为 live photo
-      if (imageFile && videoFile && imageFile.key) {
-        livePhotoMap.set(imageFile.key, videoFile)
-      }
-    }
-
-    return livePhotoMap
+    return findLivePhotoPairs(allObjects, (object) => object.key)
   }
 }

@@ -542,54 +542,8 @@ export const tocData: FileToc[] = [
   },
 ]
 
-// Helper function to find TOC data by file path
-export function getTocByFile(filePath: string): TocItem[] | undefined {
-  const item = tocData.find((item) => item.file === filePath)
-  return item?.toc
-}
-
 // Helper function to find TOC data by route path
 export function getTocByPath(routePath: string): TocItem[] | undefined {
   const item = tocData.find((item) => item.path === routePath)
   return item?.toc
-}
-
-// Helper function to flatten TOC tree into a simple array
-export function flattenToc(toc: TocItem[]): TocItem[] {
-  const result: TocItem[] = []
-
-  function traverse(items: TocItem[]) {
-    for (const item of items) {
-      result.push({
-        id: item.id,
-        level: item.level,
-        text: item.text,
-      })
-      if (item.children && item.children.length > 0) {
-        traverse(item.children)
-      }
-    }
-  }
-
-  traverse(toc)
-  return result
-}
-
-// Helper function to get all headings at a specific level
-export function getHeadingsByLevel(toc: TocItem[], level: number): TocItem[] {
-  const result: TocItem[] = []
-
-  function traverse(items: TocItem[]) {
-    for (const item of items) {
-      if (item.level === level) {
-        result.push(item)
-      }
-      if (item.children && item.children.length > 0) {
-        traverse(item.children)
-      }
-    }
-  }
-
-  traverse(toc)
-  return result
 }

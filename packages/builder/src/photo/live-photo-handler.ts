@@ -2,7 +2,10 @@ import type { _Object } from '@aws-sdk/client-s3'
 
 import type { StorageManager } from '../storage/index.js'
 import type { StorageObject } from '../storage/interfaces.js'
+import { findLivePhotoPairs } from '../storage/media-files.js'
 import { getGlobalLoggers } from './logger-adapter.js'
+
+const LEGACY_LIVE_PHOTO_VIDEO_EXTENSIONS = new Set(['.mov', '.mp4'])
 
 export interface LivePhotoResult {
   isLivePhoto: boolean
@@ -69,45 +72,10 @@ export function createLivePhotoMap(objects: _Object[]): Map<string, _Object>
  */
 export function createLivePhotoMap(objects: StorageObject[]): Map<string, StorageObject>
 
-export function createLivePhotoMap(objects: _Object[] | StorageObject[]): Map<string, _Object | StorageObject> {
-  const livePhotoMap = new Map<string, _Object | StorageObject>()
-
-  // 分离照片和视频文件
-  const photos: (_Object | StorageObject)[] = []
-  const videos: (_Object | StorageObject)[] = []
-
-  for (const obj of objects) {
-    // 获取 key，兼容两种类型
-    const key = 'Key' in obj ? obj.Key : (obj as StorageObject).key
-    if (!key) continue
-
-    const ext = key.toLowerCase().split('.').pop()
-    if (ext && ['jpg', 'jpeg', 'heic', 'heif', 'png', 'webp'].includes(ext)) {
-      photos.push(obj)
-    } else if (ext && ['mov', 'mp4'].includes(ext)) {
-      videos.push(obj)
-    }
-  }
-
-  // 匹配 Live Photo
-  for (const photo of photos) {
-    const photoKey = 'Key' in photo ? photo.Key : (photo as StorageObject).key
-    if (!photoKey) continue
-
-    const photoBaseName = photoKey.replace(/\.[^/.]+$/, '')
-
-    // 查找对应的视频文件
-    const matchingVideo = videos.find((video) => {
-      const videoKey = 'Key' in video ? video.Key : (video as StorageObject).key
-      if (!videoKey) return false
-      const videoBaseName = videoKey.replace(/\.[^/.]+$/, '')
-      return videoBaseName === photoBaseName
-    })
-
-    if (matchingVideo) {
-      livePhotoMap.set(photoKey, matchingVideo)
-    }
-  }
-
-  return livePhotoMap
+export function createLivePhotoMap(objects: Array<_Object | StorageObject>): Map<string, _Object | StorageObject> {
+  return findLivePhotoPairs(
+    objects,
+    (object) => ('key' in object ? object.key : object.Key),
+    LEGACY_LIVE_PHOTO_VIDEO_EXTENSIONS,
+  )
 }

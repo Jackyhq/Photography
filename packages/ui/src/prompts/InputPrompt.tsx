@@ -1,12 +1,13 @@
 import { useState } from 'react'
 
-import { Button } from '../button/Button'
-import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../dialog'
+import { DialogDescription, DialogHeader, DialogTitle } from '../dialog'
 import { Input } from '../form/Input'
-import { Modal } from '../modal'
 import type { ModalComponent, ModalComponentProps } from '../modal/types'
+import type { PromptVariant } from './PromptActions'
+import { PromptActions } from './PromptActions'
+import { usePromptActions } from './usePromptActions'
 
-type InputPromptVariant = 'danger' | 'info'
+type InputPromptVariant = PromptVariant
 
 export type InputPromptOptions = {
   title: string
@@ -36,25 +37,12 @@ export const InputPrompt: ModalComponent<InputPromptOptions> = ({
   onCancel,
 }: ModalComponentProps & InputPromptOptions) => {
   const [inputValue, setInputValue] = useState(defaultValue)
-  const [submitting, setSubmitting] = useState(false)
-
-  const handleCancel = async () => {
-    try {
-      await onCancel?.()
-    } finally {
-      dismiss()
-    }
-  }
-
-  const handleConfirm = async () => {
-    try {
-      setSubmitting(true)
-      await onConfirm?.(inputValue)
-    } finally {
-      setSubmitting(false)
-      Modal.dismiss(modalId)
-    }
-  }
+  const { handleCancel, handleConfirm, submitting } = usePromptActions({
+    modalId,
+    dismiss,
+    onCancel,
+    onConfirm: () => onConfirm?.(inputValue),
+  })
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -82,20 +70,14 @@ export const InputPrompt: ModalComponent<InputPromptOptions> = ({
           type={type}
         />
       </div>
-      <DialogFooter className="mt-4">
-        <Button size="sm" variant="secondary" onClick={handleCancel} disabled={submitting}>
-          {onCancelText}
-        </Button>
-        <Button
-          size="sm"
-          variant={variant === 'danger' ? 'destructive' : 'primary'}
-          onClick={handleConfirm}
-          isLoading={submitting}
-          loadingText={onConfirmText}
-        >
-          {onConfirmText}
-        </Button>
-      </DialogFooter>
+      <PromptActions
+        submitting={submitting}
+        variant={variant}
+        confirmText={onConfirmText}
+        cancelText={onCancelText}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </div>
   )
 }
