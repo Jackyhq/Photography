@@ -1,4 +1,4 @@
-import { glassSurfaceStyle } from '@afilmory/ui'
+import { glassSurfaceStyle } from '@afilmory/ui/styles'
 import { clsxm, Spring } from '@afilmory/utils'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { produce } from 'immer'

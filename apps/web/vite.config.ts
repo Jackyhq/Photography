@@ -59,6 +59,17 @@ const ReactCompilerConfig = {
 
 const BUILD_FOR_SERVER_SERVE = process.env.BUILD_FOR_SERVER_SERVE === '1'
 
+const bundleAnalyzerPlugin =
+  process.env.analyzer === 'json'
+    ? analyzer({
+        analyzerMode: 'json',
+        defaultSizes: 'gzip',
+        fileName: process.env.ANALYZER_FILE || 'stats',
+      })
+    : process.env.analyzer
+      ? analyzer()
+      : null
+
 const escapedSiteUrlJson = JSON.stringify(siteConfig.url)
   .replaceAll('<', '\\u003C')
   .replaceAll('\u2028', '\\u2028')
@@ -194,7 +205,7 @@ export default defineConfig(({ command }) => {
       localesJsonPlugin(),
       tailwindcss(),
       ...(BUILD_FOR_SERVER_SERVE ? [] : staticWebBuildPlugins),
-      process.env.analyzer && analyzer(),
+      bundleAnalyzerPlugin,
 
       devPrint(),
     ],

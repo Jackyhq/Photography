@@ -3,8 +3,8 @@ import {
   MaterialSymbolsShutterSpeed,
   StreamlineImageAccessoriesLensesPhotosCameraShutterPicturePhotographyPicturesPhotoLens,
   TablerAperture,
-  Thumbhash,
-} from '@afilmory/ui'
+} from '@afilmory/ui/icons'
+import { Thumbhash } from '@afilmory/ui/thumbhash'
 import clsx from 'clsx'
 import { m } from 'motion/react'
 import type { KeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'

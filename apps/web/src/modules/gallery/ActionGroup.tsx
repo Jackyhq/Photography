@@ -1,14 +1,18 @@
 import { photoLoader } from '@afilmory/data'
-import { Button } from '@afilmory/ui'
+import { Button } from '@afilmory/ui/button'
 import { useAtom, useSetAtom } from 'jotai'
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { gallerySettingAtom, isCommandPaletteOpenAtom } from '~/atoms/app'
 
 import { ResponsiveActionButton } from './components/ActionButton'
-import { ViewPanel } from './panels/ViewPanel'
+
+const LazyViewPanel = lazy(async () => {
+  const { ViewPanel } = await import('./panels/ViewPanel')
+  return { default: ViewPanel }
+})
 
 export const ActionGroup = ({ keyboardNavigationGroup = false }: { keyboardNavigationGroup?: boolean }) => {
   const { i18n, t } = useTranslation()
@@ -103,7 +107,9 @@ export const ActionGroup = ({ keyboardNavigationGroup = false }: { keyboardNavig
         title={t('action.view.title')}
         badge={hasViewCustomization ? '●' : undefined}
       >
-        <ViewPanel />
+        <Suspense fallback={<ViewPanelFallback />}>
+          <LazyViewPanel />
+        </Suspense>
       </ResponsiveActionButton>
 
       <Button
@@ -126,3 +132,9 @@ export const ActionGroup = ({ keyboardNavigationGroup = false }: { keyboardNavig
     </div>
   )
 }
+
+const ViewPanelFallback = () => (
+  <div className="flex min-h-32 w-full items-center justify-center" role="status" aria-label="Loading view settings">
+    <i className="i-mingcute-loading-line animate-spin text-lg" />
+  </div>
+)

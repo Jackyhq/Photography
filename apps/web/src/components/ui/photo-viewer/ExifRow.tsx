@@ -1,4 +1,4 @@
-import { EllipsisHorizontalTextWithTooltip } from '@afilmory/ui'
+import { EllipsisHorizontalTextWithTooltip } from '@afilmory/ui/typography'
 import type { FC } from 'react'
 
 export const Row: FC<{

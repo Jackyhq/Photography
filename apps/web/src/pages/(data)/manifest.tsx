@@ -1,6 +1,7 @@
 import type { AfilmoryManifest } from '@afilmory/builder'
 import { photoLoader } from '@afilmory/data'
-import { Button, ScrollArea } from '@afilmory/ui'
+import { Button } from '@afilmory/ui/button'
+import { ScrollArea } from '@afilmory/ui/scroll-areas'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 

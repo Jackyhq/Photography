@@ -1,4 +1,6 @@
-import { GlassButton, HoverCard, HoverCardContent, HoverCardTrigger, LazyImage } from '@afilmory/ui'
+import { GlassButton } from '@afilmory/ui/button'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@afilmory/ui/hover-card'
+import { LazyImage } from '@afilmory/ui/lazy-image'
 import { m } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'

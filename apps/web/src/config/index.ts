@@ -1,6 +1,6 @@
 import type { SiteConfig } from '@config'
 import defaultSiteConfig from '@config'
-import { merge } from 'es-toolkit/compat'
+import { merge } from 'es-toolkit/object'
 
 const defaultInjectConfig = {
   useApi: false,

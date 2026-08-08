@@ -1,4 +1,4 @@
-import { Button } from '@afilmory/ui'
+import { Button } from '@afilmory/ui/button'
 import { repository } from '@pkg'
 import { useEffect, useRef } from 'react'
 import { isRouteErrorResponse, useRouteError } from 'react-router'

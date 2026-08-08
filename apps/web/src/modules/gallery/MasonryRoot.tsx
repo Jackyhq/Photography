@@ -1,4 +1,4 @@
-import { useScrollViewElement } from '@afilmory/ui'
+import { useScrollViewElement } from '@afilmory/ui/scroll-areas'
 import { clsxm, Spring } from '@afilmory/utils'
 import { useAtomValue } from 'jotai'
 import { AnimatePresence, m } from 'motion/react'
@@ -14,8 +14,6 @@ import { useVisiblePhotosDateRange } from '~/hooks/useVisiblePhotosDateRange'
 import type { PhotoManifest } from '~/types/photo'
 
 import { ActionGroup } from './ActionGroup'
-import type { PanelType } from './ActionPanel'
-import { ActionPanel } from './ActionPanel'
 import { handleGalleryArrowNavigation } from './gallery-keyboard-navigation'
 import type { MasonryRef } from './Masonic'
 import { Masonry } from './Masonic'
@@ -84,7 +82,6 @@ export const MasonryRoot = () => {
   }, [])
   const isMobile = useMobile()
 
-  const [activePanel, setActivePanel] = useState<PanelType | null>(null)
   const masonryItems = useMemo(() => (isMobile ? photos : [MasonryHeaderItem.default, ...photos]), [photos, isMobile])
   const resolvedTabStopPhotoId = useMemo(() => {
     if (tabStopPhotoId && photos.some((photo) => photo.id === tabStopPhotoId)) return tabStopPhotoId
@@ -300,16 +297,6 @@ export const MasonryRoot = () => {
           />
         </MasonryKeyboardNavigationContext>
       </div>
-
-      <ActionPanel
-        open={!!activePanel}
-        onOpenChange={(open) => {
-          if (!open) {
-            setActivePanel(null)
-          }
-        }}
-        type={activePanel}
-      />
     </>
   )
 }

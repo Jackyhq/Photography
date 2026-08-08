@@ -1,4 +1,3 @@
-import { Toaster } from '@afilmory/ui'
 import { Spring } from '@afilmory/utils'
 import { Provider } from 'jotai'
 import { domAnimation, LazyMotion, MotionConfig } from 'motion/react'
@@ -8,6 +7,7 @@ import { jotaiStore } from '~/lib/jotai'
 
 import { AppUpdateProvider } from './app-update-provider'
 import { ContextMenuProvider } from './context-menu-provider'
+import { DeferredToaster } from './deferred-toaster'
 import { EventProvider } from './event-provider'
 import { I18nProvider } from './i18n-provider'
 import { StableRouterProvider } from './stable-router-provider'
@@ -25,6 +25,6 @@ export const RootProviders: FC<PropsWithChildren> = ({ children }) => (
         </I18nProvider>
       </Provider>
     </MotionConfig>
-    <Toaster />
+    <DeferredToaster />
   </LazyMotion>
 )

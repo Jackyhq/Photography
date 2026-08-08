@@ -1,4 +1,4 @@
-import { GlassButton } from '@afilmory/ui'
+import { GlassButton } from '@afilmory/ui/button'
 import { startTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'

@@ -43,7 +43,7 @@ interface CompressedSize {
 const KiB = 1024
 const PHOTO_HTML_PAGE_BUDGET = 25 * KiB
 const PHOTO_HTML_TOTAL_BUDGET = 10 * 1024 * KiB
-const STARTUP_BUDGET: Budget = { gzip: 360 * KiB, brotli: 315 * KiB }
+const STARTUP_BUDGET: Budget = { gzip: 340 * KiB, brotli: 290 * KiB }
 const FULL_MANIFEST_PATTERN = /^assets\/photos-manifest\.[\w-]+\.json$/
 const MAPLIBRE_ASSET_PATTERN = /^assets\/maplibre-gl-[\w-]+\.js$/
 

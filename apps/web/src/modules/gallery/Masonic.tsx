@@ -1,8 +1,9 @@
 // @copy internal masonic hooks
-import { useScrollViewElement } from '@afilmory/ui'
+import { useScrollViewElement } from '@afilmory/ui/scroll-areas'
 import { clearRequestTimeout, requestTimeout } from '@essentials/request-timeout'
 import { useWindowSize } from '@react-hook/window-size'
-import { isEqual, throttle } from 'es-toolkit/compat'
+import { throttle } from 'es-toolkit/function'
+import { isEqual } from 'es-toolkit/predicate'
 import type { ContainerPosition, MasonryProps, MasonryScrollerProps, Positioner } from 'masonic'
 import { createResizeObserver, useMasonry, usePositioner, useScrollToIndex } from 'masonic'
 import { useForceUpdate } from 'motion/react'

@@ -1,4 +1,5 @@
-import { HoverCard, HoverCardContent, HoverCardTrigger, LazyImage } from '@afilmory/ui'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@afilmory/ui/hover-card'
+import { LazyImage } from '@afilmory/ui/lazy-image'
 import { m } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 

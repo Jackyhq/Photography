@@ -1,4 +1,4 @@
-import { glassMenuItemStyle } from '@afilmory/ui'
+import { glassMenuItemStyle } from '@afilmory/ui/styles'
 import { useAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
 

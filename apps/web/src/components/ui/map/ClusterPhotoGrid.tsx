@@ -1,4 +1,4 @@
-import { LazyImage } from '@afilmory/ui'
+import { LazyImage } from '@afilmory/ui/lazy-image'
 import { Spring } from '@afilmory/utils'
 import { m } from 'motion/react'
 import { useTranslation } from 'react-i18next'

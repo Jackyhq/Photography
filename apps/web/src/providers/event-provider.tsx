@@ -1,4 +1,4 @@
-import { throttle } from 'es-toolkit/compat'
+import { throttle } from 'es-toolkit/function'
 import { useIsomorphicLayoutEffect } from 'foxact/use-isomorphic-layout-effect'
 import { useStore } from 'jotai'
 import type { FC } from 'react'

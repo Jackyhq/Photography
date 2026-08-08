@@ -1,11 +1,16 @@
-import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@afilmory/ui'
+import { Button } from '@afilmory/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@afilmory/ui/dropdown-menu'
 import { clsxm } from '@afilmory/utils'
 import { useSetAtom } from 'jotai'
-import { useState } from 'react'
-import { Drawer } from 'vaul'
+import { lazy, Suspense, useState } from 'react'
 
 import { gallerySettingAtom } from '~/atoms/app'
 import { useMobile } from '~/hooks/useMobile'
+
+const LazyMobileActionDrawer = lazy(async () => {
+  const { MobileActionDrawer } = await import('./MobileActionDrawer')
+  return { default: MobileActionDrawer }
+})
 
 // 通用的操作按钮组件
 export const ActionButton = ({
@@ -79,38 +84,6 @@ export const DesktopActionButton = ({
   )
 }
 
-// 移动端的抽屉按钮
-export const MobileActionButton = ({
-  icon,
-  title,
-  badge,
-  children,
-  open,
-  onOpenChange,
-}: {
-  icon: string
-  title: string
-  badge?: number | string
-  children: React.ReactNode
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}) => {
-  return (
-    <>
-      <ActionButton icon={icon} title={title} badge={badge} onClick={() => onOpenChange(!open)} />
-      <Drawer.Root open={open} onOpenChange={onOpenChange}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" />
-          <Drawer.Content className="fixed right-0 bottom-0 left-0 z-50 flex flex-col rounded-t-2xl border-t border-zinc-200 bg-white/80 p-4 backdrop-blur-xl dark:border-zinc-800 dark:bg-black/80">
-            <div className="mx-auto mb-4 h-1.5 w-12 flex-shrink-0 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-            {children}
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
-    </>
-  )
-}
-
 // 响应式操作按钮组件
 export const ResponsiveActionButton = ({
   icon,
@@ -134,9 +107,16 @@ export const ResponsiveActionButton = ({
 
   if (isMobile) {
     return (
-      <MobileActionButton icon={icon} title={title} badge={badge} open={open} onOpenChange={setOpen}>
-        {children}
-      </MobileActionButton>
+      <>
+        <ActionButton icon={icon} title={title} badge={badge} onClick={() => setOpen(true)} />
+        {open && (
+          <Suspense fallback={<MobileActionDrawerFallback />}>
+            <LazyMobileActionDrawer open={open} onOpenChange={setOpen}>
+              {children}
+            </LazyMobileActionDrawer>
+          </Suspense>
+        )}
+      </>
     )
   }
 
@@ -153,3 +133,15 @@ export const ResponsiveActionButton = ({
     </DesktopActionButton>
   )
 }
+
+const MobileActionDrawerFallback = () => (
+  <div
+    className="fixed inset-0 z-40 flex items-end bg-black/20 backdrop-blur-sm"
+    role="status"
+    aria-label="Loading view settings"
+  >
+    <div className="flex min-h-32 w-full items-center justify-center rounded-t-2xl border-t border-zinc-200 bg-white/80 p-4 dark:border-zinc-800 dark:bg-black/80">
+      <i className="i-mingcute-loading-line animate-spin text-lg" />
+    </div>
+  </div>
+)

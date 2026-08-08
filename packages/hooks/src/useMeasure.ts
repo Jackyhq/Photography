@@ -1,6 +1,6 @@
 // @copy https://github.com/pmndrs/react-use-measure/blob/master/src/web/index.ts
 
-import { debounce } from 'es-toolkit/compat'
+import { debounce } from 'es-toolkit/function'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 const createDebounce = debounce

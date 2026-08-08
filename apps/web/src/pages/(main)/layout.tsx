@@ -1,4 +1,4 @@
-import { ScrollArea, ScrollElementContext } from '@afilmory/ui'
+import { ScrollArea, ScrollElementContext } from '@afilmory/ui/scroll-areas'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 import { Outlet, useLocation, useNavigate, useParams, useSearchParams } from 'react-router'

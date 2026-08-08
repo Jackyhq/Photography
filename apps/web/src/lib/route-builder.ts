@@ -1,4 +1,3 @@
-import { get, omit } from 'es-toolkit/compat'
 import { createElement, Fragment } from 'react'
 import type { RouteObject } from 'react-router'
 
@@ -85,7 +84,7 @@ export function buildGlobRoutes(glob: Record<string, () => Promise<any>>): Route
 
       if (isGroupedRoute) {
         const accessPath = `${segmentPathKey}/layout.tsx`
-        const globGetter = get(glob, accessPath) || (() => Fragment)
+        const globGetter = glob[accessPath] || (() => Fragment)
         if (pathGetterSet.has(accessPath)) {
           // throw new Error(`duplicate path: ` + accessPath)
 
@@ -116,11 +115,13 @@ export function buildGlobRoutes(glob: Record<string, () => Promise<any>>): Route
         }
         // if `key` is `layout`, then it's a grouped route
         const accessPath = `${segmentPathKey}.tsx`
-        const globGetter = get(glob, accessPath)
+        const globGetter = glob[accessPath]
 
         const childrenChildren: RouteObject[] = []
         // should omit layout, because layout is already handled
-        dtsRoutes(parentKey, childrenChildren, omit(paths, 'layout') as NestedStructure, parentPath)
+        const childPaths = { ...paths }
+        delete childPaths.layout
+        dtsRoutes(parentKey, childrenChildren, childPaths, parentPath)
         children.push({
           path: '',
           lazy: globGetter,
@@ -140,7 +141,7 @@ export function buildGlobRoutes(glob: Record<string, () => Promise<any>>): Route
 
         if (!hasChild) {
           const accessPath = `${segmentPathKey}.tsx`
-          const globGetter = get(glob, accessPath)
+          const globGetter = glob[accessPath]
 
           if (pathGetterSet.has(`${segmentPathKey}.tsx`)) {
             // throw new Error(`duplicate path: ` + accessPath)

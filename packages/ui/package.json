@@ -6,7 +6,30 @@
   "exports": {
     ".": "./src/index.ts",
     "./*": "./src/*",
-    "./dialog/radix": "./src/dialog/radix.ts"
+    "./button": "./src/button/index.ts",
+    "./checkbox": "./src/checkbox.tsx",
+    "./collapsible": "./src/collapsible/index.ts",
+    "./context-menu": "./src/context-menu/index.ts",
+    "./dialog": "./src/dialog/index.ts",
+    "./dialog/radix": "./src/dialog/radix.ts",
+    "./divider": "./src/divider/index.tsx",
+    "./dropdown-menu": "./src/dropdown-menu.tsx",
+    "./form": "./src/form/index.ts",
+    "./hover-card": "./src/hover-card/index.tsx",
+    "./icons": "./src/icons/index.tsx",
+    "./lazy-image": "./src/lazy-image/index.tsx",
+    "./modal": "./src/modal/index.ts",
+    "./portal": "./src/portal/index.tsx",
+    "./prompts": "./src/prompts/index.ts",
+    "./scroll-areas": "./src/scroll-areas/index.ts",
+    "./select": "./src/select/index.tsx",
+    "./sonner": "./src/sonner.tsx",
+    "./styles": "./src/styles/index.ts",
+    "./switch": "./src/switch/index.tsx",
+    "./thumbhash": "./src/thumbhash/index.tsx",
+    "./tooltip": "./src/tooltip/index.tsx",
+    "./typography": "./src/typography/index.ts",
+    "./utils": "./src/utils/index.ts"
   },
   "scripts": {
     "type-check": "tsc --noEmit"

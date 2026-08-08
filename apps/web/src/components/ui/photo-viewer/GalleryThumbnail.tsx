@@ -1,4 +1,4 @@
-import { Thumbhash } from '@afilmory/ui'
+import { Thumbhash } from '@afilmory/ui/thumbhash'
 import { clsxm, Spring } from '@afilmory/utils'
 import { m } from 'motion/react'
 import type { FC } from 'react'

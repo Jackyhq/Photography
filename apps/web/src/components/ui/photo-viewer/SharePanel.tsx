@@ -1,4 +1,5 @@
-import { glassInnerGlowBackground, glassSurfaceStyle, RootPortal } from '@afilmory/ui'
+import { RootPortal } from '@afilmory/ui/portal'
+import { glassInnerGlowBackground, glassSurfaceStyle } from '@afilmory/ui/styles'
 import { clsxm, Spring } from '@afilmory/utils'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { AnimatePresence, m } from 'motion/react'

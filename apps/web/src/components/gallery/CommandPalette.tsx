@@ -1,6 +1,7 @@
 import { photoLoader } from '@afilmory/data'
-import { glassInnerGlowBackground, glassSurfaceStyle, MageLens } from '@afilmory/ui'
 import * as DialogPrimitive from '@afilmory/ui/dialog/radix'
+import { MageLens } from '@afilmory/ui/icons'
+import { glassInnerGlowBackground, glassSurfaceStyle } from '@afilmory/ui/styles'
 import { clsxm } from '@afilmory/utils'
 import { useAtom } from 'jotai'
 import * as React from 'react'
