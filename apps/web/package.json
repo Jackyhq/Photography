@@ -79,7 +79,7 @@
     "execa": "9.6.1",
     "kolorist": "1.8.0",
     "linkedom": "0.18.12",
-    "postcss": "8.5.18",
+    "postcss": "8.5.23",
     "postcss-import": "16.1.1",
     "postcss-js": "5.1.0",
     "react-compiler-runtime": "19.1.0-rc.3",
