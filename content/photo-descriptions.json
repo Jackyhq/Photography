@@ -2,6 +2,64 @@
   "version": 1,
   "photos": [
     {
+      "key": "随手/20260823082234.jpeg",
+      "title": "弧形阶梯",
+      "titles": {
+        "zh-CN": "弧形阶梯",
+        "en": "Curving Steps"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于佛山和美术馆，黑色阶梯沿清水混凝土墙面舒展，弧形扶手把上下楼层连成流畅线条。",
+        "en": "Photographed at He Art Museum in Foshan, where dark steps sweep along exposed concrete walls and a curved handrail links the levels in one fluid line."
+      },
+      "tags": [
+        "广东",
+        "佛山",
+        "建筑"
+      ],
+      "aiContext": {
+        "currentTitle": "弧形阶梯",
+        "dateTaken": "2026-08-23T08:22:34.277Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "随手",
+          "广东",
+          "佛山",
+          "建筑"
+        ]
+      }
+    },
+    {
+      "key": "随手/20260823080905.jpeg",
+      "title": "中庭里的交错曲线",
+      "titles": {
+        "zh-CN": "中庭里的交错曲线",
+        "en": "Interlaced Curves in the Atrium"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于佛山和美术馆，深浅相间的弧形装置在清水混凝土中庭与环形光带之间交错。",
+        "en": "Photographed at He Art Museum in Foshan, where dark and pale sculptural curves cross through the exposed-concrete atrium beneath rings of light."
+      },
+      "tags": [
+        "广东",
+        "佛山",
+        "细节"
+      ],
+      "aiContext": {
+        "currentTitle": "中庭里的交错曲线",
+        "dateTaken": "2026-08-23T08:09:05.390Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "随手",
+          "广东",
+          "佛山",
+          "细节"
+        ]
+      }
+    },
+    {
       "key": "城市/20260822035105.jpeg",
       "title": "信义巷里的台北101",
       "titles": {
@@ -9898,8 +9956,8 @@
         "en": "Cloud Colors Over a Foshan Square"
       },
       "descriptions": {
-        "zh-CN": "拍摄于佛山，高处视角把街区、楼群和天空组织成清晰层次。",
-        "en": "Photographed in Foshan, where a higher viewpoint organizes blocks, towers, and sky into clear layers."
+        "zh-CN": "拍摄于佛山和美术馆，露台上的绿色苹果装置与远处两座曲线塔楼隔着暮色相望。",
+        "en": "Photographed at He Art Museum in Foshan, where a green apple sculpture on the terrace faces two curved towers beneath the evening sky."
       },
       "tags": [
         "广东",
