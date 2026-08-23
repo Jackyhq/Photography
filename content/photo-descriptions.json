@@ -2,6 +2,934 @@
   "version": 1,
   "photos": [
     {
+      "key": "城市/20260822035105.jpeg",
+      "title": "信义巷里的台北101",
+      "titles": {
+        "zh-CN": "信义巷里的台北101",
+        "en": "Taipei 101 Beyond a Xinyi Alley"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北信义区，老公寓与铁窗围出的狭窄巷道正对台北101，新旧城市尺度在晴空下叠在一起。",
+        "en": "Photographed in Taipei's Xinyi District, where a narrow lane framed by aging apartments and metal window grilles opens directly toward Taipei 101, layering old and new city scales beneath a clear sky."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "台北101"
+      ],
+      "aiContext": {
+        "currentTitle": "信义巷里的台北101",
+        "dateTaken": "2026-08-22T03:51:05.594Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "台北101"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260821124555.jpeg",
+      "title": "雨夜里的饶河街夜市",
+      "titles": {
+        "zh-CN": "雨夜里的饶河街夜市",
+        "en": "Raohe Night Market in the Rain"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北饶河街观光夜市，雨伞下的人群穿过灯火通明的牌楼，湿润路面映出摊档与招牌的色彩。",
+        "en": "Photographed at Raohe Street Night Market in Taipei, where crowds under umbrellas pass beneath the illuminated gate and wet pavement reflects the colors of stalls and signs."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "饶河夜市"
+      ],
+      "aiContext": {
+        "currentTitle": "雨夜里的饶河街夜市",
+        "dateTaken": "2026-08-21T12:45:55.942Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "饶河夜市"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260821100403.jpg",
+      "title": "雨幕中的光华街口",
+      "titles": {
+        "zh-CN": "雨幕中的光华街口",
+        "en": "Traffic Through Guanghua in the Rain"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北光华商圈，慢门让驶过路口的车辆化成一片白色雨幕，店铺灯光从后方透出。",
+        "en": "Photographed in Taipei's Guanghua district, where a long exposure turns passing traffic into a pale veil of rain with shop lights glowing behind it."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "街景"
+      ],
+      "aiContext": {
+        "currentTitle": "雨幕中的光华街口",
+        "dateTaken": "2026-08-21T10:04:03.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "街景"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260821100118.jpg",
+      "title": "光华商圈的雨色",
+      "titles": {
+        "zh-CN": "光华商圈的雨色",
+        "en": "A Rainy Evening in Guanghua"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北光华商圈，雨水铺亮整条街面，密集的电子商店招牌与车灯倒影沿道路向远处延伸。",
+        "en": "Photographed in Taipei's Guanghua district, where rain glosses the street and reflections from electronics signs and traffic lights stretch into the distance."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "街景"
+      ],
+      "aiContext": {
+        "currentTitle": "光华商圈的雨色",
+        "dateTaken": "2026-08-21T10:01:18.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "街景"
+        ]
+      }
+    },
+    {
+      "key": "人文/20260821081552.jpg",
+      "title": "忠孝新生站的晚高峰",
+      "titles": {
+        "zh-CN": "忠孝新生站的晚高峰",
+        "en": "Evening Rush at Zhongxiao Xinsheng"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北捷运忠孝新生站，列车开门后乘客汇入扶梯口，站台在傍晚通勤时段显得格外紧凑。",
+        "en": "Photographed at Zhongxiao Xinsheng Station on the Taipei Metro, where passengers stream toward the escalators after a train opens during the evening rush."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "人群"
+      ],
+      "aiContext": {
+        "currentTitle": "忠孝新生站的晚高峰",
+        "dateTaken": "2026-08-21T08:15:52.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "人文",
+          "台湾",
+          "台北",
+          "人群"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260821065009.jpg",
+      "title": "开往新店的捷运",
+      "titles": {
+        "zh-CN": "开往新店的捷运",
+        "en": "The Metro to Xindian"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北捷运车厢，开往新店的提示亮在车门上方，空着的吊环与站台灯光组成安静一刻。",
+        "en": "Photographed inside a Taipei Metro carriage, where the sign points toward Xindian and empty hand straps hang above the open doors and platform lights."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "捷运"
+      ],
+      "aiContext": {
+        "currentTitle": "开往新店的捷运",
+        "dateTaken": "2026-08-21T06:50:09.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "捷运"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260821064350.jpg",
+      "title": "台北车站的时刻表",
+      "titles": {
+        "zh-CN": "台北车站的时刻表",
+        "en": "Departure Boards at Taipei Main Station"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北车站，红绿文字的列车时刻表悬在售票窗口上方，旅客在大厅里确认下一段行程。",
+        "en": "Photographed at Taipei Main Station, where red-and-green departure boards hang above the ticket windows as travelers check the next leg of their journeys."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "台北车站"
+      ],
+      "aiContext": {
+        "currentTitle": "台北车站的时刻表",
+        "dateTaken": "2026-08-21T06:43:50.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "台北车站"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260821031052.jpeg",
+      "title": "松山窗前的台北101",
+      "titles": {
+        "zh-CN": "松山窗前的台北101",
+        "en": "Taipei 101 from Songshan"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北松山，从高处越过城区望向台北101，信义区楼群在盛夏云层与蓝天之间展开。",
+        "en": "Photographed from above in Taipei's Songshan district, looking across the city toward Taipei 101 as the Xinyi skyline rises beneath summer clouds and blue sky."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "台北101"
+      ],
+      "aiContext": {
+        "currentTitle": "松山窗前的台北101",
+        "dateTaken": "2026-08-21T03:10:52.239Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 15.66mm f/2.8",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "台北101"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260820132242.jpeg",
+      "title": "松山夜望台北101",
+      "titles": {
+        "zh-CN": "松山夜望台北101",
+        "en": "Taipei 101 at Night from Songshan"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北松山，亮起绿色灯光的台北101从信义区楼群后方升起，湿润夜色压低了城市天际线。",
+        "en": "Photographed from Songshan in Taipei, where Taipei 101 glows green above the Xinyi skyline beneath a damp, low night sky."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "台北101"
+      ],
+      "aiContext": {
+        "currentTitle": "松山夜望台北101",
+        "dateTaken": "2026-08-20T13:22:42.373Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 15.66mm f/2.8",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "台北101"
+        ]
+      }
+    },
+    {
+      "key": "风光/20260820084453.jpg",
+      "title": "野柳女王头",
+      "titles": {
+        "zh-CN": "野柳女王头",
+        "en": "The Queen's Head at Yehliu"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于新北野柳地质公园，女王头独立在海岸岩台上，蜂窝状纹理在阴云与海面之间格外清晰。",
+        "en": "Photographed at Yehliu Geopark in New Taipei, where the Queen's Head stands alone on the coastal rock platform, its honeycombed texture distinct against the overcast sea."
+      },
+      "tags": [
+        "台湾",
+        "新北",
+        "野柳"
+      ],
+      "aiContext": {
+        "currentTitle": "野柳女王头",
+        "dateTaken": "2026-08-20T08:44:53.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "风光",
+          "台湾",
+          "新北",
+          "野柳"
+        ]
+      }
+    },
+    {
+      "key": "风光/20260820083144.jpeg",
+      "title": "阴天下的野柳海岸",
+      "titles": {
+        "zh-CN": "阴天下的野柳海岸",
+        "en": "Yehliu Coast Under Heavy Clouds"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于新北野柳地质公园，蕈状岩与蜂窝岩散布在海边平台，低垂云层把远山与海面压成冷静色调。",
+        "en": "Photographed at Yehliu Geopark in New Taipei, where mushroom and honeycomb rocks spread across the shore beneath low clouds that mute the distant hills and sea."
+      },
+      "tags": [
+        "台湾",
+        "新北",
+        "野柳"
+      ],
+      "aiContext": {
+        "currentTitle": "阴天下的野柳海岸",
+        "dateTaken": "2026-08-20T08:31:44.765Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "风光",
+          "台湾",
+          "新北",
+          "野柳"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260820065732.jpeg",
+      "title": "山城九份",
+      "titles": {
+        "zh-CN": "山城九份",
+        "en": "Jiufen on the Hillside"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于新北九份，层层住宅沿山坡密集展开，寺庙屋脊与一栋醒目的黄色楼房从灰绿山城中露出。",
+        "en": "Photographed in Jiufen, New Taipei, where tightly packed homes climb the hillside and a temple roof and vivid yellow building emerge from the gray-green townscape."
+      },
+      "tags": [
+        "台湾",
+        "新北",
+        "九份"
+      ],
+      "aiContext": {
+        "currentTitle": "山城九份",
+        "dateTaken": "2026-08-20T06:57:32.505Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "新北",
+          "九份"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260820064538.jpg",
+      "title": "九份灯笼巷",
+      "titles": {
+        "zh-CN": "九份灯笼巷",
+        "en": "Lanterns Along a Jiufen Lane"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于新北九份，红灯笼沿陡斜阶梯一路向下，茶楼、屋檐与远处海色被收进狭窄街巷。",
+        "en": "Photographed in Jiufen, New Taipei, where red lanterns descend a steep stairway between teahouses and tiled roofs, with a glimpse of the sea beyond the narrow lane."
+      },
+      "tags": [
+        "台湾",
+        "新北",
+        "九份"
+      ],
+      "aiContext": {
+        "currentTitle": "九份灯笼巷",
+        "dateTaken": "2026-08-20T06:45:38.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "新北",
+          "九份"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260820060906.jpg",
+      "title": "九份老街入口",
+      "titles": {
+        "zh-CN": "九份老街入口",
+        "en": "At the Entrance to Jiufen Old Street"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于新北九份老街入口，红白路牌落在店铺与来往人群之间，山城街道从这里向坡上展开。",
+        "en": "Photographed at the entrance to Jiufen Old Street in New Taipei, where the red-and-white sign stands among shops and passing visitors as the hillside town rises beyond."
+      },
+      "tags": [
+        "台湾",
+        "新北",
+        "九份"
+      ],
+      "aiContext": {
+        "currentTitle": "九份老街入口",
+        "dateTaken": "2026-08-20T06:09:06.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "新北",
+          "九份"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260820032631.jpg",
+      "title": "十分铁道边的店铺",
+      "titles": {
+        "zh-CN": "十分铁道边的店铺",
+        "en": "Shops Along the Shifen Tracks"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于新北十分老街，湿润铁轨从两排店铺之间弯向远处，天灯与游客让狭窄街面保持热闹。",
+        "en": "Photographed on Shifen Old Street in New Taipei, where wet railway tracks curve between two rows of shops as sky lanterns and visitors animate the narrow lane."
+      },
+      "tags": [
+        "台湾",
+        "新北",
+        "十分"
+      ],
+      "aiContext": {
+        "currentTitle": "十分铁道边的店铺",
+        "dateTaken": "2026-08-20T03:26:31.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "新北",
+          "十分"
+        ]
+      }
+    },
+    {
+      "key": "人文/20260820032310.jpg",
+      "title": "铁道边放天灯",
+      "titles": {
+        "zh-CN": "铁道边放天灯",
+        "en": "Releasing a Sky Lantern by the Tracks"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于新北十分老街，游客在铁道旁托起写满祝愿的天灯，店铺、轨道与围观人群贴得很近。",
+        "en": "Photographed on Shifen Old Street in New Taipei, where visitors raise a sky lantern covered with wishes beside tracks pressed closely between shops and onlookers."
+      },
+      "tags": [
+        "台湾",
+        "新北",
+        "十分"
+      ],
+      "aiContext": {
+        "currentTitle": "铁道边放天灯",
+        "dateTaken": "2026-08-20T03:23:10.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "人文",
+          "台湾",
+          "新北",
+          "十分"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260820032154.jpg",
+      "title": "十分站前的列车",
+      "titles": {
+        "zh-CN": "十分站前的列车",
+        "en": "A Train at Shifen Station"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于新北十分老街，一列黄色区间车贴着铁道两侧的人群缓慢驶过，街道与铁路短暂让出同一条通道。",
+        "en": "Photographed on Shifen Old Street in New Taipei, where a yellow local train moves slowly past crowds standing close to both sides of the track."
+      },
+      "tags": [
+        "台湾",
+        "新北",
+        "十分"
+      ],
+      "aiContext": {
+        "currentTitle": "十分站前的列车",
+        "dateTaken": "2026-08-20T03:21:54.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "新北",
+          "十分"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260820032107.jpeg",
+      "title": "驶入十分老街的列车",
+      "titles": {
+        "zh-CN": "驶入十分老街的列车",
+        "en": "A Train Entering Shifen Old Street"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于新北十分老街，列车沿雨后铁轨从绿意与民居之间驶来，店铺门前的警示灯已经亮起。",
+        "en": "Photographed on Shifen Old Street in New Taipei, where a train approaches along rain-darkened tracks between greenery and homes as warning lights glow beside the shops."
+      },
+      "tags": [
+        "台湾",
+        "新北",
+        "十分"
+      ],
+      "aiContext": {
+        "currentTitle": "驶入十分老街的列车",
+        "dateTaken": "2026-08-20T03:21:07.296Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 15.66mm f/2.8",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "新北",
+          "十分"
+        ]
+      }
+    },
+    {
+      "key": "风光/20260820022942.jpeg",
+      "title": "水雾中的十分瀑布",
+      "titles": {
+        "zh-CN": "水雾中的十分瀑布",
+        "en": "Shifen Waterfall in the Mist"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于新北十分瀑布，宽阔水幕从岩壁倾泻而下，升起的水雾把右侧山林罩上一层薄纱。",
+        "en": "Photographed at Shifen Waterfall in New Taipei, where a broad curtain of water drops over the rock face and rising spray veils the forest beside it."
+      },
+      "tags": [
+        "台湾",
+        "新北",
+        "十分瀑布"
+      ],
+      "aiContext": {
+        "currentTitle": "水雾中的十分瀑布",
+        "dateTaken": "2026-08-20T02:29:42.237Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "风光",
+          "台湾",
+          "新北",
+          "十分瀑布"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260820004113.jpeg",
+      "title": "台北车站旁的招牌街景",
+      "titles": {
+        "zh-CN": "台北车站旁的招牌街景",
+        "en": "Signs by Taipei Main Station"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北车站M8出口附近，密集商号与补习班招牌层层挂在旧楼立面上，路口人车从下方穿过。",
+        "en": "Photographed near Exit M8 of Taipei Main Station, where dense shop and cram-school signs cover older facades above the traffic and pedestrians at the junction."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "台北车站"
+      ],
+      "aiContext": {
+        "currentTitle": "台北车站旁的招牌街景",
+        "dateTaken": "2026-08-20T00:41:13.922Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 15.66mm f/2.8",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "台北车站"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260819082228.jpeg",
+      "title": "阴天里的台北101",
+      "titles": {
+        "zh-CN": "阴天里的台北101",
+        "en": "Taipei 101 Beneath Gray Skies"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北信义区，从近处仰望台北101，层叠玻璃幕墙与外挑结构在均匀阴天里显出清晰线条。",
+        "en": "Photographed in Taipei's Xinyi District, looking up at Taipei 101 as its layered glass facade and projecting forms stand sharply against an even gray sky."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "台北101"
+      ],
+      "aiContext": {
+        "currentTitle": "阴天里的台北101",
+        "dateTaken": "2026-08-19T08:22:28.770Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "台北101"
+        ]
+      }
+    },
+    {
+      "key": "随手/20260819052221.jpeg",
+      "title": "故宫里的翠玉白菜",
+      "titles": {
+        "zh-CN": "故宫里的翠玉白菜",
+        "en": "The Jadeite Cabbage at the Palace Museum"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北国立故宫博物院，翠玉白菜在展柜灯光下显出由白到绿的天然色层与细密叶脉。",
+        "en": "Photographed at the National Palace Museum in Taipei, where the Jadeite Cabbage reveals its natural white-to-green layers and finely carved veins beneath the display lighting."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "故宫博物院"
+      ],
+      "aiContext": {
+        "currentTitle": "故宫里的翠玉白菜",
+        "dateTaken": "2026-08-19T05:22:21.327Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "随手",
+          "台湾",
+          "台北",
+          "故宫博物院"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260819024445.jpeg",
+      "title": "圆山大饭店的红阶",
+      "titles": {
+        "zh-CN": "圆山大饭店的红阶",
+        "en": "Red Stairs at the Grand Hotel"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北圆山大饭店，大红立柱、地毯台阶与雕龙石栏在大堂灯光下交错出鲜明层次。",
+        "en": "Photographed inside Taipei's Grand Hotel, where red columns and carpeted stairs intersect with carved dragon balustrades beneath the lobby lights."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "圆山大饭店"
+      ],
+      "aiContext": {
+        "currentTitle": "圆山大饭店的红阶",
+        "dateTaken": "2026-08-19T02:44:45.380Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 15.66mm f/2.8",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "圆山大饭店"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260818104557.jpeg",
+      "title": "蓝调时刻的士林市场",
+      "titles": {
+        "zh-CN": "蓝调时刻的士林市场",
+        "en": "Shilin Market at Blue Hour"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北士林夜市，直立的士林市场招牌在蓝调天空下亮起，摊档灯光与人群从老街入口向内延伸。",
+        "en": "Photographed at Shilin Night Market in Taipei, where the vertical market sign glows beneath a blue-hour sky and stall lights lead into the crowded old street."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "士林夜市"
+      ],
+      "aiContext": {
+        "currentTitle": "蓝调时刻的士林市场",
+        "dateTaken": "2026-08-18T10:45:57.064Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "士林夜市"
+        ]
+      }
+    },
+    {
+      "key": "随手/20260818103819.jpeg",
+      "title": "士林夜市的香肠摊",
+      "titles": {
+        "zh-CN": "士林夜市的香肠摊",
+        "en": "Sausages on the Grill at Shilin Night Market"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北士林夜市，不同口味的香肠整齐铺在烤架上，摊位风扇把炭火热气吹向一侧。",
+        "en": "Photographed at Shilin Night Market in Taipei, where rows of sausages in different flavors cover the grill as a small fan pushes the heat aside."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "士林夜市"
+      ],
+      "aiContext": {
+        "currentTitle": "士林夜市的香肠摊",
+        "dateTaken": "2026-08-18T10:38:19.890Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 15.66mm f/2.8",
+        "categoryTags": [
+          "随手",
+          "台湾",
+          "台北",
+          "士林夜市"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260818103415.jpg",
+      "title": "华灯初上的士林夜市",
+      "titles": {
+        "zh-CN": "华灯初上的士林夜市",
+        "en": "Shilin Night Market at Dusk"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北士林夜市，天色刚暗，密集小吃招牌与店灯已经亮起，人群沿狭窄街道向深处涌入。",
+        "en": "Photographed at Shilin Night Market in Taipei just after dusk, as dense food signs and shop lights come on and crowds move deeper into the narrow street."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "士林夜市"
+      ],
+      "aiContext": {
+        "currentTitle": "华灯初上的士林夜市",
+        "dateTaken": "2026-08-18T10:34:15.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "士林夜市"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260818101254.jpg",
+      "title": "夕阳下的圆山大饭店",
+      "titles": {
+        "zh-CN": "夕阳下的圆山大饭店",
+        "en": "The Grand Hotel in Evening Light"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北圆山大饭店，夕阳从侧面照亮红柱、金瓦与层叠飞檐，主楼在蓝天下显得格外鲜明。",
+        "en": "Photographed at Taipei's Grand Hotel, where evening light catches the red columns, golden roof, and layered eaves, setting the main building sharply against the blue sky."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "圆山大饭店"
+      ],
+      "aiContext": {
+        "currentTitle": "夕阳下的圆山大饭店",
+        "dateTaken": "2026-08-18T10:12:54.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "圆山大饭店"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260818100316.jpg",
+      "title": "圆山长廊的落日",
+      "titles": {
+        "zh-CN": "圆山长廊的落日",
+        "en": "Sunset Along the Grand Hotel Corridor"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北圆山大饭店，落日从长廊尽头照进来，金光沿栏杆与檐下延伸，远处城区沉入剪影。",
+        "en": "Photographed at Taipei's Grand Hotel, where the setting sun enters from the end of the corridor and runs along the railings and eaves above a silhouetted city."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "圆山大饭店"
+      ],
+      "aiContext": {
+        "currentTitle": "圆山长廊的落日",
+        "dateTaken": "2026-08-18T10:03:16.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "圆山大饭店"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260818100241.jpg",
+      "title": "红柱间的台北天际线",
+      "titles": {
+        "zh-CN": "红柱间的台北天际线",
+        "en": "Taipei Skyline Between Red Columns"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于台北圆山大饭店，夕阳照亮长廊红柱，台北101与远山被框在栏杆外的城市天际线上。",
+        "en": "Photographed at Taipei's Grand Hotel, where evening light warms the red corridor columns and frames Taipei 101 and distant hills across the skyline."
+      },
+      "tags": [
+        "台湾",
+        "台北",
+        "圆山大饭店"
+      ],
+      "aiContext": {
+        "currentTitle": "红柱间的台北天际线",
+        "dateTaken": "2026-08-18T10:02:41.000Z",
+        "camera": "OM Digital Solutions OM-5",
+        "lens": "OM 17mm F1.8 II",
+        "categoryTags": [
+          "城市",
+          "台湾",
+          "台北",
+          "圆山大饭店"
+        ]
+      }
+    },
+    {
+      "key": "随手/20260818075458.jpeg",
+      "title": "抵达桃园",
+      "titles": {
+        "zh-CN": "抵达桃园",
+        "en": "Arrival in Taoyuan"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于桃园国际机场，抵达与转机指示牌下方亮着“欢迎莅临台湾”，旅程从入境通道正式开始。",
+        "en": "Photographed at Taoyuan International Airport, where arrivals and transfer signs glow above a welcome to Taiwan as the journey begins through the entry corridor."
+      },
+      "tags": [
+        "台湾",
+        "桃园",
+        "机场"
+      ],
+      "aiContext": {
+        "currentTitle": "抵达桃园",
+        "dateTaken": "2026-08-18T07:54:58.438Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 15.66mm f/2.8",
+        "categoryTags": [
+          "随手",
+          "台湾",
+          "桃园",
+          "机场"
+        ]
+      }
+    },
+    {
+      "key": "风光/20260818073620.jpeg",
+      "title": "飞越桃园海岸",
+      "titles": {
+        "zh-CN": "飞越桃园海岸",
+        "en": "Flying Above the Taoyuan Coast"
+      },
+      "descriptions": {
+        "zh-CN": "飞越台湾桃园上空时拍摄，农田、鱼塘与聚落铺到海岸线，机翼下方的平原在云隙中展开。",
+        "en": "Photographed while flying above Taoyuan, Taiwan, where fields, ponds, and settlements spread toward the coast beneath the wing and gaps in the clouds."
+      },
+      "tags": [
+        "台湾",
+        "桃园",
+        "旅途"
+      ],
+      "aiContext": {
+        "currentTitle": "飞越桃园海岸",
+        "dateTaken": "2026-08-18T07:36:20.315Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "风光",
+          "台湾",
+          "桃园",
+          "旅途"
+        ]
+      }
+    },
+    {
+      "key": "城市/20260818043741.jpeg",
+      "title": "启程前的香港机场",
+      "titles": {
+        "zh-CN": "启程前的香港机场",
+        "en": "Hong Kong Airport Before Departure"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于香港国际机场，停机坪上的客机沿航站楼排开，午后云层映在候机区玻璃上。",
+        "en": "Photographed at Hong Kong International Airport, where passenger aircraft line the terminal apron and afternoon clouds reflect across the departure windows."
+      },
+      "tags": [
+        "香港",
+        "机场",
+        "旅途"
+      ],
+      "aiContext": {
+        "currentTitle": "启程前的香港机场",
+        "dateTaken": "2026-08-18T04:37:41.120Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "城市",
+          "香港",
+          "机场",
+          "旅途"
+        ]
+      }
+    },
+    {
       "key": "城市/20260807093839.jpeg",
       "title": "澳门旧城的斜巷",
       "titles": {
