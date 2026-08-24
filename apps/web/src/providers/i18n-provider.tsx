@@ -2,7 +2,7 @@ import { photoLoader } from '@afilmory/data'
 import i18next from 'i18next'
 import { useAtom } from 'jotai'
 import type { FC, PropsWithChildren } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { I18nextProvider } from 'react-i18next'
 
 import { EventBus } from '~/lib/event-bus'
@@ -12,7 +12,6 @@ import { i18nAtom } from '../i18n'
 
 export const I18nProvider: FC<PropsWithChildren> = ({ children }) => {
   const [currentI18NInstance, update] = useAtom(i18nAtom)
-  const [, setPhotoTextRevision] = useState(0)
 
   useEffect(() => {
     if (!import.meta.env.DEV) return
@@ -40,16 +39,11 @@ export const I18nProvider: FC<PropsWithChildren> = ({ children }) => {
     let isCancelled = false
 
     const loadPhotoText = (language: string) => {
-      photoLoader
-        .loadPhotoText(language)
-        .then(() => {
-          if (!isCancelled) {
-            setPhotoTextRevision((revision) => revision + 1)
-          }
-        })
-        .catch((error) => {
+      void photoLoader.loadPhotoText(language).catch((error) => {
+        if (!isCancelled) {
           console.error('Failed to load localized photo text:', error)
-        })
+        }
+      })
     }
 
     loadPhotoText(currentI18NInstance.resolvedLanguage || currentI18NInstance.language)

@@ -114,6 +114,8 @@ class PhotoLoader {
   private photoTextPacks = new Map<string, PhotoTextPack>()
   private loadedPhotoTextLanguages = new Set<string>([DEFAULT_INLINE_PHOTO_TEXT_LANGUAGE])
   private searchableTextCache = new WeakMap<object, string[]>()
+  private photoTextRevision = 0
+  private photoTextListeners = new Set<() => void>()
 
   constructor() {
     this.getAllTags = this.getAllTags.bind(this)
@@ -127,6 +129,8 @@ class PhotoLoader {
     this.loadPhotoText = this.loadPhotoText.bind(this)
     this.getPhotoText = this.getPhotoText.bind(this)
     this.getSearchablePhotoText = this.getSearchablePhotoText.bind(this)
+    this.getPhotoTextRevision = this.getPhotoTextRevision.bind(this)
+    this.subscribePhotoTextChanges = this.subscribePhotoTextChanges.bind(this)
 
     this.photos = __MANIFEST__.data
     this.cameras = __MANIFEST__.cameras as unknown as CameraInfo[]
@@ -222,6 +226,17 @@ class PhotoLoader {
     return searchableText
   }
 
+  getPhotoTextRevision(): number {
+    return this.photoTextRevision
+  }
+
+  subscribePhotoTextChanges(listener: () => void): () => void {
+    this.photoTextListeners.add(listener)
+    return () => {
+      this.photoTextListeners.delete(listener)
+    }
+  }
+
   getAllTags() {
     const tagSet = new Set<string>()
     this.photos.forEach((photo) => {
@@ -262,6 +277,8 @@ class PhotoLoader {
   }
 
   private applyPhotoTextPack(language: string, pack: PhotoTextPack) {
+    let didChange = false
+
     for (const [photoId, text] of Object.entries(pack.photos)) {
       const title = text.title?.trim()
       const description = text.description?.trim()
@@ -269,16 +286,20 @@ class PhotoLoader {
 
       const indexPhoto = this.photoMap[photoId]
       if (indexPhoto) {
-        this.applyPhotoText(indexPhoto, language, title, description)
+        didChange = this.applyPhotoText(indexPhoto, language, title, description) || didChange
       }
 
       const fullPhoto = this.fullPhotoMap?.[photoId]
       if (fullPhoto) {
-        this.applyPhotoText(fullPhoto, language, title, description)
+        didChange = this.applyPhotoText(fullPhoto, language, title, description) || didChange
       }
     }
 
-    this.searchableTextCache = new WeakMap<object, string[]>()
+    if (didChange) {
+      this.searchableTextCache = new WeakMap<object, string[]>()
+      this.photoTextRevision += 1
+      for (const listener of this.photoTextListeners) listener()
+    }
   }
 
   private applyPhotoText(
@@ -286,20 +307,26 @@ class PhotoLoader {
     language: string,
     title: string | undefined,
     description: string | undefined,
-  ) {
-    if (title) {
+  ): boolean {
+    let didChange = false
+
+    if (title && photo.titles?.[language] !== title) {
       photo.titles = {
         ...photo.titles,
         [language]: title,
       }
+      didChange = true
     }
 
-    if (description) {
+    if (description && photo.descriptions?.[language] !== description) {
       photo.descriptions = {
         ...photo.descriptions,
         [language]: description,
       }
+      didChange = true
     }
+
+    return didChange
   }
 
   private async fetchFullManifest(): Promise<AfilmoryManifest> {

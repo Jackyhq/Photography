@@ -44,7 +44,8 @@ const KiB = 1024
 const PHOTO_HTML_PAGE_BUDGET = 25 * KiB
 const PHOTO_HTML_TOTAL_BUDGET = 10 * 1024 * KiB
 const STARTUP_BUDGET: Budget = { gzip: 340 * KiB, brotli: 290 * KiB }
-const STARTUP_LOCALE_PATTERN = /^assets\/en-[\w-]+\.js$/
+const STARTUP_LOCALES = ['en', 'zh-CN', 'zh-HK', 'zh-TW', 'jp', 'ko'] as const
+const DEFAULT_STARTUP_LOCALE = 'en'
 const FULL_MANIFEST_PATTERN = /^assets\/photos-manifest\.[\w-]+\.json$/
 const MAPLIBRE_ASSET_PATTERN = /^assets\/maplibre-gl-[\w-]+\.js$/
 
@@ -122,29 +123,47 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     failures.push('Missing .vite/manifest.json; keep Vite build.manifest enabled for route budgets')
   } else {
     const viteManifest = JSON.parse(readFileSync(viteManifestPath, 'utf-8')) as ViteManifest
-    const startupLocaleFiles = files.filter((file) => STARTUP_LOCALE_PATTERN.test(file))
-    if (startupLocaleFiles.length !== 1) {
-      failures.push(`Expected one default startup locale asset, found ${startupLocaleFiles.length}`)
-    }
-    const startupFiles = Array.from(
+    const startupLocaleFiles = new Map(
+      STARTUP_LOCALES.map((locale) => {
+        const pattern = new RegExp(`^assets/${locale}-[\\w-]+\\.js$`)
+        const matches = files.filter((file) => pattern.test(file))
+        if (matches.length !== 1) {
+          failures.push(`Expected one startup locale asset for ${locale}, found ${matches.length}`)
+        }
+        return [locale, matches[0]] as const
+      }),
+    )
+    const startupBaseFiles = Array.from(
       new Set([
         ...collectStartupFiles(readFileSync(indexPath, 'utf-8')),
-        ...startupLocaleFiles,
         ...collectManifestRouteFiles(viteManifest, [/src\/pages\/\(main\)\/layout\.tsx$/], {
           includeEntries: true,
           includeDynamic: false,
         }),
       ]),
     ).sort()
-    const missingStartupFiles = startupFiles.filter((file) => !files.includes(file))
+    const missingStartupFiles = startupBaseFiles.filter((file) => !files.includes(file))
     failures.push(...missingStartupFiles.map((file) => `Missing startup asset: ${file}`))
 
-    const existingStartupFiles = startupFiles.filter((file) => files.includes(file))
-    const startupSize = sumCompressedSizes(distDir, existingStartupFiles)
-    rows.push(formatBudgetRow('homepage startup', existingStartupFiles, startupSize, STARTUP_BUDGET))
-    appendCompressedFailures(failures, 'homepage startup', startupSize, STARTUP_BUDGET)
+    const existingStartupBaseFiles = startupBaseFiles.filter((file) => files.includes(file))
+    const defaultLocaleFile = startupLocaleFiles.get(DEFAULT_STARTUP_LOCALE)
+    for (const locale of STARTUP_LOCALES) {
+      const localeFile = startupLocaleFiles.get(locale)
+      if (!localeFile) continue
 
-    const baseline = new Set(existingStartupFiles)
+      // Include English as a conservative fallback for non-English startup paths.
+      // This catches regressions even when i18next's exact fallback hierarchy changes.
+      const localeChainFiles = locale === DEFAULT_STARTUP_LOCALE ? [localeFile] : [defaultLocaleFile, localeFile]
+      const startupFiles = Array.from(
+        new Set([...existingStartupBaseFiles, ...localeChainFiles.filter((file): file is string => !!file)]),
+      ).sort()
+      const startupSize = sumCompressedSizes(distDir, startupFiles)
+      const budgetName = `homepage startup (${locale})`
+      rows.push(formatBudgetRow(budgetName, startupFiles, startupSize, STARTUP_BUDGET))
+      appendCompressedFailures(failures, budgetName, startupSize, STARTUP_BUDGET)
+    }
+
+    const baseline = new Set([...existingStartupBaseFiles, ...(defaultLocaleFile ? [defaultLocaleFile] : [])])
     for (const target of routeTargets) {
       const matchedSources = findManifestKeys(viteManifest, target.sourcePatterns)
       if (matchedSources.length !== target.sourcePatterns.length) {

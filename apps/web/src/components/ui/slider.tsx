@@ -1,16 +1,17 @@
 import { clsxm } from '@afilmory/utils'
+import * as React from 'react'
 import { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 interface SliderProps {
   value: number | 'auto'
   onChange: (value: number | 'auto') => void
-  // Called when user finishes interaction (pointer up). Optional and non-breaking.
-  onPointUp?: (e: PointerEvent) => void
+  onValueCommit?: (value: number | 'auto') => void
   min: number
   max: number
   step?: number
   autoLabel?: string
+  ariaLabel?: string
   className?: string
   disabled?: boolean
 }
@@ -18,11 +19,12 @@ interface SliderProps {
 export const Slider = ({
   value,
   onChange,
-  onPointUp,
+  onValueCommit,
   min,
   max,
   step = 1,
   autoLabel,
+  ariaLabel,
   className,
   disabled = false,
 }: SliderProps) => {
@@ -30,14 +32,18 @@ export const Slider = ({
   const finalAutoLabel = autoLabel || t('slider.auto')
   const [isDragging, setIsDragging] = useState(false)
   const sliderRef = useRef<HTMLDivElement>(null)
-  const trackRef = useRef<HTMLDivElement>(null)
+  const activePointerIdRef = useRef<number | null>(null)
+  const latestValueRef = useRef(value)
+  latestValueRef.current = value
 
   // 将值转换为位置百分比
   const getPositionFromValue = useCallback(
     (val: number | 'auto') => {
       if (val === 'auto') return 5 // 自动档位置稍微偏右一点
+      if (max === min) return 100
+      const clampedValue = Math.min(max, Math.max(min, val))
       // 数值档从 15% 开始到 100%
-      return 15 + ((val - min) / (max - min)) * 85
+      return 15 + ((clampedValue - min) / (max - min)) * 85
     },
     [min, max],
   )
@@ -46,52 +52,113 @@ export const Slider = ({
   const getValueFromPosition = useCallback(
     (position: number) => {
       if (position <= 12) return 'auto' // 左侧 12% 区域为自动档
+      if (max === min) return min
       const normalizedPosition = (position - 15) / 85 // 从 15% 开始的 85% 区域为数值
-      const rawValue = min + Math.max(0, normalizedPosition) * (max - min)
-      return Math.round(Math.max(min, rawValue) / step) * step
+      const rawValue = min + Math.max(0, Math.min(1, normalizedPosition)) * (max - min)
+      const steppedValue = min + Math.round((rawValue - min) / step) * step
+      return Math.min(max, Math.max(min, steppedValue))
     },
     [min, max, step],
   )
 
+  const updateValueFromPointer = useCallback(
+    (clientX: number) => {
+      const slider = sliderRef.current
+      if (!slider) return
+
+      const rect = slider.getBoundingClientRect()
+      if (rect.width <= 0) return
+
+      const position = ((clientX - rect.left) / rect.width) * 100
+      const clampedPosition = Math.max(0, Math.min(100, position))
+      const newValue = getValueFromPosition(clampedPosition)
+
+      if (newValue !== latestValueRef.current) {
+        latestValueRef.current = newValue
+        onChange(newValue)
+      }
+    },
+    [getValueFromPosition, onChange],
+  )
+
   const handlePointerDown = useCallback(
-    (event: React.PointerEvent) => {
+    (event: React.PointerEvent<HTMLDivElement>) => {
       if (disabled) return
 
       event.preventDefault()
+      activePointerIdRef.current = event.pointerId
+      event.currentTarget.setPointerCapture?.(event.pointerId)
       setIsDragging(true)
-
-      const updateValue = (clientX: number) => {
-        if (!trackRef.current) return
-
-        const rect = trackRef.current.getBoundingClientRect()
-        const position = ((clientX - rect.left) / rect.width) * 100
-        const clampedPosition = Math.max(0, Math.min(100, position))
-        const newValue = getValueFromPosition(clampedPosition)
-
-        if (newValue !== value) {
-          onChange(newValue)
-        }
-      }
-
-      updateValue(event.clientX)
-
-      const handlePointerMove = (e: PointerEvent) => {
-        updateValue(e.clientX)
-      }
-
-      const handlePointerUp = (e: PointerEvent) => {
-        setIsDragging(false)
-        if (onPointUp) {
-          onPointUp(e)
-        }
-        document.removeEventListener('pointermove', handlePointerMove)
-        document.removeEventListener('pointerup', handlePointerUp)
-      }
-
-      document.addEventListener('pointermove', handlePointerMove)
-      document.addEventListener('pointerup', handlePointerUp)
+      updateValueFromPointer(event.clientX)
     },
-    [disabled, getValueFromPosition, value, onChange, onPointUp],
+    [disabled, updateValueFromPointer],
+  )
+
+  const handlePointerMove = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      if (activePointerIdRef.current !== event.pointerId) return
+      updateValueFromPointer(event.clientX)
+    },
+    [updateValueFromPointer],
+  )
+
+  const finishPointerInteraction = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>, updateFromPointer: boolean) => {
+      if (activePointerIdRef.current !== event.pointerId) return
+      if (updateFromPointer) updateValueFromPointer(event.clientX)
+
+      activePointerIdRef.current = null
+      setIsDragging(false)
+      if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId)
+      }
+      onValueCommit?.(latestValueRef.current)
+    },
+    [onValueCommit, updateValueFromPointer],
+  )
+
+  const commitKeyboardValue = useCallback(
+    (nextValue: number | 'auto') => {
+      latestValueRef.current = nextValue
+      onChange(nextValue)
+      onValueCommit?.(nextValue)
+    },
+    [onChange, onValueCommit],
+  )
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (disabled) return
+
+      const currentValue = latestValueRef.current
+      let nextValue: number | 'auto' | undefined
+
+      switch (event.key) {
+        case 'ArrowRight':
+        case 'ArrowUp': {
+          nextValue = currentValue === 'auto' ? min : Math.min(max, currentValue + step)
+          break
+        }
+        case 'ArrowLeft':
+        case 'ArrowDown': {
+          nextValue = currentValue === 'auto' || currentValue <= min ? 'auto' : Math.max(min, currentValue - step)
+          break
+        }
+        case 'Home': {
+          nextValue = 'auto'
+          break
+        }
+        case 'End': {
+          nextValue = max
+          break
+        }
+      }
+
+      if (nextValue === undefined) return
+      event.preventDefault()
+      if (nextValue !== currentValue) commitKeyboardValue(nextValue)
+    },
+    [commitKeyboardValue, disabled, max, min, step],
   )
 
   const position = getPositionFromValue(value)
@@ -107,14 +174,27 @@ export const Slider = ({
       {/* 滑块轨道 */}
       <div
         ref={sliderRef}
-        className={clsxm('relative h-6 cursor-pointer', disabled && 'cursor-not-allowed opacity-50')}
+        role="slider"
+        tabIndex={disabled ? -1 : 0}
+        aria-label={ariaLabel}
+        aria-disabled={disabled}
+        aria-orientation="horizontal"
+        aria-valuemin={min - step}
+        aria-valuemax={max}
+        aria-valuenow={value === 'auto' ? min - step : Math.min(max, Math.max(min, value))}
+        aria-valuetext={value === 'auto' ? finalAutoLabel : String(value)}
+        className={clsxm(
+          'relative h-6 touch-none cursor-pointer select-none rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+          disabled && 'cursor-not-allowed opacity-50',
+        )}
         onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={(event) => finishPointerInteraction(event, true)}
+        onPointerCancel={(event) => finishPointerInteraction(event, false)}
+        onKeyDown={handleKeyDown}
       >
         {/* 背景轨道 */}
-        <div
-          ref={trackRef}
-          className="absolute top-1/2 h-1.5 w-full -translate-y-1/2 rounded-full bg-neutral-200 dark:bg-neutral-700"
-        >
+        <div className="absolute top-1/2 h-1.5 w-full -translate-y-1/2 rounded-full bg-neutral-200 dark:bg-neutral-700">
           {/* 自动档区域指示 */}
           <div className="absolute top-0 left-0 h-full w-[12%] rounded-l-full bg-green-100 dark:bg-green-900/50" />
 

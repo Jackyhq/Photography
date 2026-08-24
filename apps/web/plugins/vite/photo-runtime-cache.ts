@@ -5,6 +5,10 @@ export const ACTIVE_PHOTO_RUNTIME_CACHES = {
   thumbnails: 'photo-thumbnails-v3',
 } as const
 
+export const OPTIONAL_CODE_RUNTIME_CACHE = 'optional-code-v1'
+
+export const OPTIONAL_CODE_PRECACHE_GLOBS = ['vendor/0-*.js', 'assets/maplibre-gl-*.js'] as const
+
 export function createPhotoRuntimeCaching(): RuntimeCaching[] {
   return [
     {
@@ -34,6 +38,26 @@ export function createPhotoRuntimeCaching(): RuntimeCaching[] {
         expiration: {
           maxEntries: 12,
           maxAgeSeconds: 60 * 60 * 3,
+          purgeOnQuotaError: true,
+        },
+      },
+    },
+  ]
+}
+
+export function createOptionalCodeRuntimeCaching(): RuntimeCaching[] {
+  return [
+    {
+      urlPattern: /\/(?:vendor\/0-|assets\/maplibre-gl-)[^/]+\.js$/,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: OPTIONAL_CODE_RUNTIME_CACHE,
+        cacheableResponse: {
+          statuses: [200],
+        },
+        expiration: {
+          maxEntries: 4,
+          maxAgeSeconds: 60 * 60 * 24 * 365,
           purgeOnQuotaError: true,
         },
       },

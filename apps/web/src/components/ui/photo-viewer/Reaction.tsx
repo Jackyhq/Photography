@@ -4,7 +4,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { produce } from 'immer'
 import { AnimatePresence, m } from 'motion/react'
 import type { CSSProperties, RefObject } from 'react'
-import { lazy, Suspense, useCallback, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
@@ -144,11 +144,21 @@ export const ReactionButton = ({ className, disabled = false, photoId, style }: 
 
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  useEffect(
+    () => () => {
+      if (animationTimeoutRef.current !== null) {
+        clearTimeout(animationTimeoutRef.current)
+      }
+    },
+    [],
+  )
+
   return (
     <div className={clsxm(styles.base(), className)} style={style}>
       <DropdownMenu.Root open={isOpen}>
         <DropdownMenu.Trigger asChild>
           <m.button
+            type="button"
             className={styles.mainButton()}
             disabled={disabled}
             whileHover={{ scale: 1.05 }}
@@ -219,6 +229,7 @@ export const ReactionButton = ({ className, disabled = false, photoId, style }: 
                 {reactions.map((reaction) => (
                   <DropdownMenu.Item key={reaction} asChild>
                     <m.button
+                      type="button"
                       className={styles.reactionItem()}
                       variants={emojiVariants}
                       aria-label={t('photo.reaction.emoji', { emoji: reaction })}

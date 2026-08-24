@@ -49,8 +49,11 @@ describe('photoLoader photo text packs', () => {
 
     const { photoLoader } = await import('./index')
     const photo = photoLoader.getPhoto('photo-1')
+    const listener = vi.fn()
+    const unsubscribe = photoLoader.subscribePhotoTextChanges(listener)
 
     expect(photoLoader.getSearchablePhotoText(photo)).toEqual(['中文标题', '中文描述'])
+    expect(photoLoader.getPhotoTextRevision()).toBe(0)
 
     await photoLoader.loadPhotoText('en')
 
@@ -72,8 +75,13 @@ describe('photoLoader photo text packs', () => {
       'English title',
       'English description',
     ])
+    expect(photoLoader.getPhotoTextRevision()).toBe(1)
+    expect(listener).toHaveBeenCalledTimes(1)
 
     await photoLoader.loadPhotoText('en-US')
     expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(listener).toHaveBeenCalledTimes(1)
+
+    unsubscribe()
   })
 })

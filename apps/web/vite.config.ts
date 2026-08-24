@@ -23,7 +23,11 @@ import { localesJsonPlugin } from './plugins/vite/locales-json'
 import { manifestInjectPlugin } from './plugins/vite/manifest-inject'
 import { ogImagePlugin } from './plugins/vite/og-image-plugin'
 import { createPhotoPageMetaPlugin } from './plugins/vite/photo-page-meta'
-import { createPhotoRuntimeCaching } from './plugins/vite/photo-runtime-cache'
+import {
+  createOptionalCodeRuntimeCaching,
+  createPhotoRuntimeCaching,
+  OPTIONAL_CODE_PRECACHE_GLOBS,
+} from './plugins/vite/photo-runtime-cache'
 import { photosStaticPlugin } from './plugins/vite/photos-static'
 import { siteConfigInjectPlugin } from './plugins/vite/site-config-inject'
 
@@ -135,8 +139,13 @@ const staticWebBuildPlugins: PluginOption[] = [
       maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB
       importScripts: ['pwa-cache-migration.js'],
       globPatterns: ['index.html', '**/*.{js,css,ico,svg}'],
-      globIgnores: ['photos/**/*.html', 'thumbnails/**/*', '**/*.{jpg,jpeg,png,webp,avif,gif,mp4,mov,webm}'],
-      runtimeCaching: createPhotoRuntimeCaching(),
+      globIgnores: [
+        'photos/**/*.html',
+        'thumbnails/**/*',
+        '**/*.{jpg,jpeg,png,webp,avif,gif,mp4,mov,webm}',
+        ...OPTIONAL_CODE_PRECACHE_GLOBS,
+      ],
+      runtimeCaching: [...createPhotoRuntimeCaching(), ...createOptionalCodeRuntimeCaching()],
     },
     devOptions: {
       enabled: false, // 开发环境不启用 PWA

@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { isRouteErrorResponse, useRouteError } from 'react-router'
 
 import { attachOpenInEditor } from '~/lib/dev'
-import { DYNAMIC_IMPORT_RELOAD_STORAGE_KEY, shouldReloadForDynamicImportError } from '~/lib/dynamic-import-recovery'
+import { claimDynamicImportReload } from '~/lib/dynamic-import-recovery'
 
 import { FallbackButton } from './FallbackButton'
 
@@ -22,22 +22,13 @@ export function ErrorElement() {
     console.error('Error handled by React Router default ErrorBoundary:', error)
     if (reloadRef.current) return
 
-    let lastReloadAt: number | null = null
-    try {
-      const storedReloadAt = window.sessionStorage.getItem(DYNAMIC_IMPORT_RELOAD_STORAGE_KEY)
-      lastReloadAt = storedReloadAt === null ? null : Number(storedReloadAt)
-    } catch {
-      // Storage may be unavailable in privacy-restricted browser contexts.
-    }
-
-    if (!shouldReloadForDynamicImportError({ message, lastReloadAt })) return
+    const shouldReload = claimDynamicImportReload({
+      message,
+      getStorage: () => window.sessionStorage,
+    })
+    if (!shouldReload) return
 
     reloadRef.current = true
-    try {
-      window.sessionStorage.setItem(DYNAMIC_IMPORT_RELOAD_STORAGE_KEY, String(Date.now()))
-    } catch {
-      // The in-memory ref still prevents duplicate reloads for this mount.
-    }
     window.location.reload()
   }, [error, message])
 

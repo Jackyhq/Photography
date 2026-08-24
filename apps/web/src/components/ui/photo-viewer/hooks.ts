@@ -185,6 +185,15 @@ export const useScaleIndicator = (
 ) => {
   const scaleIndicatorTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  useEffect(
+    () => () => {
+      if (scaleIndicatorTimeoutRef.current !== null) {
+        clearTimeout(scaleIndicatorTimeoutRef.current)
+      }
+    },
+    [],
+  )
+
   const handleScaleChange = useCallback(
     (scale: number, isZoomed: boolean) => {
       // 更新缩放倍率并显示提示
@@ -234,22 +243,36 @@ export const useLivePhotoControls = (
 ) => {
   const longPressTimerRef = useRef<NodeJS.Timeout | null>(null)
 
+  useEffect(
+    () => () => {
+      if (longPressTimerRef.current !== null) {
+        clearTimeout(longPressTimerRef.current)
+      }
+    },
+    [],
+  )
+
   const handleLongPressStart = useCallback(() => {
     if (!isMobileDevice) return
-    const playVideo = () => livePhotoRef.current?.play()
+    const playVideo = () => {
+      longPressTimerRef.current = null
+      livePhotoRef.current?.play()
+    }
     if (!isLivePhoto || !livePhotoRef.current?.getIsVideoLoaded() || isLivePhotoPlaying) {
       return
     }
-    if (longPressTimerRef.current) {
+    if (longPressTimerRef.current !== null) {
       clearTimeout(longPressTimerRef.current)
+      longPressTimerRef.current = null
     }
     longPressTimerRef.current = setTimeout(playVideo, 200)
   }, [isLivePhoto, isLivePhotoPlaying, livePhotoRef])
 
   const handleLongPressEnd = useCallback(() => {
     if (!isMobileDevice) return
-    if (longPressTimerRef.current) {
+    if (longPressTimerRef.current !== null) {
       clearTimeout(longPressTimerRef.current)
+      longPressTimerRef.current = null
     }
     if (isLivePhotoPlaying) {
       livePhotoRef.current?.stop()

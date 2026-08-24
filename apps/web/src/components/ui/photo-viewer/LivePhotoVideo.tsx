@@ -46,6 +46,7 @@ export const LivePhotoVideo = ({
   const [livePhotoVideoLoaded, setLivePhotoVideoLoaded] = useState(false)
   const [isConvertingVideo, setIsConvertingVideo] = useState(false)
   const hasAutoPlayedRef = useRef(false)
+  const playbackRequestRef = useRef(0)
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const videoAnimateController = useAnimationControls()
@@ -123,6 +124,15 @@ export const LivePhotoVideo = ({
 
   useEffect(() => {
     if (!isCurrentImage) {
+      playbackRequestRef.current += 1
+      videoAnimateController.stop()
+
+      const video = videoRef.current
+      if (video) {
+        video.pause()
+        video.currentTime = 0
+      }
+
       setIsPlayingLivePhoto(false)
       setLivePhotoVideoLoaded(false)
       setIsConvertingVideo(false)
@@ -134,22 +144,33 @@ export const LivePhotoVideo = ({
 
   const play = useCallback(async () => {
     if (!livePhotoVideoLoaded || isPlayingLivePhoto || isConvertingVideo) return
+
+    const requestId = ++playbackRequestRef.current
     setIsPlayingLivePhoto(true)
-    setTimeout(async () => {
+
+    try {
       await videoAnimateController.start({
         opacity: 1,
         transition: { duration: 0.15, ease: 'easeOut' },
       })
+      if (requestId !== playbackRequestRef.current) return
+
       const video = videoRef.current
       if (video) {
         video.currentTime = 0
-        video.play()
+        await video.play()
       }
-    }, 0)
+    } catch (error) {
+      if (requestId !== playbackRequestRef.current) return
+      console.error('Failed to play Live Photo video:', error)
+      setIsPlayingLivePhoto(false)
+      videoAnimateController.set({ opacity: 0 })
+    }
   }, [livePhotoVideoLoaded, isPlayingLivePhoto, isConvertingVideo, videoAnimateController])
 
   const stop = useCallback(async () => {
-    if (!isPlayingLivePhoto) return
+    playbackRequestRef.current += 1
+    videoAnimateController.stop()
     const video = videoRef.current
     if (video) {
       video.pause()
@@ -160,7 +181,15 @@ export const LivePhotoVideo = ({
       transition: { duration: 0.2, ease: 'easeIn' },
     })
     setIsPlayingLivePhoto(false)
-  }, [isPlayingLivePhoto, videoAnimateController])
+  }, [videoAnimateController])
+
+  useEffect(
+    () => () => {
+      playbackRequestRef.current += 1
+      videoAnimateController.stop()
+    },
+    [videoAnimateController],
+  )
 
   // Auto-play effect - play once when video is loaded
   useEffect(() => {

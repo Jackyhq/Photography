@@ -214,6 +214,11 @@ describe('bundle budget graph helpers', () => {
       'index-main.js',
       'layout-main.js',
       'en-main.js',
+      'zh-CN-main.js',
+      'zh-HK-main.js',
+      'zh-TW-main.js',
+      'jp-main.js',
+      'ko-main.js',
       'PhotoViewer-main.js',
       'ExifPanel-main.js',
       'RawExifViewer-main.js',
@@ -232,6 +237,9 @@ describe('bundle budget graph helpers', () => {
     expect(result.failures).toEqual([])
     expect(result.rows).toEqual(
       expect.arrayContaining([
+        expect.stringContaining('homepage startup (en):'),
+        expect.stringContaining('homepage startup (zh-CN):'),
+        expect.stringContaining('homepage startup (jp):'),
         expect.stringContaining('photo-viewer base route:'),
         expect.stringContaining('photo-viewer GPS route:'),
       ]),
