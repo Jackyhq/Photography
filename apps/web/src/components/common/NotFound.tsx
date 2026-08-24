@@ -1,5 +1,6 @@
-import { Button } from '@afilmory/ui/button'
 import { useLocation, useNavigate } from 'react-router'
+
+import { FallbackButton } from './FallbackButton'
 
 export const NotFound = () => {
   const location = useLocation()
@@ -14,7 +15,7 @@ export const NotFound = () => {
         </p>
 
         <p>
-          <Button onClick={() => navigate('/')}>Back to Home</Button>
+          <FallbackButton onClick={() => navigate('/')}>Back to Home</FallbackButton>
         </p>
       </main>
     </div>

@@ -1,29 +1,33 @@
-import en from '@locales/app/en.json'
-import jp from '@locales/app/jp.json'
-import ko from '@locales/app/ko.json'
-import zhCn from '@locales/app/zh-CN.json'
-import zhHk from '@locales/app/zh-HK.json'
-import zhTw from '@locales/app/zh-TW.json'
+import type { MainSupportedLanguages } from './constants'
 
-import type { MainSupportedLanguages, ns } from './constants'
+export type AppResource = typeof import('@locales/app/en.json')
+export type AppI18nResources = { app: AppResource }
+type LoadedAppResource = Record<string, string>
 
-export const resources = {
-  en: {
-    app: en,
-  },
-  'zh-CN': {
-    app: zhCn,
-  },
-  'zh-HK': {
-    app: zhHk,
-  },
-  jp: {
-    app: jp,
-  },
-  ko: {
-    app: ko,
-  },
-  'zh-TW': {
-    app: zhTw,
-  },
-} satisfies Record<MainSupportedLanguages, Record<(typeof ns)[number], Record<string, string>>>
+const unwrapResource = (module: unknown): LoadedAppResource => {
+  const resource = (module as { default?: unknown }).default ?? module
+  return resource as LoadedAppResource
+}
+
+const resourceLoaders = {
+  en: () => import('@locales/app/en.json').then(unwrapResource),
+  'zh-CN': () => import('@locales/app/zh-CN.json').then(unwrapResource),
+  'zh-HK': () => import('@locales/app/zh-HK.json').then(unwrapResource),
+  jp: () => import('@locales/app/jp.json').then(unwrapResource),
+  ko: () => import('@locales/app/ko.json').then(unwrapResource),
+  'zh-TW': () => import('@locales/app/zh-TW.json').then(unwrapResource),
+} satisfies Record<MainSupportedLanguages, () => Promise<LoadedAppResource>>
+
+const resourcePromiseCache = new Map<MainSupportedLanguages, Promise<LoadedAppResource>>()
+
+export const loadAppResource = (language: MainSupportedLanguages): Promise<LoadedAppResource> => {
+  const cached = resourcePromiseCache.get(language)
+  if (cached) return cached
+
+  const resourcePromise = resourceLoaders[language]().catch((error) => {
+    resourcePromiseCache.delete(language)
+    throw error
+  })
+  resourcePromiseCache.set(language, resourcePromise)
+  return resourcePromise
+}

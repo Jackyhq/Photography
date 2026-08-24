@@ -213,6 +213,7 @@ describe('bundle budget graph helpers', () => {
     for (const file of [
       'index-main.js',
       'layout-main.js',
+      'en-main.js',
       'PhotoViewer-main.js',
       'ExifPanel-main.js',
       'RawExifViewer-main.js',
