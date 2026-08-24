@@ -1,6 +1,11 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
-import { isDynamicImportError, shouldReloadForDynamicImportError } from './dynamic-import-recovery'
+import {
+  claimDynamicImportReload,
+  DYNAMIC_IMPORT_RELOAD_STORAGE_KEY,
+  isDynamicImportError,
+  shouldReloadForDynamicImportError,
+} from './dynamic-import-recovery'
 
 describe('dynamic import recovery', () => {
   it.each([
@@ -39,5 +44,49 @@ describe('dynamic import recovery', () => {
         now,
       }),
     ).toBe(true)
+  })
+
+  it('persists the cooldown before allowing an automatic reload', () => {
+    const getItem = vi.fn(() => null)
+    const setItem = vi.fn()
+
+    expect(
+      claimDynamicImportReload({
+        message: 'Failed to fetch dynamically imported module',
+        getStorage: () => ({ getItem, setItem }),
+        now: 100_000,
+      }),
+    ).toBe(true)
+    expect(getItem).toHaveBeenCalledWith(DYNAMIC_IMPORT_RELOAD_STORAGE_KEY)
+    expect(setItem).toHaveBeenCalledWith(DYNAMIC_IMPORT_RELOAD_STORAGE_KEY, '100000')
+  })
+
+  it.each(['read', 'write'] as const)('skips automatic reload when storage %s fails', (failure) => {
+    const getItem = vi.fn(() => {
+      if (failure === 'read') throw new DOMException('Denied', 'SecurityError')
+      return null
+    })
+    const setItem = vi.fn(() => {
+      if (failure === 'write') throw new DOMException('Denied', 'SecurityError')
+    })
+
+    expect(
+      claimDynamicImportReload({
+        message: 'Failed to fetch dynamically imported module',
+        getStorage: () => ({ getItem, setItem }),
+        now: 100_000,
+      }),
+    ).toBe(false)
+  })
+
+  it('skips automatic reload when access to session storage fails', () => {
+    expect(
+      claimDynamicImportReload({
+        message: 'Failed to fetch dynamically imported module',
+        getStorage: () => {
+          throw new DOMException('Denied', 'SecurityError')
+        },
+      }),
+    ).toBe(false)
   })
 })
