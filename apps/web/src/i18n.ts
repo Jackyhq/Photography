@@ -1,15 +1,34 @@
+import type { BackendModule, ReadCallback } from 'i18next'
 import i18next from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { atom } from 'jotai'
 import { initReactI18next } from 'react-i18next'
 
-import { currentSupportedLanguages } from './@types/constants'
-import { resources } from './@types/resources'
+import { currentSupportedLanguages, defaultNS, ns } from './@types/constants'
+import { loadAppResource } from './@types/resources'
 import { jotaiStore } from './lib/jotai'
 import { normalizeAppLanguage } from './lib/language'
 
+const appResourceBackend: BackendModule = {
+  type: 'backend',
+  init() {},
+  read(language: string, namespace: string, callback: ReadCallback) {
+    const normalizedLanguage = normalizeAppLanguage(language)
+    if (!normalizedLanguage || namespace !== defaultNS) {
+      callback(new Error(`Unsupported locale resource: ${language}/${namespace}`), false)
+      return
+    }
+
+    void loadAppResource(normalizedLanguage).then(
+      (resource) => callback(null, resource),
+      (error: unknown) => callback(error instanceof Error ? error : new Error(String(error)), false),
+    )
+  },
+}
+
 const i18n = i18next.createInstance()
-i18n
+export const i18nReady = i18n
+  .use(appResourceBackend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -22,8 +41,8 @@ i18n
       zh: ['zh-CN'],
       default: ['en'],
     },
-    defaultNS: 'app',
-    resources,
+    defaultNS,
+    ns,
     supportedLngs: currentSupportedLanguages,
   })
 

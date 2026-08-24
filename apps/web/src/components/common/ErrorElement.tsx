@@ -1,9 +1,11 @@
-import { Button } from '@afilmory/ui/button'
 import { repository } from '@pkg'
 import { useEffect, useRef } from 'react'
 import { isRouteErrorResponse, useRouteError } from 'react-router'
 
 import { attachOpenInEditor } from '~/lib/dev'
+import { DYNAMIC_IMPORT_RELOAD_STORAGE_KEY, shouldReloadForDynamicImportError } from '~/lib/dynamic-import-recovery'
+
+import { FallbackButton } from './FallbackButton'
 
 export function ErrorElement() {
   const error = useRouteError()
@@ -14,21 +16,30 @@ export function ErrorElement() {
       : JSON.stringify(error)
   const stack = error instanceof Error ? error.stack : null
 
+  const reloadRef = useRef(false)
+
   useEffect(() => {
     console.error('Error handled by React Router default ErrorBoundary:', error)
-  }, [error])
+    if (reloadRef.current) return
 
-  const reloadRef = useRef(false)
-  if (
-    message.startsWith('Failed to fetch dynamically imported module') &&
-    window.sessionStorage.getItem('reload') !== '1'
-  ) {
-    if (reloadRef.current) return null
-    window.sessionStorage.setItem('reload', '1')
-    window.location.reload()
+    let lastReloadAt: number | null = null
+    try {
+      const storedReloadAt = window.sessionStorage.getItem(DYNAMIC_IMPORT_RELOAD_STORAGE_KEY)
+      lastReloadAt = storedReloadAt === null ? null : Number(storedReloadAt)
+    } catch {
+      // Storage may be unavailable in privacy-restricted browser contexts.
+    }
+
+    if (!shouldReloadForDynamicImportError({ message, lastReloadAt })) return
+
     reloadRef.current = true
-    return null
-  }
+    try {
+      window.sessionStorage.setItem(DYNAMIC_IMPORT_RELOAD_STORAGE_KEY, String(Date.now()))
+    } catch {
+      // The in-memory ref still prevents duplicate reloads for this mount.
+    }
+    window.location.reload()
+  }, [error, message])
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -71,18 +82,12 @@ export function ErrorElement() {
 
           {/* Action buttons */}
           <div className="mb-8 flex flex-col gap-3 sm:flex-row">
-            <Button
-              onClick={() => (window.location.href = '/')}
-              className="bg-material-opaque text-text-vibrant hover:bg-control-enabled/90 h-10 flex-1 border-0 font-medium transition-colors"
-            >
+            <FallbackButton onClick={() => (window.location.href = '/')} className="flex-1">
               Reload Application
-            </Button>
-            <Button
-              onClick={() => window.history.back()}
-              className="bg-material-thin text-text border-fill-tertiary hover:bg-fill-tertiary h-10 flex-1 border font-medium transition-colors"
-            >
+            </FallbackButton>
+            <FallbackButton variant="secondary" onClick={() => window.history.back()} className="flex-1">
               Go Back
-            </Button>
+            </FallbackButton>
           </div>
 
           {/* Help text */}

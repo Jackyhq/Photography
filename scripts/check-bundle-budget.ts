@@ -44,6 +44,7 @@ const KiB = 1024
 const PHOTO_HTML_PAGE_BUDGET = 25 * KiB
 const PHOTO_HTML_TOTAL_BUDGET = 10 * 1024 * KiB
 const STARTUP_BUDGET: Budget = { gzip: 340 * KiB, brotli: 290 * KiB }
+const STARTUP_LOCALE_PATTERN = /^assets\/en-[\w-]+\.js$/
 const FULL_MANIFEST_PATTERN = /^assets\/photos-manifest\.[\w-]+\.json$/
 const MAPLIBRE_ASSET_PATTERN = /^assets\/maplibre-gl-[\w-]+\.js$/
 
@@ -121,9 +122,14 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     failures.push('Missing .vite/manifest.json; keep Vite build.manifest enabled for route budgets')
   } else {
     const viteManifest = JSON.parse(readFileSync(viteManifestPath, 'utf-8')) as ViteManifest
+    const startupLocaleFiles = files.filter((file) => STARTUP_LOCALE_PATTERN.test(file))
+    if (startupLocaleFiles.length !== 1) {
+      failures.push(`Expected one default startup locale asset, found ${startupLocaleFiles.length}`)
+    }
     const startupFiles = Array.from(
       new Set([
         ...collectStartupFiles(readFileSync(indexPath, 'utf-8')),
+        ...startupLocaleFiles,
         ...collectManifestRouteFiles(viteManifest, [/src\/pages\/\(main\)\/layout\.tsx$/], {
           includeEntries: true,
           includeDynamic: false,
