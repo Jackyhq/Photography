@@ -126,11 +126,40 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     failures.push('Missing .vite/manifest.json; keep Vite build.manifest enabled for route budgets')
   } else {
     const viteManifest = JSON.parse(readFileSync(viteManifestPath, 'utf-8')) as ViteManifest
-    const startupPhotoTextFiles = files.filter((file) => STARTUP_PHOTO_TEXT_PATTERN.test(file))
-    if (startupPhotoTextFiles.length !== 1) {
-      failures.push(`Expected one startup photo text asset, found ${startupPhotoTextFiles.length}`)
+    const indexHtml = readFileSync(indexPath, 'utf-8')
+    const indexStartupFiles = collectStartupFiles(indexHtml)
+    const manifestBootstrapFiles = indexStartupFiles.filter((file) => /^assets\/photos-index\.[\w-]+\.js$/.test(file))
+    let startupPhotoTextFile: string | undefined
+
+    if (manifestBootstrapFiles.length !== 1) {
+      failures.push(`Expected one manifest bootstrap asset, found ${manifestBootstrapFiles.length}`)
+    } else {
+      const manifestBootstrapFile = manifestBootstrapFiles[0]
+      if (files.includes(manifestBootstrapFile)) {
+        const photoTextUrls = parsePhotoTextUrls(readFileSync(path.join(distDir, manifestBootstrapFile), 'utf-8'))
+        if (photoTextUrls === null) {
+          failures.push('Manifest bootstrap has a missing or invalid photo-text URL map')
+        } else if (photoTextUrls.en) {
+          startupPhotoTextFile = toLocalDistPath(photoTextUrls.en)
+          if (!startupPhotoTextFile) {
+            failures.push(`Startup photo text URL must reference a local asset: ${photoTextUrls.en}`)
+          }
+        }
+      }
     }
-    const startupPhotoTextFile = startupPhotoTextFiles[0]
+
+    const emittedStartupPhotoTextFiles = files.filter((file) => STARTUP_PHOTO_TEXT_PATTERN.test(file))
+    if (startupPhotoTextFile) {
+      if (!STARTUP_PHOTO_TEXT_PATTERN.test(startupPhotoTextFile)) {
+        failures.push(`Declared startup photo text asset has an unexpected path: ${startupPhotoTextFile}`)
+      }
+      if (emittedStartupPhotoTextFiles.length !== 1 || emittedStartupPhotoTextFiles[0] !== startupPhotoTextFile) {
+        failures.push(`Declared startup photo text asset is missing: ${startupPhotoTextFile}`)
+      }
+    } else if (emittedStartupPhotoTextFiles.length > 0) {
+      failures.push('Found an English photo text asset that is not declared by the manifest bootstrap')
+    }
+
     const startupLocaleFiles = new Map(
       STARTUP_LOCALES.map((locale) => {
         const pattern = new RegExp(`^assets/${locale}-[\\w-]+\\.js$`)
@@ -143,7 +172,7 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     )
     const startupBaseFiles = Array.from(
       new Set([
-        ...collectStartupFiles(readFileSync(indexPath, 'utf-8')),
+        ...indexStartupFiles,
         ...collectManifestRouteFiles(viteManifest, [/src\/pages\/\(main\)\/layout\.tsx$/], {
           includeEntries: true,
           includeDynamic: false,
@@ -289,6 +318,27 @@ export function collectStartupFiles(html: string): string[] {
   }
 
   return Array.from(files).sort()
+}
+
+export function parsePhotoTextUrls(bootstrapSource: string): Record<string, string> | null {
+  const marker = 'window.__PHOTO_TEXT_URLS__='
+  const markerIndex = bootstrapSource.lastIndexOf(marker)
+  if (markerIndex === -1) return null
+
+  const serializedUrls = bootstrapSource
+    .slice(markerIndex + marker.length)
+    .replace(/;\s*$/, '')
+    .trim()
+  try {
+    const parsed = JSON.parse(serializedUrls) as unknown
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null
+
+    const entries = Object.entries(parsed)
+    if (entries.some(([, value]) => typeof value !== 'string')) return null
+    return Object.fromEntries(entries) as Record<string, string>
+  } catch {
+    return null
+  }
 }
 
 export function collectManifestRouteFiles(
