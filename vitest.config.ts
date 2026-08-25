@@ -9,6 +9,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '~': path.resolve(rootDir, 'apps/web/src'),
+      '@pkg': path.resolve(rootDir, 'package.json'),
       '@config': path.resolve(rootDir, 'site.config.ts'),
       '@locales': path.resolve(rootDir, 'locales'),
     },
@@ -45,8 +46,7 @@ export default defineConfig({
         '**/*.test.ts',
         '**/*.test.tsx',
         '**/*.d.ts',
-        // coverage-v8 cannot parse these uncovered TSX files without first transforming them.
-        'apps/web/src/components/common/ErrorElement.tsx',
+        // coverage-v8 cannot parse this uncovered TSX file without first transforming it.
         'apps/web/src/modules/gallery/MasonryHeaderMasonryItem.tsx',
       ],
       thresholds: {

@@ -37,7 +37,7 @@ describe('photo runtime caching', () => {
 
 describe('optional code runtime caching', () => {
   it('keeps heavy feature implementations out of the install precache', () => {
-    expect(OPTIONAL_CODE_PRECACHE_GLOBS).toEqual(['vendor/0-*.js', 'assets/maplibre-gl-*.js'])
+    expect(OPTIONAL_CODE_PRECACHE_GLOBS).toEqual(['vendor/heic-*.js', 'assets/maplibre-gl-*.js'])
   })
 
   it('caches HEIC and MapLibre implementations after first use', () => {
@@ -48,8 +48,8 @@ describe('optional code runtime caching', () => {
     expect(route.urlPattern).toBeInstanceOf(RegExp)
 
     const pattern = route.urlPattern as RegExp
-    expect(pattern.test('https://example.com/vendor/0-heic.js')).toBe(true)
+    expect(pattern.test('https://example.com/vendor/heic-converter.js')).toBe(true)
     expect(pattern.test('https://example.com/assets/maplibre-gl-map.js')).toBe(true)
-    expect(pattern.test('https://example.com/vendor/1-react.js')).toBe(false)
+    expect(pattern.test('https://example.com/vendor/react-framework.js')).toBe(false)
   })
 })

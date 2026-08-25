@@ -19,6 +19,7 @@ import { Fragment, lazy, Suspense, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useMobile } from '~/hooks/useMobile'
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { formatDuration } from '~/lib/format-duration'
 import { getImageFormat } from '~/lib/image-utils'
 import { convertExifGPSToDecimal } from '~/lib/map-utils'
@@ -40,6 +41,7 @@ export const ExifPanel: FC<{
   visible?: boolean
 }> = ({ currentPhoto, exifData, isLoadingDetails = false, onClose, visible = true }) => {
   const { i18n, t } = useTranslation()
+  usePhotoTextUpdates()
   const locale = i18n.resolvedLanguage ?? i18n.language
   const isMobile = useMobile()
   const formattedExifData = formatExifData(exifData)

@@ -3,12 +3,12 @@ import { clsxm, Spring } from '@afilmory/utils'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { produce } from 'immer'
 import { AnimatePresence, m } from 'motion/react'
-import type { CSSProperties, RefObject } from 'react'
+import type { CSSProperties } from 'react'
+import * as React from 'react'
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { tv } from 'tailwind-variants'
-import { useOnClickOutside } from 'usehooks-ts'
 
 import { client } from '~/lib/client'
 
@@ -105,7 +105,6 @@ const iconVariants = {
   closed: { rotate: 0 },
 }
 export const ReactionButton = ({ className, disabled = false, photoId, style }: ReactionButtonProps) => {
-  const [panelElement, setPanelElement] = useState<HTMLDivElement | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const styles = reactionButton()
   const { t } = useTranslation()
@@ -136,10 +135,6 @@ export const ReactionButton = ({ className, disabled = false, photoId, style }: 
     [handleReaction, mutate],
   )
 
-  useOnClickOutside({ current: panelElement } as RefObject<HTMLElement>, () => {
-    setIsOpen(false)
-  })
-
   const [currentAnimatingEmoji, setCurrentAnimatingEmoji] = useState<(typeof reactions)[number] | null>(null)
 
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -155,7 +150,7 @@ export const ReactionButton = ({ className, disabled = false, photoId, style }: 
 
   return (
     <div className={clsxm(styles.base(), className)} style={style}>
-      <DropdownMenu.Root open={isOpen}>
+      <DropdownMenu.Root open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenu.Trigger asChild>
           <m.button
             type="button"
@@ -166,9 +161,6 @@ export const ReactionButton = ({ className, disabled = false, photoId, style }: 
             aria-expanded={isOpen}
             aria-label={t('photo.reaction.label')}
             initial="closed"
-            onClick={() => {
-              setIsOpen((prev) => !prev)
-            }}
             exit={{
               opacity: 0,
               scale: 0,
@@ -218,7 +210,6 @@ export const ReactionButton = ({ className, disabled = false, photoId, style }: 
           <AnimatePresence>
             {isOpen && (
               <m.div
-                ref={setPanelElement}
                 variants={emojiContainerVariants}
                 initial="closed"
                 animate="open"

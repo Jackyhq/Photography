@@ -1,6 +1,32 @@
 import type { Plugin, UserConfig } from 'vite'
 
-export function createDependencyChunksPlugin(dependencies: string[][]): Plugin {
+export interface DependencyChunkGroup {
+  name: string
+  dependencies: readonly string[]
+}
+
+export function resolveDependencyChunkName(id: string, groups: readonly DependencyChunkGroup[]): string | null {
+  const matchedGroup = groups.find((group) =>
+    group.dependencies.some((dependency) => {
+      const pattern = `/node_modules/${dependency}/`
+      const dependencyIndex = id.indexOf(pattern)
+      if (dependencyIndex === -1 || id.includes(`${pattern}node_modules/`)) return false
+
+      const prefix = id.slice(0, dependencyIndex)
+      const previousNodeModulesIndex = prefix.lastIndexOf('/node_modules/')
+      if (previousNodeModulesIndex === -1) return true
+
+      // pnpm's content-addressed path legitimately contains two node_modules
+      // segments. Other earlier package segments indicate a nested dependency.
+      const previousPackage = prefix.slice(previousNodeModulesIndex + '/node_modules/'.length).split('/')[0]
+      return previousPackage === '.pnpm'
+    }),
+  )
+
+  return matchedGroup ? `vendor/${matchedGroup.name}` : null
+}
+
+export function createDependencyChunksPlugin(groups: readonly DependencyChunkGroup[]): Plugin {
   return {
     name: 'dependency-chunks',
     config(config: UserConfig) {
@@ -21,18 +47,7 @@ export function createDependencyChunksPlugin(dependencies: string[][]): Plugin {
           return null
         }
 
-        const matchedDep = dependencies.findIndex((dep) => {
-          return dep.some((d) => {
-            const pattern = `/node_modules/${d}/`
-            return id.includes(pattern) && !id.includes(`${pattern}node_modules/`)
-          })
-        })
-
-        if (matchedDep !== -1) {
-          return `vendor/${matchedDep}`
-        }
-
-        return null
+        return resolveDependencyChunkName(id, groups)
       }
     },
   }

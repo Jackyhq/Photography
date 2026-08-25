@@ -231,6 +231,10 @@ describe('bundle budget graph helpers', () => {
       writeFileSync(path.join(directory, 'assets', file), 'export {}')
     }
     writeFileSync(path.join(directory, 'assets/photos-manifest.main.json'), '{"data":[]}')
+    writeFileSync(path.join(directory, 'assets/photo-text.en.main.json'), '{"language":"en","photos":{}}')
+    mkdirSync(path.join(directory, 'vendor'), { recursive: true })
+    writeFileSync(path.join(directory, 'vendor/heic-main.js'), 'export {}')
+    writeFileSync(path.join(directory, 'sw.js'), 'precacheAndRoute([])')
     writeFileSync(path.join(directory, 'photos/photo-1/index.html'), '<!doctype html>')
 
     const result = checkBundleBudget(directory)
@@ -240,6 +244,7 @@ describe('bundle budget graph helpers', () => {
         expect.stringContaining('homepage startup (en):'),
         expect.stringContaining('homepage startup (zh-CN):'),
         expect.stringContaining('homepage startup (jp):'),
+        expect.stringContaining('PWA optional code: 2 heavy chunks excluded'),
         expect.stringContaining('photo-viewer base route:'),
         expect.stringContaining('photo-viewer GPS route:'),
       ]),

@@ -16,6 +16,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 
 import { injectConfig } from '~/config'
 import { useMobile } from '~/hooks/useMobile'
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { getPhotoAltText } from '~/lib/photo-description'
 import type { FullPhotoManifest, PhotoManifest } from '~/types/photo'
 
@@ -49,6 +50,7 @@ export const PhotoViewer = ({
   triggerElement,
 }: PhotoViewerProps) => {
   const { i18n, t } = useTranslation()
+  usePhotoTextUpdates()
   const locale = i18n.resolvedLanguage ?? i18n.language
   const swiperRef = useRef<SwiperType | null>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)

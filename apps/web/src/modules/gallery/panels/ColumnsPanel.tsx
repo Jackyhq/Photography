@@ -1,17 +1,33 @@
 import { useAtom } from 'jotai'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { gallerySettingAtom } from '~/atoms/app'
 import { Slider } from '~/components/ui/slider'
 import { useMobile } from '~/hooks/useMobile'
 
+import { normalizeColumnCount } from './column-range'
+
 export const ColumnsPanel = () => {
   const { t } = useTranslation()
   const [gallerySetting, setGallerySetting] = useAtom(gallerySettingAtom)
   const isMobile = useMobile()
+  // 根据设备类型提供不同的列数范围
+  const columnRange = isMobile
+    ? { min: 3, max: 5 } // 移动端适合的列数范围
+    : { min: 3, max: 8 } // 桌面端适合的列数范围
+  const normalizedColumns = normalizeColumnCount(gallerySetting.columns, columnRange.min, columnRange.max)
   // Local preview state to avoid reflow while dragging
-  const [previewColumns, setPreviewColumns] = useState<number | 'auto'>(gallerySetting.columns)
+  const [previewColumns, setPreviewColumns] = useState<number | 'auto'>(normalizedColumns)
+
+  useEffect(() => {
+    setPreviewColumns(normalizedColumns)
+    if (normalizedColumns === gallerySetting.columns) return
+
+    setGallerySetting((previous) =>
+      previous.columns === normalizedColumns ? previous : { ...previous, columns: normalizedColumns },
+    )
+  }, [gallerySetting.columns, normalizedColumns, setGallerySetting])
 
   const handleChange = (val: number | 'auto') => {
     setPreviewColumns(val)
@@ -20,11 +36,6 @@ export const ColumnsPanel = () => {
   const handleValueCommit = (val: number | 'auto') => {
     setGallerySetting((prev) => ({ ...prev, columns: val }))
   }
-  // 根据设备类型提供不同的列数范围
-  const columnRange = isMobile
-    ? { min: 3, max: 5 } // 移动端适合的列数范围
-    : { min: 3, max: 8 } // 桌面端适合的列数范围
-
   return (
     <div className="w-full lg:w-80">
       <Slider

@@ -4,6 +4,7 @@ import { m } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { getPhotoAltText } from '~/lib/photo-description'
 import { getPhotoDetailPath } from '~/lib/photo-route'
 import type { PhotoMarker } from '~/types/map'
@@ -14,6 +15,7 @@ interface ClusterPhotoGridProps {
 }
 
 export const ClusterPhotoGrid = ({ photos, onPhotoClick }: ClusterPhotoGridProps) => {
+  usePhotoTextUpdates()
   // 最多显示 6 张照片
   const displayPhotos = photos.slice(0, 6)
   const remainingCount = Math.max(0, photos.length - 6)

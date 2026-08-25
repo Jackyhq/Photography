@@ -118,4 +118,28 @@ describe('Slider', () => {
 
     expect(onValueCommit).toHaveBeenLastCalledWith(6)
   })
+
+  it('normalizes an out-of-range controlled value when its bounds shrink', () => {
+    const onChange = vi.fn()
+    const onValueCommit = vi.fn()
+    render(
+      <Slider
+        value={8}
+        onChange={onChange}
+        onValueCommit={onValueCommit}
+        min={3}
+        max={5}
+        ariaLabel="Gallery columns"
+      />,
+    )
+
+    const slider = screen.getByRole('slider', { name: 'Gallery columns' })
+    expect(slider.getAttribute('aria-valuenow')).toBe('5')
+    expect(slider.getAttribute('aria-valuetext')).toBe('5')
+    expect(screen.getByText('5 columns')).toBeTruthy()
+
+    fireEvent.keyDown(slider, { key: 'ArrowLeft' })
+    expect(onChange).toHaveBeenLastCalledWith(4)
+    expect(onValueCommit).toHaveBeenLastCalledWith(4)
+  })
 })

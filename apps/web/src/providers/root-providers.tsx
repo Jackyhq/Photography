@@ -10,6 +10,7 @@ import { ContextMenuProvider } from './context-menu-provider'
 import { DeferredToaster } from './deferred-toaster'
 import { EventProvider } from './event-provider'
 import { I18nProvider } from './i18n-provider'
+import { PhotoTextUpdatesProvider } from './photo-text-updates-provider'
 import { StableRouterProvider } from './stable-router-provider'
 
 export const RootProviders: FC<PropsWithChildren> = ({ children }) => (
@@ -21,7 +22,9 @@ export const RootProviders: FC<PropsWithChildren> = ({ children }) => (
 
         <ContextMenuProvider />
         <I18nProvider>
-          <AppUpdateProvider>{children}</AppUpdateProvider>
+          <PhotoTextUpdatesProvider>
+            <AppUpdateProvider>{children}</AppUpdateProvider>
+          </PhotoTextUpdatesProvider>
         </I18nProvider>
       </Provider>
     </MotionConfig>

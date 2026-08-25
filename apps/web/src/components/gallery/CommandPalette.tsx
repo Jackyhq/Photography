@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router'
 
 import { gallerySettingAtom } from '~/atoms/app'
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { useOpenPhotoViewer } from '~/hooks/usePhotoViewer'
 import { getLocalizedPhotoDescription, getLocalizedPhotoTitle, getPhotoAltText } from '~/lib/photo-description'
 import { getPhotoDetailPath } from '~/lib/photo-route'
@@ -65,11 +66,11 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { openViewerByPhotoId } = useOpenPhotoViewer()
+  const photoTextRevision = usePhotoTextUpdates()
   const locale = i18n.resolvedLanguage ?? i18n.language
 
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const [searchTextRevision, setSearchTextRevision] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
   const triggerElementRef = useRef<HTMLElement | null>(null)
@@ -125,26 +126,14 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
   useEffect(() => {
     if (!isOpen) return
 
-    let isCancelled = false
-    photoLoader
-      .loadPhotoText('en')
-      .then(() => {
-        if (!isCancelled) {
-          setSearchTextRevision((revision) => revision + 1)
-        }
-      })
-      .catch((error) => {
-        console.error('Failed to load photo search text:', error)
-      })
-
-    return () => {
-      isCancelled = true
-    }
+    void photoLoader.loadPhotoText('en').catch((error) => {
+      console.error('Failed to load photo search text:', error)
+    })
   }, [isOpen])
 
   // Generate commands
   const commands = useMemo((): Command[] => {
-    void searchTextRevision
+    void photoTextRevision
 
     const cmds: Command[] = []
 
@@ -271,7 +260,7 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
     openViewerByPhotoId,
     updateTagFilterMode,
     toggleGalleryFilter,
-    searchTextRevision,
+    photoTextRevision,
   ])
 
   // Filter commands based on query

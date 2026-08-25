@@ -207,9 +207,9 @@ export default defineConfig(({ command }) => {
       }),
 
       createDependencyChunksPlugin([
-        ['heic-to'],
-        ['react', 'react-dom'],
-        ['i18next', 'i18next-browser-languagedetector', 'react-i18next'],
+        { name: 'heic', dependencies: ['heic-to'] },
+        { name: 'react', dependencies: ['react', 'react-dom'] },
+        { name: 'i18n', dependencies: ['i18next', 'i18next-browser-languagedetector', 'react-i18next'] },
       ]),
       localesJsonPlugin(),
       tailwindcss(),

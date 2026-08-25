@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useMobile } from '~/hooks/useMobile'
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { nextFrame } from '~/lib/dom'
 import { getPhotoAltText } from '~/lib/photo-description'
 import type { PhotoManifest } from '~/types/photo'
@@ -52,6 +53,7 @@ export const GalleryThumbnail: FC<{
   onIndexChange: (index: number) => void
   visible?: boolean
 }> = ({ currentIndex, photos, onIndexChange, visible = true }) => {
+  usePhotoTextUpdates()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const isMobile = useMobile()

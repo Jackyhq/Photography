@@ -3,6 +3,7 @@ import { LazyImage } from '@afilmory/ui/lazy-image'
 import { m } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { getPhotoAltText } from '~/lib/photo-description'
 
 import { ClusterPhotoGrid } from '../ClusterPhotoGrid'
@@ -19,6 +20,7 @@ export const ClusterMarker = ({
   clusteredPhotos = EMPTY_CLUSTERED_PHOTOS,
   onClusterClick,
 }: ClusterMarkerProps) => {
+  usePhotoTextUpdates()
   const size = Math.min(64, Math.max(40, 32 + Math.log(pointCount) * 8))
   const { i18n, t } = useTranslation()
   const locale = i18n.resolvedLanguage ?? i18n.language
