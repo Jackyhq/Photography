@@ -1,6 +1,7 @@
 import { clsxm } from '@afilmory/utils'
 import { AnimatePresence, m } from 'motion/react'
 import { lazy, Suspense, useCallback, useRef } from 'react'
+import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 import { useMediaQuery } from 'usehooks-ts'
@@ -20,6 +21,7 @@ import {
   useWebGLLoadingState,
 } from './hooks'
 import { LivePhotoBadge } from './LivePhotoBadge'
+import type { LivePhotoVideoHandle } from './LivePhotoVideo'
 import { LivePhotoVideo } from './LivePhotoVideo'
 import type { ProgressiveImageProps, WebGLImageViewerRef } from './types'
 
@@ -73,7 +75,7 @@ export const ProgressiveImage = ({
   const thumbnailRef = useRef<HTMLImageElement>(null)
   const webglImageViewerRef = useRef<WebGLImageViewerRef | null>(null)
   const domImageViewerRef = useRef<ReactZoomPanPinchRef>(null)
-  const livePhotoRef = useRef<any>(null)
+  const livePhotoRef = useRef<LivePhotoVideoHandle | null>(null)
 
   // Hooks
   const imageLoaderManagerRef = useImageLoader(
@@ -133,6 +135,7 @@ export const ProgressiveImage = ({
       onMouseLeave={handleLongPressEnd}
       onTouchStart={handleLongPressStart}
       onTouchEnd={handleLongPressEnd}
+      onTouchCancel={handleLongPressEnd}
     >
       {/* 缩略图 - 在高分辨率图片未加载或加载失败时显示 */}
       {thumbnailSrc && (!isHighResImageRendered || error) && (

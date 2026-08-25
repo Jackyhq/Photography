@@ -11,6 +11,7 @@ import type { KeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'
 import { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { useOpenPhotoViewer } from '~/hooks/usePhotoViewer'
 import { isAbortError } from '~/lib/abort-error'
 import { isMobileDevice } from '~/lib/device-viewport'
@@ -117,6 +118,7 @@ interface MasonryPhotoItemProps {
 
 const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown }: MasonryPhotoItemProps) => {
   const { i18n } = useTranslation()
+  usePhotoTextUpdates()
   const { openViewerByPhotoId } = useOpenPhotoViewer()
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)

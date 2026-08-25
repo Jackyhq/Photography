@@ -33,8 +33,9 @@ export const Slider = ({
   const [isDragging, setIsDragging] = useState(false)
   const sliderRef = useRef<HTMLDivElement>(null)
   const activePointerIdRef = useRef<number | null>(null)
-  const latestValueRef = useRef(value)
-  latestValueRef.current = value
+  const normalizedValue = value === 'auto' ? value : Math.min(max, Math.max(min, value))
+  const latestValueRef = useRef(normalizedValue)
+  latestValueRef.current = normalizedValue
 
   // 将值转换为位置百分比
   const getPositionFromValue = useCallback(
@@ -161,7 +162,7 @@ export const Slider = ({
     [commitKeyboardValue, disabled, max, min, step],
   )
 
-  const position = getPositionFromValue(value)
+  const position = getPositionFromValue(normalizedValue)
 
   return (
     <div className={clsxm('w-full', className)}>
@@ -181,8 +182,8 @@ export const Slider = ({
         aria-orientation="horizontal"
         aria-valuemin={min - step}
         aria-valuemax={max}
-        aria-valuenow={value === 'auto' ? min - step : Math.min(max, Math.max(min, value))}
-        aria-valuetext={value === 'auto' ? finalAutoLabel : String(value)}
+        aria-valuenow={normalizedValue === 'auto' ? min - step : normalizedValue}
+        aria-valuetext={normalizedValue === 'auto' ? finalAutoLabel : String(normalizedValue)}
         className={clsxm(
           'relative h-6 touch-none cursor-pointer select-none rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
           disabled && 'cursor-not-allowed opacity-50',
@@ -202,11 +203,11 @@ export const Slider = ({
           <div
             className={clsxm(
               'absolute top-0 h-full rounded-full transition-all duration-150 max-w-full',
-              value === 'auto' ? 'bg-green-500' : 'bg-accent',
+              normalizedValue === 'auto' ? 'bg-green-500' : 'bg-accent',
             )}
             style={{
               width: `${Math.max(position, 5)}%`,
-              borderRadius: value === 'auto' ? '9999px 0 0 9999px' : '9999px',
+              borderRadius: normalizedValue === 'auto' ? '9999px 0 0 9999px' : '9999px',
             }}
           />
         </div>
@@ -216,7 +217,7 @@ export const Slider = ({
           className={clsxm(
             'absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-lg transition-all duration-150',
             isDragging ? 'scale-110' : 'hover:scale-105',
-            value === 'auto' ? 'bg-green-500' : 'bg-accent',
+            normalizedValue === 'auto' ? 'bg-green-500' : 'bg-accent',
             disabled && 'cursor-not-allowed',
           )}
           style={{
@@ -227,13 +228,16 @@ export const Slider = ({
         {/* 数值刻度 */}
         <div className="text-text-secondary absolute top-full mt-1 flex w-full text-xs">
           <div className="w-[15%] text-left">
-            <span className={clsxm('transition-colors', value === 'auto' && 'font-medium text-green-500')}>
+            <span className={clsxm('transition-colors', normalizedValue === 'auto' && 'font-medium text-green-500')}>
               {finalAutoLabel}
             </span>
           </div>
           <div className="flex w-[85%] justify-between">
             {Array.from({ length: max - min + 1 }, (_, i) => min + i).map((num) => (
-              <span key={num} className={clsxm('transition-colors', value === num && 'font-medium text-accent')}>
+              <span
+                key={num}
+                className={clsxm('transition-colors', normalizedValue === num && 'font-medium text-accent')}
+              >
                 {num}
               </span>
             ))}
@@ -243,7 +247,7 @@ export const Slider = ({
 
       {/* 当前值显示 */}
       <div className="mt-8 text-center text-sm font-medium text-gray-700 dark:text-gray-300">
-        {value === 'auto' ? finalAutoLabel : t('slider.columns', { count: value } as any)}
+        {normalizedValue === 'auto' ? finalAutoLabel : t('slider.columns', { count: normalizedValue } as any)}
       </div>
     </div>
   )

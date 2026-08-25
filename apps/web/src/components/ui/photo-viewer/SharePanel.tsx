@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { injectConfig, siteConfig } from '~/config'
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { isAbortError } from '~/lib/abort-error'
 import { getLocalizedPhotoTitle } from '~/lib/photo-description'
 import type { PhotoManifest } from '~/types/photo'
@@ -77,6 +78,7 @@ const SOCIAL_SHARE_OPTIONS = [
 
 export const SharePanel = ({ photo, trigger, blobSrc }: SharePanelProps) => {
   const { i18n, t } = useTranslation()
+  usePhotoTextUpdates()
   const [isOpen, setIsOpen] = useState(false)
   const [isPreparingShare, setIsPreparingShare] = useState(false)
   const shareAbortControllerRef = useRef<AbortController | null>(null)

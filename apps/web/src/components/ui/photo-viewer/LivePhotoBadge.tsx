@@ -1,6 +1,6 @@
 import { clsxm } from '@afilmory/utils'
 import { AnimatePresence, m } from 'motion/react'
-import type { FC } from 'react'
+import * as React from 'react'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -8,10 +8,10 @@ import { isMobileDevice } from '~/lib/device-viewport'
 
 import type { LivePhotoBadgeProps } from './types'
 
-export const LivePhotoBadge: FC<LivePhotoBadgeProps> = ({ livePhotoRef, isLivePhotoPlaying }) => {
+export const LivePhotoBadge: React.FC<LivePhotoBadgeProps> = ({ livePhotoRef, isLivePhotoPlaying }) => {
   const { t } = useTranslation()
 
-  const handlePlay = useCallback(async () => {
+  const handlePlay = useCallback(() => {
     if (!livePhotoRef.current?.getIsVideoLoaded() || isLivePhotoPlaying) return
     livePhotoRef.current.play()
   }, [livePhotoRef, isLivePhotoPlaying])
@@ -34,9 +34,10 @@ export const LivePhotoBadge: FC<LivePhotoBadgeProps> = ({ livePhotoRef, isLivePh
   return (
     <>
       {/* Live Photo 标识 */}
-      <div
+      <button
+        type="button"
         className={clsxm(
-          'absolute z-20 flex items-center space-x-1 rounded-xl bg-black/50 px-1 py-1 text-xs text-white transition-all duration-200',
+          'absolute z-20 flex items-center space-x-1 rounded-xl border-0 bg-black/50 px-1 py-1 text-xs text-white transition-all duration-200',
           'cursor-pointer hover:bg-black/70',
           isLivePhotoPlaying && 'bg-accent/70 hover:bg-accent/80',
           import.meta.env.DEV ? 'top-16 right-4' : 'top-12 lg:top-4 left-4',
@@ -47,7 +48,7 @@ export const LivePhotoBadge: FC<LivePhotoBadgeProps> = ({ livePhotoRef, isLivePh
           className={clsxm('size-4', isLivePhotoPlaying ? 'i-mingcute-live-photo-fill' : 'i-mingcute-live-photo-line')}
         />
         <span className="mr-1">{t('photo.live.badge')}</span>
-      </div>
+      </button>
 
       {/* 播放状态提示 */}
       <AnimatePresence>

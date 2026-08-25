@@ -46,8 +46,11 @@ const PHOTO_HTML_TOTAL_BUDGET = 10 * 1024 * KiB
 const STARTUP_BUDGET: Budget = { gzip: 340 * KiB, brotli: 290 * KiB }
 const STARTUP_LOCALES = ['en', 'zh-CN', 'zh-HK', 'zh-TW', 'jp', 'ko'] as const
 const DEFAULT_STARTUP_LOCALE = 'en'
+const STARTUP_PHOTO_TEXT_LOCALES = new Set<(typeof STARTUP_LOCALES)[number]>(['en', 'jp', 'ko'])
 const FULL_MANIFEST_PATTERN = /^assets\/photos-manifest\.[\w-]+\.json$/
 const MAPLIBRE_ASSET_PATTERN = /^assets\/maplibre-gl-[\w-]+\.js$/
+const HEIC_ASSET_PATTERN = /^vendor\/heic-[\w-]+\.js$/
+const STARTUP_PHOTO_TEXT_PATTERN = /^assets\/photo-text\.en\.[\w-]+\.json$/
 
 export const PHOTO_VIEWER_IMMEDIATE_SOURCE_PATTERNS = [
   /PhotoViewer(?:\.tsx)?$/,
@@ -123,6 +126,40 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     failures.push('Missing .vite/manifest.json; keep Vite build.manifest enabled for route budgets')
   } else {
     const viteManifest = JSON.parse(readFileSync(viteManifestPath, 'utf-8')) as ViteManifest
+    const indexHtml = readFileSync(indexPath, 'utf-8')
+    const indexStartupFiles = collectStartupFiles(indexHtml)
+    const manifestBootstrapFiles = indexStartupFiles.filter((file) => /^assets\/photos-index\.[\w-]+\.js$/.test(file))
+    let startupPhotoTextFile: string | undefined
+
+    if (manifestBootstrapFiles.length !== 1) {
+      failures.push(`Expected one manifest bootstrap asset, found ${manifestBootstrapFiles.length}`)
+    } else {
+      const manifestBootstrapFile = manifestBootstrapFiles[0]
+      if (files.includes(manifestBootstrapFile)) {
+        const photoTextUrls = parsePhotoTextUrls(readFileSync(path.join(distDir, manifestBootstrapFile), 'utf-8'))
+        if (photoTextUrls === null) {
+          failures.push('Manifest bootstrap has a missing or invalid photo-text URL map')
+        } else if (photoTextUrls.en) {
+          startupPhotoTextFile = toLocalDistPath(photoTextUrls.en)
+          if (!startupPhotoTextFile) {
+            failures.push(`Startup photo text URL must reference a local asset: ${photoTextUrls.en}`)
+          }
+        }
+      }
+    }
+
+    const emittedStartupPhotoTextFiles = files.filter((file) => STARTUP_PHOTO_TEXT_PATTERN.test(file))
+    if (startupPhotoTextFile) {
+      if (!STARTUP_PHOTO_TEXT_PATTERN.test(startupPhotoTextFile)) {
+        failures.push(`Declared startup photo text asset has an unexpected path: ${startupPhotoTextFile}`)
+      }
+      if (emittedStartupPhotoTextFiles.length !== 1 || emittedStartupPhotoTextFiles[0] !== startupPhotoTextFile) {
+        failures.push(`Declared startup photo text asset is missing: ${startupPhotoTextFile}`)
+      }
+    } else if (emittedStartupPhotoTextFiles.length > 0) {
+      failures.push('Found an English photo text asset that is not declared by the manifest bootstrap')
+    }
+
     const startupLocaleFiles = new Map(
       STARTUP_LOCALES.map((locale) => {
         const pattern = new RegExp(`^assets/${locale}-[\\w-]+\\.js$`)
@@ -135,7 +172,7 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     )
     const startupBaseFiles = Array.from(
       new Set([
-        ...collectStartupFiles(readFileSync(indexPath, 'utf-8')),
+        ...indexStartupFiles,
         ...collectManifestRouteFiles(viteManifest, [/src\/pages\/\(main\)\/layout\.tsx$/], {
           includeEntries: true,
           includeDynamic: false,
@@ -155,7 +192,11 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
       // This catches regressions even when i18next's exact fallback hierarchy changes.
       const localeChainFiles = locale === DEFAULT_STARTUP_LOCALE ? [localeFile] : [defaultLocaleFile, localeFile]
       const startupFiles = Array.from(
-        new Set([...existingStartupBaseFiles, ...localeChainFiles.filter((file): file is string => !!file)]),
+        new Set([
+          ...existingStartupBaseFiles,
+          ...localeChainFiles.filter((file): file is string => !!file),
+          ...(STARTUP_PHOTO_TEXT_LOCALES.has(locale) && startupPhotoTextFile ? [startupPhotoTextFile] : []),
+        ]),
       ).sort()
       const startupSize = sumCompressedSizes(distDir, startupFiles)
       const budgetName = `homepage startup (${locale})`
@@ -163,7 +204,11 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
       appendCompressedFailures(failures, budgetName, startupSize, STARTUP_BUDGET)
     }
 
-    const baseline = new Set([...existingStartupBaseFiles, ...(defaultLocaleFile ? [defaultLocaleFile] : [])])
+    const baseline = new Set([
+      ...existingStartupBaseFiles,
+      ...(defaultLocaleFile ? [defaultLocaleFile] : []),
+      ...(startupPhotoTextFile ? [startupPhotoTextFile] : []),
+    ])
     for (const target of routeTargets) {
       const matchedSources = findManifestKeys(viteManifest, target.sourcePatterns)
       if (matchedSources.length !== target.sourcePatterns.length) {
@@ -207,6 +252,23 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     const size = sumCompressedSizes(distDir, candidates)
     rows.push(formatBudgetRow(target.name, candidates, size, target.budget))
     appendCompressedFailures(failures, target.name, size, target.budget)
+  }
+
+  const optionalCodeMatches = [HEIC_ASSET_PATTERN, MAPLIBRE_ASSET_PATTERN].map((pattern) =>
+    files.filter((file) => pattern.test(file)),
+  )
+  if (optionalCodeMatches.some((matches) => matches.length !== 1)) {
+    failures.push('Expected one HEIC chunk and one MapLibre chunk for optional-code precache validation')
+  }
+  const optionalCodeFiles = optionalCodeMatches.flat()
+  const serviceWorkerPath = path.join(distDir, 'sw.js')
+  if (!existsSync(serviceWorkerPath)) {
+    failures.push('Missing sw.js for optional-code precache validation')
+  } else {
+    const serviceWorkerSource = readFileSync(serviceWorkerPath, 'utf-8')
+    const precachedOptionalCode = optionalCodeFiles.filter((file) => serviceWorkerSource.includes(file))
+    rows.push(`PWA optional code: ${optionalCodeFiles.length} heavy chunks excluded from install precache`)
+    failures.push(...precachedOptionalCode.map((file) => `Optional code is unexpectedly precached: ${file}`))
   }
 
   const photoHtmlFiles = files.filter((file) => /^photos\/[^/]+\/index\.html$/.test(file))
@@ -256,6 +318,27 @@ export function collectStartupFiles(html: string): string[] {
   }
 
   return Array.from(files).sort()
+}
+
+export function parsePhotoTextUrls(bootstrapSource: string): Record<string, string> | null {
+  const marker = 'window.__PHOTO_TEXT_URLS__='
+  const markerIndex = bootstrapSource.lastIndexOf(marker)
+  if (markerIndex === -1) return null
+
+  const serializedUrls = bootstrapSource
+    .slice(markerIndex + marker.length)
+    .replace(/;\s*$/, '')
+    .trim()
+  try {
+    const parsed = JSON.parse(serializedUrls) as unknown
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null
+
+    const entries = Object.entries(parsed)
+    if (entries.some(([, value]) => typeof value !== 'string')) return null
+    return Object.fromEntries(entries) as Record<string, string>
+  } catch {
+    return null
+  }
 }
 
 export function collectManifestRouteFiles(

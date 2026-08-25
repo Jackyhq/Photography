@@ -5,6 +5,7 @@ import { ScrollArea } from '@afilmory/ui/scroll-areas'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import {
   getLocalizedPhotoTitle,
   getPhotoAltText,
@@ -116,6 +117,7 @@ const ManifestStats = ({ data }: { data: any[] }) => {
 // 照片卡片组件
 const PhotoCard = ({ photo, index }: { photo: any; index: number }) => {
   const { i18n } = useTranslation()
+  usePhotoTextUpdates()
   const locale = i18n.resolvedLanguage ?? i18n.language
   const photoTitle = getLocalizedPhotoTitle(photo, locale)
 

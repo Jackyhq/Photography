@@ -5,6 +5,7 @@ import { m } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { getLocalizedPhotoTitle, getPhotoAltText } from '~/lib/photo-description'
 import { getPhotoDetailPath } from '~/lib/photo-route'
 
@@ -13,6 +14,7 @@ import type { PhotoMarkerPinProps } from './types'
 
 export const PhotoMarkerPin = ({ marker, isSelected = false, onClick, onClose }: PhotoMarkerPinProps) => {
   const { i18n, t } = useTranslation()
+  usePhotoTextUpdates()
   const locale = i18n.resolvedLanguage ?? i18n.language
   const photoAlt = getPhotoAltText(marker.photo, locale)
   const photoTitle = getLocalizedPhotoTitle(marker.photo, locale) || marker.photo.id

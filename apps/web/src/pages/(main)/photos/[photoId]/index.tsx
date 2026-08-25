@@ -7,9 +7,10 @@ import { RemoveScroll } from 'react-remove-scroll'
 import { NotFound } from '~/components/common/NotFound'
 import { usePageMeta } from '~/hooks/usePageMeta'
 import { useContextPhotos, usePhotoViewer } from '~/hooks/usePhotoViewer'
+import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { useTitle } from '~/hooks/useTitle'
 import { deriveAccentFromSources } from '~/lib/color'
-import { getLocalizedPhotoDescription, getPhotoAltText } from '~/lib/photo-description'
+import { getLocalizedPhotoDescription, getLocalizedPhotoTitle, getPhotoAltText } from '~/lib/photo-description'
 import { getPhotoDetailPath } from '~/lib/photo-route'
 
 const PhotoViewer = lazy(() =>
@@ -20,6 +21,7 @@ export const Component = () => {
   const photoViewer = usePhotoViewer()
   const photos = useContextPhotos()
   const { i18n } = useTranslation()
+  usePhotoTextUpdates()
   const locale = i18n.resolvedLanguage ?? i18n.language
 
   const [ref, setRef] = useState<HTMLElement | null>(null)
@@ -30,7 +32,7 @@ export const Component = () => {
     [ref],
   )
   const currentPhoto = photos[photoViewer.currentIndex]
-  const pageTitle = currentPhoto?.title || currentPhoto?.id || 'Not Found'
+  const pageTitle = currentPhoto ? getLocalizedPhotoTitle(currentPhoto, locale) || currentPhoto.id : 'Not Found'
   const pageDescription = currentPhoto ? getLocalizedPhotoDescription(currentPhoto, locale) : ''
 
   useTitle(pageTitle)

@@ -2,6 +2,7 @@ import { act, cleanup, render } from '@testing-library/react'
 import * as React from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { PhotoTextUpdatesProvider } from '../providers/photo-text-updates-provider'
 import { usePhotoTextUpdates } from './usePhotoTextUpdates'
 
 const photoTextStore = vi.hoisted(() => {
@@ -35,18 +36,21 @@ describe('usePhotoTextUpdates', () => {
     photoTextStore.reset()
   })
 
-  it('re-renders its consumer when a localized photo text pack is applied', () => {
-    let renderCount = 0
-    const Probe = () => {
-      usePhotoTextUpdates()
-      renderCount += 1
+  it('re-renders a memoized consumer when a localized photo text pack is applied', () => {
+    const revisions: number[] = []
+    const Probe = React.memo(() => {
+      revisions.push(usePhotoTextUpdates())
       return null
-    }
+    })
 
-    render(<Probe />)
-    expect(renderCount).toBe(1)
+    render(
+      <PhotoTextUpdatesProvider>
+        <Probe />
+      </PhotoTextUpdatesProvider>,
+    )
+    expect(revisions).toEqual([0])
 
     act(() => photoTextStore.notify())
-    expect(renderCount).toBe(2)
+    expect(revisions).toEqual([0, 1])
   })
 })

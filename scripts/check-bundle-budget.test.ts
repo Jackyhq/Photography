@@ -10,6 +10,7 @@ import {
   collectManifestRouteFiles,
   collectStartupFiles,
   collectStaticJavaScriptClosure,
+  parsePhotoTextUrls,
   PHOTO_VIEWER_GPS_SOURCE_PATTERNS,
   PHOTO_VIEWER_IMMEDIATE_SOURCE_PATTERNS,
 } from './check-bundle-budget'
@@ -32,6 +33,15 @@ describe('bundle budget graph helpers', () => {
     `)
 
     expect(files).toEqual(['assets/main.css', 'assets/main.js', 'assets/photos-index.abc.js', 'vendor/react.js'])
+  })
+
+  it('reads optional photo text assets from the manifest bootstrap', () => {
+    expect(parsePhotoTextUrls('window.__PHOTO_TEXT_URLS__={"en":"/assets/photo-text.en.hash.json"};')).toEqual({
+      en: '/assets/photo-text.en.hash.json',
+    })
+    expect(parsePhotoTextUrls('window.__PHOTO_TEXT_URLS__={};')).toEqual({})
+    expect(parsePhotoTextUrls('window.__PHOTO_TEXT_URLS__=invalid;')).toBeNull()
+    expect(parsePhotoTextUrls('window.__MANIFEST__={}')).toBeNull()
   })
 
   it('walks every static JavaScript dependency but excludes dynamic imports', () => {
@@ -226,11 +236,18 @@ describe('bundle budget graph helpers', () => {
       'map-page-main.js',
       'maplibre-gl-main.js',
       'Reaction-main.js',
-      'photos-index.main.js',
     ]) {
       writeFileSync(path.join(directory, 'assets', file), 'export {}')
     }
+    writeFileSync(
+      path.join(directory, 'assets/photos-index.main.js'),
+      'window.__MANIFEST__={};window.__FULL_MANIFEST_URL__="/assets/photos-manifest.main.json";window.__PHOTO_TEXT_URLS__={"en":"/assets/photo-text.en.main.json"};',
+    )
     writeFileSync(path.join(directory, 'assets/photos-manifest.main.json'), '{"data":[]}')
+    writeFileSync(path.join(directory, 'assets/photo-text.en.main.json'), '{"language":"en","photos":{}}')
+    mkdirSync(path.join(directory, 'vendor'), { recursive: true })
+    writeFileSync(path.join(directory, 'vendor/heic-main.js'), 'export {}')
+    writeFileSync(path.join(directory, 'sw.js'), 'precacheAndRoute([])')
     writeFileSync(path.join(directory, 'photos/photo-1/index.html'), '<!doctype html>')
 
     const result = checkBundleBudget(directory)
@@ -240,9 +257,22 @@ describe('bundle budget graph helpers', () => {
         expect.stringContaining('homepage startup (en):'),
         expect.stringContaining('homepage startup (zh-CN):'),
         expect.stringContaining('homepage startup (jp):'),
+        expect.stringContaining('PWA optional code: 2 heavy chunks excluded'),
         expect.stringContaining('photo-viewer base route:'),
         expect.stringContaining('photo-viewer GPS route:'),
       ]),
+    )
+
+    rmSync(path.join(directory, 'assets/photo-text.en.main.json'))
+    writeFileSync(
+      path.join(directory, 'assets/photos-index.main.js'),
+      'window.__MANIFEST__={};window.__FULL_MANIFEST_URL__="/assets/photos-manifest.main.json";window.__PHOTO_TEXT_URLS__={};',
+    )
+
+    const resultWithoutPhotoText = checkBundleBudget(directory)
+    expect(resultWithoutPhotoText.failures).toEqual([])
+    expect(resultWithoutPhotoText.rows.find((row) => row.startsWith('homepage startup (en):'))).not.toEqual(
+      result.rows.find((row) => row.startsWith('homepage startup (en):')),
     )
   })
 })

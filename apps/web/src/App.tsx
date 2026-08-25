@@ -3,7 +3,6 @@ import { Outlet, useLocation } from 'react-router'
 
 import { useCanonical } from './hooks/useCanonical'
 import { useCommandPaletteShortcut } from './hooks/useCommandPaletteShortcut'
-import { usePhotoTextUpdates } from './hooks/usePhotoTextUpdates'
 import { RootProviders } from './providers/root-providers'
 
 const CommandPalette = lazy(() =>
@@ -13,7 +12,6 @@ const CommandPalette = lazy(() =>
 function App() {
   const { pathname } = useLocation()
   useCanonical(pathname)
-  usePhotoTextUpdates()
 
   return (
     <RootProviders>

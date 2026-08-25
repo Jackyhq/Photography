@@ -7,7 +7,7 @@ export const ACTIVE_PHOTO_RUNTIME_CACHES = {
 
 export const OPTIONAL_CODE_RUNTIME_CACHE = 'optional-code-v1'
 
-export const OPTIONAL_CODE_PRECACHE_GLOBS = ['vendor/0-*.js', 'assets/maplibre-gl-*.js'] as const
+export const OPTIONAL_CODE_PRECACHE_GLOBS = ['vendor/heic-*.js', 'assets/maplibre-gl-*.js'] as const
 
 export function createPhotoRuntimeCaching(): RuntimeCaching[] {
   return [
@@ -48,7 +48,7 @@ export function createPhotoRuntimeCaching(): RuntimeCaching[] {
 export function createOptionalCodeRuntimeCaching(): RuntimeCaching[] {
   return [
     {
-      urlPattern: /\/(?:vendor\/0-|assets\/maplibre-gl-)[^/]+\.js$/,
+      urlPattern: /\/(?:vendor\/heic-|assets\/maplibre-gl-)[^/]+\.js$/,
       handler: 'CacheFirst',
       options: {
         cacheName: OPTIONAL_CODE_RUNTIME_CACHE,
