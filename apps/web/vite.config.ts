@@ -18,6 +18,7 @@ import PKG from '../../package.json'
 import { siteConfig } from '../../site.config'
 import { astPlugin } from './plugins/vite/ast'
 import { createDependencyChunksPlugin } from './plugins/vite/deps'
+import { featuredPhotosPlugin } from './plugins/vite/featured-photos'
 import { createFeedSitemapPlugin } from './plugins/vite/feed-sitemap'
 import { localesJsonPlugin } from './plugins/vite/locales-json'
 import { manifestInjectPlugin } from './plugins/vite/manifest-inject'
@@ -83,6 +84,7 @@ const staticWebBuildPlugins: PluginOption[] = [
   manifestInjectPlugin(),
   siteConfigInjectPlugin(),
   photosStaticPlugin(),
+  featuredPhotosPlugin(siteConfig),
 
   VitePWA({
     base: '/',
