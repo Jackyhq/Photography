@@ -6,9 +6,9 @@ const createGallery = () => {
   const container = document.createElement('div')
   container.innerHTML = `
     <div data-gallery-keyboard-group="social">
+      <a href="#home">Home</a>
       <a href="#instagram">Instagram</a>
       <a href="#github">GitHub</a>
-      <a href="#home">Home</a>
     </div>
     <div data-gallery-keyboard-group="actions">
       <button type="button">Search</button>

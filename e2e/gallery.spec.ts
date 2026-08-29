@@ -89,17 +89,18 @@ test('enters and traverses header keyboard navigation with arrow keys', async ({
   await page.goto('/')
 
   const firstPhoto = page.locator('[data-photo-id]').first()
+  const homepage = page.locator('[data-gallery-keyboard-group="social"] a').first()
   const instagram = page.getByRole('link', { name: 'Instagram' })
-  const github = page.getByRole('link', { name: 'GitHub' })
   const map = page.getByTestId('map-explore-trigger').first()
   const search = page.getByTestId('command-palette-trigger').first()
 
   await expect(firstPhoto).toBeVisible()
+  await expect(homepage).toHaveAccessibleName('Jackywhq homepage')
   await page.keyboard.press('ArrowDown')
-  await expect(instagram).toBeFocused()
+  await expect(homepage).toBeFocused()
 
   await page.keyboard.press('ArrowRight')
-  await expect(github).toBeFocused()
+  await expect(instagram).toBeFocused()
 
   await page.keyboard.press('ArrowDown')
   await expect(map).toBeFocused()

@@ -42,7 +42,7 @@ export const routes: RouteConfig[] = [
       description:
         "Keyboard navigation, focus behavior, sharing fallbacks, and production data-visibility boundaries in Jacky's Photography.",
       createdAt: '2026-08-04T01:03:59+08:00',
-      lastModified: '2026-08-04T01:03:59+08:00',
+      lastModified: '2026-08-29T14:01:43+08:00',
     },
   },
   {
