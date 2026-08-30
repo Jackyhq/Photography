@@ -10,6 +10,7 @@ import {
   collectManifestRouteFiles,
   collectStartupFiles,
   collectStaticJavaScriptClosure,
+  HOMEPAGE_STARTUP_SOURCE_PATTERNS,
   parsePhotoTextUrls,
   PHOTO_VIEWER_GPS_SOURCE_PATTERNS,
   PHOTO_VIEWER_IMMEDIATE_SOURCE_PATTERNS,
@@ -63,7 +64,7 @@ describe('bundle budget graph helpers', () => {
     ])
   })
 
-  it('counts a lazy homepage layout and its imports through the Vite manifest', () => {
+  it('counts the conditionally loaded gallery in the homepage startup graph', () => {
     const manifest: ViteManifest = {
       'index.html': {
         file: 'assets/main.js',
@@ -75,6 +76,11 @@ describe('bundle budget graph helpers', () => {
       'src/pages/(main)/layout.tsx': {
         file: 'assets/layout.js',
         src: 'src/pages/(main)/layout.tsx',
+        dynamicImports: ['src/modules/gallery/GalleryRouteContent.tsx'],
+      },
+      'src/modules/gallery/GalleryRouteContent.tsx': {
+        file: 'assets/gallery-route.js',
+        src: 'src/modules/gallery/GalleryRouteContent.tsx',
         imports: ['src/modules/gallery/MasonryRoot.tsx'],
       },
       'src/modules/gallery/MasonryRoot.tsx': {
@@ -89,12 +95,19 @@ describe('bundle budget graph helpers', () => {
 
     expect(
       Array.from(
-        collectManifestRouteFiles(manifest, [/src\/pages\/\(main\)\/layout\.tsx$/], {
+        collectManifestRouteFiles(manifest, HOMEPAGE_STARTUP_SOURCE_PATTERNS, {
           includeEntries: true,
           includeDynamic: false,
         }),
       ).sort(),
-    ).toEqual(['assets/gallery.css', 'assets/gallery.js', 'assets/layout.js', 'assets/main.js', 'vendor/react.js'])
+    ).toEqual([
+      'assets/gallery-route.js',
+      'assets/gallery.css',
+      'assets/gallery.js',
+      'assets/layout.js',
+      'assets/main.js',
+      'vendor/react.js',
+    ])
   })
 
   it('can seed a route from its manifest chunk name when Vite omits src', () => {

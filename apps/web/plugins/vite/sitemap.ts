@@ -1,4 +1,4 @@
-import type { PhotoManifestItem } from '@afilmory/builder'
+import type { PhotoManifestItem } from '@afilmory/builder/photo-types'
 
 import type { SiteConfig } from '../../../../site.config'
 import { getPreferredPhotoDescription, getPreferredPhotoTitle } from './__internal__/photo-text'

@@ -15,7 +15,9 @@
     "format": "prettier --write \"src/**/*.ts\" ",
     "lint": "eslint --fix",
     "serve": "vite preview",
-    "type-check": "tsc --noEmit",
+    "type-check": "pnpm type-check:app && pnpm type-check:node",
+    "type-check:app": "tsc --noEmit -p tsconfig.json",
+    "type-check:node": "tsc --noEmit -p tsconfig.node.json",
     "web": "vite"
   },
   "dependencies": {
@@ -62,11 +64,11 @@
     "zustand": "5.0.8"
   },
   "devDependencies": {
+    "@afilmory/builder": "workspace:*",
     "@egoist/tailwindcss-icons": "catalog:",
     "@iconify-json/mingcute": "catalog:",
     "@iconify-json/ri": "1.2.10",
     "@tailwindcss/postcss": "catalog:",
-    "@tailwindcss/typography": "catalog:",
     "@tailwindcss/vite": "4.2.4",
     "@types/node": "24.9.2",
     "@types/react": "19.2.2",
@@ -75,7 +77,6 @@
     "ast-kit": "2.1.3",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "code-inspector-plugin": "1.5.1",
-    "daisyui": "5.5.19",
     "execa": "9.6.1",
     "kolorist": "1.8.0",
     "linkedom": "0.18.12",
@@ -85,10 +86,8 @@
     "react-compiler-runtime": "19.1.0-rc.3",
     "react-scan": "0.5.6",
     "simple-git-hooks": "2.13.1",
-    "tailwind-scrollbar": "catalog:",
     "tailwindcss": "catalog:",
     "tailwindcss-animate": "catalog:",
-    "tailwindcss-safe-area": "catalog:",
     "tailwindcss-uikit-colors": "catalog:",
     "unplugin-ast": "0.16.0",
     "vite-plugin-html": "3.2.2",

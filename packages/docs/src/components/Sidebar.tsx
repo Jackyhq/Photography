@@ -164,11 +164,7 @@ export function Sidebar({ currentPath, onNavigate }: SidebarProps) {
     <aside className="relative h-screen w-64 overflow-x-hidden overflow-y-auto bg-transparent p-2 ">
       <div className="bg-material-thick border-border h-full w-full border-[1px] border-solid backdrop-blur-2xl md:border-none md:bg-transparent">
         <div className=" flex items-center px-4 py-6">
-          <img
-            src={docsSite.avatarUrl}
-            alt={docsSite.authorName}
-            className="h-14 w-14 rounded-xl object-cover"
-          />
+          <img src={docsSite.avatarUrl} alt={docsSite.authorName} className="h-14 w-14 rounded-xl object-cover" />
           <div className="ml-3 flex-1">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Jacky's Photography</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">Documentation</p>

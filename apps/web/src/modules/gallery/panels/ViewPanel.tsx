@@ -8,7 +8,7 @@ export const ViewPanel = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="pb-safe lg:pb-safe-2 w-full lg:py-1">
+    <div className="pb-safe lg:pb-safe-offset-2 w-full lg:py-1">
       <h3 className="mb-3 px-2 text-sm font-medium">{t('action.view.settings')}</h3>
 
       {/* 排序部分 */}

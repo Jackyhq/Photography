@@ -52,6 +52,11 @@ const MAPLIBRE_ASSET_PATTERN = /^assets\/maplibre-gl-[\w-]+\.js$/
 const HEIC_ASSET_PATTERN = /^vendor\/heic-[\w-]+\.js$/
 const STARTUP_PHOTO_TEXT_PATTERN = /^assets\/photo-text\.en\.[\w-]+\.json$/
 
+export const HOMEPAGE_STARTUP_SOURCE_PATTERNS = [
+  /src\/pages\/\(main\)\/layout\.tsx$/,
+  /src\/modules\/gallery\/GalleryRouteContent\.tsx$/,
+]
+
 export const PHOTO_VIEWER_IMMEDIATE_SOURCE_PATTERNS = [
   /PhotoViewer(?:\.tsx)?$/,
   /src\/components\/ui\/photo-viewer\/ExifPanel\.tsx$/,
@@ -173,7 +178,9 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     const startupBaseFiles = Array.from(
       new Set([
         ...indexStartupFiles,
-        ...collectManifestRouteFiles(viteManifest, [/src\/pages\/\(main\)\/layout\.tsx$/], {
+        // GalleryRouteContent is conditionally imported so direct photo routes
+        // skip it, but homepage navigation preloads it during layout evaluation.
+        ...collectManifestRouteFiles(viteManifest, HOMEPAGE_STARTUP_SOURCE_PATTERNS, {
           includeEntries: true,
           includeDynamic: false,
         }),

@@ -5,6 +5,8 @@ import { inspect } from 'node:util'
 import { glob } from 'glob'
 import type { Plugin } from 'vite'
 
+import { formatGeneratedTypescript } from './format-generated'
+
 interface RouteConfig {
   path: string
   component: string
@@ -103,14 +105,12 @@ async function generateRoutes(options: Required<GenerateRoutesOptions>) {
       return a.path.localeCompare(b.path)
     })
 
-    // 生成路由文件内容
-    const routeFileContent = generateRouteFileContent(routes)
-
     // 确保输出目录存在
     await fs.mkdir(outputDir, { recursive: true })
 
     // 写入路由文件
     const outputPath = path.join(outputDir, outputFile)
+    const routeFileContent = await formatGeneratedTypescript(generateRouteFileContent(routes), outputPath)
     await fs.writeFile(outputPath, routeFileContent, 'utf-8')
 
     // 生成 JSON 文件（不包含 component）

@@ -71,7 +71,7 @@ describe('featured photos output', () => {
       titleEn: 'English title 0',
       description: '公开描述 0',
       photoUrl: 'https://photo.jackyw.cn/photos/photo-00/',
-      thumbnailUrl: 'https://photo.jackyw.cn/thumbnails/photo-00.jpg',
+      thumbnailUrl: 'https://photo.jackyw.cn/thumbnails/photo-00-640.webp',
       thumbnailWebpSrcSet:
         'https://photo.jackyw.cn/thumbnails/photo-00-360.webp 360w, https://photo.jackyw.cn/thumbnails/photo-00-640.webp 640w',
       width: 3000,
@@ -144,11 +144,14 @@ describe('featured photos output', () => {
     [
       'both required WebP widths',
       { thumbnailWebpSrcSet: '/thumbnails/photo-00-360.webp 360w' },
-      'missing the 640w WebP thumbnail',
+      'Missing 640w WebP thumbnail',
     ],
     [
       'same-origin thumbnail URLs',
-      { thumbnailUrl: 'https://private.example.com/photo.jpg' },
+      {
+        thumbnailWebpSrcSet:
+          'https://private.example.com/photo-00-360.webp 360w, https://private.example.com/photo-00-640.webp 640w',
+      },
       'must use the Photography HTTPS origin',
     ],
   ])('rejects a featured item without %s', (_label, overrides, error) => {

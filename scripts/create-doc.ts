@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import * as clack from '@clack/prompts'
 import { cancel, isCancel } from '@clack/prompts'
@@ -10,9 +10,9 @@ import { cancel, isCancel } from '@clack/prompts'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-interface DocOptions {
+export interface DocOptions {
   title: string
-  description?: string
+  description: string
   category?: string
   filename: string
   template: 'basic' | 'guide' | 'api' | 'deployment'
@@ -21,7 +21,7 @@ interface DocOptions {
 /**
  * Generate current timestamp in Asia/Shanghai timezone
  */
-function getCurrentTimestamp(): string {
+export function getCurrentTimestamp(): string {
   return new Date()
     .toLocaleString('en-GB', {
       timeZone: 'Asia/Shanghai',
@@ -33,19 +33,14 @@ function getCurrentTimestamp(): string {
       second: '2-digit',
       hour12: false,
     })
-    .replace(
-      /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}:\d{2}:\d{2})/,
-      '$3-$2-$1T$4+08:00',
-    )
+    .replace(/(\d{2})\/(\d{2})\/(\d{4}), (\d{2}:\d{2}:\d{2})/, '$3-$2-$1T$4+08:00')
 }
 
 /**
  * Get available categories by scanning existing directories
  */
-function getCategories(): string[] {
-  const contentsDir = join(__dirname, '..', 'packages', 'docs', 'contents')
+export function getCategories(contentsDir = join(__dirname, '..', 'packages', 'docs', 'contents')): string[] {
   try {
-    const { readdirSync, statSync } = require('node:fs')
     return readdirSync(contentsDir)
       .filter((item) => {
         const fullPath = join(contentsDir, item)
@@ -53,22 +48,20 @@ function getCategories(): string[] {
       })
       .sort()
   } catch {
-    return ['deployment', 'guides', 'api', 'tutorial']
+    return []
   }
 }
 
 /**
  * Generate content template based on type
  */
-function generateTemplate(options: DocOptions): string {
+export function generateTemplate(options: DocOptions): string {
   const timestamp = getCurrentTimestamp()
+  const title = options.title.trim()
+  const description = options.description.trim()
   const frontmatter = `---
-title: ${options.title}${
-    options.description
-      ? `
-description: ${options.description}`
-      : ''
-  }
+title: ${title}
+description: ${description}
 createdAt: ${timestamp}
 lastModified: ${timestamp}
 ---`
@@ -77,7 +70,7 @@ lastModified: ${timestamp}
     case 'guide': {
       return `${frontmatter}
 
-# ${options.title}
+# ${title}
 
 ## Overview
 
@@ -125,11 +118,11 @@ Common issues and solutions.
     case 'api': {
       return `${frontmatter}
 
-# ${options.title}
+# ${title}
 
 ## Overview
 
-API documentation for ${options.title}.
+API documentation for ${title}.
 
 ## Authentication
 
@@ -172,11 +165,11 @@ Code examples for different programming languages.
     case 'deployment': {
       return `${frontmatter}
 
-# ${options.title}
+# ${title}
 
 ## Overview
 
-Guide for deploying using ${options.title}.
+Guide for deploying using ${title}.
 
 ## Prerequisites
 
@@ -225,7 +218,7 @@ Common deployment issues and solutions.
     default: {
       return `${frontmatter}
 
-# ${options.title}
+# ${title}
 
 ## Introduction
 
@@ -253,13 +246,12 @@ Summary and next steps.
 /**
  * Validate filename
  */
-function validateFilename(filename: string): string | undefined {
+export function validateFilename(filename: string): string | undefined {
   if (!filename.trim()) {
     return 'Filename is required'
   }
 
   const cleanFilename = filename.trim().toLowerCase()
-
   // Check for valid characters
   if (!/^[a-z0-9-]+$/.test(cleanFilename)) {
     return 'Filename can only contain lowercase letters, numbers, and hyphens'
@@ -268,6 +260,26 @@ function validateFilename(filename: string): string | undefined {
   // Check length
   if (cleanFilename.length < 2 || cleanFilename.length > 50) {
     return 'Filename must be between 2 and 50 characters'
+  }
+}
+
+export function validateTitle(title: string): string | undefined {
+  if (!title.trim()) {
+    return 'Title is required'
+  }
+
+  if (/[\r\n]/.test(title)) {
+    return 'Title must be a single line'
+  }
+}
+
+export function validateDescription(description: string): string | undefined {
+  if (!description.trim()) {
+    return 'Description is required'
+  }
+
+  if (/[\r\n]/.test(description)) {
+    return 'Description must be a single line'
   }
 }
 
@@ -281,9 +293,7 @@ async function main() {
   const title = await clack.text({
     message: 'What is the document title?',
     placeholder: 'My Awesome Guide',
-    validate: (value) => {
-      if (!value.trim()) return 'Title is required'
-    },
+    validate: validateTitle,
   })
 
   if (isCancel(title)) {
@@ -291,10 +301,11 @@ async function main() {
     process.exit(0)
   }
 
-  // Get document description (optional)
+  // Get the document description used by generated metadata and social previews.
   const description = await clack.text({
-    message: 'Provide a brief description (optional):',
+    message: 'Provide a brief description:',
     placeholder: 'A comprehensive guide to...',
+    validate: validateDescription,
   })
 
   if (isCancel(description)) {
@@ -402,16 +413,14 @@ async function main() {
     // Check if file already exists
     if (existsSync(filePath)) {
       spinner.stop('File already exists!')
-      clack.log.error(
-        `Document ${category ? `${category}/` : ''}${filename}.mdx already exists`,
-      )
+      clack.log.error(`Document ${category ? `${category}/` : ''}${filename}.mdx already exists`)
       process.exit(1)
     }
 
     // Generate content
     const options: DocOptions = {
-      title,
-      description: description || undefined,
+      title: title.trim(),
+      description: description.trim(),
       category,
       filename,
       template: template as DocOptions['template'],
@@ -434,15 +443,16 @@ async function main() {
     clack.outro('✨ Happy writing!')
   } catch (error) {
     spinner.stop('Failed to create document')
-    clack.log.error(
-      `Error: ${error instanceof Error ? error.message : String(error)}`,
-    )
+    clack.log.error(`Error: ${error instanceof Error ? error.message : String(error)}`)
     process.exit(1)
   }
 }
 
-// Run the CLI
-main().catch((error) => {
-  console.error('Unexpected error:', error)
-  process.exit(1)
-})
+const invokedPath = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : undefined
+
+if (invokedPath === import.meta.url) {
+  main().catch((error) => {
+    console.error('Unexpected error:', error)
+    process.exit(1)
+  })
+}

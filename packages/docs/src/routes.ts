@@ -3,15 +3,16 @@
 // Do not edit manually - your changes will be overwritten
 
 import Route1 from '../contents/accessibility/index.mdx'
-import Route3 from '../contents/deployment/github-action.mdx'
-import Route4 from '../contents/deployment/github-pages.mdx'
-import Route2 from '../contents/deployment/index.mdx'
-import Route5 from '../contents/deployment/vercel-preview.mdx'
-import Route6 from '../contents/docs-site.mdx'
+import Route2 from '../contents/architecture/index.mdx'
+import Route4 from '../contents/deployment/github-action.mdx'
+import Route5 from '../contents/deployment/github-pages.mdx'
+import Route3 from '../contents/deployment/index.mdx'
+import Route6 from '../contents/deployment/vercel-preview.mdx'
+import Route7 from '../contents/docs-site.mdx'
 import Route0 from '../contents/index.mdx'
-import Route7 from '../contents/performance/index.mdx'
-import Route8 from '../contents/photo-metadata/index.mdx'
-import Route9 from '../contents/storage/index.mdx'
+import Route8 from '../contents/performance/index.mdx'
+import Route9 from '../contents/photo-metadata/index.mdx'
+import Route10 from '../contents/storage/index.mdx'
 
 export interface RouteConfig {
   path: string
@@ -27,10 +28,9 @@ export const routes: RouteConfig[] = [
     title: 'Overview',
     meta: {
       title: 'Overview',
-      description:
-        "Documentation for Jacky's Photography at docs.photo.jackyw.cn, covering the gallery, photo pipeline, storage, performance, and deployment.",
+      description: "Task-oriented documentation for developing, maintaining, and deploying Jacky's Photography.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-08-04T01:03:59+08:00',
+      lastModified: '2026-08-30T14:12:33+08:00',
     },
   },
   {
@@ -46,30 +46,42 @@ export const routes: RouteConfig[] = [
     },
   },
   {
-    path: '/deployment',
+    path: '/architecture',
     component: Route2,
+    title: 'Architecture',
+    meta: {
+      title: 'Architecture',
+      description:
+        "Workspace responsibilities, dependency boundaries, generated data flow, and deployment shape for Jacky's Photography.",
+      createdAt: '2026-08-30T13:22:42+08:00',
+      lastModified: '2026-08-30T14:06:15+08:00',
+    },
+  },
+  {
+    path: '/deployment',
+    component: Route3,
     title: 'Deployment',
     meta: {
       title: 'Deployment',
       description: "Guide to deploying Jacky's Photography in production environments.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-08-04T01:03:59+08:00',
+      lastModified: '2026-08-04T01:09:34+08:00',
     },
   },
   {
     path: '/deployment/github-action',
-    component: Route3,
+    component: Route4,
     title: 'GitHub Action',
     meta: {
       title: 'GitHub Action',
       description: "Current GitHub Actions validation and deployment workflow for Jacky's Photography.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-08-04T01:03:59+08:00',
+      lastModified: '2026-08-04T01:09:34+08:00',
     },
   },
   {
     path: '/deployment/github-pages',
-    component: Route4,
+    component: Route5,
     title: 'GitHub Pages Removal',
     meta: {
       title: 'GitHub Pages Removal',
@@ -80,7 +92,7 @@ export const routes: RouteConfig[] = [
   },
   {
     path: '/deployment/vercel-preview',
-    component: Route5,
+    component: Route6,
     title: 'Vercel Preview',
     meta: {
       title: 'Vercel Preview',
@@ -91,46 +103,46 @@ export const routes: RouteConfig[] = [
   },
   {
     path: '/docs-site',
-    component: Route6,
+    component: Route7,
     title: 'Docs site',
     meta: {
       title: 'Docs site',
       description: "How to maintain and publish the Jacky's Photography documentation site at docs.photo.jackyw.cn.",
       createdAt: '2025-09-11T17:05:55+08:00',
-      lastModified: '2026-08-04T01:03:59+08:00',
+      lastModified: '2026-08-30T14:06:15+08:00',
     },
   },
   {
     path: '/performance',
-    component: Route7,
+    component: Route8,
     title: 'Performance',
     meta: {
       title: 'Performance',
       description: "Mobile-first loading and image performance notes for Jacky's Photography.",
       createdAt: '2026-04-27T00:00:00+01:00',
-      lastModified: '2026-08-04T01:03:59+08:00',
+      lastModified: '2026-08-30T14:06:15+08:00',
     },
   },
   {
     path: '/photo-metadata',
-    component: Route8,
+    component: Route9,
     title: 'Photo Metadata',
     meta: {
       title: 'Photo Metadata',
       description: 'Manual photo descriptions, tags, manifest merge behavior, and SEO metadata workflow.',
       createdAt: '2026-05-09T00:00:00+01:00',
-      lastModified: '2026-08-04T01:03:59+08:00',
+      lastModified: '2026-08-04T01:09:34+08:00',
     },
   },
   {
     path: '/storage',
-    component: Route9,
+    component: Route10,
     title: 'Storage providers',
     meta: {
       title: 'Storage providers',
       description: "Current storage-provider setup and supported alternatives for Jacky's Photography.",
       createdAt: '2025-08-12T15:09:08+08:00',
-      lastModified: '2026-08-04T01:03:59+08:00',
+      lastModified: '2026-08-04T01:09:34+08:00',
     },
   },
 ]

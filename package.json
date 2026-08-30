@@ -19,7 +19,8 @@
     "docs:dev": "pnpm --filter @afilmory/docs dev",
     "docs:preview": "pnpm --filter @afilmory/docs preview",
     "fixtures:photos": "tsx scripts/create-e2e-photo-fixture.ts",
-    "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json,css,md}\" \"packages/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json,css,md,mdx}\" \"packages/**/*.{ts,tsx,js,jsx,json,css,md,mdx}\" \"scripts/**/*.{ts,tsx,js,jsx,json,css,md,mdx}\"",
+    "format:check": "prettier --check \"apps/**/*.{ts,tsx,js,jsx,json,css,md,mdx}\" \"packages/**/*.{ts,tsx,js,jsx,json,css,md,mdx}\" \"scripts/**/*.{ts,tsx,js,jsx,json,css,md,mdx}\"",
     "lint": "eslint --fix",
     "lint:check": "eslint .",
     "photos:descriptions:sync": "tsx scripts/sync-photo-descriptions.ts",
@@ -36,15 +37,12 @@
   },
   "dependencies": {
     "@afilmory/builder": "workspace:*",
-    "@afilmory/hooks": "workspace:*",
-    "@afilmory/ui": "workspace:*",
     "@t3-oss/env-core": "catalog:",
     "dotenv": "17.4.2",
     "es-toolkit": "1.46.1",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@afilmory/builder": "workspace:*",
     "@clack/prompts": "^0.11.0",
     "@innei/prettier": "1.0.0",
     "@playwright/test": "^1.60.0",
@@ -63,7 +61,6 @@
     "jsdom": "^29.1.1",
     "lint-staged": "16.4.0",
     "nbump": "2.1.8",
-    "opentype.js": "1.3.4",
     "prettier": "3.8.3",
     "sharp": "0.35.0",
     "simple-git-hooks": "2.13.1",
@@ -73,7 +70,6 @@
     "unplugin-ast": "0.16.0",
     "vite": "7.3.5",
     "vite-bundle-analyzer": "1.3.8",
-    "vite-plugin-babel": "1.6.0",
     "vite-plugin-checker": "0.13.0",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "^4.1.7"
@@ -114,14 +110,16 @@
     "pre-commit": "pnpm exec lint-staged"
   },
   "lint-staged": {
-    "!(*dist*|*node_modules*|web)/**/*.{js,jsx,ts,tsx}": [
-      "prettier --ignore-path ./.gitignore --write "
-    ],
-    "!(*dist*|*node_modules*|web)/**/*.{js,ts,cjs,mjs,jsx,tsx,json}": [
+    "*.{js,jsx,ts,tsx,cjs,mjs,json}": [
+      "prettier --ignore-path .gitignore --ignore-path .prettierignore --write",
       "eslint --fix"
     ],
+    "*.{css,yml,yaml}": [
+      "prettier --ignore-path .gitignore --ignore-path .prettierignore --write"
+    ],
     "*.{md,mdx}": [
-      "pnpm update:lastmodified"
+      "pnpm update:lastmodified",
+      "prettier --ignore-path .gitignore --ignore-path .prettierignore --write"
     ]
   }
 }

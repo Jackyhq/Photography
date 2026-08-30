@@ -1,4 +1,4 @@
-import type { PhotoManifestItem } from '@afilmory/builder'
+import type { PhotoManifestItem } from '@afilmory/builder/photo-types'
 
 const PREFERRED_LANGUAGES = ['zh-CN', 'en'] as const
 

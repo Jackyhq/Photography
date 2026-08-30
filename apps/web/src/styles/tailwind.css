@@ -1,18 +1,37 @@
 @import 'tailwindcss';
-@plugin '@tailwindcss/typography';
 @plugin '@egoist/tailwindcss-icons';
-@plugin 'daisyui';
-@plugin 'tailwind-scrollbar';
 @plugin 'tailwindcss-animate';
-@import 'tailwindcss-safe-area';
 @import 'tailwindcss-uikit-colors/v4/macos.css';
 
 @source "../../node_modules/@afilmory/ui";
 
-@plugin "daisyui/theme" {
-  name: 'dark';
-  prefersdark: true;
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility pb-safe-offset-2 {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem);
+}
+
+[data-theme='dark'] {
   color-scheme: dark;
+  --radius: 0.5rem;
+  --border: 0 0% 22.1%;
+}
+
+@theme {
+  /* Application palette. These variables are deliberately owned here rather
+   * than by a component-library theme so runtime accent overrides stay cheap. */
   --color-primary: #007aff;
   --color-secondary: #007aff;
   --color-accent: #007aff;
@@ -23,19 +42,7 @@
   --color-success: #30d158;
   --color-warning: #ff9f0a;
   --color-error: #ff453a;
-  --rounded-btn: 1.9rem;
-  --tab-border: 2px;
-  --tab-radius: 0.5rem;
-}
 
-@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
-
-[data-theme='dark'] {
-  --radius: 0.5rem;
-  --border: 0 0% 22.1%;
-}
-
-@theme {
   /* Container */
   --container-padding: 2rem;
   --container-max-width-2xl: 1400px;

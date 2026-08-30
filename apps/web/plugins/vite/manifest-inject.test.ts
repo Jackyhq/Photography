@@ -4,6 +4,7 @@ import {
   createLightManifest,
   createManifestBootstrapScript,
   createPhotoTextPacks,
+  createProductionManifest,
   createThumbnailPreloadLinks,
   injectManifestBootstrap,
   serializeForInlineScript,
@@ -98,6 +99,36 @@ describe('manifest-inject helpers', () => {
           },
         },
       },
+    })
+  })
+
+  it('normalizes production manifests to the 640w WebP thumbnail without a JPEG srcset', () => {
+    const sourceManifest = {
+      version: 'v10',
+      data: [
+        {
+          id: 'photo-1',
+          originalUrl: 'https://cdn.example.com/photo-1.jpg',
+          thumbnailUrl: '/thumbnails/photo-1.jpg',
+          thumbnailSrcSet: '/thumbnails/photo-1.jpg 640w',
+          thumbnailWebpSrcSet: '/thumbnails/photo-1-360.webp 360w, /thumbnails/photo-1-640.webp 640w',
+        },
+      ],
+    }
+
+    const productionManifest = createProductionManifest(sourceManifest)
+    const productionPhoto = productionManifest.data?.[0]
+    const lightPhoto = createLightManifest(productionManifest).data[0]
+
+    expect(productionPhoto?.thumbnailUrl).toBe('/thumbnails/photo-1-640.webp')
+    expect(productionPhoto).not.toHaveProperty('thumbnailSrcSet')
+    expect(lightPhoto?.thumbnailUrl).toBe('/thumbnails/photo-1-640.webp')
+    expect(lightPhoto).not.toHaveProperty('thumbnailSrcSet')
+    expect(JSON.stringify(productionManifest)).not.toContain('/thumbnails/photo-1.jpg')
+
+    expect(sourceManifest.data[0]).toMatchObject({
+      thumbnailUrl: '/thumbnails/photo-1.jpg',
+      thumbnailSrcSet: '/thumbnails/photo-1.jpg 640w',
     })
   })
 
