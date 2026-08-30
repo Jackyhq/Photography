@@ -1,10 +1,11 @@
 import { readFileSync } from 'node:fs'
 
-import type { PhotoManifestItem } from '@afilmory/builder'
+import type { PhotoManifestItem } from '@afilmory/builder/photo-types'
 import type { Plugin } from 'vite'
 
 import type { SiteConfig } from '../../../../site.config'
 import { MANIFEST_PATH } from './__internal__/constants'
+import { getProductionThumbnailUrl } from './__internal__/production-thumbnail'
 
 export const FEATURED_PHOTOS_FILE_NAME = 'featured-photos.json'
 export const FEATURED_PHOTO_COUNT = 30
@@ -123,7 +124,11 @@ function createFeaturedPhoto(photo: FeaturedPhotoSource, baseUrl: URL): Featured
     firstText(photo.descriptions?.['zh-CN'], photo.descriptions?.en, photo.description),
     `description for ${id}`,
   )
-  const thumbnailUrl = toPublicAbsoluteUrl(photo.thumbnailUrl, baseUrl, `thumbnailUrl for ${id}`)
+  const thumbnailUrl = toPublicAbsoluteUrl(
+    getProductionThumbnailUrl(photo, `featured photo ${id}`),
+    baseUrl,
+    `thumbnailUrl for ${id}`,
+  )
   const thumbnailWebpSrcSet = toAbsoluteWebpSrcSet(photo.thumbnailWebpSrcSet, baseUrl, id)
 
   if (!Number.isInteger(photo.width) || photo.width <= 0) {

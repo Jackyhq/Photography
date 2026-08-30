@@ -41,9 +41,7 @@ function extractTextFromNode(node: any): string {
   }
 
   if (node.children && Array.isArray(node.children)) {
-    return node.children
-      .map((element: any) => extractTextFromNode(element))
-      .join('')
+    return node.children.map((element: any) => extractTextFromNode(element)).join('')
   }
 
   return ''
@@ -78,11 +76,7 @@ interface RemarkHeadingOptions {
  * @param options 配置选项
  */
 const remarkHeading: Plugin<[RemarkHeadingOptions?], Root> = (options = {}) => {
-  const {
-    overrideExisting = false,
-    prefix = '',
-    generateId = generateHeadingId,
-  } = options
+  const { overrideExisting = false, prefix = '', generateId = generateHeadingId } = options
 
   return (tree: Root) => {
     // 用于跟踪已使用的 ID，避免重复
@@ -98,9 +92,7 @@ const remarkHeading: Plugin<[RemarkHeadingOptions?], Root> = (options = {}) => {
       }
 
       // 提取标题文本
-      const text = node.children
-        .map((element: any) => extractTextFromNode(element))
-        .join('')
+      const text = node.children.map((element: any) => extractTextFromNode(element)).join('')
 
       if (!text.trim()) {
         return // 跳过空标题

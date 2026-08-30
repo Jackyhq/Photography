@@ -49,16 +49,10 @@ function updateLastModified(filePath: string): boolean {
         second: '2-digit',
         hour12: false,
       })
-      .replace(
-        /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}:\d{2}:\d{2})/,
-        '$3-$2-$1T$4+08:00',
-      )
+      .replace(/(\d{2})\/(\d{2})\/(\d{4}), (\d{2}:\d{2}:\d{2})/, '$3-$2-$1T$4+08:00')
 
     // Update lastModified field
-    const updatedFrontmatter = frontmatter.replace(
-      /lastModified:\s[^\n]+$/m,
-      `lastModified: ${currentDate}`,
-    )
+    const updatedFrontmatter = frontmatter.replace(/lastModified:\s[^\n]+$/m, `lastModified: ${currentDate}`)
 
     const updatedContent = updatedFrontmatter + body
     writeFileSync(filePath, updatedContent, 'utf-8')
@@ -86,9 +80,7 @@ function getModifiedDocsFiles(): string[] {
 
     // Filter for md/mdx files in docs contents directory
     const docsFiles = stagedFiles.filter(
-      (file) =>
-        file.startsWith('packages/docs/contents/') &&
-        (file.endsWith('.md') || file.endsWith('.mdx')),
+      (file) => file.startsWith('packages/docs/contents/') && (file.endsWith('.md') || file.endsWith('.mdx')),
     )
 
     return docsFiles.map((file) => join(__dirname, '..', file))
@@ -139,9 +131,7 @@ function main() {
   }
 
   if (hasUpdates) {
-    console.info(
-      '\n📝 Auto-updated lastModified fields, re-adding to staging area...',
-    )
+    console.info('\n📝 Auto-updated lastModified fields, re-adding to staging area...')
     try {
       execSync('git add packages/docs/contents/', { stdio: 'inherit' })
       console.info('✅ Successfully re-added to staging area')

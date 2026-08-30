@@ -5,6 +5,8 @@ import { inspect } from 'node:util'
 import { glob } from 'glob'
 import type { Plugin } from 'vite'
 
+import { formatGeneratedTypescript } from './format-generated'
+
 interface TocItem {
   id: string
   level: number
@@ -98,11 +100,10 @@ async function generateTocData(options: Required<TocExtractorOptions>) {
 
     allTocData.sort((a, b) => a.path.localeCompare(b.path))
 
-    const tsContent = generateTocTsContent(allTocData)
-
     await fs.mkdir(outputDir, { recursive: true })
 
     const outputPath = path.join(outputDir, outputFile)
+    const tsContent = await formatGeneratedTypescript(generateTocTsContent(allTocData), outputPath)
     await fs.writeFile(outputPath, tsContent, 'utf-8')
 
     console.info(`✓ Generated TOC data for ${allTocData.length} files to ${outputPath}`)

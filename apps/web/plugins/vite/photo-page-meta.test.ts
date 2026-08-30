@@ -2,7 +2,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
-import type { PhotoManifestItem } from '@afilmory/builder'
+import type { PhotoManifestItem } from '@afilmory/builder/photo-types'
 import { describe, expect, it } from 'vitest'
 
 import type { SiteConfig } from '../../../../site.config'
@@ -56,6 +56,11 @@ describe('photo-page-meta', () => {
     expect(html).toContain('imagesrcset="/thumbnails/photo-360.webp 360w, /thumbnails/photo-640.webp 640w"')
     expect(html).toContain('type="application/ld+json"')
     expect(html).toContain('"@type":"ImageObject"')
+    expect(html).toContain('property="og:image" content="https://cdn.example.com/photos/photo.jpg"')
+    expect(html).toContain('property="twitter:image" content="https://cdn.example.com/photos/photo.jpg"')
+    expect(html).toContain('"thumbnailUrl":"https://photos.example.com/thumbnails/photo-640.webp"')
+    expect(html).toContain('<img src="/thumbnails/photo-640.webp"')
+    expect(html).not.toContain('/thumbnails/photo.jpg')
     expect(html).not.toContain('标题 </script>')
     expect(html).toContain('data-afilmory-photo-noscript')
     expect(html).toContain('photos/photo%2Funsafe/')
@@ -67,10 +72,27 @@ describe('photo-page-meta', () => {
     expect(preload).toContain('type="image/webp"')
   })
 
+  it('uses the production WebP thumbnail when the original format is not social-preview compatible', () => {
+    const heicPhoto = {
+      ...photo,
+      originalUrl: 'https://cdn.example.com/photos/photo.heic?version=1',
+      mimeType: 'image/heic',
+    }
+    const html = applyPhotoPageMeta(
+      '<html><head><title>x</title></head><body></body></html>',
+      createPhotoPageMeta(heicPhoto, siteConfig),
+    )
+
+    expect(html).toContain('property="og:image" content="https://photos.example.com/thumbnails/photo-640.webp"')
+    expect(html).toContain('property="twitter:image" content="https://photos.example.com/thumbnails/photo-640.webp"')
+    expect(html).not.toContain('property="og:image" content="https://cdn.example.com/photos/photo.heic?version=1"')
+  })
+
   it('describes independent videos as VideoObject', () => {
     const video = {
       ...photo,
       mediaType: 'video' as const,
+      originalUrl: 'https://cdn.example.com/photos/movie.mp4',
       videoUrl: 'https://cdn.example.com/photos/movie.mp4',
       mimeType: 'video/mp4',
       duration: 12.5,
@@ -81,6 +103,10 @@ describe('photo-page-meta', () => {
     )
     expect(html).toContain('"@type":"VideoObject"')
     expect(html).toContain('"duration":"PT12.5S"')
+    expect(html).toContain('property="og:image" content="https://photos.example.com/thumbnails/photo-640.webp"')
+    expect(html).toContain('property="twitter:image" content="https://photos.example.com/thumbnails/photo-640.webp"')
+    expect(html).toContain('poster="/thumbnails/photo-640.webp"')
+    expect(html).not.toContain('property="og:image" content="https://cdn.example.com/photos/movie.mp4"')
     expect(html).toContain('<video controls')
   })
 

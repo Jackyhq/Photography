@@ -1,4 +1,4 @@
-import type {ConsolaInstance} from 'consola';
+import type { ConsolaInstance } from 'consola'
 import consola from 'consola'
 
 export type LogLevel = 'log' | 'info' | 'success' | 'warn' | 'error' | 'debug' | 'trace' | 'start' | 'fatal'

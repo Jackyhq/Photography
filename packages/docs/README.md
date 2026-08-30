@@ -1,10 +1,10 @@
 # @afilmory/docs
 
-Documentation site for Jacky's Photography, published at [docs.photo.jackyw.cn](https://docs.photo.jackyw.cn/). It is a static Vite + React + MDX app that documents this repository's photo pipeline, storage setup, performance decisions, deployment workflow, and maintenance conventions.
+Static Vite + React + MDX documentation for Jacky's Photography, published at [docs.photo.jackyw.cn](https://docs.photo.jackyw.cn/).
 
 ## Commands
 
-From the repository root:
+Run from the repository root:
 
 ```bash
 pnpm docs:dev
@@ -13,77 +13,19 @@ pnpm docs:preview
 pnpm create:doc
 ```
 
-From `packages/docs/`:
+`pnpm docs:build` validates TypeScript and MDX, renders every route and regenerates the tracked route and table-of-contents indexes.
 
-```bash
-pnpm dev
-pnpm build
-pnpm preview
-pnpm create:doc
-```
+## Sources and Generated Indexes
 
-`pnpm docs:build` runs the client build, SSR/static rendering, route generation, table-of-contents extraction, and final output processing.
+- `contents/` contains routed MDX pages.
+- `references/` contains supporting material that is not published as a route.
+- `src/`, `plugins/` and `scripts/` implement the documentation application and static output pipeline.
+- `src/routes.ts`, `src/routes.json` and `src/toc-data.ts` are generated; do not edit them by hand.
 
-## Structure
+Every routed page requires `title`, `description`, `createdAt` and `lastModified` frontmatter. Use `pnpm create:doc` to scaffold a page, then run `pnpm docs:build` before publishing it.
 
-```plain
-packages/docs/
-├── contents/              # MDX documentation pages
-│   ├── index.mdx          # Project overview
-│   ├── docs-site.mdx      # Docs maintenance guide
-│   ├── photo-metadata/    # Manual metadata and SEO workflow
-│   ├── performance/       # Loading and performance notes
-│   ├── storage/           # Builder storage providers
-│   └── deployment/        # Deployment guides
-├── plugins/               # Route, heading, and table-of-contents plugins
-├── references/            # Supporting specs that are not generated as routes
-├── scripts/               # Static output processing
-└── src/                   # React app, styles, components, generated routes
-```
+## Authoritative Guides
 
-The old Vite sample asset has been removed; keep `src/assets/` out unless the docs UI truly needs a committed asset.
-
-## Routing
-
-Routes are generated from `contents/`:
-
-- `contents/index.mdx` -> `/`
-- `contents/storage/index.mdx` -> `/storage`
-- `contents/photo-metadata/index.mdx` -> `/photo-metadata`
-- `contents/deployment/github-action.mdx` -> `/deployment/github-action`
-
-The generator writes `src/routes.ts` and `src/routes.json`; do not edit those files by hand.
-
-## Writing Docs
-
-Each page must include frontmatter:
-
-```yaml
----
-title: Page Title
-description: Short page description.
-createdAt: 2026-05-25T00:00:00+01:00
-lastModified: 2026-05-25T00:00:00+01:00
----
-```
-
-Keep `lastModified` current. The repo hook runs `pnpm update:lastmodified` for staged Markdown and MDX files, and the script can also be run manually with file paths.
-
-Use `pnpm create:doc` for new pages. It scaffolds frontmatter and places the file under `packages/docs/contents/`.
-
-## Content Rules
-
-- Match this repository, not upstream Afilmory in general.
-- Keep examples aligned with Node.js 24, pnpm 10.19.0, React 19, Vite, and the current `builder.config.ts`.
-- Describe the current manifest flow: builder writes `apps/web/src/data/photos-manifest.json`; `packages/data/src/photos-manifest.json` is a symlink to that file.
-- Document `apps/web/dist/` as the web output and `Jackyhq/Photography-Web` as the mirrored deployment repository.
-- Do not describe `photos/` as sample media. It is a private photo checkout and contains personal copyrighted works.
-- Prefer short operational docs over generic framework explanations.
-
-## Verification
-
-```bash
-pnpm docs:build
-```
-
-Run this before publishing documentation changes to catch MDX syntax, route generation, table-of-contents extraction, and static rendering issues.
+- [Architecture](https://docs.photo.jackyw.cn/architecture) defines workspace ownership and data flow.
+- [Docs Site](https://docs.photo.jackyw.cn/docs-site) defines writing, routing and verification conventions.
+- [CONTRIBUTING.md](../../CONTRIBUTING.md) defines local setup, generated-file boundaries and the repository validation matrix.

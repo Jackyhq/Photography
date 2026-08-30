@@ -1,17 +1,20 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
-import type { PhotoManifestItem } from '@afilmory/builder'
+import type { PhotoManifestItem } from '@afilmory/builder/photo-types'
 import type { Plugin } from 'vite'
 
 import type { SiteConfig } from '../../../../site.config'
 import { MANIFEST_PATH } from './__internal__/constants'
 import { getPreferredPhotoDescription, getPreferredPhotoTitle } from './__internal__/photo-text'
+import { normalizeProductionThumbnail } from './__internal__/production-thumbnail'
 import { serializeForInlineScript } from './inline-script'
 
 interface ManifestFile {
   data?: PhotoManifestItem[]
 }
+
+const SOCIAL_PREVIEW_IMAGE_EXTENSION = /\.(?:jpe?g|png)$/iu
 
 export const STATIC_APP_ROUTES = ['explory'] as const
 
@@ -82,21 +85,38 @@ export function applyStaticAppRouteMeta(html: string, routePath: string, siteCon
 }
 
 export function createPhotoPageMeta(photo: PhotoManifestItem, siteConfig: SiteConfig): PhotoPageMeta {
-  const title = `${getPreferredPhotoTitle(photo, photo.id)} | ${siteConfig.name}`
+  const productionPhoto = normalizeProductionThumbnail(photo)
+  const title = `${getPreferredPhotoTitle(productionPhoto, productionPhoto.id)} | ${siteConfig.name}`
   const baseUrl = siteConfig.url.replace(/\/+$/, '')
-  const description = getPreferredPhotoDescription(photo, siteConfig.description)
-  const url = `${baseUrl}/photos/${toSafePathSegment(photo.id)}/`
-  const mediaType = photo.mediaType === 'video' ? 'video' : 'photo'
+  const description = getPreferredPhotoDescription(productionPhoto, siteConfig.description)
+  const url = `${baseUrl}/photos/${toSafePathSegment(productionPhoto.id)}/`
+  const mediaType = productionPhoto.mediaType === 'video' ? 'video' : 'photo'
 
   return {
     title,
     description,
     url,
-    image: toAbsoluteUrl(photo.thumbnailUrl || photo.originalUrl, siteConfig.url),
+    image: toAbsoluteUrl(getSocialPreviewImageSource(productionPhoto, mediaType), siteConfig.url),
     mediaType,
-    jsonLd: createPhotoStructuredData(photo, siteConfig, { title, description, url, mediaType }),
-    preload: createPhotoPreloadLink(photo),
-    noscript: createPhotoNoscriptFigure(photo, description),
+    jsonLd: createPhotoStructuredData(productionPhoto, siteConfig, { title, description, url, mediaType }),
+    preload: createPhotoPreloadLink(productionPhoto),
+    noscript: createPhotoNoscriptFigure(productionPhoto, description),
+  }
+}
+
+function getSocialPreviewImageSource(photo: PhotoManifestItem, mediaType: PhotoPageMeta['mediaType']): string {
+  if (mediaType === 'photo' && hasSocialPreviewImageExtension(photo.originalUrl)) {
+    return photo.originalUrl
+  }
+
+  return photo.thumbnailUrl
+}
+
+function hasSocialPreviewImageExtension(value: string): boolean {
+  try {
+    return SOCIAL_PREVIEW_IMAGE_EXTENSION.test(new URL(value, 'https://afilmory.local/').pathname)
+  } catch {
+    return SOCIAL_PREVIEW_IMAGE_EXTENSION.test(value.split(/[?#]/u, 1)[0] ?? '')
   }
 }
 

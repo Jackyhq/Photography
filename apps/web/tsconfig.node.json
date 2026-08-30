@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node", "vite/client"],
+    "paths": {
+      "sharp": ["../../node_modules/sharp/lib/index.d.ts"]
+    },
+    "strict": true,
+    "noImplicitAny": true,
+    "noEmit": true
+  },
+  "include": ["./vite.config.ts", "./plugins/**/*.ts", "./scripts/**/*.ts"]
+}

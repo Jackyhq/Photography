@@ -1,0 +1,101 @@
+---
+title: Architecture
+description: Workspace responsibilities, dependency boundaries, generated data flow, and deployment shape for Jacky's Photography.
+createdAt: 2026-08-30T13:22:42+08:00
+lastModified: 2026-08-30T14:06:15+08:00
+---
+
+# Architecture
+
+Jacky's Photography separates build-time photo processing from the browser application. The builder turns a private photo checkout and human-maintained metadata into static assets; the React application only reads those generated assets and can therefore deploy as a static site.
+
+This page is the authority for workspace ownership and data flow. Operational details remain in the linked task guides.
+
+## Runtime Shape
+
+There is no production application server:
+
+1. The builder scans the configured photo storage before the frontend build.
+2. It extracts metadata, creates thumbnail variants and writes the photo manifest.
+3. Vite builds the gallery into `apps/web/dist/`.
+4. The deployed browser app loads static JavaScript, the generated manifest and public photo URLs.
+5. CI mirrors the static output to `Jackyhq/Photography-Web`; published originals are served from Cloudflare R2.
+
+Photo-specific HTML, sitemap, RSS and PWA files are also generated at build time. None of those outputs should become a second source of truth.
+
+## Workspace Ownership
+
+| Path                     | Owns                                                                                          | Does not own                                          |
+| ------------------------ | --------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `apps/web/`              | Gallery routes, feature UI, browser orchestration and production asset generation             | Reusable builder logic or generic workspace utilities |
+| `packages/builder/`      | Storage providers, photo processing, EXIF, thumbnails, manifest lifecycle and builder plugins | Gallery rendering                                     |
+| `packages/data/`         | The shared manifest access boundary and `photoLoader`                                         | Manifest generation or feature UI                     |
+| `packages/docs/`         | The MDX documentation application and its content index                                       | Gallery runtime behavior                              |
+| `packages/hooks/`        | Reusable React hooks                                                                          | Feature-specific components                           |
+| `packages/sdk/`          | Lightweight schemas and client helpers                                                        | Builder orchestration                                 |
+| `packages/ui/`           | Reusable UI primitives and design-system components                                           | App-specific gallery flows                            |
+| `packages/utils/`        | Framework-light utilities, RSS helpers and binary helpers                                     | Feature state or rendering                            |
+| `packages/webgl-viewer/` | The WebGL photo viewer                                                                        | Gallery routing and metadata UI                       |
+| `plugins/`               | Repository-specific builder and ESLint integration                                            | General package APIs                                  |
+| `content/`               | Human-written titles, descriptions and editorial tags                                         | Generated EXIF or thumbnail data                      |
+
+There is no `packages/components/` package. Keep app-specific components close to their feature in `apps/web/src`; move a primitive to `packages/ui` only when it has a stable cross-feature API.
+
+## Photo Data Flow
+
+The canonical flow is:
+
+```plain
+private photos/ checkout
+  + builder.config.ts
+  + content/photo-descriptions.json
+            |
+            v
+  @afilmory/builder
+    |-- apps/web/public/thumbnails/
+    `-- apps/web/src/data/photos-manifest.json
+            |
+            v
+  packages/data/src/photos-manifest.json (tracked symlink)
+            |
+            v
+  @afilmory/data -> apps/web -> apps/web/dist/
+```
+
+The builder writes `apps/web/src/data/photos-manifest.json`. `packages/data/src/photos-manifest.json` is a tracked symlink to that file so data consumers and Vite plugins read the same manifest without maintaining a duplicate JSON copy.
+
+`content/photo-descriptions.json` is source data. The repository-specific builder plugin merges its titles, `zh-CN`/`en` descriptions and tags before the manifest is saved. See [Photo Metadata](/photo-metadata) for the editing workflow and privacy boundary.
+
+## Storage and Publication
+
+`builder.config.ts` is the active storage configuration. The current project scans the local private checkout at `./photos`, excludes `incoming`, and writes public URLs under `https://photos3.jackyw.cn/photos/`.
+
+The local provider is a build-time source, while Cloudflare R2 is the production publication target. They are intentionally separate: switching the builder provider is not required merely because deployed originals use R2. Supported alternatives and their configuration live in [Storage Providers](/storage).
+
+## Build Boundaries
+
+`pnpm dev` and `pnpm build` run `apps/web/scripts/precheck.ts`, which refreshes the manifest before Vite starts. CI can set `AFILMORY_SKIP_MANIFEST_PRECHECK=true` after an explicit strict manifest build to avoid repeating the same work.
+
+Generated outputs have different ownership rules:
+
+- `content/photo-descriptions.json`, configuration and source code are reviewed inputs.
+- `apps/web/src/data/photos-manifest.json`, thumbnails and `apps/web/dist/` are regenerated outputs.
+- `packages/docs/src/routes.ts`, `routes.json` and `toc-data.ts` are tracked indexes generated from MDX content; never edit them directly.
+
+## Dependency Rules
+
+- Shared packages must not import application-specific code from `apps/web`.
+- The browser app consumes builder output through `@afilmory/data`, not by reimplementing manifest parsing.
+- Storage-provider details stay behind builder storage interfaces and factories.
+- Rendering side effects stay out of React component bodies.
+- Changes to manifest fields must update builder types and migrations, data consumers and affected UI together.
+- Repository-specific behavior belongs in `plugins/` or the owning application unless it has a stable reusable contract.
+
+## Change Guide
+
+- To add or change a photo field, start in `packages/builder`, then update `packages/data` and the web consumers.
+- To change editorial copy or tags, use [Photo Metadata](/photo-metadata) instead of editing the manifest.
+- To change loading or chunk boundaries, use [Performance](/performance) and verify the bundle budget.
+- To change keyboard, focus or sharing behavior, use [Interaction and Accessibility](/accessibility).
+- To change CI, R2 sync or preview behavior, use [Deployment](/deployment) and keep the docs synchronized with the workflow files.
+- To add a documentation page, follow [Docs Site](/docs-site) and regenerate the content indexes.

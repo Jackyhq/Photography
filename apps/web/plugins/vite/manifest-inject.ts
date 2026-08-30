@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import type { Plugin, ResolvedConfig } from 'vite'
 
 import { MANIFEST_PATH } from './__internal__/constants'
+import { normalizeProductionThumbnail } from './__internal__/production-thumbnail'
 import { serializeForInlineScript } from './inline-script'
 
 export { serializeForInlineScript } from './inline-script'
@@ -13,14 +14,14 @@ interface PreloadManifestItem {
   thumbnailWebpSrcSet?: string
 }
 
-interface FullManifest {
+export interface FullManifest {
   version?: string
   data?: FullManifestItem[]
   cameras?: unknown[]
   lenses?: unknown[]
 }
 
-interface FullManifestItem extends PreloadManifestItem {
+export interface FullManifestItem extends PreloadManifestItem {
   id: string
   mediaType?: string
   title?: string
@@ -171,6 +172,15 @@ export function createLightManifest(manifest: FullManifest) {
   }
 }
 
+export function createProductionManifest(manifest: FullManifest): FullManifest {
+  if (!manifest.data) return { ...manifest }
+
+  return {
+    ...manifest,
+    data: manifest.data.map((item) => normalizeProductionThumbnail(item)),
+  }
+}
+
 export function createPhotoTextPacks(manifest: FullManifest): Record<string, PhotoTextPack> {
   const languages = new Set<string>()
 
@@ -317,7 +327,8 @@ export function manifestInjectPlugin(): Plugin {
 
   function buildManifestPayload(command: 'serve' | 'build') {
     const manifestContent = getManifestContent()
-    const fullManifest = JSON.parse(manifestContent) as FullManifest
+    const sourceManifest = JSON.parse(manifestContent) as FullManifest
+    const fullManifest = command === 'build' ? createProductionManifest(sourceManifest) : sourceManifest
     const fullManifestSource = JSON.stringify(fullManifest)
     const lightManifest = createLightManifest(fullManifest)
     const photoTextPacks = createPhotoTextPacks(fullManifest)

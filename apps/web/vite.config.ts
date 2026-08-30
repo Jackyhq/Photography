@@ -30,6 +30,7 @@ import {
   OPTIONAL_CODE_PRECACHE_GLOBS,
 } from './plugins/vite/photo-runtime-cache'
 import { photosStaticPlugin } from './plugins/vite/photos-static'
+import { pruneJpegThumbnailsPlugin } from './plugins/vite/prune-jpeg-thumbnails'
 import { siteConfigInjectPlugin } from './plugins/vite/site-config-inject'
 
 const devPrint = (): PluginOption => ({
@@ -182,6 +183,7 @@ const staticWebBuildPlugins: PluginOption[] = [
       },
     },
   }),
+  pruneJpegThumbnailsPlugin(),
 ]
 
 // https://vitejs.dev/config/

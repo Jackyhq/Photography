@@ -250,12 +250,12 @@
     <title><![CDATA[我的风景摄影画廊]]></title>
     <link>https://example.com</link>
     <description><![CDATA[分享我的风景摄影作品]]></description>
-    
+
     <!-- 协议元数据 -->
     <exif:version>1.1</exif:version>
     <exif:protocol>afilmory-rss-exif</exif:protocol>
- 
-    
+
+
     <item>
       <title><![CDATA[夕阳下的城市]]></title>
       <link>https://example.com/photo123</link>
@@ -265,7 +265,7 @@
       <category><![CDATA[风景]]></category>
       <category><![CDATA[城市]]></category>
       <enclosure url="https://example.com/thumbnails/photo123.webp" type="image/webp" length="1024000" />
-      
+
       <!-- 基础 EXIF 数据 -->
       <exif:aperture>f/1.4</exif:aperture>
       <exif:shutterSpeed>1/250s</exif:shutterSpeed>
@@ -276,19 +276,19 @@
       <exif:dateTaken>2025-06-05T16:12:43.000Z</exif:dateTaken>
       <exif:camera><![CDATA[FUJIFILM X-T5]]></exif:camera>
       <exif:orientation>1</exif:orientation>
-      
+
       <!-- 镜头信息 -->
       <exif:lens><![CDATA[BS-Optics FX 50mm F1.4]]></exif:lens>
       <exif:focalLength>50mm</exif:focalLength>
       <exif:focalLength35mm>75mm</exif:focalLength35mm>
       <exif:maxAperture>f/1.4</exif:maxAperture>
-      
+
       <!-- 位置信息 -->
       <exif:gpsLatitude>39.9042</exif:gpsLatitude>
       <exif:gpsLongitude>116.4074</exif:gpsLongitude>
       <exif:altitude>50m</exif:altitude>
       <exif:location><![CDATA[北京天安门广场]]></exif:location>
-      
+
       <!-- 技术参数 -->
       <exif:whiteBalance>Auto</exif:whiteBalance>
       <exif:meteringMode>Matrix</exif:meteringMode>
@@ -334,7 +334,6 @@
 ## 版本历史
 
 - **v1.1** (2025-01-19): 扩展规范
-
   - 添加协议版本号和标识符
   - 定义图片展类型系统
   - 引入EXIF字段集概念

@@ -2,7 +2,7 @@
 title: Docs site
 description: How to maintain and publish the Jacky's Photography documentation site at docs.photo.jackyw.cn.
 createdAt: 2025-09-11T17:05:55+08:00
-lastModified: 2026-08-04T01:09:34+08:00
+lastModified: 2026-08-30T14:06:15+08:00
 ---
 
 # Docs Site
@@ -19,7 +19,8 @@ The documentation site is a Vite, React, and MDX static app in `packages/docs`. 
 
 Documentation pages live in `packages/docs/contents/`:
 
-- `index.mdx` introduces the project, workspace, manifest flow, and deployment flow.
+- `index.mdx` is the task-oriented entry point for readers.
+- `architecture/index.mdx` is the authority for workspace ownership, package boundaries, and generated data flow.
 - `accessibility/index.mdx` documents keyboard navigation, dialog focus, sharing fallbacks, and manifest-visibility boundaries.
 - `photo-metadata/index.mdx` documents manual descriptions, tag curation, manifest merge behavior, and photo SEO output.
 - `storage/index.mdx` documents supported builder storage providers and the current local/R2 setup.
@@ -57,18 +58,18 @@ pnpm preview
 pnpm create:doc
 ```
 
-`pnpm docs:build` runs the package build pipeline: route generation, TypeScript and Vite client build, SSR/static rendering, table-of-contents extraction, and final output processing through `packages/docs/scripts/build.ts`.
+`pnpm docs:build` runs TypeScript and Vite client builds, regenerates routes and table-of-contents data, renders the static pages, and finalizes output through `packages/docs/scripts/build.ts`.
 
 ## Writing Pages
 
-Every page should include frontmatter:
+Every page must include frontmatter:
 
 ```yaml
 ---
 title: Page Title
 description: Short page description.
-createdAt: 2026-05-25T00:00:00+01:00
-lastModified: 2026-05-25T00:00:00+01:00
+createdAt: 2026-08-30T13:22:42+08:00
+lastModified: 2026-08-30T13:22:42+08:00
 ---
 ```
 

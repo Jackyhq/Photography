@@ -4,7 +4,9 @@ import AST from 'unplugin-ast/vite'
 
 // Custom transformer for tw function that compresses template strings
 const TwTransformer: Transformer<any> = {
-  onNode: (node) => isTaggedFunctionCallOf(node, ['tw']),
+  // ast-kit and unplugin-ast currently resolve different Babel major versions.
+  // The predicate only reads the shared Babel node shape at runtime.
+  onNode: (node) => isTaggedFunctionCallOf(node as never, ['tw']),
   transform(node) {
     if (node.type === 'TaggedTemplateExpression') {
       const { quasi } = node

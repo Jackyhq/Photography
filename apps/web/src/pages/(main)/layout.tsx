@@ -1,15 +1,21 @@
-import { ScrollArea, ScrollElementContext } from '@afilmory/ui/scroll-areas'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { Outlet, useLocation, useNavigate, useParams, useSearchParams } from 'react-router'
 
 import { gallerySettingAtom } from '~/atoms/app'
 import { siteConfig } from '~/config'
-import { useMobile } from '~/hooks/useMobile'
 import { getFilteredPhotos, useOpenPhotoViewer, usePhotos, usePhotoViewerState } from '~/hooks/usePhotoViewer'
 import { getPhotoDetailPath } from '~/lib/photo-route'
-import { MasonryRoot } from '~/modules/gallery/MasonryRoot'
 import { PhotosProvider } from '~/providers/photos-provider'
+
+const loadGalleryRouteContent = () =>
+  import('~/modules/gallery/GalleryRouteContent').then((module) => ({ default: module.GalleryRouteContent }))
+
+const GalleryRouteContent = lazy(loadGalleryRouteContent)
+
+if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/photos/')) {
+  void loadGalleryRouteContent().catch(() => null)
+}
 
 export const Component = () => {
   useStateRestoreFromUrl()
@@ -17,9 +23,6 @@ export const Component = () => {
 
   const { photoId } = useParams()
   const isDirectPhotoRouteRef = useRef(Boolean(photoId))
-  const isMobile = useMobile()
-  const { isOpen: isPhotoViewerOpen } = usePhotoViewerState()
-
   const photos = usePhotos()
   const shouldRenderGallery = !photoId || !isDirectPhotoRouteRef.current
 
@@ -41,22 +44,9 @@ export const Component = () => {
         )}
 
         {shouldRenderGallery && (
-          <div
-            className="contents"
-            data-testid="gallery-content"
-            aria-hidden={isPhotoViewerOpen}
-            inert={isPhotoViewerOpen}
-          >
-            {isMobile ? (
-              <ScrollElementContext value={document.body}>
-                <MasonryRoot />
-              </ScrollElementContext>
-            ) : (
-              <ScrollArea rootClassName={'h-svh w-full'} viewportClassName="size-full">
-                <MasonryRoot />
-              </ScrollArea>
-            )}
-          </div>
+          <Suspense fallback={null}>
+            <GalleryRouteContent />
+          </Suspense>
         )}
 
         <Outlet />

@@ -1,19 +1,23 @@
-import type { PhotoManifestItem } from '@afilmory/builder'
-import { describe, expect, it } from 'vitest'
+// @vitest-environment node
+
+import type { PhotoManifestItem } from '@afilmory/builder/photo-types'
+import { describe, expect, it, vi } from 'vitest'
 
 import type { SiteConfig } from '../../../../site.config'
+import { createFeedSitemapPlugin } from './feed-sitemap'
 import { generateSitemap } from './sitemap'
+
+const config = {
+  name: 'Gallery',
+  title: 'Gallery',
+  description: 'Description',
+  url: 'https://photos.example.com/',
+  accentColor: '#000',
+  author: { name: 'Jacky', url: 'https://example.com' },
+} satisfies SiteConfig
 
 describe('image sitemap', () => {
   it('adds escaped image metadata and safe photo routes', () => {
-    const config = {
-      name: 'Gallery',
-      title: 'Gallery',
-      description: 'Description',
-      url: 'https://photos.example.com/',
-      accentColor: '#000',
-      author: { name: 'Jacky', url: 'https://example.com' },
-    } satisfies SiteConfig
     const photo = {
       id: 'photo/1',
       title: 'Title & light',
@@ -32,14 +36,6 @@ describe('image sitemap', () => {
   })
 
   it('uses a web-indexable thumbnail for unsupported original image formats', () => {
-    const config = {
-      name: 'Gallery',
-      title: 'Gallery',
-      description: 'Description',
-      url: 'https://photos.example.com/',
-      accentColor: '#000',
-      author: { name: 'Jacky', url: 'https://example.com' },
-    } satisfies SiteConfig
     const photo = {
       id: 'heic-photo',
       title: 'HEIC photo',
@@ -53,5 +49,53 @@ describe('image sitemap', () => {
     const sitemap = generateSitemap([photo], config)
     expect(sitemap).toContain('<image:loc>https://photos.example.com/thumbnails/photo.jpg</image:loc>')
     expect(sitemap).not.toContain('.heic')
+  })
+
+  it('emits the production WebP thumbnail for video sitemap metadata', async () => {
+    const video = {
+      id: 'video-1',
+      mediaType: 'video',
+      title: 'Video',
+      description: 'Video description',
+      dateTaken: '2026-01-02T03:04:05.000Z',
+      lastModified: '2026-01-02T03:04:05.000Z',
+      originalUrl: 'https://cdn.example.com/photos/video.mp4',
+      thumbnailUrl: '/thumbnails/video-1.jpg',
+      thumbnailSrcSet: '/thumbnails/video-1.jpg 640w',
+      thumbnailWebpSrcSet: '/thumbnails/video-1-360.webp 360w, /thumbnails/video-1-640.webp 640w',
+    } as PhotoManifestItem
+    const plugin = createFeedSitemapPlugin(config, () => JSON.stringify({ data: [video] }))
+    const { generateBundle } = plugin
+
+    expect(generateBundle).toBeTypeOf('function')
+    if (typeof generateBundle !== 'function') return
+
+    const emitFile = vi.fn()
+    await generateBundle.call({ emitFile } as never, {} as never, {} as never, false)
+    const sitemapAsset = emitFile.mock.calls
+      .map(([asset]) => asset as { fileName?: string; source?: string })
+      .find((asset) => asset.fileName === 'sitemap.xml')
+
+    expect(sitemapAsset?.source).toContain(
+      '<image:loc>https://photos.example.com/thumbnails/video-1-640.webp</image:loc>',
+    )
+    expect(sitemapAsset?.source).not.toContain('/thumbnails/video-1.jpg')
+  })
+
+  it('fails the build when feed and sitemap generation cannot read the manifest', async () => {
+    const manifestError = new Error('manifest unavailable')
+    const plugin = createFeedSitemapPlugin(config, () => {
+      throw manifestError
+    })
+    const { generateBundle } = plugin
+
+    expect(generateBundle).toBeTypeOf('function')
+    if (typeof generateBundle !== 'function') return
+
+    const emitFile = vi.fn()
+    await expect(generateBundle.call({ emitFile } as never, {} as never, {} as never, false)).rejects.toThrow(
+      'Failed to generate RSS feed and sitemap',
+    )
+    expect(emitFile).not.toHaveBeenCalled()
   })
 })
