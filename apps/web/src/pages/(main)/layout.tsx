@@ -8,6 +8,8 @@ import { getFilteredPhotos, useOpenPhotoViewer, usePhotos, usePhotoViewerState }
 import { getPhotoDetailPath } from '~/lib/photo-route'
 import { PhotosProvider } from '~/providers/photos-provider'
 
+import { useGalleryRouteVisibility } from './useGalleryRouteVisibility'
+
 const loadGalleryRouteContent = () =>
   import('~/modules/gallery/GalleryRouteContent').then((module) => ({ default: module.GalleryRouteContent }))
 
@@ -19,12 +21,11 @@ if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/phot
 
 export const Component = () => {
   useStateRestoreFromUrl()
-  useSyncStateToUrl()
+  const { isOpen: isPhotoViewerOpen } = useSyncStateToUrl()
 
   const { photoId } = useParams()
-  const isDirectPhotoRouteRef = useRef(Boolean(photoId))
   const photos = usePhotos()
-  const shouldRenderGallery = !photoId || !isDirectPhotoRouteRef.current
+  const shouldRenderGallery = useGalleryRouteVisibility(photoId, isPhotoViewerOpen)
 
   return (
     <>
@@ -256,4 +257,6 @@ const useSyncStateToUrl = () => {
       return newer
     })
   }, [selectedTags, selectedCameras, selectedLenses, selectedRatings, tagFilterMode, setSearchParams])
+
+  return { isOpen }
 }
