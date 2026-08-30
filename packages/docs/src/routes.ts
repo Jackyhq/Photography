@@ -30,7 +30,7 @@ export const routes: RouteConfig[] = [
       title: 'Overview',
       description: "Task-oriented documentation for developing, maintaining, and deploying Jacky's Photography.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-08-30T13:22:42+08:00',
+      lastModified: '2026-08-30T14:12:33+08:00',
     },
   },
   {
@@ -54,7 +54,7 @@ export const routes: RouteConfig[] = [
       description:
         "Workspace responsibilities, dependency boundaries, generated data flow, and deployment shape for Jacky's Photography.",
       createdAt: '2026-08-30T13:22:42+08:00',
-      lastModified: '2026-08-30T13:22:42+08:00',
+      lastModified: '2026-08-30T14:06:15+08:00',
     },
   },
   {
@@ -109,7 +109,7 @@ export const routes: RouteConfig[] = [
       title: 'Docs site',
       description: "How to maintain and publish the Jacky's Photography documentation site at docs.photo.jackyw.cn.",
       createdAt: '2025-09-11T17:05:55+08:00',
-      lastModified: '2026-08-30T13:22:42+08:00',
+      lastModified: '2026-08-30T14:06:15+08:00',
     },
   },
   {
@@ -120,7 +120,7 @@ export const routes: RouteConfig[] = [
       title: 'Performance',
       description: "Mobile-first loading and image performance notes for Jacky's Photography.",
       createdAt: '2026-04-27T00:00:00+01:00',
-      lastModified: '2026-08-30T00:00:00+08:00',
+      lastModified: '2026-08-30T14:06:15+08:00',
     },
   },
   {

@@ -28,4 +28,3 @@ Every routed page requires `title`, `description`, `createdAt` and `lastModified
 
 - [Architecture](https://docs.photo.jackyw.cn/architecture) defines workspace ownership and data flow.
 - [Docs Site](https://docs.photo.jackyw.cn/docs-site) defines writing, routing and verification conventions.
-- [CONTRIBUTING.md](../../CONTRIBUTING.md) defines local setup, generated-file boundaries and the repository validation matrix.

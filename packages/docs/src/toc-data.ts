@@ -50,9 +50,9 @@ export const tocData: FileToc[] = [
                 children: [],
               },
               {
-                id: 'heading-contribute-or-maintain-docs',
+                id: 'heading-maintain-documentation',
                 level: 3,
-                text: 'Contribute or Maintain Docs',
+                text: 'Maintain Documentation',
                 children: [],
               },
             ],

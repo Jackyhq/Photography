@@ -2,7 +2,7 @@
 title: Overview
 description: Task-oriented documentation for developing, maintaining, and deploying Jacky's Photography.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2026-08-30T14:06:15+08:00
+lastModified: 2026-08-30T14:12:33+08:00
 ---
 
 # Jacky's Photography
@@ -30,9 +30,8 @@ The public source repository does not include Jacky's private photos. Originals,
 - [GitHub Action Deployment](/deployment/github-action) documents validation gates, secrets and external writes.
 - [Vercel Preview Deployment](/deployment/vercel-preview) documents private photo checkout behavior in previews.
 
-### Contribute or Maintain Docs
+### Maintain Documentation
 
-- The repository [contribution guide](https://github.com/Jackyhq/Photography/blob/main/CONTRIBUTING.md) provides a public synthetic-photo workflow and validation matrix.
 - [Docs Site](/docs-site) explains MDX frontmatter, route generation and documentation verification.
 
 ## Essential Workflow
@@ -45,8 +44,6 @@ git clone git@github.com:Jackyhq/Photography-Photos.git photos
 pnpm run build:manifest
 pnpm dev
 ```
-
-External contributors should use the synthetic fixture workflow in `CONTRIBUTING.md`; private-photo access is not required for normal code review and CI validation.
 
 The production path is deliberately simple:
 
