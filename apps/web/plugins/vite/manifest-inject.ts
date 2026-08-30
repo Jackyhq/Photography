@@ -60,6 +60,8 @@ export interface PhotoTextPack {
 const PRELOAD_THUMBNAIL_COUNT = 2
 const FULL_MANIFEST_ROUTE = '/__afilmory_full_manifest.json'
 const PHOTO_TEXT_ROUTE_PREFIX = '/__afilmory_photo_text/'
+export const PUBLIC_MANIFEST_FILE_NAME = 'photos-manifest.json'
+export const PUBLIC_MANIFEST_ROUTE = `/${PUBLIC_MANIFEST_FILE_NAME}`
 const DEFAULT_INLINE_PHOTO_TEXT_LANGUAGE = 'zh-CN'
 const GALLERY_EXIF_KEYS = ['ISO', 'FNumber', 'ExposureTime', 'FocalLength', 'FocalLengthIn35mmFormat'] as const
 const MANIFEST_SCRIPT_MARKER = /<script\s+id=["']manifest["']\s*><\/script>/gi
@@ -258,6 +260,23 @@ function getContentHash(content: string): string {
   return createHash('sha256').update(content).digest('hex').slice(0, 10)
 }
 
+export function createProductionManifestAssets(sourceManifest: FullManifest) {
+  const manifest = createProductionManifest(sourceManifest)
+  const source = JSON.stringify(manifest)
+
+  return {
+    manifest,
+    runtimeAsset: {
+      fileName: `assets/photos-manifest.${getContentHash(source)}.json`,
+      source,
+    },
+    publicAsset: {
+      fileName: PUBLIC_MANIFEST_FILE_NAME,
+      source,
+    },
+  }
+}
+
 function normalizeBase(base: string): string {
   if (!base || base === './') return ''
   return base.endsWith('/') ? base : `${base}/`
@@ -311,6 +330,7 @@ export function manifestInjectPlugin(): Plugin {
   let embedManifest: boolean | undefined
   let resolvedConfig: ResolvedConfig | undefined
   let fullManifestAsset: { fileName: string; source: string } | undefined
+  let publicManifestAsset: { fileName: string; source: string } | undefined
   let photosIndexAsset: { fileName: string; source: string } | undefined
   let photoTextAssets: { fileName: string; source: string; language: string }[] = []
   let buildPayload: ReturnType<typeof buildManifestPayload> | undefined
@@ -328,17 +348,16 @@ export function manifestInjectPlugin(): Plugin {
   function buildManifestPayload(command: 'serve' | 'build') {
     const manifestContent = getManifestContent()
     const sourceManifest = JSON.parse(manifestContent) as FullManifest
-    const fullManifest = command === 'build' ? createProductionManifest(sourceManifest) : sourceManifest
-    const fullManifestSource = JSON.stringify(fullManifest)
+    const productionAssets = command === 'build' ? createProductionManifestAssets(sourceManifest) : undefined
+    const fullManifest = productionAssets?.manifest ?? sourceManifest
     const lightManifest = createLightManifest(fullManifest)
     const photoTextPacks = createPhotoTextPacks(fullManifest)
 
     if (command === 'build') {
-      const fileName = `assets/photos-manifest.${getContentHash(fullManifestSource)}.json`
-      fullManifestAsset = {
-        fileName,
-        source: fullManifestSource,
-      }
+      if (!productionAssets) throw new Error('Production manifest assets were not created')
+
+      fullManifestAsset = productionAssets.runtimeAsset
+      publicManifestAsset = productionAssets.publicAsset
       const base = normalizeBase(resolvedConfig?.base ?? '/')
       photoTextAssets = Object.entries(photoTextPacks).map(([language, pack]) => {
         const source = JSON.stringify(pack)
@@ -352,7 +371,7 @@ export function manifestInjectPlugin(): Plugin {
       const photoTextUrls = Object.fromEntries(
         photoTextAssets.map((asset) => [asset.language, `${base}${asset.fileName}`]),
       ) as Record<string, string>
-      const fullManifestUrl = `${base}${fileName}`
+      const fullManifestUrl = `${base}${fullManifestAsset.fileName}`
       const photosIndexSource = createManifestBootstrapScript(lightManifest, fullManifestUrl, photoTextUrls)
       const photosIndexFileName = `assets/photos-index.${getContentHash(photosIndexSource)}.js`
       photosIndexAsset = {
@@ -400,6 +419,14 @@ export function manifestInjectPlugin(): Plugin {
         source: fullManifestAsset.source,
       })
 
+      if (publicManifestAsset) {
+        this.emitFile({
+          type: 'asset',
+          fileName: publicManifestAsset.fileName,
+          source: publicManifestAsset.source,
+        })
+      }
+
       if (photosIndexAsset) {
         this.emitFile({
           type: 'asset',
@@ -425,6 +452,13 @@ export function manifestInjectPlugin(): Plugin {
 
       // 监听 manifest 文件变化
       server.watcher.add(MANIFEST_PATH)
+      server.middlewares.use(PUBLIC_MANIFEST_ROUTE, (_req, res) => {
+        const sourceManifest = JSON.parse(getManifestContent()) as FullManifest
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        res.setHeader('Cache-Control', 'no-cache')
+        res.setHeader('Content-Type', 'application/json; charset=utf-8')
+        res.end(JSON.stringify(createProductionManifest(sourceManifest)))
+      })
       server.middlewares.use(FULL_MANIFEST_ROUTE, (_req, res) => {
         res.setHeader('Content-Type', 'application/json; charset=utf-8')
         res.end(JSON.stringify(JSON.parse(getManifestContent())))

@@ -2,7 +2,7 @@
 title: Performance
 description: Mobile-first loading and image performance notes for Jacky's Photography.
 createdAt: 2026-04-27T00:00:00+01:00
-lastModified: 2026-08-30T14:06:15+08:00
+lastModified: 2026-08-30T22:44:09+08:00
 ---
 
 # Performance
@@ -42,7 +42,7 @@ The masonry gallery treats the first six items as first-screen candidates:
 
 ## Manifest Loading
 
-The build embeds a lightweight manifest into `index.html` for the gallery grid and emits the full manifest as a hashed JSON asset. The lightweight manifest keeps fields needed for sorting, filtering, thumbnails, localized descriptions, camera/lens display names, and first-screen rendering. Detail-heavy views fetch the full manifest through `__FULL_MANIFEST_URL__` only when needed. The manifest inspection page can also fetch it during development, but that route is excluded from production builds.
+The build embeds a lightweight manifest into `index.html` for the gallery grid and emits the full manifest as a hashed JSON asset. It also emits the exact same production payload at the stable `/photos-manifest.json` path for external API consumers; that copy uses revalidation caching and allows cross-origin reads. The lightweight manifest keeps fields needed for sorting, filtering, thumbnails, localized descriptions, camera/lens display names, and first-screen rendering. Detail-heavy views fetch the hashed full manifest through `__FULL_MANIFEST_URL__` only when needed. The manifest inspection page can also fetch it during development, but that route is excluded from production builds.
 
 This keeps the initial viewport image budget low and avoids embedding detail-only metadata in the homepage payload.
 
@@ -87,7 +87,7 @@ Before publishing a performance change, check:
 - Opening the photo viewer still works for ordinary images.
 - Live Photo and Motion Photo items still load their media.
 - Map markers and the development-only manifest page still have usable thumbnails through `thumbnailUrl`.
-- The full and light production manifests, `featured-photos.json`, `sitemap.xml`, and static photo pages contain no references to pruned JPEG thumbnails.
+- The hashed and stable full production manifests, the light manifest, `featured-photos.json`, `sitemap.xml`, and static photo pages contain no references to pruned JPEG thumbnails.
 - A production build serves the not-found experience at `/manifest` while the hashed full-manifest asset remains available to runtime features.
 - `index.html` contains image preloads for the first two homepage thumbnails.
 - `/photos/<photo-id>/index.html` files contain photo-specific title, description, canonical URL, and social image tags.

@@ -120,7 +120,7 @@ export const routes: RouteConfig[] = [
       title: 'Performance',
       description: "Mobile-first loading and image performance notes for Jacky's Photography.",
       createdAt: '2026-04-27T00:00:00+01:00',
-      lastModified: '2026-08-30T14:06:15+08:00',
+      lastModified: '2026-08-30T22:44:09+08:00',
     },
   },
   {

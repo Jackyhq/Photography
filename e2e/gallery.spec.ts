@@ -28,6 +28,22 @@ test('keeps the manifest viewer unavailable in production builds', async ({ page
   await expect(page.getByRole('heading', { name: 'Afilmory Manifest' })).toHaveCount(0)
 })
 
+test('serves the production manifest from a stable public URL', async ({ request }) => {
+  const response = await request.get('/photos-manifest.json')
+
+  expect(response.status()).toBe(200)
+  expect(response.headers()['content-type']).toContain('application/json')
+
+  const manifest = (await response.json()) as {
+    version?: string
+    data?: Array<{ thumbnailSrcSet?: string; thumbnailUrl?: string }>
+  }
+  expect(manifest.version).toBeTruthy()
+  expect(manifest.data?.length).toBeGreaterThan(0)
+  expect(manifest.data?.[0]?.thumbnailUrl).toMatch(/\.webp(?:\?|$)/)
+  expect(manifest.data?.[0]).not.toHaveProperty('thumbnailSrcSet')
+})
+
 test('renders the masonry gallery and opens the photo viewer', async ({ page }, testInfo) => {
   await page.goto('/')
 

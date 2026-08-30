@@ -55,7 +55,7 @@ photos/                   # 私有照片仓库 checkout，主仓库不追踪
 2. `pnpm run photos:standardize` 读取 EXIF 时间，将 `photos/incoming/` 中的新文件重命名为 `YYYYMMDDHHmmss.ext` 并移动到分类目录。
 3. `pnpm run build:manifest` 读取 `builder.config.ts`，扫描 `photos/`，排除 `incoming`，生成缩略图、Thumbhash、EXIF/GPS/设备信息和 manifest。
 4. 构建器写入 `apps/web/src/data/photos-manifest.json`；`packages/data/src/photos-manifest.json` 是指向该文件的 symlink，供 `@afilmory/data` 和 Vite 插件读取。
-5. `pnpm build` 输出静态站点到 `apps/web/dist/`，并生成 sitemap、RSS、PWA 资源和照片级 HTML。
+5. `pnpm build` 输出静态站点到 `apps/web/dist/`，并生成 sitemap、RSS、PWA 资源、照片级 HTML，以及供外部 API 对接的稳定 `photos-manifest.json`。
 6. CI 将发布照片同步到 Cloudflare R2 的 `photos/` prefix，并把 `apps/web/dist/` 同步到 `Jackyhq/Photography-Web`。
 
 ## 环境要求
@@ -75,6 +75,8 @@ pnpm dev
 ```
 
 `pnpm dev` 和 `pnpm build` 都会先运行 `apps/web/scripts/precheck.ts`，默认调用 builder CLI 更新 manifest。CI 中已构建 manifest 后，会通过 `AFILMORY_SKIP_MANIFEST_PRECHECK=true` 跳过重复预检。
+
+生产构建会继续保留站点内部使用的内容哈希 manifest，并将同一份生产数据额外输出到 `apps/web/dist/photos-manifest.json`。部署后的固定地址是 `https://photo.jackyw.cn/photos-manifest.json`，支持跨域读取且要求客户端每次重新验证缓存。该文件在 `pnpm build` 阶段生成，是已规范化缩略图字段的生产副本；仅运行 `pnpm run build:manifest` 不会创建它。返回数据中的站内相对 URL 应以 `https://photo.jackyw.cn` 为基准解析。该文件包含完整 EXIF 和 GPS 数据，与当前公开 manifest 策略一致。
 
 ## 常用命令
 

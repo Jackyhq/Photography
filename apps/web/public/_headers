@@ -15,3 +15,7 @@
 
 /thumbnails/*
   Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/photos-manifest.json
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=0, must-revalidate

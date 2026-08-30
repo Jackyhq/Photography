@@ -5,8 +5,10 @@ import {
   createManifestBootstrapScript,
   createPhotoTextPacks,
   createProductionManifest,
+  createProductionManifestAssets,
   createThumbnailPreloadLinks,
   injectManifestBootstrap,
+  PUBLIC_MANIFEST_FILE_NAME,
   serializeForInlineScript,
 } from './manifest-inject'
 
@@ -130,6 +132,28 @@ describe('manifest-inject helpers', () => {
       thumbnailUrl: '/thumbnails/photo-1.jpg',
       thumbnailSrcSet: '/thumbnails/photo-1.jpg 640w',
     })
+  })
+
+  it('creates a stable public copy of the hashed production manifest', () => {
+    const assets = createProductionManifestAssets({
+      version: 'v10',
+      data: [
+        {
+          id: 'photo-1',
+          thumbnailUrl: '/thumbnails/photo-1.jpg',
+          thumbnailSrcSet: '/thumbnails/photo-1.jpg 640w',
+          thumbnailWebpSrcSet: '/thumbnails/photo-1-360.webp 360w, /thumbnails/photo-1-640.webp 640w',
+        },
+      ],
+    })
+
+    expect(assets.publicAsset.fileName).toBe(PUBLIC_MANIFEST_FILE_NAME)
+    expect(assets.runtimeAsset.fileName).toMatch(/^assets\/photos-manifest\.[a-f0-9]{10}\.json$/)
+    expect(assets.publicAsset.source).toBe(assets.runtimeAsset.source)
+    expect(JSON.parse(assets.publicAsset.source).data[0]).toMatchObject({
+      thumbnailUrl: '/thumbnails/photo-1-640.webp',
+    })
+    expect(JSON.parse(assets.publicAsset.source).data[0]).not.toHaveProperty('thumbnailSrcSet')
   })
 
   it('serializes inline script data safely', () => {
