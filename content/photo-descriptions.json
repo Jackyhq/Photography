@@ -8905,64 +8905,6 @@
       }
     },
     {
-      "key": "城市/20240707190353.jpeg",
-      "title": "广州日落阳台",
-      "titles": {
-        "zh-CN": "广州日落阳台",
-        "en": "Guangzhou Sunset Balcony"
-      },
-      "descriptions": {
-        "zh-CN": "拍摄于佛山，夕阳下的城市天际线和水面形成温暖层次。",
-        "en": "Photographed in Foshan, where the skyline and water are layered in warm sunset light."
-      },
-      "tags": [
-        "广东",
-        "佛山",
-        "天际线"
-      ],
-      "aiContext": {
-        "currentTitle": "广州日落阳台",
-        "dateTaken": "2024-07-07T11:03:53.303Z",
-        "camera": "Apple iPhone 14",
-        "lens": "Apple iPhone 14 back dual wide camera 5.7mm f/1.5",
-        "categoryTags": [
-          "城市",
-          "广东",
-          "佛山",
-          "天际线"
-        ]
-      }
-    },
-    {
-      "key": "风光/20240215111534.jpeg",
-      "title": "梅州山城远眺",
-      "titles": {
-        "zh-CN": "梅州山城远眺",
-        "en": "Distant View of Meizhou Mountain Town"
-      },
-      "descriptions": {
-        "zh-CN": "拍摄于广东梅州一带，高处视角把山地、城镇和道路铺成开阔层次。",
-        "en": "Photographed around Meizhou, Guangdong, where a high viewpoint spreads mountains, town, and roads into open layers."
-      },
-      "tags": [
-        "广东",
-        "山景",
-        "自然"
-      ],
-      "aiContext": {
-        "currentTitle": "梅州山城远眺",
-        "dateTaken": "2024-02-15T03:15:34.529Z",
-        "camera": "Apple iPhone 14",
-        "lens": "Apple iPhone 14 back dual wide camera 5.7mm f/1.5",
-        "categoryTags": [
-          "风光",
-          "广东",
-          "山景",
-          "自然"
-        ]
-      }
-    },
-    {
       "key": "风光/20240201094538.jpeg",
       "title": "阿尔山冬日溪流",
       "titles": {
@@ -10148,35 +10090,6 @@
           "香港",
           "铜锣湾",
           "街景"
-        ]
-      }
-    },
-    {
-      "key": "城市/20221030180155.jpeg",
-      "title": "广州窗外晚霞",
-      "titles": {
-        "zh-CN": "广州窗外晚霞",
-        "en": "Guangzhou Sunset Outside the Window"
-      },
-      "descriptions": {
-        "zh-CN": "拍摄于佛山，夕阳下的城市天际线和水面形成温暖层次。",
-        "en": "Photographed in Foshan, where the skyline and water are layered in warm sunset light."
-      },
-      "tags": [
-        "广东",
-        "佛山",
-        "天际线"
-      ],
-      "aiContext": {
-        "currentTitle": "广州窗外晚霞",
-        "dateTaken": "2022-10-30T10:01:55.791Z",
-        "camera": "Apple iPhone SE (2nd generation)",
-        "lens": "Apple iPhone SE (2nd generation) back camera 3.99mm f/1.8",
-        "categoryTags": [
-          "城市",
-          "广东",
-          "佛山",
-          "天际线"
         ]
       }
     },
