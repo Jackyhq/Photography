@@ -45,6 +45,9 @@ test('serves the production manifest from a stable public URL', async ({ request
 })
 
 test('renders the masonry gallery and opens the photo viewer', async ({ page }, testInfo) => {
+  // This flow verifies viewer interaction, not the first-screen entrance motion.
+  // Avoid tapping a masonry item while its transform is still moving on mobile.
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
 
   const firstPhoto = page.locator('[data-photo-id]').first()
