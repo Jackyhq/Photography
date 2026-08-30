@@ -2,7 +2,7 @@
 title: Performance
 description: Mobile-first loading and image performance notes for Jacky's Photography.
 createdAt: 2026-04-27T00:00:00+01:00
-lastModified: 2026-08-30T22:44:09+08:00
+lastModified: 2026-08-30T22:59:45+08:00
 ---
 
 # Performance
@@ -29,7 +29,7 @@ interface PhotoManifestItem {
 
 `thumbnailSrcSet` points at the JPEG fallback and `thumbnailWebpSrcSet` points at both WebP variants. Development keeps that contract so builder consumers and local debugging still have a compatibility fallback.
 
-Production output uses a narrower contract. During `vite build`, manifest, featured-photo, static-page, and sitemap data are normalized so `thumbnailUrl` points at the `640w` WebP candidate and the JPEG-only `thumbnailSrcSet` is omitted. A post-build plugin then removes only copied `dist/thumbnails/*.jpg` files; it never modifies `apps/web/public/thumbnails` or builder caches. This avoids shipping a duplicate JPEG thumbnail set while keeping source data reusable.
+Production output uses a narrower contract. During `vite build`, manifest, static-page, and sitemap data are normalized so `thumbnailUrl` points at the `640w` WebP candidate and the JPEG-only `thumbnailSrcSet` is omitted. A post-build plugin then removes only copied `dist/thumbnails/*.jpg` files; it never modifies `apps/web/public/thumbnails` or builder caches. This avoids shipping a duplicate JPEG thumbnail set while keeping source data reusable.
 
 ## Gallery Loading
 
@@ -87,7 +87,7 @@ Before publishing a performance change, check:
 - Opening the photo viewer still works for ordinary images.
 - Live Photo and Motion Photo items still load their media.
 - Map markers and the development-only manifest page still have usable thumbnails through `thumbnailUrl`.
-- The hashed and stable full production manifests, the light manifest, `featured-photos.json`, `sitemap.xml`, and static photo pages contain no references to pruned JPEG thumbnails.
+- The hashed and stable full production manifests, the light manifest, `sitemap.xml`, and static photo pages contain no references to pruned JPEG thumbnails.
 - A production build serves the not-found experience at `/manifest` while the hashed full-manifest asset remains available to runtime features.
 - `index.html` contains image preloads for the first two homepage thumbnails.
 - `/photos/<photo-id>/index.html` files contain photo-specific title, description, canonical URL, and social image tags.
