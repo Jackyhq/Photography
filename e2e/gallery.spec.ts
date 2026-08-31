@@ -3,6 +3,10 @@ import { expect, test } from '@playwright/test'
 
 const PHOTO_ROUTE = /\/photos\/[^/?]+\/?(?:\?.*)?$/
 
+// Gallery E2E covers interaction and layout, not entrance animation timing.
+// Keep masonry targets stationary so mobile pointer clicks are deterministic.
+test.use({ reducedMotion: 'reduce' })
+
 async function focusByTab(page: Page, target: Locator, maxPresses = 60): Promise<void> {
   for (let press = 0; press < maxPresses; press++) {
     await page.keyboard.press('Tab')
@@ -17,6 +21,19 @@ async function expectFocusToRemainInside(page: Page, dialog: Locator, presses = 
     await page.keyboard.press(press % 2 === 0 ? 'Tab' : 'Shift+Tab')
     await expect.poll(() => dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true)
   }
+}
+
+async function openFirstPhotoViewer(page: Page): Promise<Locator> {
+  await page.goto('/')
+
+  const firstPhoto = page.locator('[data-photo-id]').first()
+  await expect(firstPhoto).toBeVisible()
+  await firstPhoto.click()
+
+  const viewer = page.getByRole('dialog')
+  await expect(page).toHaveURL(PHOTO_ROUTE)
+  await expect(viewer).toBeVisible()
+  return viewer
 }
 
 test('keeps the manifest viewer unavailable in production builds', async ({ page }) => {
@@ -45,17 +62,7 @@ test('serves the production manifest from a stable public URL', async ({ request
 })
 
 test('renders the masonry gallery and opens the photo viewer', async ({ page }, testInfo) => {
-  // This flow verifies viewer interaction, not the first-screen entrance motion.
-  // Avoid tapping a masonry item while its transform is still moving on mobile.
-  await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/')
-
-  const firstPhoto = page.locator('[data-photo-id]').first()
-  await expect(firstPhoto).toBeVisible()
-
-  await firstPhoto.click()
-  const viewer = page.getByRole('dialog')
-  await expect(page).toHaveURL(PHOTO_ROUTE)
+  const viewer = await openFirstPhotoViewer(page)
   await expect(page.getByLabel(/close photo viewer/i)).toBeVisible()
   await expect(viewer.locator('button[aria-current="true"]')).toHaveCount(1)
   await expect(page.locator('article[aria-labelledby="photo-detail-heading"]')).toHaveAttribute('aria-hidden', 'true')
@@ -72,9 +79,7 @@ test('renders the masonry gallery and opens the photo viewer', async ({ page }, 
 })
 
 test('shows Instagram as the first social sharing option', async ({ page }) => {
-  await page.goto('/')
-
-  await page.locator('[data-photo-id]').first().click()
+  await openFirstPhotoViewer(page)
   await page.getByRole('button', { name: /share photo|分享照片|分享相片/i }).click()
 
   const socialHeading = page.getByRole('heading', {
@@ -293,12 +298,7 @@ test('traps command palette focus and restores its keyboard trigger', async ({ p
 })
 
 test('does not let command palette arrow keys navigate the viewer underneath it', async ({ page }) => {
-  await page.goto('/')
-
-  const firstPhoto = page.locator('[data-photo-id]').first()
-  await expect(firstPhoto).toBeVisible()
-  await firstPhoto.click()
-  await expect(page.getByRole('dialog')).toBeVisible()
+  await openFirstPhotoViewer(page)
 
   const viewerUrl = page.url()
   await page.keyboard.press('Control+k')
