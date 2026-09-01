@@ -1,3 +1,4 @@
+import { photoLoader } from '@afilmory/data'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { lazy, Suspense, useEffect, useRef } from 'react'
 import { Outlet, useLocation, useNavigate, useParams, useSearchParams } from 'react-router'
@@ -139,6 +140,7 @@ const useSyncStateToUrl = () => {
   const navigate = useNavigate()
 
   const location = useLocation()
+  const { photoId } = useParams()
   const { isOpen, currentIndex } = usePhotoViewerState()
 
   useEffect(() => {
@@ -146,6 +148,8 @@ const useSyncStateToUrl = () => {
 
     if (!isOpen) {
       if (location.pathname.startsWith('/photos/')) {
+        if (photoId && !photoLoader.getPhoto(photoId)) return
+
         pendingPhotoFocusId = getFilteredPhotos()[currentIndex]?.id ?? null
         const timer = setTimeout(() => {
           navigate({ pathname: '/', search: location.search })
@@ -163,7 +167,7 @@ const useSyncStateToUrl = () => {
         navigate({ pathname: targetPathname, search: location.search })
       }
     }
-  }, [currentIndex, isOpen, location.pathname, location.search, navigate])
+  }, [currentIndex, isOpen, location.pathname, location.search, navigate, photoId])
 
   useEffect(() => {
     const photoId = pendingPhotoFocusId

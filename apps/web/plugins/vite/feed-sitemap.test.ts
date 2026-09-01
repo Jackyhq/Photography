@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import type { SiteConfig } from '../../../../site.config'
 import { createFeedSitemapPlugin } from './feed-sitemap'
-import { generateSitemap } from './sitemap'
+import { generateRobotsTxt, generateSitemap } from './sitemap'
 
 const config = {
   name: 'Gallery',
@@ -33,6 +33,13 @@ describe('image sitemap', () => {
     expect(sitemap).toContain('<image:loc>https://photos.example.com/media/photo.jpg</image:loc>')
     expect(sitemap).toContain('<image:title>Title &amp; light</image:title>')
     expect(sitemap).toContain('<image:caption>Sea &lt; sky</image:caption>')
+    expect(sitemap.match(/<lastmod>2026-01-02T03:04:05.000Z<\/lastmod>/g)).toHaveLength(2)
+    expect(sitemap).not.toContain('<priority>')
+    expect(sitemap).not.toContain('<changefreq>')
+  })
+
+  it('generates robots.txt from the canonical site URL', () => {
+    expect(generateRobotsTxt(config)).toBe('User-agent: *\nAllow: /\nSitemap: https://photos.example.com/sitemap.xml\n')
   })
 
   it('uses a web-indexable thumbnail for unsupported original image formats', () => {
@@ -75,11 +82,15 @@ describe('image sitemap', () => {
     const sitemapAsset = emitFile.mock.calls
       .map(([asset]) => asset as { fileName?: string; source?: string })
       .find((asset) => asset.fileName === 'sitemap.xml')
+    const robotsAsset = emitFile.mock.calls
+      .map(([asset]) => asset as { fileName?: string; source?: string })
+      .find((asset) => asset.fileName === 'robots.txt')
 
     expect(sitemapAsset?.source).toContain(
       '<image:loc>https://photos.example.com/thumbnails/video-1-640.webp</image:loc>',
     )
     expect(sitemapAsset?.source).not.toContain('/thumbnails/video-1.jpg')
+    expect(robotsAsset?.source).toContain('Sitemap: https://photos.example.com/sitemap.xml')
   })
 
   it('fails the build when feed and sitemap generation cannot read the manifest', async () => {

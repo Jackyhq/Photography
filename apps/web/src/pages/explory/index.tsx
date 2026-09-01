@@ -3,9 +3,22 @@ import { lazy, Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 
+import { usePageMeta } from '~/hooks/usePageMeta'
+import { useNoIndex } from '~/hooks/useRobotsMeta'
+import { useTitle } from '~/hooks/useTitle'
+import { EXPLORY_PAGE_META } from '~/lib/seo-meta'
+
 const MapSection = lazy(() => import('~/modules/map/MapSection').then((m) => ({ default: m.MapSection })))
 
 export const Component = () => {
+  useTitle(EXPLORY_PAGE_META.title)
+  usePageMeta({
+    title: EXPLORY_PAGE_META.title,
+    description: EXPLORY_PAGE_META.description,
+    url: EXPLORY_PAGE_META.path,
+  })
+  useNoIndex()
+
   return (
     <Suspense fallback={<ExploryPageSkeleton />}>
       <ErrorBoundary fallback={<ExploryPageError />}>

@@ -14,6 +14,7 @@
     "dev": "tsx scripts/dev.ts",
     "format": "prettier --write \"src/**/*.ts\" ",
     "lint": "eslint --fix",
+    "seo:check": "tsx scripts/check-seo-output.ts",
     "serve": "vite preview",
     "type-check": "pnpm type-check:app && pnpm type-check:node",
     "type-check:app": "tsc --noEmit -p tsconfig.json",

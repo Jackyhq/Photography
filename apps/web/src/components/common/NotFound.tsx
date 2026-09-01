@@ -1,10 +1,16 @@
 import { useLocation, useNavigate } from 'react-router'
 
+import { useNoIndex } from '~/hooks/useRobotsMeta'
+import { useTitle } from '~/hooks/useTitle'
+import { NOT_FOUND_PAGE_META } from '~/lib/seo-meta'
+
 import { FallbackButton } from './FallbackButton'
 
 export const NotFound = () => {
   const location = useLocation()
   const navigate = useNavigate()
+  useTitle(NOT_FOUND_PAGE_META.title)
+  useNoIndex(true)
 
   return (
     <main className="flex min-h-svh flex-col items-center justify-center gap-5 px-6 text-center">

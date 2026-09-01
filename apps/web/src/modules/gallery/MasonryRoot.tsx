@@ -41,7 +41,7 @@ const PHOTO_KEYBOARD_DIRECTIONS = {
 interface MasonryKeyboardNavigationContextValue {
   tabStopPhotoId: string | null
   onPhotoFocus: (photoId: string) => void
-  onPhotoKeyDown: (event: KeyboardEvent<HTMLButtonElement>, index: number) => void
+  onPhotoKeyDown: (event: KeyboardEvent<HTMLAnchorElement>, index: number) => void
 }
 
 const MasonryKeyboardNavigationContext = createContext<MasonryKeyboardNavigationContextValue | null>(null)
@@ -99,13 +99,13 @@ export const MasonryRoot = () => {
       let attempts = 0
       let didRequestScroll = false
       const focusWhenRendered = () => {
-        const photoButton = Array.from(
-          containerRef.current?.querySelectorAll<HTMLButtonElement>('[data-photo-id]') ?? [],
+        const photoLink = Array.from(
+          containerRef.current?.querySelectorAll<HTMLAnchorElement>('[data-photo-id]') ?? [],
         ).find((element) => element.dataset.photoId === target.id)
 
-        if (photoButton) {
-          photoButton.focus({ preventScroll: true })
-          photoButton.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+        if (photoLink) {
+          photoLink.focus({ preventScroll: true })
+          photoLink.scrollIntoView({ block: 'nearest', inline: 'nearest' })
           focusRequestFrameRef.current = 0
           return
         }
@@ -147,7 +147,7 @@ export const MasonryRoot = () => {
   }, [focusPhotoAtIndex, masonryItems])
 
   const handlePhotoKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLButtonElement>, currentIndex: number) => {
+    (event: KeyboardEvent<HTMLAnchorElement>, currentIndex: number) => {
       if (event.altKey || event.ctrlKey || event.metaKey) return
 
       const direction = PHOTO_KEYBOARD_DIRECTIONS[event.key as keyof typeof PHOTO_KEYBOARD_DIRECTIONS]

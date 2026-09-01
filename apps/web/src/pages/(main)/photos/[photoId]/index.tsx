@@ -1,8 +1,10 @@
+import { photoLoader } from '@afilmory/data'
 import { RootPortal, RootPortalProvider } from '@afilmory/ui'
 import clsx from 'clsx'
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RemoveScroll } from 'react-remove-scroll'
+import { useParams } from 'react-router'
 
 import { NotFound } from '~/components/common/NotFound'
 import { usePageMeta } from '~/hooks/usePageMeta'
@@ -12,6 +14,7 @@ import { useTitle } from '~/hooks/useTitle'
 import { deriveAccentFromSources } from '~/lib/color'
 import { getLocalizedPhotoDescription, getLocalizedPhotoTitle, getPhotoAltText } from '~/lib/photo-description'
 import { getPhotoDetailPath } from '~/lib/photo-route'
+import { getPhotoSocialPreview } from '~/lib/social-preview'
 
 const PhotoViewer = lazy(() =>
   import('~/components/ui/photo-viewer/PhotoViewer').then((module) => ({ default: module.PhotoViewer })),
@@ -20,6 +23,7 @@ const PhotoViewer = lazy(() =>
 export const Component = () => {
   const photoViewer = usePhotoViewer()
   const photos = useContextPhotos()
+  const { photoId } = useParams()
   const { i18n } = useTranslation()
   usePhotoTextUpdates()
   const locale = i18n.resolvedLanguage ?? i18n.language
@@ -31,7 +35,8 @@ export const Component = () => {
     }),
     [ref],
   )
-  const currentPhoto = photos[photoViewer.currentIndex]
+  const currentPhoto = photoId ? photoLoader.getPhoto(photoId) : undefined
+  const socialPreview = currentPhoto ? getPhotoSocialPreview(currentPhoto) : undefined
   const pageTitle = currentPhoto ? getLocalizedPhotoTitle(currentPhoto, locale) || currentPhoto.id : 'Not Found'
   const pageDescription = currentPhoto ? getLocalizedPhotoDescription(currentPhoto, locale) : ''
 
@@ -39,7 +44,9 @@ export const Component = () => {
   usePageMeta({
     title: currentPhoto ? pageTitle : undefined,
     description: pageDescription || undefined,
-    image: currentPhoto?.thumbnailUrl || currentPhoto?.originalUrl,
+    image: socialPreview?.source,
+    imageWidth: socialPreview?.width,
+    imageHeight: socialPreview?.height,
     url: currentPhoto ? getPhotoDetailPath(currentPhoto.id) : undefined,
     type: currentPhoto?.mediaType === 'video' ? 'video.other' : 'article',
   })
@@ -47,16 +54,15 @@ export const Component = () => {
   const [accentColor, setAccentColor] = useState<string | null>(null)
 
   useEffect(() => {
-    const current = photos[photoViewer.currentIndex]
-    if (!current) return
+    if (!currentPhoto) return
 
     let isCancelled = false
 
     ;(async () => {
       try {
         const color = await deriveAccentFromSources({
-          thumbHash: current.thumbHash,
-          thumbnailUrl: current.thumbnailUrl,
+          thumbHash: currentPhoto.thumbHash,
+          thumbnailUrl: currentPhoto.thumbnailUrl,
         })
         if (!isCancelled) {
           setAccentColor(color ?? null)
@@ -69,9 +75,9 @@ export const Component = () => {
     return () => {
       isCancelled = true
     }
-  }, [photoViewer.currentIndex, photos])
+  }, [currentPhoto])
 
-  if (!photos[photoViewer.currentIndex]) {
+  if (!currentPhoto) {
     return <NotFound />
   }
 

@@ -19,3 +19,8 @@
 /photos-manifest.json
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
+/404.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow

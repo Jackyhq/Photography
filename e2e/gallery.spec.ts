@@ -45,6 +45,19 @@ test('keeps the manifest viewer unavailable in production builds', async ({ page
   await expect(page.getByRole('heading', { name: 'Afilmory Manifest' })).toHaveCount(0)
 })
 
+test('marks unknown routes as noindex without a misleading canonical', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'SEO route behavior only needs one browser profile')
+
+  for (const pathname of ['/photos/not-a-real-photo/', '/not-a-real-page/']) {
+    await page.goto(pathname)
+
+    await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible()
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow')
+    await expect(page.locator('link[rel="canonical"]')).toHaveCount(0)
+    await expect(page.locator('article[aria-labelledby="photo-detail-heading"]')).toHaveCount(0)
+  }
+})
+
 test('serves the production manifest from a stable public URL', async ({ request }) => {
   const response = await request.get('/photos-manifest.json')
 
@@ -62,7 +75,30 @@ test('serves the production manifest from a stable public URL', async ({ request
 })
 
 test('renders the masonry gallery and opens the photo viewer', async ({ page }, testInfo) => {
+  await page.goto('/')
+  const firstPhoto = page.locator('[data-photo-id]').first()
+  await expect(firstPhoto).toHaveAttribute('href', PHOTO_ROUTE)
+  const firstPhotoId = await firstPhoto.getAttribute('data-photo-id')
+  expect(firstPhotoId).toBeTruthy()
+  await expect(page.locator('[data-primary-site][href="https://jackyw.cn/"]')).toHaveCount(1)
+  await expect(page.locator('[data-primary-site][href="https://jackyw.uk/"]')).toHaveCount(1)
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(1)
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://photo.jackyw.cn')
+
   const viewer = await openFirstPhotoViewer(page)
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(1)
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    `https://photo.jackyw.cn/photos/${encodeURIComponent(firstPhotoId!)}/`,
+  )
+  await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute(
+    'content',
+    await page.locator('meta[property="og:title"]').getAttribute('content'),
+  )
+  await expect(page.locator('meta[property="twitter:image:alt"]')).toHaveAttribute(
+    'content',
+    await page.locator('meta[property="twitter:title"]').getAttribute('content'),
+  )
   await expect(page.getByLabel(/close photo viewer/i)).toBeVisible()
   await expect(viewer.locator('button[aria-current="true"]')).toHaveCount(1)
   await expect(page.locator('article[aria-labelledby="photo-detail-heading"]')).toHaveAttribute('aria-hidden', 'true')
@@ -323,10 +359,17 @@ test('loads a photo detail route directly and preserves filter parameters when c
   const viewer = page.getByRole('dialog')
   await expect(viewer).toBeVisible()
   await expect.poll(() => new URL(page.url()).searchParams.get('utm_source')).toBe('e2e')
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(1)
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    `https://photo.jackyw.cn/photos/${encodeURIComponent(photoId!)}/`,
+  )
 
   await page.keyboard.press('Escape')
   await expect(page).toHaveURL(/\/?\?.*utm_source=e2e/)
   await expect.poll(() => new URL(page.url()).searchParams.get('utm_source')).toBe('e2e')
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(1)
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://photo.jackyw.cn')
 })
 
 test('switches the resolved language and accessible labels', async ({ page }) => {

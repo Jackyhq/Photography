@@ -33,17 +33,16 @@ function escapeXml(unsafe: string): string {
 export function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig): string {
   const now = new Date().toISOString()
   const baseUrl = config.url.endsWith('/') ? config.url.slice(0, -1) : config.url
+  const latestContentDate = getLatestContentDate(photos, now)
   const mainPageXml = `  <url>
     <loc>${escapeXml(baseUrl)}</loc>
-    <lastmod>${now}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <lastmod>${latestContentDate}</lastmod>
   </url>`
 
   const photoUrls = photos
     .map((photo) => {
       const date = photo.lastModified || photo.dateTaken
-      const lastmod = date ? new Date(date).toISOString() : now
+      const lastmod = toIsoDate(date, now)
       const imageUrl = toAbsoluteUrl(getSitemapImageSource(photo), baseUrl)
       const imageTitle = getPreferredPhotoTitle(photo)
       const imageCaption = getPreferredPhotoDescription(photo)
@@ -66,9 +65,7 @@ export function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig)
 
       return `  <url>
     <loc>${escapeXml(`${baseUrl}/photos/${encodeURIComponent(photo.id)}/`)}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>${imageXml}
+    <lastmod>${lastmod}</lastmod>${imageXml}
   </url>`
     })
     .join('\n')
@@ -78,6 +75,14 @@ export function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig)
 ${mainPageXml}
 ${photoUrls}
 </urlset>\n`
+}
+
+export function generateRobotsTxt(config: SiteConfig): string {
+  const baseUrl = config.url.replace(/\/+$/u, '')
+  return `User-agent: *
+Allow: /
+Sitemap: ${baseUrl}/sitemap.xml
+`
 }
 
 function getSitemapImageSource(photo: PhotoManifestItem): string {
@@ -103,4 +108,19 @@ function toAbsoluteUrl(value: string | undefined, baseUrl: string): string | und
   } catch {
     return value
   }
+}
+
+function getLatestContentDate(photos: PhotoManifestItem[], fallback: string): string {
+  const timestamps = photos
+    .map((photo) => photo.lastModified || photo.dateTaken)
+    .map((value) => (value ? new Date(value).getTime() : Number.NaN))
+    .filter(Number.isFinite)
+
+  return timestamps.length > 0 ? new Date(Math.max(...timestamps)).toISOString() : fallback
+}
+
+function toIsoDate(value: string | undefined, fallback: string): string {
+  if (!value) return fallback
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? fallback : date.toISOString()
 }

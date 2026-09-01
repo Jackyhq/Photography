@@ -1,5 +1,3 @@
-const PHOTO_DETAIL_PATH_PATTERN = /^\/photos\/[^/?#]+\/?$/
-
 export function getPhotoDetailPath(photoId: string): string {
   return `/photos/${encodeURIComponent(photoId)}/`
 }
@@ -13,9 +11,5 @@ export function normalizeCanonicalPathname(path: string): string {
     return ''
   }
 
-  if (PHOTO_DETAIL_PATH_PATTERN.test(cleanPathname)) {
-    return `${trimmedPathname}/`
-  }
-
-  return trimmedPathname
+  return `${trimmedPathname}/`
 }

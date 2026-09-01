@@ -9,6 +9,18 @@
     "url": "https://jackyw.cn/",
     "avatar": "/images/avatar.jpg"
   },
+  "primarySites": [
+    {
+      "name": "Jackywhq｜个人主页",
+      "url": "https://jackyw.cn/",
+      "inLanguage": "zh-CN"
+    },
+    {
+      "name": "Jackywhq｜A Visual Journal",
+      "url": "https://jackyw.uk/",
+      "inLanguage": "en"
+    }
+  ],
   "social": {
     "github": "Jackyhq",
     "instagram": "https://www.instagram.com/jackywhq/",
@@ -23,9 +35,7 @@
       }
     }
   },
-  "map": [
-    "maplibre"
-  ],
+  "map": ["maplibre"],
   "mapStyle": "builtin",
   "mapProjection": "mercator"
 }

@@ -9,6 +9,9 @@ interface OGImagePluginOptions {
   description?: string
   siteName?: string
   siteUrl?: string
+  authorName?: string
+  locale?: string
+  alternateLocales?: string[]
 }
 
 export function ogImagePlugin(options: OGImagePluginOptions = {}): Plugin {
@@ -16,7 +19,10 @@ export function ogImagePlugin(options: OGImagePluginOptions = {}): Plugin {
     title = 'Afilmory',
     description = 'Capturing beautiful moments in life, documenting daily warmth and emotions through my lens.',
     siteName = 'Afilmory',
-    siteUrl,
+    siteUrl = '',
+    authorName = siteName,
+    locale = 'en_US',
+    alternateLocales = [],
   } = options
 
   let ogImagePath = ''
@@ -58,6 +64,11 @@ export function ogImagePlugin(options: OGImagePluginOptions = {}): Plugin {
           return html
         }
 
+        const alternateLocaleTags = alternateLocales
+          .filter((alternateLocale) => alternateLocale !== locale)
+          .map((alternateLocale) => `    <meta property="og:locale:alternate" content="${alternateLocale}" />`)
+          .join('\n')
+
         // 生成 meta 标签
         const metaTags = `
     <!-- Open Graph / Facebook -->
@@ -66,7 +77,12 @@ export function ogImagePlugin(options: OGImagePluginOptions = {}): Plugin {
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${description}" />
     <meta property="og:image" content="${siteUrl}${ogImagePath}" />
+    <meta property="og:image:alt" content="${title}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="${siteName}" />
+    <meta property="og:locale" content="${locale}" />
+${alternateLocaleTags}
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -74,11 +90,12 @@ export function ogImagePlugin(options: OGImagePluginOptions = {}): Plugin {
     <meta property="twitter:title" content="${title}" />
     <meta property="twitter:description" content="${description}" />
     <meta property="twitter:image" content="${siteUrl}${ogImagePath}" />
+    <meta property="twitter:image:alt" content="${title}" />
 
     <!-- Additional meta tags -->
-    <meta name="author" content="${siteName}" />
+    <meta name="author" content="${authorName}" />
     <meta name="generator" content="Vite + React" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#0a0a0a" />
     <meta name="msapplication-TileColor" content="#0a0a0a" />
     

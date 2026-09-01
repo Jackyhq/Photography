@@ -27,6 +27,7 @@
     "photos:standardize": "tsx scripts/standardize-photos.ts",
     "preinstall": "sh scripts/preinstall.sh",
     "prepare": "simple-git-hooks",
+    "seo:check": "pnpm --filter web seo:check",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",

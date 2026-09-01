@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="zh-CN" data-theme="dark">
 
 <head>
   <!-- Google tag (gtag.js) -->
@@ -14,7 +14,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="<%- description %>" />
-  <meta name="keywords" content="Jackywhq's Photography,JackyWang's Photography,Jackywhq,wanghaoquan,haoquanwang,王老吉whq,Jacky的主页,whq,jackywang,jackyw" />
   <meta name="p:domain_verify" content="ba88012f24d1a84ddfc03cf00b310694" />
 
   <!-- PWA iOS Safari 配置 -->
@@ -70,23 +69,6 @@
       if (language) {
         document.documentElement.lang = language === 'jp' ? 'ja' : language
       }
-    })()
-  </script>
-  <script>
-    (() => {
-      const siteUrl = (<%- siteUrlJson %>).replace(/\/+$/, '')
-      const currentPathname = window.location.pathname
-      const trimmedPathname = currentPathname.replace(/\/+$/, '')
-      const isPhotoDetailPath = /^\/photos\/[^/?#]+\/?$/.test(currentPathname)
-      const pathname = isPhotoDetailPath ? `${trimmedPathname}/` : trimmedPathname
-      const canonicalUrl = pathname && pathname !== '/' ? `${siteUrl}${pathname}` : siteUrl
-      let canonical = document.querySelector('link[rel="canonical"]')
-      if (!canonical) {
-        canonical = document.createElement('link')
-        canonical.rel = 'canonical'
-        document.head.append(canonical)
-      }
-      canonical.href = canonicalUrl
     })()
   </script>
   <style>
@@ -174,6 +156,7 @@
               ">
             <%- description %>
           </p>
+          <!-- afilmory-primary-sites -->
         </div>
 
         <!-- 加载动画 -->

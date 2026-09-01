@@ -7,7 +7,7 @@ import type { Plugin } from 'vite'
 import type { SiteConfig } from '../../../../site.config'
 import { MANIFEST_PATH } from './__internal__/constants'
 import { normalizeProductionThumbnail } from './__internal__/production-thumbnail'
-import { generateSitemap } from './sitemap'
+import { generateRobotsTxt, generateSitemap } from './sitemap'
 
 type ReadManifest = () => string
 
@@ -42,6 +42,7 @@ export function createFeedSitemapPlugin(siteConfig: SiteConfig, readManifestFile
 
         // Generate sitemap
         const sitemapXml = generateSitemap(sortedPhotos, siteConfig)
+        const robotsTxt = generateRobotsTxt(siteConfig)
 
         // Emit RSS feed
         this.emitFile({
@@ -55,6 +56,12 @@ export function createFeedSitemapPlugin(siteConfig: SiteConfig, readManifestFile
           type: 'asset',
           fileName: 'sitemap.xml',
           source: sitemapXml,
+        })
+
+        this.emitFile({
+          type: 'asset',
+          fileName: 'robots.txt',
+          source: robotsTxt,
         })
 
         console.info(`Generated RSS feed with ${sortedPhotos.length} photos`)

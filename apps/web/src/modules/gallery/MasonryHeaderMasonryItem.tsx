@@ -14,6 +14,13 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
   const locale = i18n.resolvedLanguage ?? i18n.language
   const visiblePhotoCount = usePhotos().length
   const { needRefresh, updateApp } = useAppUpdate()
+  const authorPrimarySite = siteConfig.primarySites?.find(
+    (site) => normalizeSiteUrl(site.url) === normalizeSiteUrl(siteConfig.author.url),
+  )
+  const alternatePrimarySites =
+    siteConfig.primarySites?.filter((site) => normalizeSiteUrl(site.url) !== normalizeSiteUrl(siteConfig.author.url)) ??
+    []
+
   return (
     <div
       className={clsxm(
@@ -63,12 +70,14 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
               <a
                 href={siteConfig.author.url}
                 target="_blank"
-                rel="noreferrer"
+                rel="author noreferrer"
                 className="text-text-secondary flex items-center justify-center p-2 duration-200 hover:text-[#007bff]"
-                title="Home"
+                title={authorPrimarySite?.name ?? 'Home'}
                 aria-label={t('gallery.authorHome', { name: siteConfig.author.name })}
+                data-primary-site
               >
                 <i className="i-mingcute-home-4-fill text-sm" aria-hidden="true" />
+                {authorPrimarySite && <span className="sr-only">{authorPrimarySite.name}</span>}
               </a>
             )}
             {siteConfig.social.instagram && (
@@ -118,6 +127,22 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
                 <i className="i-mingcute-rss-2-fill text-sm" aria-hidden="true" />
               </a>
             )}
+            {alternatePrimarySites.map((site) => (
+              <a
+                key={site.url}
+                href={site.url}
+                hrefLang={site.inLanguage}
+                target="_blank"
+                rel="author noreferrer"
+                className="text-text-secondary flex items-center justify-center p-2 duration-200 hover:text-[#007bff]"
+                title={site.name}
+                aria-label={site.name}
+                data-primary-site
+              >
+                <i className="i-mingcute-world-2-line text-sm" aria-hidden="true" />
+                <span className="sr-only">{site.name}</span>
+              </a>
+            ))}
           </div>
         )}
 
@@ -186,4 +211,8 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
       </div>
     </div>
   )
+}
+
+function normalizeSiteUrl(url: string): string {
+  return url.replace(/\/+$/u, '')
 }

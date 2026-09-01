@@ -7,7 +7,7 @@ import {
 import { Thumbhash } from '@afilmory/ui/thumbhash'
 import clsx from 'clsx'
 import { m } from 'motion/react'
-import type { KeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'
+import type { KeyboardEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react'
 import { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -19,6 +19,7 @@ import { formatDuration } from '~/lib/format-duration'
 import type { ImageLoaderManager } from '~/lib/image-loader-manager'
 import { getImageFormat } from '~/lib/image-utils'
 import { getLocalizedPhotoTitle, getPhotoAltText } from '~/lib/photo-description'
+import { getPhotoDetailPath } from '~/lib/photo-route'
 import type { PhotoManifest } from '~/types/photo'
 
 const PRIORITY_IMAGE_COUNT = 6
@@ -113,7 +114,7 @@ interface MasonryPhotoItemProps {
   index: number
   tabIndex: number
   onFocus: (photoId: string) => void
-  onKeyDown: (event: KeyboardEvent<HTMLButtonElement>, index: number) => void
+  onKeyDown: (event: KeyboardEvent<HTMLAnchorElement>, index: number) => void
 }
 
 const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown }: MasonryPhotoItemProps) => {
@@ -130,7 +131,7 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
   const [videoConvertionError, setVideoConversionError] = useState<unknown>(null)
   const [shouldPreloadVideo, setShouldPreloadVideo] = useState(false)
 
-  const itemRef = useRef<HTMLButtonElement>(null)
+  const itemRef = useRef<HTMLAnchorElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const hoverTimerRef = useRef<NodeJS.Timeout | null>(null)
   const longPressTimerRef = useRef<NodeJS.Timeout | null>(null)
@@ -153,7 +154,10 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
     setImageError(true)
   }
 
-  const handleClick = () => {
+  const handleClick = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+
+    event.preventDefault()
     openViewerByPhotoId(data.id, { element: itemRef.current ?? undefined })
   }
 
@@ -161,7 +165,7 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
     onFocus(data.id)
   }
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLAnchorElement>) => {
     onKeyDown(event, index)
   }
 
@@ -386,7 +390,7 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
   )
 
   const handlePointerDown = useCallback(
-    (event: ReactPointerEvent<HTMLButtonElement>) => {
+    (event: ReactPointerEvent<HTMLAnchorElement>) => {
       if (event.pointerType !== 'touch' || !hasLivePhotoVideo) return
 
       resetTouchLivePhoto()
@@ -410,7 +414,7 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
   )
 
   const handlePointerEnd = useCallback(
-    (event: ReactPointerEvent<HTMLButtonElement>) => {
+    (event: ReactPointerEvent<HTMLAnchorElement>) => {
       if (event.pointerType === 'touch' && activeTouchPointerRef.current === event.pointerId) {
         resetTouchLivePhoto()
       }
@@ -437,9 +441,9 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
   }, [resetTouchLivePhoto])
 
   return (
-    <m.button
+    <m.a
       ref={itemRef}
-      type="button"
+      href={getPhotoDetailPath(data.id)}
       aria-label={photoAlt}
       className="bg-fill-quaternary group focus-visible:outline-accent relative block w-full cursor-pointer overflow-hidden border-0 p-0 text-left focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2"
       style={{
@@ -585,7 +589,7 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
           </div>
         </div>
       )}
-    </m.button>
+    </m.a>
   )
 }
 

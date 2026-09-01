@@ -11,6 +11,7 @@ import {
   createPhotoPageMeta,
   createPhotoPreloadLink,
   STATIC_APP_ROUTES,
+  writeNotFoundPage,
   writeStaticAppRoutePages,
 } from './photo-page-meta'
 
@@ -56,7 +57,15 @@ describe('photo-page-meta', () => {
     expect(html).toContain('imagesrcset="/thumbnails/photo-360.webp 360w, /thumbnails/photo-640.webp 640w"')
     expect(html).toContain('type="application/ld+json"')
     expect(html).toContain('"@type":"ImageObject"')
+    expect(html).toContain('"creator":{"@type":"Person","@id":"https://example.com/#person"')
+    expect(html).toContain('"creditText":"Jacky"')
+    expect(html).toContain('"copyrightNotice":"© Jacky"')
+    expect(html).toContain('"isPartOf":{"@id":"https://photos.example.com/#website"}')
+    expect(html).toContain('"representativeOfPage":true')
     expect(html).toContain('property="og:image" content="https://cdn.example.com/photos/photo.jpg"')
+    expect(html).toContain('property="og:image:alt" content="标题 &lt;/script&gt; | Gallery"')
+    expect(html).toContain('property="og:image:width" content="1200"')
+    expect(html).toContain('property="og:image:height" content="800"')
     expect(html).toContain('property="twitter:image" content="https://cdn.example.com/photos/photo.jpg"')
     expect(html).toContain('"thumbnailUrl":"https://photos.example.com/thumbnails/photo-640.webp"')
     expect(html).toContain('<img src="/thumbnails/photo-640.webp"')
@@ -122,11 +131,21 @@ describe('photo-page-meta', () => {
         const expectedUrl = `https://photos.example.com/${routePath}/`
 
         expect(html).toContain('<div id="root"></div>')
+        expect(html).toContain('<title>照片地图 | Gallery</title>')
+        expect(html).toContain('name="robots" content="noindex, follow"')
         expect(html).toContain(`rel="canonical" href="${expectedUrl}"`)
         expect(html).toContain(`property="og:url" content="${expectedUrl}"`)
         expect(html).toContain(`property="twitter:url" content="${expectedUrl}"`)
         expect(html).not.toContain('data-afilmory-preload="gallery"')
       }
+
+      writeNotFoundPage(outputDirectory, baseHtml, siteConfig)
+      const notFoundHtml = readFileSync(path.join(outputDirectory, '404.html'), 'utf-8')
+      expect(notFoundHtml).toContain('<title>页面未找到 | Gallery</title>')
+      expect(notFoundHtml).toContain('name="robots" content="noindex, follow"')
+      expect(notFoundHtml).not.toContain('rel="canonical"')
+      expect(notFoundHtml).not.toContain('property="og:url"')
+      expect(notFoundHtml).not.toContain('property="twitter:url"')
 
       expect(existsSync(path.join(outputDirectory, 'manifest', 'index.html'))).toBe(false)
     } finally {

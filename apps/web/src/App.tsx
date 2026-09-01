@@ -1,3 +1,4 @@
+import { photoLoader } from '@afilmory/data'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router'
 
@@ -11,7 +12,7 @@ const CommandPalette = lazy(() =>
 
 function App() {
   const { pathname } = useLocation()
-  useCanonical(pathname)
+  useCanonical(getIndexableCanonicalPath(pathname))
 
   return (
     <RootProviders>
@@ -21,6 +22,20 @@ function App() {
       </div>
     </RootProviders>
   )
+}
+
+function getIndexableCanonicalPath(pathname: string): string | undefined {
+  if (pathname === '/' || /^\/explory\/?$/u.test(pathname)) return pathname
+
+  const photoPathMatch = pathname.match(/^\/photos\/([^/]+)\/?$/u)
+  if (!photoPathMatch) return undefined
+
+  try {
+    const photoId = decodeURIComponent(photoPathMatch[1])
+    return photoLoader.getPhoto(photoId) ? pathname : undefined
+  } catch {
+    return undefined
+  }
 }
 
 const CommandPaletteContainer = () => {

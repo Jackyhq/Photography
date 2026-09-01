@@ -31,6 +31,7 @@ import {
 import { photosStaticPlugin } from './plugins/vite/photos-static'
 import { pruneJpegThumbnailsPlugin } from './plugins/vite/prune-jpeg-thumbnails'
 import { siteConfigInjectPlugin } from './plugins/vite/site-config-inject'
+import { createSiteSeoPlugin } from './plugins/vite/site-seo'
 
 const devPrint = (): PluginOption => ({
   name: 'dev-print',
@@ -75,11 +76,6 @@ const bundleAnalyzerPlugin =
       ? analyzer()
       : null
 
-const escapedSiteUrlJson = JSON.stringify(siteConfig.url)
-  .replaceAll('<', '\\u003C')
-  .replaceAll('\u2028', '\\u2028')
-  .replaceAll('\u2029', '\\u2029')
-
 const staticWebBuildPlugins: PluginOption[] = [
   manifestInjectPlugin(),
   siteConfigInjectPlugin(),
@@ -106,6 +102,7 @@ const staticWebBuildPlugins: PluginOption[] = [
       name: siteConfig.title,
       short_name: siteConfig.name,
       description: siteConfig.description,
+      lang: 'zh-CN',
       theme_color: '#1c1c1e',
       background_color: '#1c1c1e',
       display: 'standalone',
@@ -153,11 +150,15 @@ const staticWebBuildPlugins: PluginOption[] = [
     },
   }),
 
+  createSiteSeoPlugin(siteConfig),
   ogImagePlugin({
     title: siteConfig.title,
     description: siteConfig.description,
     siteName: siteConfig.name,
     siteUrl: siteConfig.url,
+    authorName: siteConfig.author.name,
+    locale: 'zh_CN',
+    alternateLocales: ['en_US', 'zh_HK', 'zh_TW', 'ja_JP', 'ko_KR'],
   }),
   createFeedSitemapPlugin(siteConfig),
   createPhotoPageMetaPlugin(siteConfig),
@@ -177,7 +178,6 @@ const staticWebBuildPlugins: PluginOption[] = [
       data: {
         title: siteConfig.title,
         description: siteConfig.description,
-        siteUrlJson: escapedSiteUrlJson,
       },
     },
   }),
