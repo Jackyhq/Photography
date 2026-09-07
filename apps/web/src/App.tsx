@@ -1,8 +1,9 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
-import { Outlet, useLocation } from 'react-router'
+import { Outlet } from 'react-router'
 
-import { useCanonical } from './hooks/useCanonical'
+import { NotFound } from './components/common/NotFound'
 import { useCommandPaletteShortcut } from './hooks/useCommandPaletteShortcut'
+import { useRoutePageMeta } from './hooks/useRoutePageMeta'
 import { RootProviders } from './providers/root-providers'
 
 const CommandPalette = lazy(() =>
@@ -10,16 +11,22 @@ const CommandPalette = lazy(() =>
 )
 
 function App() {
-  const { pathname } = useLocation()
-  useCanonical(pathname)
-
   return (
     <RootProviders>
-      <div className="overflow-hidden lg:h-svh">
-        <Outlet />
-        <CommandPaletteContainer />
-      </div>
+      <RouteContent />
     </RootProviders>
+  )
+}
+
+const RouteContent = () => {
+  const isNotFound = useRoutePageMeta()
+  if (isNotFound) return <NotFound />
+
+  return (
+    <div className="overflow-hidden lg:h-svh">
+      <Outlet />
+      <CommandPaletteContainer />
+    </div>
   )
 }
 

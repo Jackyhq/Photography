@@ -23,10 +23,11 @@ pnpm type-check
 ## App Architecture
 
 - Entry point: `src/main.tsx`.
-- Router: `src/router.tsx` builds routes from `src/pages/**/*.tsx` through `src/lib/route-builder.ts`.
-- Root shell: `src/App.tsx` installs providers, canonical URL updates, and the command palette.
+- Router: development uses `src/router.tsx`; the Vite production-router plugin selects `src/router.prod.tsx` for builds. Both use the shared route builder. Production excludes the manifest inspection page.
+- Root shell: `src/App.tsx` installs providers, route metadata, and the command palette.
 - Global providers: `src/providers/root-providers.tsx` and nearby provider modules.
-- Data source: `@afilmory/data` reads `__MANIFEST__` generated from `src/data/photos-manifest.json`.
+- Data source: `@afilmory/data` reads the lightweight `__MANIFEST__` index at startup. Full EXIF/GPS data and localized photo text load separately through its singleton; avoid importing full manifest JSON into components.
+- Public data: production also publishes `/photos-manifest.json` as a stable full-manifest URL. Disabling the inspection route does not make that data private.
 - Site config: `src/config/index.ts` merges `site.config.ts` defaults with runtime `window.__SITE_CONFIG__` when available.
 
 ### Route Conventions
@@ -34,7 +35,7 @@ pnpm type-check
 - `src/pages/(main)/layout.tsx` owns the main gallery layout.
 - `src/pages/(main)/photos/[photoId]/index.tsx` is the photo detail route.
 - `src/pages/explory/index.tsx` is the map exploration route.
-- `src/pages/(data)/manifest.tsx` exposes the manifest inspection/download page.
+- `src/pages/(data)/manifest.tsx` exposes the development-only manifest inspection/download page.
 - Route groups in parentheses do not add URL segments; `[param]` becomes a React Router dynamic segment.
 
 ## Feature Areas
@@ -89,8 +90,15 @@ The app uses a glassmorphic depth design system for elevated UI such as modals, 
 
 ## Implementation Notes
 
+- Keep build-time and client route metadata consistent, including direct photo entry, next/previous photo, closing to the homepage, and browser history. Use the shared URL/metadata helpers instead of independent head snapshots.
+- Navigation targets need real `href` values; preserve modified clicks and new-tab behavior when enhancing links with the viewer.
+- Image `sizes` and prefetch selection must describe the actual rendered width, including user-selected column counts and device pixel ratio.
+- Every viewer instance must release its textures, Blob URLs, listeners, timers and animation frames according to ownership. Late asynchronous results must not update a new photo or a destroyed viewer.
+
 - Keep app-specific UI inside `apps/web/src`; move only broadly reusable primitives to `packages/ui`.
 - Be careful with `photos-manifest.json`; it is generated locally by the builder, ignored by Git, and should not be hand-edited for normal feature work.
 - Map features should respect `config.json` keys `map`, `mapStyle`, and `mapProjection`.
 - Viewer changes should consider desktop and mobile behavior, WebGL and DOM fallbacks, Live Photo video loading, and browser memory pressure.
 - For text, use existing i18next keys and add translations where the local pattern requires it.
+
+For non-mutating verification, start with `pnpm run lint:check`, `pnpm --filter web type-check`, and targeted Vitest files. Image/route changes also need a current production build, `pnpm run bundle:budget`, and production E2E. The root instructions describe the isolated public-fixture workflow.

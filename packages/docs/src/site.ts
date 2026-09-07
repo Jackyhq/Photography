@@ -11,6 +11,16 @@ export const docsSite = {
 } as const
 
 export function getDocsUrl(path = '/') {
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`
-  return new URL(normalizedPath, `${docsSite.url}/`).toString()
+  return new URL(getDocsPath(path), `${docsSite.url}/`).toString()
+}
+
+// Route keys omit trailing slashes; public directory URLs include them.
+export function normalizeDocsPath(path: string): string {
+  const pathname = path.startsWith('/') ? path : `/${path}`
+  return pathname.replace(/\/+$/, '') || '/'
+}
+
+export function getDocsPath(path: string): string {
+  const normalizedPath = normalizeDocsPath(path)
+  return normalizedPath === '/' ? '/' : `${normalizedPath}/`
 }

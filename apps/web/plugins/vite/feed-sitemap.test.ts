@@ -33,6 +33,8 @@ describe('image sitemap', () => {
     expect(sitemap).toContain('<image:loc>https://photos.example.com/media/photo.jpg</image:loc>')
     expect(sitemap).toContain('<image:title>Title &amp; light</image:title>')
     expect(sitemap).toContain('<image:caption>Sea &lt; sky</image:caption>')
+    expect(sitemap).toContain('<loc>https://photos.example.com/</loc>')
+    expect(sitemap).not.toContain('<lastmod>')
   })
 
   it('uses a web-indexable thumbnail for unsupported original image formats', () => {

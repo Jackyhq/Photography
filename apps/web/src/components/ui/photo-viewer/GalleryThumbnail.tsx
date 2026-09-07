@@ -246,14 +246,21 @@ export const GalleryThumbnail: FC<{
                 onClick={() => onIndexChange(index)}
               >
                 {photo.thumbHash && <Thumbhash thumbHash={photo.thumbHash} className="size-fill absolute inset-0" />}
-                <img
-                  src={photo.thumbnailUrl}
-                  alt={getPhotoAltText(photo, locale)}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                  fetchPriority={index === currentIndex ? 'high' : 'auto'}
-                />
+                <picture>
+                  {photo.thumbnailWebpSrcSet && (
+                    <source type="image/webp" srcSet={photo.thumbnailWebpSrcSet} sizes={`${itemSize}px`} />
+                  )}
+                  <img
+                    src={photo.thumbnailUrl}
+                    srcSet={photo.thumbnailSrcSet}
+                    sizes={`${itemSize}px`}
+                    alt={getPhotoAltText(photo, locale)}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority={index === currentIndex ? 'high' : 'auto'}
+                  />
+                </picture>
                 {photo.mediaType === 'video' && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/20 text-white">
                     <i className="i-mingcute-play-fill size-5" />

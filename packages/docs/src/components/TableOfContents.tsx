@@ -70,7 +70,6 @@ function TocItemComponent({ item, activeId, level, onItemClick, handleScroll }: 
           const element = document.querySelector(`#${item.id}`)
           if (element && element instanceof HTMLElement) {
             const elementTop = element.offsetTop
-            console.info('Navigating to:', element, 'Top:', elementTop)
             handleScroll?.(elementTop - 74)
           }
           onItemClick?.()

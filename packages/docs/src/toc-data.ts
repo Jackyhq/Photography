@@ -400,6 +400,12 @@ export const tocData: FileToc[] = [
             text: 'Verification',
             children: [],
           },
+          {
+            id: 'heading-hosting-and-http-status',
+            level: 2,
+            text: 'Hosting and HTTP Status',
+            children: [],
+          },
         ],
       },
     ],

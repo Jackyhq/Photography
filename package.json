@@ -9,6 +9,10 @@
     "type": "git",
     "url": "https://github.com/Jackyhq/Photography"
   },
+  "engines": {
+    "node": ">=24.0.0 <25",
+    "pnpm": "10.19.0"
+  },
   "scripts": {
     "build": "pnpm --filter web build",
     "build:manifest": "pnpm --filter @afilmory/builder cli",
@@ -30,7 +34,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "type-check": "pnpm -r --if-present type-check",
+    "type-check": "pnpm run type-check:scripts && pnpm -r --if-present type-check",
+    "type-check:scripts": "tsc --noEmit -p tsconfig.scripts.json",
     "update:lastmodified": "tsx scripts/update-lastmodified.ts",
     "vercel:build": "pnpm run vercel:photos && pnpm run photos:standardize && pnpm run build",
     "vercel:photos": "sh scripts/checkout-vercel-photos.sh"

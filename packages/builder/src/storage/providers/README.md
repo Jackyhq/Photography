@@ -27,7 +27,7 @@ const s3Config: StorageConfig = {
 
 ### 特点
 
-- ✅ 免费存储空间（GitHub 仓库限制为 1GB）
+- ✅ 使用 Git 仓库保存照片及版本历史
 - ✅ 全球 CDN 支持
 - ✅ 版本控制
 - ✅ 公开访问（通过 raw.githubusercontent.com）
@@ -64,7 +64,7 @@ const githubConfig: StorageConfig = {
    - 访问 GitHub Settings > Developer settings > Personal access tokens
    - 创建新的 Fine-grained personal access token
    - 选择你的仓库
-   - 赋予 "Contents" 权限（读写）
+   - 仅扫描和读取私有仓库时授予 "Contents: read"；需要调用上传、删除接口时再授予写权限
 
 3. **配置环境变量**
 
@@ -91,8 +91,10 @@ const githubConfig: StorageConfig = {
 
 ### 使用示例
 
+以下导入适用于本仓库直接运行 TypeScript 源码的 workspace。
+
 ```typescript
-import { GitHubStorageProvider } from '@/core/storage'
+import { GitHubStorageProvider } from '@afilmory/builder/storage/index.ts'
 
 const githubProvider = new GitHubStorageProvider({
   provider: 'github',
@@ -116,12 +118,9 @@ const url = githubProvider.generatePublicUrl('sunset.jpg')
 
 ### API 限制
 
-GitHub API 有以下限制：
+请求配额取决于认证方式和 API，不能把普通个人令牌的配额套用到所有令牌；检查响应中的限流头，并参阅 [REST API 限流文档](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api)。
 
-- **未认证请求**: 60 requests/hour/IP
-- **认证请求**: 5,000 requests/hour/token
-- **文件大小**: 最大 100MB（通过 API）
-- **仓库大小**: 建议不超过 1GB
+仓库大小建议不等于硬性容量上限，单文件与 Contents API 还有各自的约束。参阅 [大文件说明](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github) 和 [Contents API 文档](https://docs.github.com/en/rest/repos/contents)。
 
 ### 最佳实践
 
@@ -182,8 +181,10 @@ const localConfig: StorageConfig = {
 
 ### 使用示例
 
+以下导入适用于本仓库直接运行 TypeScript 源码的 workspace。
+
 ```typescript
-import { LocalStorageProvider } from '@/core/storage'
+import { LocalStorageProvider } from '@afilmory/builder/storage/index.ts'
 
 const localProvider = new LocalStorageProvider({
   provider: 'local',
@@ -335,8 +336,10 @@ const eagleConfig: EagleConfig = {
 
 ### 使用示例
 
+以下导入适用于本仓库直接运行 TypeScript 源码的 workspace。
+
 ```typescript
-import { EagleStorageProvider } from '@/core/storage'
+import { EagleStorageProvider } from '@afilmory/builder/storage/index.ts'
 
 const provider = new EagleStorageProvider(eagleConfig)
 

@@ -168,8 +168,9 @@ function handleExifData(exifData: Tags, metadata: Metadata): PickedExif {
   for (const key in result) {
     Reflect.deleteProperty(result, key)
   }
+  const values = exifData as unknown as Record<string, unknown>
   for (const key of pickKeys) {
-    result[key] = exifData[key]
+    result[key] = values[key]
   }
 
   return {

@@ -4,7 +4,7 @@ import { Outlet, useLocation, useNavigate, useParams, useSearchParams } from 're
 
 import { gallerySettingAtom } from '~/atoms/app'
 import { siteConfig } from '~/config'
-import { getFilteredPhotos, useOpenPhotoViewer, usePhotos, usePhotoViewerState } from '~/hooks/usePhotoViewer'
+import { getFilteredPhotos, useOpenPhotoViewer, usePhotos, usePhotoViewer } from '~/hooks/usePhotoViewer'
 import { getPhotoDetailPath } from '~/lib/photo-route'
 import { PhotosProvider } from '~/providers/photos-provider'
 
@@ -135,11 +135,14 @@ const useStateRestoreFromUrl = () => {
 const useSyncStateToUrl = () => {
   const { selectedTags, selectedCameras, selectedLenses, selectedRatings, tagFilterMode } =
     useAtomValue(gallerySettingAtom)
-  const [_, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
 
   const location = useLocation()
-  const { isOpen, currentIndex } = usePhotoViewerState()
+  const { isOpen, currentIndex, closeViewer } = usePhotoViewer()
+
+  // Leaving the gallery route must release viewer state and its scroll lock.
+  useEffect(() => closeViewer, [closeViewer])
 
   useEffect(() => {
     if (!isRestored) return
@@ -193,70 +196,24 @@ const useSyncStateToUrl = () => {
   useEffect(() => {
     if (!isRestored) return
 
-    const tags = selectedTags.join(',')
-    const cameras = selectedCameras.join(',')
-    const lenses = selectedLenses.join(',')
-    const rating = selectedRatings?.toString() ?? ''
-    const tagMode = tagFilterMode === 'union' ? '' : tagFilterMode
+    const values = {
+      tags: selectedTags.join(','),
+      cameras: selectedCameras.join(','),
+      lenses: selectedLenses.join(','),
+      rating: selectedRatings?.toString() ?? '',
+      tag_mode: tagFilterMode === 'union' ? '' : tagFilterMode,
+    }
+    const entries = Object.entries(values)
+    // Calling setSearchParams with unchanged values still creates a history entry.
+    if (entries.every(([key, value]) => (searchParams.get(key) ?? '') === value)) return
 
-    setSearchParams((search) => {
-      const currentTags = search.get('tags')
-      const currentCameras = search.get('cameras')
-      const currentLenses = search.get('lenses')
-      const currentRating = search.get('rating')
-      const currentTagMode = search.get('tag_mode')
-
-      // Check if anything has changed
-      if (
-        currentTags === tags &&
-        currentCameras === cameras &&
-        currentLenses === lenses &&
-        currentRating === rating &&
-        currentTagMode === tagMode
-      ) {
-        return search
-      }
-
-      const newer = new URLSearchParams(search)
-
-      // Update tags
-      if (tags) {
-        newer.set('tags', tags)
-      } else {
-        newer.delete('tags')
-      }
-
-      // Update cameras
-      if (cameras) {
-        newer.set('cameras', cameras)
-      } else {
-        newer.delete('cameras')
-      }
-
-      // Update lenses
-      if (lenses) {
-        newer.set('lenses', lenses)
-      } else {
-        newer.delete('lenses')
-      }
-
-      // Update rating
-      if (rating) {
-        newer.set('rating', rating)
-      } else {
-        newer.delete('rating')
-      }
-
-      // Update tag filter mode
-      if (tagMode) {
-        newer.set('tag_mode', tagMode)
-      } else {
-        newer.delete('tag_mode')
-      }
-
-      return newer
-    })
-  }, [selectedTags, selectedCameras, selectedLenses, selectedRatings, tagFilterMode, setSearchParams])
+    const next = new URLSearchParams(searchParams)
+    for (const [key, value] of entries) {
+      if (value) next.set(key, value)
+      else next.delete(key)
+    }
+    setSearchParams(next)
+  }, [selectedTags, selectedCameras, selectedLenses, selectedRatings, tagFilterMode, searchParams, setSearchParams])
 
   return { isOpen }
 }

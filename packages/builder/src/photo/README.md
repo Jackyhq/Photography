@@ -83,10 +83,10 @@ const result = await processPhoto(
 import { processLivePhoto, processThumbnailAndBlurhash, processExifData } from './index.js'
 
 // Live Photo 处理
-const livePhotoResult = processLivePhoto(photoKey, livePhotoMap, builder.getStorageManager())
+const livePhotoResult = await processLivePhoto(photoKey, livePhotoMap, builder.getStorageManager())
 
 // 缩略图处理
-const thumbnailResult = await processThumbnailAndBlurhash(imageBuffer, photoId, width, height, existingItem, options)
+const thumbnailResult = await processThumbnailAndBlurhash(imageBuffer, photoId, existingItem, options)
 
 // EXIF 处理
 const exifData = await processExifData(imageBuffer, rawImageBuffer, photoKey, existingItem, options)

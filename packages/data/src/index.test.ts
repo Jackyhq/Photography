@@ -48,7 +48,7 @@ describe('photoLoader photo text packs', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     const { photoLoader } = await import('./index')
-    const photo = photoLoader.getPhoto('photo-1')
+    const photo = photoLoader.getPhoto('photo-1')!
     const listener = vi.fn()
     const unsubscribe = photoLoader.subscribePhotoTextChanges(listener)
 
@@ -83,5 +83,31 @@ describe('photoLoader photo text packs', () => {
     expect(listener).toHaveBeenCalledTimes(1)
 
     unsubscribe()
+  })
+
+  it('only resolves real photo IDs in both the startup index and full manifest', async () => {
+    const photo = { id: 'real-photo', title: 'Photo', tags: [], sortTime: 0 }
+    vi.stubGlobal('__MANIFEST__', { data: [photo], cameras: [], lenses: [] })
+    vi.stubGlobal('__FULL_MANIFEST_URL__', '')
+    const { photoLoader } = await import('./index')
+
+    for (const id of ['missing', 'constructor', 'toString', '__proto__']) {
+      expect(photoLoader.getPhoto(id)).toBeUndefined()
+      expect(await photoLoader.getPhotoDetail(id)).toBeUndefined()
+    }
+    expect(photoLoader.getPhoto(photo.id)).toBe(photo)
+    expect(await photoLoader.getPhotoDetail(photo.id)).toBe(photo)
+  })
+
+  it('supports real photo IDs that happen to match object property names', async () => {
+    const photos = ['constructor', 'toString', '__proto__'].map((id) => ({ id, title: id, tags: [], sortTime: 0 }))
+    vi.stubGlobal('__MANIFEST__', { data: photos, cameras: [], lenses: [] })
+    vi.stubGlobal('__FULL_MANIFEST_URL__', '')
+    const { photoLoader } = await import('./index')
+
+    for (const photo of photos) {
+      expect(photoLoader.getPhoto(photo.id)).toBe(photo)
+      expect(await photoLoader.getPhotoDetail(photo.id)).toBe(photo)
+    }
   })
 })

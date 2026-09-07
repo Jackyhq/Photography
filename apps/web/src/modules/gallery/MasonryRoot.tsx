@@ -41,7 +41,7 @@ const PHOTO_KEYBOARD_DIRECTIONS = {
 interface MasonryKeyboardNavigationContextValue {
   tabStopPhotoId: string | null
   onPhotoFocus: (photoId: string) => void
-  onPhotoKeyDown: (event: KeyboardEvent<HTMLButtonElement>, index: number) => void
+  onPhotoKeyDown: (event: KeyboardEvent<HTMLAnchorElement>, index: number) => void
 }
 
 const MasonryKeyboardNavigationContext = createContext<MasonryKeyboardNavigationContextValue | null>(null)
@@ -100,7 +100,7 @@ export const MasonryRoot = () => {
       let didRequestScroll = false
       const focusWhenRendered = () => {
         const photoButton = Array.from(
-          containerRef.current?.querySelectorAll<HTMLButtonElement>('[data-photo-id]') ?? [],
+          containerRef.current?.querySelectorAll<HTMLAnchorElement>('[data-photo-id]') ?? [],
         ).find((element) => element.dataset.photoId === target.id)
 
         if (photoButton) {
@@ -147,7 +147,7 @@ export const MasonryRoot = () => {
   }, [focusPhotoAtIndex, masonryItems])
 
   const handlePhotoKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLButtonElement>, currentIndex: number) => {
+    (event: KeyboardEvent<HTMLAnchorElement>, currentIndex: number) => {
       if (event.altKey || event.ctrlKey || event.metaKey) return
 
       const direction = PHOTO_KEYBOARD_DIRECTIONS[event.key as keyof typeof PHOTO_KEYBOARD_DIRECTIONS]
@@ -219,7 +219,7 @@ export const MasonryRoot = () => {
 
     return Math.max(Math.min(calculatedWidth, maxWidth), minWidth)
   }, [isMobile, columns, containerWidth])
-  const prefetchUpcomingThumbnails = useUpcomingThumbnailPrefetch(columnWidth)
+  const prefetchUpcomingThumbnails = useUpcomingThumbnailPrefetch()
 
   // 监听滚动，控制浮动组件的显示
   useEffect(() => {
@@ -280,7 +280,8 @@ export const MasonryRoot = () => {
             onRender={useCallback(
               (startIndex, stopIndex, items) => {
                 handleRender(startIndex, stopIndex, items)
-                prefetchUpcomingThumbnails(stopIndex, items)
+                const displayWidth = masonryRef.current?.getPositioner().columnWidth
+                if (displayWidth) prefetchUpcomingThumbnails(stopIndex, items, displayWidth)
               },
               [handleRender, prefetchUpcomingThumbnails],
             )}

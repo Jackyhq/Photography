@@ -67,13 +67,16 @@ const parseSrcSet = (srcSet?: string | null): SrcSetCandidate[] => {
     .sort((a, b) => a.width - b.width)
 }
 
-const resolveThumbnailPrefetchUrl = (photo: PhotoManifest, displayWidth: number) => {
+export const resolveThumbnailPrefetchUrl = (
+  photo: Pick<PhotoManifest, 'thumbnailUrl' | 'thumbnailWebpSrcSet'>,
+  displayWidth: number,
+  pixelRatio: number,
+) => {
   const candidates = parseSrcSet(photo.thumbnailWebpSrcSet)
   if (candidates.length === 0) {
     return photo.thumbnailUrl
   }
 
-  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
   const targetWidth = Math.ceil(displayWidth * pixelRatio)
 
   return (
@@ -151,19 +154,16 @@ const queueThumbnailPrefetch = (urls: string[]) => {
   }
 }
 
-export const useUpcomingThumbnailPrefetch = (displayWidth: number) => {
-  return useCallback(
-    (visibleStopIndex: number, items: unknown[]) => {
-      if (displayWidth <= 0) return
+export const useUpcomingThumbnailPrefetch = () => {
+  return useCallback((visibleStopIndex: number, items: unknown[], displayWidth: number) => {
+    if (displayWidth <= 0) return
 
-      const urls = items
-        .slice(visibleStopIndex + 1, visibleStopIndex + 1 + PREFETCH_LOOKAHEAD_COUNT)
-        .filter(isPhotoManifest)
-        .map((photo) => resolveThumbnailPrefetchUrl(photo, displayWidth))
-        .filter((url): url is string => !!url)
+    const urls = items
+      .slice(visibleStopIndex + 1, visibleStopIndex + 1 + PREFETCH_LOOKAHEAD_COUNT)
+      .filter(isPhotoManifest)
+      .map((photo) => resolveThumbnailPrefetchUrl(photo, displayWidth, window.devicePixelRatio || 1))
+      .filter((url): url is string => !!url)
 
-      queueThumbnailPrefetch(urls)
-    },
-    [displayWidth],
-  )
+    queueThumbnailPrefetch(urls)
+  }, [])
 }

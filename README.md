@@ -60,7 +60,7 @@ photos/                   # 私有照片仓库 checkout，主仓库不追踪
 
 ## 环境要求
 
-- Node.js 24
+- Node.js 24（本地推荐版本见 `.node-version`，`package.json` 限定支持的主版本）
 - pnpm 10.19.0
 - Perl，供 `exiftool-vendored` 运行
 - 本地开发需要可访问 `Jackyhq/Photography-Photos` 的 GitHub 权限
@@ -107,12 +107,17 @@ pnpm run photos:descriptions:sync -- --prune
 
 # 质量检查
 pnpm run lint:check
+pnpm run type-check
 pnpm lint
 pnpm format
 pnpm test
 pnpm run test:e2e
 pnpm run bundle:budget
 ```
+
+`pnpm run type-check` 会先检查根目录脚本、动态 builder 插件和文档输出脚本，再检查全部 workspace。仅检查根脚本可运行 `pnpm run type-check:scripts`。类型检查不会生成照片或修改人工描述。
+
+不使用私有照片时，可在独立 checkout 按 [AGENTS.md 的公开 fixture 流程](AGENTS.md#public-fixture-validation)生成合成照片并验证生产构建。该流程会替换当前 checkout 的生成数据。
 
 ## 键盘操作与数据可见性
 

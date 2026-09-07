@@ -103,12 +103,12 @@ function getRuntimePhotoTextUrls(): Record<string, string> {
 
 class PhotoLoader {
   private photos: PhotoManifestIndexItem[] = []
-  private photoMap: Record<string, PhotoManifestIndexItem> = {}
+  private photoMap = new Map<string, PhotoManifestIndexItem>()
   private cameras: CameraInfo[] = []
   private lenses: LensInfo[] = []
   private fullManifestPromise: Promise<AfilmoryManifest> | null = null
   private fullManifest: AfilmoryManifest | null = null
-  private fullPhotoMap: Record<string, PhotoManifestItem> | null = null
+  private fullPhotoMap: Map<string, PhotoManifestItem> | null = null
   private photoTextUrls: Record<string, string> = {}
   private photoTextPromises = new Map<string, Promise<PhotoTextPack | null>>()
   private photoTextPacks = new Map<string, PhotoTextPack>()
@@ -138,7 +138,7 @@ class PhotoLoader {
     this.photoTextUrls = getRuntimePhotoTextUrls()
 
     this.photos.forEach((photo) => {
-      this.photoMap[photo.id] = photo
+      this.photoMap.set(photo.id, photo)
     })
   }
 
@@ -147,7 +147,7 @@ class PhotoLoader {
   }
 
   getPhoto(id: string) {
-    return this.photoMap[id]
+    return this.photoMap.get(id)
   }
 
   async loadFullManifest(): Promise<AfilmoryManifest> {
@@ -173,10 +173,10 @@ class PhotoLoader {
   async getPhotoDetail(id: string): Promise<PhotoManifestItem | undefined> {
     const manifest = await this.loadFullManifest()
     if (!this.fullPhotoMap) {
-      this.fullPhotoMap = Object.fromEntries(manifest.data.map((photo) => [photo.id, photo]))
+      this.fullPhotoMap = new Map(manifest.data.map((photo) => [photo.id, photo]))
     }
 
-    return this.fullPhotoMap[id]
+    return this.fullPhotoMap.get(id)
   }
 
   async loadPhotoText(language: string): Promise<PhotoTextPack | null> {
@@ -284,12 +284,12 @@ class PhotoLoader {
       const description = text.description?.trim()
       if (!title && !description) continue
 
-      const indexPhoto = this.photoMap[photoId]
+      const indexPhoto = this.photoMap.get(photoId)
       if (indexPhoto) {
         didChange = this.applyPhotoText(indexPhoto, language, title, description) || didChange
       }
 
-      const fullPhoto = this.fullPhotoMap?.[photoId]
+      const fullPhoto = this.fullPhotoMap?.get(photoId)
       if (fullPhoto) {
         didChange = this.applyPhotoText(fullPhoto, language, title, description) || didChange
       }
@@ -345,7 +345,7 @@ class PhotoLoader {
 
     const manifest = (await response.json()) as AfilmoryManifest
     this.fullManifest = manifest
-    this.fullPhotoMap = Object.fromEntries(manifest.data.map((photo) => [photo.id, photo]))
+    this.fullPhotoMap = new Map(manifest.data.map((photo) => [photo.id, photo]))
 
     return manifest
   }

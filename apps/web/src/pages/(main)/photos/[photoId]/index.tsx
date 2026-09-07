@@ -5,13 +5,10 @@ import { useTranslation } from 'react-i18next'
 import { RemoveScroll } from 'react-remove-scroll'
 
 import { NotFound } from '~/components/common/NotFound'
-import { usePageMeta } from '~/hooks/usePageMeta'
 import { usePhotoTextUpdates } from '~/hooks/usePhotoTextUpdates'
 import { useContextPhotos, usePhotoViewer } from '~/hooks/usePhotoViewer'
-import { useTitle } from '~/hooks/useTitle'
 import { deriveAccentFromSources } from '~/lib/color'
 import { getLocalizedPhotoDescription, getLocalizedPhotoTitle, getPhotoAltText } from '~/lib/photo-description'
-import { getPhotoDetailPath } from '~/lib/photo-route'
 
 const PhotoViewer = lazy(() =>
   import('~/components/ui/photo-viewer/PhotoViewer').then((module) => ({ default: module.PhotoViewer })),
@@ -34,15 +31,6 @@ export const Component = () => {
   const currentPhoto = photos[photoViewer.currentIndex]
   const pageTitle = currentPhoto ? getLocalizedPhotoTitle(currentPhoto, locale) || currentPhoto.id : 'Not Found'
   const pageDescription = currentPhoto ? getLocalizedPhotoDescription(currentPhoto, locale) : ''
-
-  useTitle(pageTitle)
-  usePageMeta({
-    title: currentPhoto ? pageTitle : undefined,
-    description: pageDescription || undefined,
-    image: currentPhoto?.thumbnailUrl || currentPhoto?.originalUrl,
-    url: currentPhoto ? getPhotoDetailPath(currentPhoto.id) : undefined,
-    type: currentPhoto?.mediaType === 'video' ? 'video.other' : 'article',
-  })
 
   const [accentColor, setAccentColor] = useState<string | null>(null)
 
