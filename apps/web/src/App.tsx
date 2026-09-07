@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Outlet } from 'react-router'
 
+import { NotFound } from './components/common/NotFound'
 import { useCommandPaletteShortcut } from './hooks/useCommandPaletteShortcut'
 import { useRoutePageMeta } from './hooks/useRoutePageMeta'
 import { RootProviders } from './providers/root-providers'
@@ -12,18 +13,21 @@ const CommandPalette = lazy(() =>
 function App() {
   return (
     <RootProviders>
-      <RoutePageMeta />
-      <div className="overflow-hidden lg:h-svh">
-        <Outlet />
-        <CommandPaletteContainer />
-      </div>
+      <RouteContent />
     </RootProviders>
   )
 }
 
-const RoutePageMeta = () => {
-  useRoutePageMeta()
-  return null
+const RouteContent = () => {
+  const isNotFound = useRoutePageMeta()
+  if (isNotFound) return <NotFound />
+
+  return (
+    <div className="overflow-hidden lg:h-svh">
+      <Outlet />
+      <CommandPaletteContainer />
+    </div>
+  )
 }
 
 const CommandPaletteContainer = () => {

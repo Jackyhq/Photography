@@ -7,7 +7,7 @@ import { parse } from 'parse5'
 import type { Plugin } from 'vite'
 
 import type { SiteConfig } from '../../../../site.config'
-import type { PageMeta } from '../../src/lib/page-meta'
+import type { IndexablePageMeta } from '../../src/lib/page-meta'
 import { createPhotoMeta, createSitePageMeta } from '../../src/lib/page-meta'
 import { getPhotoDetailPath } from '../../src/lib/photo-route'
 import { MANIFEST_PATH } from './__internal__/constants'
@@ -23,7 +23,7 @@ export const STATIC_GALLERY_LINK_LIMIT = 24
 
 export const STATIC_APP_ROUTES = ['explory'] as const
 
-interface PhotoPageMeta extends PageMeta {
+interface PhotoPageMeta extends IndexablePageMeta {
   preload: string
   staticContent: string
 }
@@ -122,7 +122,7 @@ export function applyPhotoPageMeta(html: string, meta: PhotoPageMeta): string {
   return replaceStaticContent(next, meta.staticContent)
 }
 
-function applyPageMeta(html: string, meta: PageMeta): string {
+function applyPageMeta(html: string, meta: IndexablePageMeta): string {
   let next = html.replace(/<title>.*?<\/title>/i, () => `<title>${escapeHtmlText(meta.title)}</title>`)
   if (!/<title>/i.test(next))
     next = next.replace('</head>', () => `<title>${escapeHtmlText(meta.title)}</title></head>`)

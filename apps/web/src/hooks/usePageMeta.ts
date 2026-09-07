@@ -4,6 +4,7 @@ import type { PageMeta } from '~/lib/page-meta'
 
 const META_DEFINITIONS = [
   { attribute: 'name', key: 'description' },
+  { attribute: 'name', key: 'robots' },
   { attribute: 'property', key: 'og:type' },
   { attribute: 'property', key: 'og:url' },
   { attribute: 'property', key: 'og:title' },
@@ -16,13 +17,14 @@ const META_DEFINITIONS = [
 ] as const
 
 /** The route owns the complete head; never restore a snapshot of the initial photo HTML. */
-export function usePageMeta({ title, description, image, url, type, jsonLd }: PageMeta) {
+export function usePageMeta({ title, description, image, url, type, jsonLd, robots }: PageMeta) {
   const structuredData = JSON.stringify(jsonLd)
 
   useEffect(() => {
     document.title = title
     const values = new Map<string, string | undefined>([
       ['description', description],
+      ['robots', robots],
       ['og:type', type],
       ['og:url', url],
       ['og:title', title],
@@ -49,23 +51,31 @@ export function usePageMeta({ title, description, image, url, type, jsonLd }: Pa
     }
 
     const links = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]'))
-    const canonical = links[0] ?? document.createElement('link')
-    canonical.rel = 'canonical'
-    canonical.href = url
-    if (!canonical.isConnected) document.head.append(canonical)
-    links.slice(1).forEach((duplicate) => duplicate.remove())
+    if (url) {
+      const canonical = links[0] ?? document.createElement('link')
+      canonical.rel = 'canonical'
+      canonical.href = url
+      if (!canonical.isConnected) document.head.append(canonical)
+      links.slice(1).forEach((duplicate) => duplicate.remove())
+    } else {
+      links.forEach((link) => link.remove())
+    }
 
     const scripts = Array.from(
       document.querySelectorAll<HTMLScriptElement>(
         'script[data-afilmory-page-jsonld], script[data-afilmory-photo-jsonld]',
       ),
     )
-    const script = scripts[0] ?? document.createElement('script')
-    script.type = 'application/ld+json'
-    delete script.dataset.afilmoryPhotoJsonld
-    script.dataset.afilmoryPageJsonld = ''
-    script.textContent = structuredData
-    if (!script.isConnected) document.head.append(script)
-    scripts.slice(1).forEach((duplicate) => duplicate.remove())
-  }, [description, image, structuredData, title, type, url])
+    if (structuredData) {
+      const script = scripts[0] ?? document.createElement('script')
+      script.type = 'application/ld+json'
+      delete script.dataset.afilmoryPhotoJsonld
+      script.dataset.afilmoryPageJsonld = ''
+      script.textContent = structuredData
+      if (!script.isConnected) document.head.append(script)
+      scripts.slice(1).forEach((duplicate) => duplicate.remove())
+    } else {
+      scripts.forEach((script) => script.remove())
+    }
+  }, [description, image, robots, structuredData, title, type, url])
 }

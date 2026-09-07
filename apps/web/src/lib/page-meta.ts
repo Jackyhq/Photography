@@ -6,9 +6,15 @@ import { getPhotoDetailPath, normalizeCanonicalPathname } from './photo-route'
 export interface PageMeta {
   title: string
   description: string
-  url: string
+  url?: string
   image?: string
   type: 'website' | 'article' | 'video.other'
+  robots?: 'noindex, follow'
+  jsonLd?: Record<string, unknown>
+}
+
+export interface IndexablePageMeta extends PageMeta {
+  url: string
   jsonLd: Record<string, unknown>
 }
 
@@ -32,7 +38,7 @@ export function getCanonicalUrl(pathname: string, siteUrl: string): string {
   return `${siteUrl.replace(/\/+$/, '')}${normalizeCanonicalPathname(pathname)}`
 }
 
-export function createSitePageMeta(siteConfig: SiteConfig, pathname = '/', image?: string): PageMeta {
+export function createSitePageMeta(siteConfig: SiteConfig, pathname = '/', image?: string): IndexablePageMeta {
   const url = getCanonicalUrl(pathname, siteConfig.url)
   const isHome = normalizeCanonicalPathname(pathname) === '/'
 
@@ -53,12 +59,21 @@ export function createSitePageMeta(siteConfig: SiteConfig, pathname = '/', image
   }
 }
 
+export function createNotFoundPageMeta(siteConfig: SiteConfig): PageMeta {
+  return {
+    title: `Page not found | ${siteConfig.name}`,
+    description: 'The requested page could not be found.',
+    type: 'website',
+    robots: 'noindex, follow',
+  }
+}
+
 /** Shared by generated HTML and client navigation; does not load full EXIF or browser state. */
 export function createPhotoMeta(
   photo: PhotoMetaSource,
   siteConfig: SiteConfig,
   text: { title?: string; description?: string } = photo,
-): PageMeta {
+): IndexablePageMeta {
   const title = `${text.title?.trim() || photo.id} | ${siteConfig.name}`
   const description = text.description?.trim() || siteConfig.description
   const url = getCanonicalUrl(getPhotoDetailPath(photo.id), siteConfig.url)

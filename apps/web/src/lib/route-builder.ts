@@ -3,6 +3,12 @@ import type { RouteObject } from 'react-router'
 
 type NestedStructure = { [key: string]: NestedStructure }
 
+export interface AppRouteHandle {
+  fs?: string
+  fullPath?: string
+  notFound?: boolean
+}
+
 const MainGroupSegment = '(main)'
 const routeHydrateFallbackElement = createElement(Fragment)
 
@@ -169,6 +175,8 @@ export function buildGlobRoutes(glob: Record<string, () => Promise<any>>): Route
             handle: {
               fs: `${segmentPathKey}/${normalizeKey}`,
               fullPath,
+              // A grouping URL has no page until one of its children matches.
+              notFound: true,
             },
           })
         }
