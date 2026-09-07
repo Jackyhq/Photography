@@ -162,7 +162,8 @@ function MasonryScroller<Item>(
     as: props.as,
     id: props.id,
     className: props.className,
-    style: props.style,
+    // Keep links clickable during scrolling, while respecting modal ancestors that disable pointers.
+    style: { pointerEvents: 'inherit', ...props.style },
     role: props.role,
     tabIndex: props.tabIndex,
     containerRef: props.containerRef,

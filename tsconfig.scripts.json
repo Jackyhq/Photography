@@ -16,6 +16,8 @@
   },
   "include": [
     "scripts/**/*.ts",
+    "e2e/**/*.ts",
+    "playwright.config.ts",
     "plugins/builder/**/*.ts",
     "packages/builder/src/types/**/*.d.ts",
     "packages/docs/scripts/**/*.ts",

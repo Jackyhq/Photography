@@ -65,7 +65,7 @@ export const routes: RouteConfig[] = [
       title: 'Deployment',
       description: "Guide to deploying Jacky's Photography in production environments.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-08-04T01:09:34+08:00',
+      lastModified: '2026-09-07T13:30:43+08:00',
     },
   },
   {
@@ -76,7 +76,7 @@ export const routes: RouteConfig[] = [
       title: 'GitHub Action',
       description: "Current GitHub Actions validation and deployment workflow for Jacky's Photography.",
       createdAt: '2025-07-20T22:35:03+08:00',
-      lastModified: '2026-08-04T01:09:34+08:00',
+      lastModified: '2026-09-07T13:30:43+08:00',
     },
   },
   {

@@ -11,6 +11,8 @@ export default defineConfig({
   },
   use: {
     baseURL: 'http://127.0.0.1:13333',
+    // Playwright 1.60 consumes reducedMotion through contextOptions, not a top-level fixture.
+    contextOptions: { reducedMotion: 'reduce' },
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
   },

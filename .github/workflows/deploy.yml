@@ -147,19 +147,10 @@ jobs:
       - name: Check bundle budget
         run: pnpm run bundle:budget
 
-      - name: Check build output
-        run: |
-          if [ -d "./apps/web/dist" ]; then
-            echo "Build directory exists."
-          else
-            echo "Error: Build directory ./apps/web/dist not found!"
-            exit 1
-          fi
-
       - name: Install Playwright browser
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps --only-shell chromium
 
-      - name: E2E tests against production build
+      - name: Full fixture E2E against production build
         env:
           PLAYWRIGHT_PRODUCTION: 'true'
         run: pnpm run test:e2e
@@ -299,15 +290,6 @@ jobs:
       - name: Check bundle budget
         run: pnpm run bundle:budget
 
-      - name: Check build output
-        run: |
-          if [ -d "./apps/web/dist" ]; then
-            echo "Build directory exists."
-          else
-            echo "Error: Build directory ./apps/web/dist not found!"
-            exit 1
-          fi
-
       - name: Prepare sitemaps
         run: |
           if [ -f "./apps/web/dist/sitemap.xml" ]; then
@@ -331,12 +313,12 @@ jobs:
           echo "Copied $latest_og_image to apps/web/dist/readme-og-image.png"
 
       - name: Install Playwright browser
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps --only-shell chromium
 
-      - name: E2E tests against production build
+      - name: Smoke tests against production build
         env:
           PLAYWRIGHT_PRODUCTION: 'true'
-        run: pnpm run test:e2e
+        run: pnpm run test:e2e:smoke
 
       - name: Upload Playwright diagnostics
         if: failure()
@@ -350,7 +332,7 @@ jobs:
           retention-days: 7
 
       # External writes start only after manifest, production build, budgets,
-      # documentation, unit tests, and E2E have all passed.
+      # documentation, unit tests, and production smoke checks have all passed.
       - name: Commit standardized photos to photo repository
         working-directory: photos
         run: |

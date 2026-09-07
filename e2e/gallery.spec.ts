@@ -1,16 +1,19 @@
 import type { Locator, Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-const PHOTO_ROUTE = /\/photos\/[^/?]+\/?(?:\?.*)?$/
-
-// Gallery E2E covers interaction and layout, not entrance animation timing.
-// Keep masonry targets stationary so mobile pointer clicks are deterministic.
-test.use({ reducedMotion: 'reduce' })
+import { openFirstPhotoViewer } from './helpers/gallery'
 
 async function focusByTab(page: Page, target: Locator, maxPresses = 60): Promise<void> {
   for (let press = 0; press < maxPresses; press++) {
     await page.keyboard.press('Tab')
-    if (await target.evaluateAll((elements) => elements.includes(document.activeElement as Element))) return
+    if (
+      await target.evaluateAll((elements) => {
+        const active = document.activeElement
+        return (active instanceof HTMLElement || active instanceof SVGElement) && elements.includes(active)
+      })
+    ) {
+      return
+    }
   }
 
   throw new Error(`Could not reach the requested control with ${maxPresses} Tab presses`)
@@ -22,61 +25,6 @@ async function expectFocusToRemainInside(page: Page, dialog: Locator, presses = 
     await expect.poll(() => dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true)
   }
 }
-
-async function openFirstPhotoViewer(page: Page): Promise<Locator> {
-  await page.goto('/')
-
-  const firstPhoto = page.locator('[data-photo-id]').first()
-  await expect(firstPhoto).toBeVisible()
-  await firstPhoto.click()
-
-  const viewer = page.getByRole('dialog')
-  await expect(page).toHaveURL(PHOTO_ROUTE)
-  await expect(viewer).toBeVisible()
-  return viewer
-}
-
-test('keeps the manifest viewer unavailable in production builds', async ({ page }) => {
-  test.skip(process.env.PLAYWRIGHT_PRODUCTION !== 'true', 'The manifest viewer remains available during development')
-
-  await page.goto('/manifest')
-
-  await expect(page.getByText('You have come to a desert of knowledge where there is nothing.')).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Afilmory Manifest' })).toHaveCount(0)
-})
-
-test('serves the production manifest from a stable public URL', async ({ request }) => {
-  const response = await request.get('/photos-manifest.json')
-
-  expect(response.status()).toBe(200)
-  expect(response.headers()['content-type']).toContain('application/json')
-
-  const manifest = (await response.json()) as {
-    version?: string
-    data?: Array<{ thumbnailSrcSet?: string; thumbnailUrl?: string }>
-  }
-  expect(manifest.version).toBeTruthy()
-  expect(manifest.data?.length).toBeGreaterThan(0)
-  expect(manifest.data?.[0]?.thumbnailUrl).toMatch(/\.webp(?:\?|$)/)
-  expect(manifest.data?.[0]).not.toHaveProperty('thumbnailSrcSet')
-})
-
-test('renders the masonry gallery and opens the photo viewer', async ({ page }, testInfo) => {
-  const viewer = await openFirstPhotoViewer(page)
-  await expect(page.getByLabel(/close photo viewer/i)).toBeVisible()
-  await expect(viewer.locator('button[aria-current="true"]')).toHaveCount(1)
-  await expect(page.locator('article[aria-labelledby="photo-detail-heading"]')).toHaveAttribute('aria-hidden', 'true')
-  await expect(page.locator('article[aria-labelledby="photo-detail-heading"]')).toHaveAttribute('inert', '')
-  await expect(page.getByTestId('gallery-content')).toHaveAttribute('aria-hidden', 'true')
-  await expect(page.getByTestId('gallery-content')).toHaveAttribute('inert', '')
-
-  if (testInfo.project.name === 'desktop') {
-    await expect(page.getByRole('button', { name: /raw exif|原始 exif/i })).toBeVisible()
-  } else {
-    await page.getByRole('button', { name: /toggle photo information|切换照片信息/i }).click()
-    await expect(page.getByRole('button', { name: /close photo information|关闭照片信息/i })).toBeVisible()
-  }
-})
 
 test('shows Instagram as the first social sharing option', async ({ page }) => {
   await openFirstPhotoViewer(page)
@@ -307,11 +255,11 @@ test('does not let command palette arrow keys navigate the viewer underneath it'
   await input.fill('cat')
 
   await page.keyboard.press('ArrowLeft')
-  await expect.poll(() => input.evaluate((element) => element.selectionStart)).toBe(2)
+  await expect.poll(() => input.evaluate((element: HTMLInputElement) => element.selectionStart)).toBe(2)
   await expect(page).toHaveURL(viewerUrl)
 })
 
-test('loads a photo detail route directly and preserves filter parameters when closing', async ({ page }) => {
+test('loads photo information directly and preserves filter parameters when closing', async ({ page }, testInfo) => {
   await page.goto('/')
   const firstPhoto = page.locator('[data-photo-id]').first()
   await expect(firstPhoto).toBeVisible()
@@ -323,6 +271,14 @@ test('loads a photo detail route directly and preserves filter parameters when c
   const viewer = page.getByRole('dialog')
   await expect(viewer).toBeVisible()
   await expect.poll(() => new URL(page.url()).searchParams.get('utm_source')).toBe('e2e')
+
+  if (testInfo.project.name === 'desktop') {
+    await expect(page.getByRole('button', { name: /raw exif|原始 exif/i })).toBeVisible()
+  } else {
+    await page.getByRole('button', { name: /toggle photo information|切换照片信息/i }).click()
+    await expect(page.getByRole('button', { name: /close photo information|关闭照片信息/i })).toBeVisible()
+    await page.getByRole('button', { name: /close photo information|关闭照片信息/i }).click()
+  }
 
   await page.keyboard.press('Escape')
   await expect(page).toHaveURL(/\/?\?.*utm_source=e2e/)

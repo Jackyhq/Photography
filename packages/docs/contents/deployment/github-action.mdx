@@ -2,7 +2,7 @@
 title: GitHub Action
 description: Current GitHub Actions validation and deployment workflow for Jacky's Photography.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2026-08-04T01:09:34+08:00
+lastModified: 2026-09-07T13:30:43+08:00
 ---
 
 # GitHub Action Deployment
@@ -32,8 +32,8 @@ The `validate` job is intentionally independent of private media and deployment 
 6. Runs `pnpm run lint:check` and `pnpm run type-check`.
 7. Runs `pnpm run test:coverage` so unit tests and coverage gates share one command.
 8. Builds the documentation site and production web app.
-9. Checks the bundle budget and verifies `apps/web/dist/`.
-10. Installs Playwright Chromium and runs `pnpm run test:e2e` with `PLAYWRIGHT_PRODUCTION=true`.
+9. Checks the bundle budget, which also requires the current build output.
+10. Installs the Chromium headless shell and runs the full desktop/mobile suite with `PLAYWRIGHT_PRODUCTION=true pnpm run test:e2e`.
 
 PR validation never checks out `Jackyhq/Photography-Photos`, reads deployment secrets, pushes photo changes, syncs R2, or mirrors deployment output.
 
@@ -48,9 +48,15 @@ The `build-and-deploy` job first verifies that every required deployment secret 
 5. Build the documentation site and production web app.
 6. Check the bundle budget and web output.
 7. Prepare the Google sitemap alias and README preview image.
-8. Run the production-mode Playwright suite.
+8. Run `PLAYWRIGHT_PRODUCTION=true pnpm run test:e2e:smoke` against the real-photo build.
 
 The web build uses `AFILMORY_SKIP_MANIFEST_PRECHECK=true` because the strict manifest build has already completed explicitly.
+
+The deployment browser suite selects `@smoke` tests: normal gallery click and viewer close, public manifest and no-JavaScript photo/video pages, and missing-route metadata. These run on desktop and mobile. They use bundled thumbnails or video posters and do not require newly uploaded R2 originals, because R2 synchronization happens after validation.
+
+The full fixture suite retains keyboard navigation, focus, filtering, sharing, language switching, Live Photo behavior, original-load failures, and metadata history regression checks. Smoke tests run there too. Lint, types, unit coverage, and the docs build remain in production validation because direct pushes, manual runs, and photo dispatches cannot assume the deployed source was validated by a PR.
+
+Playwright media preferences are configured through `use.contextOptions`. The shared gallery helper checks the browser's reduced-motion preference before a single normal click; it does not retry clicks or wait for an arbitrary animation timeout.
 
 ## Deployment-Only Steps
 
