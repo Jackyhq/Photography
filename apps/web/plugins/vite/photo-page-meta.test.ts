@@ -103,6 +103,91 @@ describe('photo-page-meta', () => {
     expect(meta.jsonLd).not.toHaveProperty('uploadDate')
   })
 
+  it('replaces owned JSON-LD nodes across legacy names, attribute forms, and repeated rendering', () => {
+    const template = `<html><head><title>Gallery</title>
+      <script type="application/ld+json" data-afilmory-page-jsonld>{"old":1}</script>
+      <script title="quoted > value" DATA-AFILMORY-PHOTO-JSONLD=legacy>{"old":2}</script>
+      <script data-afilmory-page-jsonld='owned'>{"old":3}</script>
+      </head><body><div id="root"></div></body></html>`
+    const meta = createPhotoPageMeta(photo, siteConfig)
+    const once = applyPhotoPageMeta(template, meta)
+    const twice = applyPhotoPageMeta(once, meta)
+
+    for (const html of [once, twice]) {
+      const document = new DOMParser().parseFromString(html, 'text/html')
+      expect(document.querySelectorAll('script')).toHaveLength(1)
+      expect(JSON.parse(document.querySelector('script')!.textContent!)).toEqual(meta.jsonLd)
+      expect(document.querySelectorAll('#root [data-afilmory-static-content]')).toHaveLength(1)
+      expect(document.querySelectorAll('link[data-afilmory-preload="photo"]')).toHaveLength(1)
+    }
+  })
+
+  it('preserves unrelated scripts and marker-like text instead of treating them as owned nodes', () => {
+    const runtime = `window.example = '<script data-afilmory-page-jsonld>';`
+    const template = `<!doctype html><html><head><title>Gallery</title>
+      <script id="runtime" type="module">${runtime}</script>
+      <script id="config" data-note="data-afilmory-page-jsonld">window.config = {};</script>
+      <script id="analytics" src="/data-afilmory-photo-jsonld.js"></script>
+      <script id="unrelated" type="application/ld+json">{"@type":"Organization"}</script>
+      <!-- <script data-afilmory-page-jsonld>comment example</script> -->
+      </head><body><div id="root"></div></body></html>`
+    const html = applyPhotoPageMeta(template, createPhotoPageMeta(photo, siteConfig))
+    const document = new DOMParser().parseFromString(html, 'text/html')
+
+    expect(document.doctype?.name).toBe('html')
+    expect(document.querySelectorAll('script')).toHaveLength(5)
+    expect(document.querySelector('#runtime')?.textContent).toBe(runtime)
+    expect(document.querySelector('#config')?.textContent).toBe('window.config = {};')
+    expect(document.querySelector('#analytics')?.getAttribute('src')).toBe('/data-afilmory-photo-jsonld.js')
+    expect(document.querySelector('#unrelated')?.textContent).toBe('{"@type":"Organization"}')
+    expect(html).toContain('<!-- <script data-afilmory-page-jsonld>comment example</script> -->')
+  })
+
+  it('removes nested owned nodes once without deleting the surrounding document', () => {
+    const template = `<html><head><title>Gallery</title></head><body>
+      <svg><script data-afilmory-page-jsonld><script data-afilmory-photo-jsonld>{}</script></script></svg>
+      <p id="sentinel">Keep this content</p><div id="root"></div></body></html>`
+    const html = applyHomePageMeta(template, [photo], siteConfig)
+    const document = new DOMParser().parseFromString(html, 'text/html')
+
+    expect(document.querySelector('#sentinel')?.textContent).toBe('Keep this content')
+    expect(document.querySelectorAll('svg script')).toHaveLength(0)
+    expect(document.querySelectorAll('#root nav a')).toHaveLength(1)
+    expect(document.querySelectorAll('script[data-afilmory-page-jsonld]')).toHaveLength(1)
+  })
+
+  it.each([
+    '<scrip<script data-afilmory-page-jsonld>{}</script>t id="reassembled">void 0</script>',
+    '<<script data-afilmory-photo-jsonld>{}</script>script id="reassembled">void 0</script>',
+  ])('does not turn inert fragments into a script when replacing metadata: %s', (fragment) => {
+    const template = `<html><head><title>Gallery</title></head><body>${fragment}<div id="root"></div></body></html>`
+    const before = new DOMParser().parseFromString(template, 'text/html')
+    expect(before.querySelector('script#reassembled')).toBeNull()
+
+    const html = applyPhotoPageMeta(template, createPhotoPageMeta(photo, siteConfig))
+    const document = new DOMParser().parseFromString(html, 'text/html')
+    expect(document.querySelector('script#reassembled')).toBeNull()
+    expect(document.querySelectorAll('script:not([type="application/ld+json"])')).toHaveLength(0)
+    expect(document.querySelectorAll('script[data-afilmory-page-jsonld]')).toHaveLength(1)
+  })
+
+  it.each([
+    '</script><script id="injected">void 0</script><!-- & $&',
+    '</title><script id="injected">void 0</script><!-- & $&',
+  ])('round-trips hostile metadata text without opening another script element: %s', (title) => {
+    const meta = createPhotoPageMeta({ ...photo, titles: { 'zh-CN': title } }, siteConfig)
+    const html = applyPhotoPageMeta(
+      '<html><head><title>Gallery</title></head><body><div id="root"></div></body></html>',
+      meta,
+    )
+    const document = new DOMParser().parseFromString(html, 'text/html')
+
+    expect(document.querySelectorAll('script')).toHaveLength(1)
+    expect(JSON.parse(document.querySelector('script')!.textContent!)).toEqual(meta.jsonLd)
+    expect(document.querySelector('#root h1')?.textContent).toBe(title)
+    expect(document.title).toBe(meta.title)
+  })
+
   it('uses the first candidate of the selected responsive source for preload', () => {
     const preload = createPhotoPreloadLink(photo)
     expect(preload).toContain('href="/thumbnails/photo-360.webp"')

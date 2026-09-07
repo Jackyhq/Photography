@@ -2,6 +2,8 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
 import type { PhotoManifestItem } from '@afilmory/builder/photo-types'
+import type { DefaultTreeAdapterMap } from 'parse5'
+import { parse } from 'parse5'
 import type { Plugin } from 'vite'
 
 import type { SiteConfig } from '../../../../site.config'
@@ -137,12 +139,36 @@ function applyPageMeta(html: string, meta: PageMeta): string {
     next = upsertMeta(next, 'property', 'og:image', meta.image)
     next = upsertMeta(next, 'property', 'twitter:image', meta.image)
   }
-  next = next.replaceAll(/<script[^>]+data-afilmory-(?:page|photo)-jsonld[^>]*>[\s\S]*?<\/script>/gi, '')
+  next = removePageJsonLd(next)
   return next.replace(
     '</head>',
     () =>
       `<script type="application/ld+json" data-afilmory-page-jsonld>${serializeForInlineScript(meta.jsonLd)}</script></head>`,
   )
+}
+
+function removePageJsonLd(html: string): string {
+  const locations: { startOffset: number; endOffset: number }[] = []
+  const visit = (node: DefaultTreeAdapterMap['node']) => {
+    if (
+      'tagName' in node &&
+      node.tagName === 'script' &&
+      node.attrs.some(({ name }) => name === 'data-afilmory-page-jsonld' || name === 'data-afilmory-photo-jsonld') &&
+      node.sourceCodeLocation
+    ) {
+      locations.push(node.sourceCodeLocation)
+      return
+    }
+    if ('childNodes' in node) node.childNodes.forEach(visit)
+  }
+  visit(parse(html, { sourceCodeLocationInfo: true }))
+
+  // Keep the surrounding source unchanged; a comment prevents adjacent fragments joining into markup.
+  let next = html
+  for (const { startOffset, endOffset } of locations.toSorted((a, b) => b.startOffset - a.startOffset)) {
+    next = `${next.slice(0, startOffset)}<!---->${next.slice(endOffset)}`
+  }
+  return next
 }
 
 function replaceStaticContent(html: string, content: string): string {
