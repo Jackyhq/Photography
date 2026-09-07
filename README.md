@@ -112,10 +112,11 @@ pnpm lint
 pnpm format
 pnpm test
 pnpm run test:e2e
+PLAYWRIGHT_PRODUCTION=true pnpm run test:e2e:smoke
 pnpm run bundle:budget
 ```
 
-`pnpm run type-check` 会先检查根目录脚本、动态 builder 插件和文档输出脚本，再检查全部 workspace。仅检查根脚本可运行 `pnpm run type-check:scripts`。类型检查不会生成照片或修改人工描述。
+`pnpm run type-check` 会先检查根目录脚本、Playwright 配置和 E2E、动态 builder 插件及文档输出脚本，再检查全部 workspace。仅检查根脚本可运行 `pnpm run type-check:scripts`。类型检查不会生成照片或修改人工描述。
 
 不使用私有照片时，可在独立 checkout 按 [AGENTS.md 的公开 fixture 流程](AGENTS.md#public-fixture-validation)生成合成照片并验证生产构建。该流程会替换当前 checkout 的生成数据。
 
@@ -182,12 +183,14 @@ PR 会执行：
 - `pnpm run docs:build`
 - `pnpm run build`（跳过已经完成的 manifest 预检）
 - `pnpm run bundle:budget`
-- 构建产物检查和 Playwright Chromium 生产 E2E
+- Playwright Chromium 桌面／手机完整交互回归（含部署 smoke）
 
 非 PR 部署还会：
 
 - checkout 私有照片仓库、拒绝 symlink，并在严格模式下用真实照片构建 manifest
-- 在所有 lint、类型、覆盖率、文档、构建、预算和生产 E2E 检查通过后才开始外部写入
+- 保留 lint、类型、覆盖率及文档构建检查，覆盖直接推送和手动部署
+- 用 `pnpm run test:e2e:smoke` 检查真实产物的首页点击、查看器开关、静态内容、元数据、公开 manifest 和不存在的路由
+- 全部检查通过后才开始外部写入；完整交互矩阵由 PR 的公开 fixture 覆盖
 - 将标准化后的照片变更 push 回 `Jackyhq/Photography-Photos`
 - 使用 `aws s3 sync --size-only --delete` 同步 `./photos` 到 Cloudflare R2 的 `photos/` prefix
 - 生成 `googlesitemap.xml` 和 README 预览图

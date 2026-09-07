@@ -2,7 +2,7 @@
 title: Deployment
 description: Guide to deploying Jacky's Photography in production environments.
 createdAt: 2025-07-20T22:35:03+08:00
-lastModified: 2026-08-04T01:09:34+08:00
+lastModified: 2026-09-07T13:30:43+08:00
 ---
 
 # Deployment
@@ -11,7 +11,7 @@ Jacky's Photography is deployed as a static SPA. The current workflow builds `ap
 
 Pull requests validate a public synthetic photo fixture and do not check out the private photo repository or consume deployment secrets. Production runs check out the private photos, reject symlinks, standardize incoming files, and build the manifest in strict mode.
 
-Both paths validate the gallery with linting, workspace type checking, coverage gates, documentation and web builds, bundle-budget checks, and production-mode Playwright E2E tests. Production external writes start only after those checks pass; the workflow then commits standardized photo changes, syncs published photos to Cloudflare R2, and mirrors the static output.
+Both paths validate the gallery with linting, workspace type checking, coverage gates, documentation and web builds, bundle-budget checks, and production-mode Playwright tests. PRs run the full desktop/mobile interaction suite; deployments run the `@smoke` subset against the real-photo output. Production external writes start only after those checks pass; the workflow then commits standardized photo changes, syncs published photos to Cloudflare R2, and mirrors the static output.
 
 Common deployment references:
 

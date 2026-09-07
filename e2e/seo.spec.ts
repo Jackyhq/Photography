@@ -1,8 +1,6 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-test.use({ reducedMotion: 'reduce' })
-
 async function readHead(page: Page) {
   return page.evaluate(() => {
     const meta = (property: string) => document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`)?.content
@@ -100,7 +98,10 @@ test('keeps invalid pages noindex and restores metadata through navigation and h
 
   await page.locator('[data-photo-id]').first().click()
   await expect(page.getByRole('dialog')).toBeVisible()
-  await page.evaluate(() => window.router.navigate('/photos/missing-photo/'))
+  await page.evaluate(() => {
+    const { router } = window as typeof window & { router: { navigate: (path: string) => void } }
+    router.navigate('/photos/missing-photo/')
+  })
   await expectNotFound('/photos/missing-photo/')
   await page.getByRole('button', { name: 'Back to Home', exact: true }).click()
   await expect(page.locator('[data-photo-id]').first()).toBeVisible()
@@ -109,27 +110,4 @@ test('keeps invalid pages noindex and restores metadata through navigation and h
   await expect(page.getByRole('dialog')).toBeVisible()
   await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
   expect((await readHead(page)).jsonLd['@type']).toBe('ImageObject')
-})
-
-test.describe('static gallery without JavaScript', () => {
-  test.use({ javaScriptEnabled: false })
-
-  test('lets visitors follow bounded homepage links and view an unobstructed photo', async ({ page }) => {
-    test.skip(process.env.PLAYWRIGHT_PRODUCTION !== 'true', 'Static photo HTML is generated during production builds')
-    await page.goto('/')
-    await expect(page.locator('#splash-screen')).toBeHidden()
-    const galleryLinks = page.locator('[data-afilmory-static-content] nav a')
-    expect(await galleryLinks.count()).toBeGreaterThan(0)
-    expect(await galleryLinks.count()).toBeLessThanOrEqual(24)
-    const photoPath = await galleryLinks.first().getAttribute('href')
-    expect(photoPath).toMatch(/^\/photos\/[^/]+\/$/)
-    await galleryLinks.first().click()
-    await expect(page).toHaveURL(new RegExp(`${photoPath}$`))
-    await expect(page.locator('#splash-screen')).toBeHidden()
-    const photo = page.locator('[data-afilmory-static-content] img').first()
-    await expect(photo).toBeVisible()
-    await expect.poll(() => photo.evaluate((element: HTMLImageElement) => element.naturalWidth)).toBeGreaterThan(0)
-    await page.getByRole('link', { name: 'Back to gallery' }).click()
-    await expect.poll(() => new URL(page.url()).pathname).toBe('/')
-  })
 })

@@ -63,12 +63,17 @@ pnpm run test:coverage
 pnpm run bundle:budget
 PLAYWRIGHT_PRODUCTION=true pnpm run test:e2e
 
+# Deployment smoke checks against the current production build.
+PLAYWRIGHT_PRODUCTION=true pnpm run test:e2e:smoke
+
 # Explicit code fixes and formatting.
 pnpm lint
 pnpm format
 ```
 
-`type-check` includes root scripts and dynamically loaded builder plugins through `tsconfig.scripts.json`, followed by every workspace. `bundle:budget` requires a current production web build; production E2E also uses that build.
+`type-check` includes root scripts, Playwright configuration/E2E files, and dynamically loaded builder plugins through `tsconfig.scripts.json`, followed by every workspace. `bundle:budget` requires a current production web build; production E2E also uses that build.
+
+PR validation runs the full desktop/mobile E2E suite with public fixtures. Deployment runs the `@smoke` subset against the real-photo build, covering gallery clicks, static metadata/media, the public manifest, and missing routes. Keep detailed interaction regressions in the full suite. Browser media preferences belong in Playwright `use.contextOptions`; the shared gallery helper verifies reduced motion is active before clicking.
 
 | Change area                                       | Relevant verification                                                                            |
 | ------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
