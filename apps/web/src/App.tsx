@@ -1,8 +1,8 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
-import { Outlet, useLocation } from 'react-router'
+import { Outlet } from 'react-router'
 
-import { useCanonical } from './hooks/useCanonical'
 import { useCommandPaletteShortcut } from './hooks/useCommandPaletteShortcut'
+import { useRoutePageMeta } from './hooks/useRoutePageMeta'
 import { RootProviders } from './providers/root-providers'
 
 const CommandPalette = lazy(() =>
@@ -10,17 +10,20 @@ const CommandPalette = lazy(() =>
 )
 
 function App() {
-  const { pathname } = useLocation()
-  useCanonical(pathname)
-
   return (
     <RootProviders>
+      <RoutePageMeta />
       <div className="overflow-hidden lg:h-svh">
         <Outlet />
         <CommandPaletteContainer />
       </div>
     </RootProviders>
   )
+}
+
+const RoutePageMeta = () => {
+  useRoutePageMeta()
+  return null
 }
 
 const CommandPaletteContainer = () => {

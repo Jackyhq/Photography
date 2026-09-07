@@ -3,12 +3,11 @@ import { useCallback, useEffect, useState } from 'react'
 
 import type { RouteConfig } from '../routes'
 import { routes } from '../routes'
-import { docsSite } from '../site'
+import { docsSite, getDocsPath } from '../site'
 import { getMatchedRoute } from '../utils/routes'
 
 interface SidebarProps {
   currentPath?: string
-  onNavigate?: (path: string) => void
 }
 
 interface NavigationItem {
@@ -62,11 +61,10 @@ function buildNavigationTree(routes: RouteConfig[]): NavigationItem[] {
 interface NavigationItemProps {
   item: NavigationItem
   currentPath?: string
-  onNavigate?: (path: string) => void
   level?: number
 }
 
-function NavigationItemComponent({ item, currentPath, onNavigate, level = 0 }: NavigationItemProps) {
+function NavigationItemComponent({ item, currentPath, level = 0 }: NavigationItemProps) {
   // 检查是否应该展开：当前路径是该项目的子路径，或者当前路径就是该项目且有子项目
   const shouldExpand = useCallback(() => {
     if (!currentPath) return false
@@ -95,10 +93,6 @@ function NavigationItemComponent({ item, currentPath, onNavigate, level = 0 }: N
     setIsExpanded(shouldExpand())
   }, [shouldExpand])
 
-  const handleTitleClick = () => {
-    onNavigate?.(item.path)
-  }
-
   const handleArrowClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsExpanded(!isExpanded)
@@ -118,18 +112,20 @@ function NavigationItemComponent({ item, currentPath, onNavigate, level = 0 }: N
           ${level > 0 ? 'pl-3' : ''}
         `}
       >
-        <button
-          onClick={handleTitleClick}
+        <a
+          href={getDocsPath(item.path)}
+          aria-current={isActive ? 'page' : undefined}
           className="flex-1 truncate px-3 py-3 text-left text-base lg:py-2.5 lg:text-sm"
-          type="button"
         >
           {item.title}
-        </button>
+        </a>
         {hasChildren && (
           <button
             onClick={handleArrowClick}
             className="mr-1 rounded-xl p-3 transition-all duration-200 hover:bg-gray-100 lg:p-2 dark:hover:bg-gray-700"
             type="button"
+            aria-label={`Toggle ${item.title} sections`}
+            aria-expanded={isExpanded}
           >
             <ChevronRight
               className={`h-5 w-5 text-gray-500 transition-transform duration-200 lg:h-4 lg:w-4 dark:text-gray-500 ${
@@ -143,13 +139,7 @@ function NavigationItemComponent({ item, currentPath, onNavigate, level = 0 }: N
       {hasChildren && isExpanded && (
         <div className="mt-1 space-y-1">
           {item.children!.map((child) => (
-            <NavigationItemComponent
-              key={child.path}
-              item={child}
-              currentPath={currentPath}
-              onNavigate={onNavigate}
-              level={level + 1}
-            />
+            <NavigationItemComponent key={child.path} item={child} currentPath={currentPath} level={level + 1} />
           ))}
         </div>
       )}
@@ -157,7 +147,7 @@ function NavigationItemComponent({ item, currentPath, onNavigate, level = 0 }: N
   )
 }
 
-export function Sidebar({ currentPath, onNavigate }: SidebarProps) {
+export function Sidebar({ currentPath }: SidebarProps) {
   const navigationTree = buildNavigationTree(routes)
 
   return (
@@ -173,7 +163,7 @@ export function Sidebar({ currentPath, onNavigate }: SidebarProps) {
 
         <nav className="space-y-1">
           {navigationTree.map((item) => (
-            <NavigationItemComponent key={item.path} item={item} currentPath={currentPath} onNavigate={onNavigate} />
+            <NavigationItemComponent key={item.path} item={item} currentPath={currentPath} />
           ))}
         </nav>
 

@@ -1,13 +1,13 @@
 import './styles/index.css'
 
 import { StrictMode } from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
+import { renderToString } from 'react-dom/server'
 
 import App from './App'
 import { Providers } from './providers'
 
 export function render(url: string) {
-  const html = renderToStaticMarkup(
+  const html = renderToString(
     <StrictMode>
       <Providers>
         <App url={url} />

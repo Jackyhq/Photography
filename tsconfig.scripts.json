@@ -1,0 +1,27 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["node", "vite/client"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "noImplicitAny": true,
+    "noEmit": true,
+    "paths": {
+      "@pkg": ["./package.json"],
+      "@env": ["./env.ts"],
+      "sharp": ["./node_modules/sharp/lib/index.d.ts"]
+    }
+  },
+  "include": [
+    "scripts/**/*.ts",
+    "plugins/builder/**/*.ts",
+    "packages/builder/src/types/**/*.d.ts",
+    "packages/docs/scripts/**/*.ts",
+    "packages/docs/src/vite-env.d.ts",
+    "builder.config.ts",
+    "site.config.ts",
+    "env.ts"
+  ]
+}

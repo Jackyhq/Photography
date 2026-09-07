@@ -66,6 +66,7 @@ export function ogImagePlugin(options: OGImagePluginOptions = {}): Plugin {
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${description}" />
     <meta property="og:image" content="${siteUrl}${ogImagePath}" />
+    <meta name="afilmory:site-image" content="${siteUrl}${ogImagePath}" />
     <meta property="og:site_name" content="${siteName}" />
 
     <!-- Twitter -->

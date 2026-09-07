@@ -5,7 +5,9 @@ import { inspect } from 'node:util'
 import { glob } from 'glob'
 import type { Plugin } from 'vite'
 
+import { getDocumentRoutePath } from './content-path'
 import { formatGeneratedTypescript } from './format-generated'
+import { parseFrontmatterValue } from './frontmatter-value'
 
 interface RouteConfig {
   path: string
@@ -78,8 +80,8 @@ export function routeGenerator(options: GenerateRoutesOptions = {}): Plugin {
   }
 }
 
-async function generateRoutes(options: Required<GenerateRoutesOptions>) {
-  const { contentsDir, outputDir, outputFile, jsonFile, indexFile } = options
+export async function generateRoutes(options: GenerateRoutesOptions = {}) {
+  const { contentsDir, outputDir, outputFile, jsonFile, indexFile } = { ...defaultOptions, ...options }
 
   try {
     // 获取所有 markdown 文件
@@ -92,7 +94,7 @@ async function generateRoutes(options: Required<GenerateRoutesOptions>) {
     const routes: RouteConfig[] = []
 
     for (const file of files) {
-      const route = await generateRouteFromFile(file, contentsDir, indexFile)
+      const route = await generateRouteFromFile(file, contentsDir, outputDir, indexFile)
       if (route) {
         routes.push(route)
       }
@@ -129,24 +131,15 @@ async function generateRoutes(options: Required<GenerateRoutesOptions>) {
 async function generateRouteFromFile(
   file: string,
   contentsDir: string,
+  outputDir: string,
   indexFile: string,
 ): Promise<RouteConfig | null> {
   try {
-    // 移除 contents 前缀和文件扩展名
-    let routePath = file.replace(new RegExp(`^${contentsDir}/`), '').replace(/\.(md|mdx)$/, '')
-
-    // 处理 index 文件
-    if (routePath === indexFile) {
-      routePath = '/'
-    } else if (routePath.endsWith(`/${indexFile}`)) {
-      const basePath = routePath.replace(`/${indexFile}`, '')
-      routePath = basePath ? `/${basePath}` : '/'
-    } else {
-      routePath = `/${routePath}`
-    }
+    const routePath = getDocumentRoutePath(file, contentsDir, indexFile)
 
     // 生成组件导入路径，保留文件后缀
-    const componentPath = `../${file}`
+    const relativeImport = path.relative(outputDir, file).split(path.sep).join('/')
+    const componentPath = relativeImport.startsWith('.') ? relativeImport : `./${relativeImport}`
 
     // 读取文件内容获取元数据
     const fileContent = await fs.readFile(file, 'utf-8')
@@ -181,10 +174,7 @@ function extractFrontmatter(content: string): Record<string, unknown> {
       const colonIndex = line.indexOf(':')
       if (colonIndex > 0) {
         const key = line.slice(0, colonIndex).trim()
-        const value = line
-          .slice(colonIndex + 1)
-          .trim()
-          .replaceAll(/^["']|["']$/g, '')
+        const value = parseFrontmatterValue(line.slice(colonIndex + 1))
         meta[key] = value
       }
     })
@@ -218,7 +208,7 @@ function generateRouteFileContent(routes: RouteConfig[]): string {
   }))
   const imports = [...routeEntries]
     .sort((a, b) => a.route.component.localeCompare(b.route.component))
-    .map(({ importName, route }) => `import ${importName} from '${route.component}'`)
+    .map(({ importName, route }) => `import ${importName} from ${JSON.stringify(route.component)}`)
     .join('\n')
   const importNameByRoute = new Map(routeEntries.map(({ route, importName }) => [route, importName]))
 
@@ -230,9 +220,9 @@ function generateRouteFileContent(routes: RouteConfig[]): string {
       }
 
       return `  {
-    path: '${route.path}',
+    path: ${JSON.stringify(route.path)},
     component: ${importName},
-    title: '${route.title}',
+    title: ${JSON.stringify(route.title)},
     meta: ${formatTsValue(route.meta, 4)},
   }`
     })

@@ -5,6 +5,9 @@ import type { PhotoManifestItem } from '@afilmory/builder/photo-types'
 import type { Plugin } from 'vite'
 
 import type { SiteConfig } from '../../../../site.config'
+import type { PageMeta } from '../../src/lib/page-meta'
+import { createPhotoMeta, createSitePageMeta } from '../../src/lib/page-meta'
+import { getPhotoDetailPath } from '../../src/lib/photo-route'
 import { MANIFEST_PATH } from './__internal__/constants'
 import { getPreferredPhotoDescription, getPreferredPhotoTitle } from './__internal__/photo-text'
 import { normalizeProductionThumbnail } from './__internal__/production-thumbnail'
@@ -14,25 +17,28 @@ interface ManifestFile {
   data?: PhotoManifestItem[]
 }
 
-const SOCIAL_PREVIEW_IMAGE_EXTENSION = /\.(?:jpe?g|png)$/iu
+export const STATIC_GALLERY_LINK_LIMIT = 24
 
 export const STATIC_APP_ROUTES = ['explory'] as const
 
-interface PhotoPageMeta {
-  title: string
-  description: string
-  url: string
-  image?: string
-  mediaType: 'photo' | 'video'
-  jsonLd: Record<string, unknown>
+interface PhotoPageMeta extends PageMeta {
   preload: string
-  noscript: string
+  staticContent: string
 }
 
 export function createPhotoPageMetaPlugin(siteConfig: SiteConfig): Plugin {
   return {
     name: 'photo-page-meta',
     apply: 'build',
+    generateBundle: {
+      order: 'post',
+      handler(_options, bundle) {
+        const indexAsset = bundle['index.html']
+        if (!indexAsset || indexAsset.type !== 'asset' || typeof indexAsset.source !== 'string') return
+        const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf-8')) as ManifestFile
+        indexAsset.source = applyHomePageMeta(indexAsset.source, manifest.data ?? [], siteConfig)
+      },
+    },
     writeBundle(options, bundle) {
       const indexAsset = bundle['index.html']
       if (!indexAsset || indexAsset.type !== 'asset' || typeof indexAsset.source !== 'string') return
@@ -72,61 +78,54 @@ export function writeStaticAppRoutePages(outputDirectory: string, indexHtml: str
 }
 
 export function applyStaticAppRouteMeta(html: string, routePath: string, siteConfig: SiteConfig): string {
-  const baseUrl = siteConfig.url.replace(/\/+$/, '')
-  const normalizedRoutePath = routePath.replaceAll(/^\/+|\/+$/g, '')
-  const url = `${baseUrl}/${normalizedRoutePath}/`
+  const meta = createSitePageMeta(siteConfig, routePath)
+  const next = applyPageMeta(html.replaceAll(/<link[^>]+data-afilmory-preload=["']gallery["'][^>]*>/gi, ''), meta)
+  return replaceStaticContent(
+    next,
+    `<main data-afilmory-static-content><h1>${escapeHtmlText(siteConfig.title)}</h1><p>${escapeHtmlText(siteConfig.description)}</p><p><a href="/">Back to gallery</a></p><noscript><p>Enable JavaScript to explore the interactive map.</p></noscript></main>`,
+  )
+}
 
-  let next = html.replaceAll(/<link[^>]+data-afilmory-preload=["']gallery["'][^>]*>/gi, '')
-  next = upsertMeta(next, 'property', 'og:url', url)
-  next = upsertMeta(next, 'property', 'twitter:url', url)
-  next = upsertLink(next, 'canonical', url)
-
-  return next
+export function applyHomePageMeta(html: string, photos: PhotoManifestItem[], siteConfig: SiteConfig): string {
+  const links = photos
+    .toSorted((a, b) => (b.dateTaken || '').localeCompare(a.dateTaken || '') || a.id.localeCompare(b.id))
+    .slice(0, STATIC_GALLERY_LINK_LIMIT)
+    .map((photo) => {
+      const title = getPreferredPhotoTitle(photo, photo.id)
+      return `<li><a href="${escapeAttribute(getPhotoDetailPath(photo.id))}">${escapeHtmlText(title)}</a></li>`
+    })
+    .join('')
+  const content = `<main data-afilmory-static-content><h1>${escapeHtmlText(siteConfig.title)}</h1><p>${escapeHtmlText(siteConfig.description)}</p><nav aria-label="Recent photographs"><ul>${links}</ul></nav><noscript><p>Enable JavaScript to browse the full gallery.</p></noscript></main>`
+  return replaceStaticContent(applyPageMeta(html, createSitePageMeta(siteConfig)), content)
 }
 
 export function createPhotoPageMeta(photo: PhotoManifestItem, siteConfig: SiteConfig): PhotoPageMeta {
   const productionPhoto = normalizeProductionThumbnail(photo)
-  const title = `${getPreferredPhotoTitle(productionPhoto, productionPhoto.id)} | ${siteConfig.name}`
-  const baseUrl = siteConfig.url.replace(/\/+$/, '')
-  const description = getPreferredPhotoDescription(productionPhoto, siteConfig.description)
-  const url = `${baseUrl}/photos/${toSafePathSegment(productionPhoto.id)}/`
-  const mediaType = productionPhoto.mediaType === 'video' ? 'video' : 'photo'
-
+  const meta = createPhotoMeta(productionPhoto, siteConfig, {
+    title: getPreferredPhotoTitle(productionPhoto, productionPhoto.id),
+    description: getPreferredPhotoDescription(productionPhoto, siteConfig.description),
+  })
   return {
-    title,
-    description,
-    url,
-    image: toAbsoluteUrl(getSocialPreviewImageSource(productionPhoto, mediaType), siteConfig.url),
-    mediaType,
-    jsonLd: createPhotoStructuredData(productionPhoto, siteConfig, { title, description, url, mediaType }),
+    ...meta,
     preload: createPhotoPreloadLink(productionPhoto),
-    noscript: createPhotoNoscriptFigure(productionPhoto, description),
-  }
-}
-
-function getSocialPreviewImageSource(photo: PhotoManifestItem, mediaType: PhotoPageMeta['mediaType']): string {
-  if (mediaType === 'photo' && hasSocialPreviewImageExtension(photo.originalUrl)) {
-    return photo.originalUrl
-  }
-
-  return photo.thumbnailUrl
-}
-
-function hasSocialPreviewImageExtension(value: string): boolean {
-  try {
-    return SOCIAL_PREVIEW_IMAGE_EXTENSION.test(new URL(value, 'https://afilmory.local/').pathname)
-  } catch {
-    return SOCIAL_PREVIEW_IMAGE_EXTENSION.test(value.split(/[?#]/u, 1)[0] ?? '')
+    staticContent: createPhotoStaticContent(productionPhoto, meta.description),
   }
 }
 
 export function applyPhotoPageMeta(html: string, meta: PhotoPageMeta): string {
-  let next = html
-    .replaceAll(/<link[^>]+data-afilmory-preload=["']gallery["'][^>]*>/gi, '')
-    .replace(/<title>.*?<\/title>/i, `<title>${escapeHtmlText(meta.title)}</title>`)
+  const next = applyPageMeta(
+    html.replaceAll(/<link[^>]+data-afilmory-preload=["'](?:gallery|photo)["'][^>]*>/gi, ''),
+    meta,
+  ).replace('</head>', () => `${meta.preload}</head>`)
+  return replaceStaticContent(next, meta.staticContent)
+}
 
+function applyPageMeta(html: string, meta: PageMeta): string {
+  let next = html.replace(/<title>.*?<\/title>/i, () => `<title>${escapeHtmlText(meta.title)}</title>`)
+  if (!/<title>/i.test(next))
+    next = next.replace('</head>', () => `<title>${escapeHtmlText(meta.title)}</title></head>`)
   next = upsertMeta(next, 'name', 'description', meta.description)
-  next = upsertMeta(next, 'property', 'og:type', meta.mediaType === 'video' ? 'video.other' : 'article')
+  next = upsertMeta(next, 'property', 'og:type', meta.type)
   next = upsertMeta(next, 'property', 'og:url', meta.url)
   next = upsertMeta(next, 'property', 'og:title', meta.title)
   next = upsertMeta(next, 'property', 'og:description', meta.description)
@@ -134,17 +133,25 @@ export function applyPhotoPageMeta(html: string, meta: PhotoPageMeta): string {
   next = upsertMeta(next, 'property', 'twitter:title', meta.title)
   next = upsertMeta(next, 'property', 'twitter:description', meta.description)
   next = upsertLink(next, 'canonical', meta.url)
-
   if (meta.image) {
     next = upsertMeta(next, 'property', 'og:image', meta.image)
     next = upsertMeta(next, 'property', 'twitter:image', meta.image)
   }
+  next = next.replaceAll(/<script[^>]+data-afilmory-(?:page|photo)-jsonld[^>]*>[\s\S]*?<\/script>/gi, '')
+  return next.replace(
+    '</head>',
+    () =>
+      `<script type="application/ld+json" data-afilmory-page-jsonld>${serializeForInlineScript(meta.jsonLd)}</script></head>`,
+  )
+}
 
-  const headContent = `${meta.preload}<script type="application/ld+json" data-afilmory-photo-jsonld>${serializeJsonLd(meta.jsonLd)}</script>`
-  next = next.replace('</head>', `${headContent}</head>`)
-  next = next.replace('</body>', `${meta.noscript}</body>`)
-
-  return next
+function replaceStaticContent(html: string, content: string): string {
+  const next = html.replaceAll(/<main data-afilmory-static-content>[\s\S]*?<\/main>/gi, '')
+  // React replaces this content only after the application has loaded successfully.
+  if (/<div\s+id=["']root["'][^>]*>/i.test(next)) {
+    return next.replace(/<div\s+id=["']root["'][^>]*>/i, (rootTag) => `${rootTag}${content}`)
+  }
+  return next.replace('</body>', () => `${content}</body>`)
 }
 
 export function createPhotoPreloadLink(
@@ -170,40 +177,7 @@ export function createPhotoPreloadLink(
   return `<link ${attributes.join(' ')}>`
 }
 
-function createPhotoStructuredData(
-  photo: PhotoManifestItem,
-  siteConfig: SiteConfig,
-  meta: Pick<PhotoPageMeta, 'title' | 'description' | 'url' | 'mediaType'>,
-): Record<string, unknown> {
-  const contentUrl = toAbsoluteUrl(
-    meta.mediaType === 'video' ? photo.videoUrl || photo.originalUrl : photo.originalUrl,
-    siteConfig.url,
-  )
-  const thumbnailUrl = toAbsoluteUrl(photo.thumbnailUrl, siteConfig.url)
-  const uploadDate = toIsoDate(photo.dateTaken || photo.lastModified)
-
-  const result: Record<string, unknown> = {
-    '@context': 'https://schema.org',
-    '@type': meta.mediaType === 'video' ? 'VideoObject' : 'ImageObject',
-    name: meta.title,
-    description: meta.description,
-    url: meta.url,
-    contentUrl,
-    thumbnailUrl,
-    uploadDate,
-    encodingFormat: photo.mimeType,
-    width: photo.width > 0 ? photo.width : undefined,
-    height: photo.height > 0 ? photo.height : undefined,
-  }
-
-  if (meta.mediaType === 'video' && typeof photo.duration === 'number' && Number.isFinite(photo.duration)) {
-    result.duration = `PT${Math.max(0, photo.duration)}S`
-  }
-
-  return Object.fromEntries(Object.entries(result).filter(([, value]) => value !== undefined))
-}
-
-function createPhotoNoscriptFigure(photo: PhotoManifestItem, description: string): string {
+function createPhotoStaticContent(photo: PhotoManifestItem, description: string): string {
   const title = getPreferredPhotoTitle(photo, photo.id)
   const caption = description && description !== title ? `${title} — ${description}` : title
   const dimensions = [
@@ -218,31 +192,21 @@ function createPhotoNoscriptFigure(photo: PhotoManifestItem, description: string
     const source = photo.videoUrl || photo.originalUrl
     const type = photo.mimeType ? ` type="${escapeAttribute(photo.mimeType)}"` : ''
     const poster = photo.thumbnailUrl ? ` poster="${escapeAttribute(photo.thumbnailUrl)}"` : ''
-    media = `<video controls preload="metadata"${poster} ${dimensions}><source src="${escapeAttribute(source)}"${type}></video>`
+    media = `<video controls preload="none"${poster} ${dimensions}><source src="${escapeAttribute(source)}"${type}></video>`
   } else {
     const fallback = photo.thumbnailUrl || photo.originalUrl
     const webpSource = photo.thumbnailWebpSrcSet
-      ? `<source type="image/webp" srcset="${escapeAttribute(photo.thumbnailWebpSrcSet)}">`
+      ? `<source type="image/webp" srcset="${escapeAttribute(photo.thumbnailWebpSrcSet)}" sizes="(max-width: 1024px) 100vw, 1024px">`
       : ''
     const srcSet = photo.thumbnailSrcSet ? ` srcset="${escapeAttribute(photo.thumbnailSrcSet)}"` : ''
-    media = `<picture>${webpSource}<img src="${escapeAttribute(fallback)}"${srcSet} alt="${escapeAttribute(title)}" ${dimensions}></picture>`
+    media = `<picture>${webpSource}<img src="${escapeAttribute(fallback)}"${srcSet} sizes="(max-width: 1024px) 100vw, 1024px" alt="${escapeAttribute(title)}" ${dimensions}></picture>`
   }
 
-  return `<noscript><figure data-afilmory-photo-noscript>${media}<figcaption>${escapeHtmlText(caption)}</figcaption></figure></noscript>`
-}
-
-function serializeJsonLd(value: unknown): string {
-  return serializeForInlineScript(value)
+  return `<main data-afilmory-static-content><p><a href="/">Back to gallery</a></p><h1>${escapeHtmlText(title)}</h1><figure>${media}<figcaption>${escapeHtmlText(caption)}</figcaption></figure></main>`
 }
 
 function getFirstSrcFromSrcSet(srcSet: string): string {
   return srcSet.split(',')[0]?.trim().split(/\s+/)[0] ?? ''
-}
-
-function toIsoDate(value: string | undefined): string | undefined {
-  if (!value) return undefined
-  const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? undefined : date.toISOString()
 }
 
 function upsertMeta(html: string, attribute: 'name' | 'property', key: string, content: string): string {
@@ -251,17 +215,17 @@ function upsertMeta(html: string, attribute: 'name' | 'property', key: string, c
   const next = html.replace(pattern, (tag) => {
     matched = true
     if (/\scontent=(?:"[^"]*"|'[^']*')/i.test(tag)) {
-      return tag.replace(/\scontent=(?:"[^"]*"|'[^']*')/i, ` content="${escapeAttribute(content)}"`)
+      return tag.replace(/\scontent=(?:"[^"]*"|'[^']*')/i, () => ` content="${escapeAttribute(content)}"`)
     }
 
-    return tag.replace(/\s*\/?>$/, ` content="${escapeAttribute(content)}" />`)
+    return tag.replace(/\s*\/?>$/, () => ` content="${escapeAttribute(content)}" />`)
   })
 
   if (matched) return next
 
   return next.replace(
     '</head>',
-    `    <meta ${attribute}="${escapeAttribute(key)}" content="${escapeAttribute(content)}" />\n  </head>`,
+    () => `    <meta ${attribute}="${escapeAttribute(key)}" content="${escapeAttribute(content)}" />\n  </head>`,
   )
 }
 
@@ -271,17 +235,17 @@ function upsertLink(html: string, rel: string, href: string): string {
   const next = html.replace(pattern, (tag) => {
     matched = true
     if (/\shref=(?:"[^"]*"|'[^']*')/i.test(tag)) {
-      return tag.replace(/\shref=(?:"[^"]*"|'[^']*')/i, ` href="${escapeAttribute(href)}"`)
+      return tag.replace(/\shref=(?:"[^"]*"|'[^']*')/i, () => ` href="${escapeAttribute(href)}"`)
     }
 
-    return tag.replace(/\s*\/?>$/, ` href="${escapeAttribute(href)}" />`)
+    return tag.replace(/\s*\/?>$/, () => ` href="${escapeAttribute(href)}" />`)
   })
 
   if (matched) return next
 
   return next.replace(
     '</head>',
-    `    <link rel="${escapeAttribute(rel)}" href="${escapeAttribute(href)}" />\n  </head>`,
+    () => `    <link rel="${escapeAttribute(rel)}" href="${escapeAttribute(href)}" />\n  </head>`,
   )
 }
 
@@ -317,16 +281,6 @@ function resolveStaticAppRoutePagePath(outputDirectory: string, routePath: strin
 function toSafePathSegment(value: string): string {
   return encodeURIComponent(value)
 }
-function toAbsoluteUrl(value: string | undefined, baseUrl: string): string | undefined {
-  if (!value) return undefined
-
-  try {
-    return new URL(value, baseUrl).toString()
-  } catch {
-    return value
-  }
-}
-
 function escapeAttribute(value: string): string {
   return value.replaceAll(/[&"<]/g, (char) => {
     switch (char) {

@@ -2,7 +2,7 @@
 title: Docs site
 description: How to maintain and publish the Jacky's Photography documentation site at docs.photo.jackyw.cn.
 createdAt: 2025-09-11T17:05:55+08:00
-lastModified: 2026-08-30T14:06:15+08:00
+lastModified: 2026-09-07T12:13:37+08:00
 ---
 
 # Docs Site
@@ -37,6 +37,10 @@ Route generation follows the file system:
 - `contents/deployment/github-pages.mdx` becomes `/deployment/github-pages`.
 
 The route generator writes `src/routes.ts` and `src/routes.json`; treat both as generated files.
+
+Route keys omit trailing slashes internally. Public links, canonical URLs, social metadata and sitemap entries use directory URLs such as `/architecture/`, matching the generated `architecture/index.html` file. Reuse the path helpers in `src/site.ts` when adding navigation.
+
+Sidebar and content navigation use real links. Ordinary same-origin document clicks update the content and history without reloading; Back and Forward restore the corresponding route and metadata. Modified clicks and external links retain browser behavior. `src/page-meta.ts` supplies the metadata for both static output and client navigation.
 
 ## Commands
 
@@ -97,3 +101,23 @@ pnpm docs:build
 ```
 
 For content-only edits, this catches route generation, MDX syntax, table-of-contents extraction, and static rendering issues.
+
+For routing, metadata or generation changes, also run:
+
+```bash
+pnpm exec vitest run packages/docs
+```
+
+Then check a direct nested URL, sidebar navigation followed by Back and Forward, the address bar and canonical URL, opening a link in another tab, and an unknown route. Documentation builds and tests do not need the private photo checkout.
+
+## Hosting and HTTP Status
+
+Publish the complete `packages/docs/dist/` output at the documentation domain. The build creates every document's directory `index.html`, a top-level `404.html`, `robots.txt`, and `sitemap.xml`. Only published document routes appear in the sitemap. The 404 page contains the actual not-found content, uses `noindex, follow`, and has no canonical or structured data pointing to the homepage.
+
+The source repository's deployment workflow validates the docs build but mirrors only the gallery's `apps/web/dist/` to `Jackyhq/Photography-Web`. Configure the documentation host separately to run `pnpm docs:build` from the repository root and publish `packages/docs/dist/`. Repository output changes do not themselves update that external project's settings.
+
+The host must serve generated files before applying fallbacks, redirect directory URLs consistently to their trailing-slash form, and return the contents of `404.html` with HTTP status **404** for unknown paths. Do not rewrite every missing URL to the homepage with status 200. A client-rendered 404 cannot change an HTTP status already sent by the host.
+
+On Cloudflare Pages, a top-level `404.html` disables the default SPA fallback, and directory index pages use trailing-slash URLs. See [Serving Pages](https://developers.cloudflare.com/pages/configuration/serving-pages/) for those host defaults. Existing Workers, Functions, custom rewrites or redirects may override static serving and must be checked on the deployment itself.
+
+After deployment, verify that `/architecture/`, `/sitemap.xml`, and `/robots.txt` return their respective files with status 200, `/architecture` redirects consistently to `/architecture/`, and an arbitrary missing path returns the generated 404 content with status 404. This final check validates the external hosting configuration; it cannot be inferred from a local build.

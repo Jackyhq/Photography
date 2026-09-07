@@ -2,7 +2,7 @@
 title: Performance
 description: Mobile-first loading and image performance notes for Jacky's Photography.
 createdAt: 2026-04-27T00:00:00+01:00
-lastModified: 2026-08-30T22:59:45+08:00
+lastModified: 2026-09-07T12:13:37+08:00
 ---
 
 # Performance
@@ -61,9 +61,9 @@ The homepage path should avoid pulling viewer-only and conversion-heavy code:
 - The command palette is lazy-imported only when opened.
 - Live Photo and Motion Photo helpers dynamically import the image loader manager.
 - HEIC and TIFF converters are registered through dynamic imports, so ordinary JPEG and PNG viewer paths do not load `heic-to` or TIFF conversion code.
-- The PWA registration script is injected with `script-defer`.
+- Vite generates the service worker with `injectRegister: false` and `registerType: 'prompt'`. `AppUpdateProvider` registers `/sw.js` after the window load event, then prompts the user when an update is ready. It also checks for updates on focus, visibility changes and network recovery.
 
-Google Fonts are loaded with a non-blocking stylesheet pattern. The first paint uses system fonts and naturally swaps to Geist when the stylesheet is ready.
+The gallery uses the system sans-serif font stack defined in `apps/web/src/styles/tailwind.css` and the initial HTML shell. It does not request a Google Fonts stylesheet or swap to a downloaded Geist font.
 
 ## Regeneration
 
@@ -91,5 +91,5 @@ Before publishing a performance change, check:
 - A production build serves the not-found experience at `/manifest` while the hashed full-manifest asset remains available to runtime features.
 - `index.html` contains image preloads for the first two homepage thumbnails.
 - `/photos/<photo-id>/index.html` files contain photo-specific title, description, canonical URL, and social image tags.
-- `registerSW.js` is loaded with `defer`.
+- The production app registers `/sw.js` after window load through `AppUpdateProvider`; no injected `registerSW.js` is required. An available update is applied through the update prompt.
 - `pnpm run bundle:budget` passes after production build output exists.

@@ -1,6 +1,8 @@
 import type { PhotoManifestItem } from '@afilmory/builder/photo-types'
 
 import type { SiteConfig } from '../../../../site.config'
+import { getCanonicalUrl } from '../../src/lib/page-meta'
+import { getPhotoDetailPath } from '../../src/lib/photo-route'
 import { getPreferredPhotoDescription, getPreferredPhotoTitle } from './__internal__/photo-text'
 
 const SEARCH_INDEXABLE_IMAGE_EXTENSION = /\.(?:avif|bmp|gif|jpe?g|png|svg|webp)$/i
@@ -31,19 +33,17 @@ function escapeXml(unsafe: string): string {
 }
 
 export function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig): string {
-  const now = new Date().toISOString()
   const baseUrl = config.url.endsWith('/') ? config.url.slice(0, -1) : config.url
+  // Filesystem mtime changes on checkout and misses editorial-only changes.
+  // Omit lastmod until the pipeline records a reliable page-content modification date.
   const mainPageXml = `  <url>
-    <loc>${escapeXml(baseUrl)}</loc>
-    <lastmod>${now}</lastmod>
+    <loc>${escapeXml(getCanonicalUrl('/', config.url))}</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>`
 
   const photoUrls = photos
     .map((photo) => {
-      const date = photo.lastModified || photo.dateTaken
-      const lastmod = date ? new Date(date).toISOString() : now
       const imageUrl = toAbsoluteUrl(getSitemapImageSource(photo), baseUrl)
       const imageTitle = getPreferredPhotoTitle(photo)
       const imageCaption = getPreferredPhotoDescription(photo)
@@ -65,8 +65,7 @@ export function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig)
         : ''
 
       return `  <url>
-    <loc>${escapeXml(`${baseUrl}/photos/${encodeURIComponent(photo.id)}/`)}</loc>
-    <lastmod>${lastmod}</lastmod>
+    <loc>${escapeXml(getCanonicalUrl(getPhotoDetailPath(photo.id), config.url))}</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>${imageXml}
   </url>`

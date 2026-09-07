@@ -2,6 +2,13 @@
 
 This repository is Jacky's Photography, a customized Afilmory-based photo gallery. It is a pnpm workspace with a static React/Vite gallery, a photo-manifest builder, shared packages, and an MDX documentation site.
 
+## Runtime And Source Of Truth
+
+- Use Node.js 24 and pnpm 10.19.0. `.node-version` pins the local Node release; `package.json` declares the supported major and package manager.
+- Check `node --version` and `pnpm --version` before running validation. A long-running editor may need a new terminal after upgrading Node.
+- [Architecture](packages/docs/contents/architecture/index.mdx) owns package boundaries and data flow. [Deployment](packages/docs/contents/deployment/github-action.mdx) owns CI sequencing; `package.json` owns executable commands.
+- Read the nearest `AGENTS.md` for changes in web, builder, or docs. Audit reports describe a point in time; verify findings against current code before applying them.
+
 ## Commands
 
 ### Development
@@ -46,19 +53,51 @@ pnpm run build:manifest -- --config
 ### Code Quality
 
 ```bash
-# Lint and fix code.
+# Read-only checks.
+pnpm run lint:check
+pnpm run type-check
+pnpm test
+
+# Additional checks for relevant changes.
+pnpm run test:coverage
+pnpm run bundle:budget
+PLAYWRIGHT_PRODUCTION=true pnpm run test:e2e
+
+# Explicit code fixes and formatting.
 pnpm lint
-
-# Format code.
 pnpm format
-
-# Type check the web app.
-pnpm --filter web type-check
 ```
+
+`type-check` includes root scripts and dynamically loaded builder plugins through `tsconfig.scripts.json`, followed by every workspace. `bundle:budget` requires a current production web build; production E2E also uses that build.
+
+| Change area                                       | Relevant verification                                                                            |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Web interactions, routes, accessibility           | Web type-check, targeted unit tests, production build and desktop/mobile E2E                     |
+| Image loading, viewer lifecycle, chunk boundaries | Regression tests, production build, bundle budget; exercise cancellation and repeated open/close |
+| Builder, storage, photo scripts                   | Root/workspace type-check, targeted tests, strict fixture manifest build                         |
+| Docs generation, navigation, SEO                  | Docs type-check/build, generator/navigation tests, HTTP checks for real pages and unknown URLs   |
+| Markdown or AI instructions                       | Verify paths, commands, signatures and links against source; update MDX `lastModified`           |
+
+### Public Fixture Validation
+
+Use a disposable checkout when validating without the private photo repository. The fixture builder replaces that checkout's generated manifest and thumbnails; do not run it over a maintainer's existing generated gallery unless preserving/restoring those outputs.
+
+```bash
+export AFILMORY_E2E_FIXTURE=true
+export AFILMORY_PHOTOS_PATH=apps/web/public/__fixtures/photos
+export AFILMORY_PHOTOS_BASE_URL=/__fixtures/photos/
+pnpm run fixtures:photos
+pnpm run build:manifest -- --force --strict
+AFILMORY_SKIP_MANIFEST_PRECHECK=true pnpm build
+pnpm run bundle:budget
+PLAYWRIGHT_PRODUCTION=true pnpm run test:e2e
+```
+
+`photos:standardize` renames and moves photo files. It is a photo-maintenance operation, not a prerequisite for ordinary UI changes. `photos:descriptions:sync` writes human-maintained metadata; do not run it as a read-only check.
 
 ## Architecture
 
-The production site is a pure client-side SPA. The builder runs before the web build, scans the configured photo storage, extracts metadata, generates thumbnails and hashes, and writes `apps/web/src/data/photos-manifest.json`. The frontend imports that manifest through `@afilmory/data` and deploys as static files from `apps/web/dist/`; CI mirrors that output to `Jackyhq/Photography-Web`.
+The production runtime is a client-side SPA, with crawlable HTML and route metadata generated at build time. The builder scans configured photo storage, extracts metadata, generates thumbnails and hashes, and writes `apps/web/src/data/photos-manifest.json`. Vite splits this into a lightweight startup index, full manifest and localized photo text; `@afilmory/data` owns their loading. The frontend deploys as static files from `apps/web/dist/`; CI mirrors that output to `Jackyhq/Photography-Web`.
 
 ### Workspace Packages
 

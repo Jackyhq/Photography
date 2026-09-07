@@ -7,10 +7,12 @@ import { describe, expect, it } from 'vitest'
 
 import type { SiteConfig } from '../../../../site.config'
 import {
+  applyHomePageMeta,
   applyPhotoPageMeta,
   createPhotoPageMeta,
   createPhotoPreloadLink,
   STATIC_APP_ROUTES,
+  STATIC_GALLERY_LINK_LIMIT,
   writeStaticAppRoutePages,
 } from './photo-page-meta'
 
@@ -62,14 +64,61 @@ describe('photo-page-meta', () => {
     expect(html).toContain('<img src="/thumbnails/photo-640.webp"')
     expect(html).not.toContain('/thumbnails/photo.jpg')
     expect(html).not.toContain('标题 </script>')
-    expect(html).toContain('data-afilmory-photo-noscript')
+    expect(html).toContain('data-afilmory-static-content')
     expect(html).toContain('photos/photo%2Funsafe/')
+  })
+
+  it('adds a bounded, escaped static gallery index inside the React root', () => {
+    const photos = Array.from({ length: 80 }, (_, index) => ({ ...photo, id: `photo-${index}` }))
+    const html = applyHomePageMeta(
+      '<html><head><title>Gallery</title></head><body><div id="root"><div id="splash-screen"></div></div></body></html>',
+      photos,
+      siteConfig,
+    )
+    const document = new DOMParser().parseFromString(html, 'text/html')
+
+    expect(document.querySelectorAll('#root nav a')).toHaveLength(STATIC_GALLERY_LINK_LIMIT)
+    expect(document.querySelector('#root nav a')?.textContent).toBe('标题 </script>')
+    expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe('https://photos.example.com/')
+    expect(document.querySelector('script[data-afilmory-page-jsonld]')?.textContent).toContain('"@type":"WebSite"')
+    expect(html).not.toContain('https://cdn.example.com/photos/photo.jpg')
+
+    const photoHtml = applyPhotoPageMeta(html, createPhotoPageMeta(photo, siteConfig))
+    const photoDocument = new DOMParser().parseFromString(photoHtml, 'text/html')
+    expect(photoDocument.querySelectorAll('[data-afilmory-static-content]')).toHaveLength(1)
+    expect(photoDocument.querySelector('#root picture img')).not.toBeNull()
+    expect(photoDocument.querySelector('#root nav')).toBeNull()
+    expect(photoDocument.querySelectorAll('script[type="application/ld+json"]')).toHaveLength(1)
+  })
+
+  it('makes the generated fallback visible without JavaScript and credits the known author without inventing a license', () => {
+    const template = readFileSync(path.resolve('apps/web/index.html'), 'utf-8')
+    const meta = createPhotoPageMeta(photo, siteConfig)
+
+    expect(template).toMatch(/<noscript><style>#splash-screen\s*\{\s*display: none !important;/)
+    expect(meta.jsonLd.creator).toEqual({ '@type': 'Person', name: 'Jacky', url: 'https://example.com' })
+    expect(meta.jsonLd.creditText).toBe('Jacky')
+    expect(meta.jsonLd.copyrightNotice).toBe('Jacky')
+    expect(meta.jsonLd).not.toHaveProperty('license')
+    expect(meta.jsonLd).not.toHaveProperty('uploadDate')
   })
 
   it('uses the first candidate of the selected responsive source for preload', () => {
     const preload = createPhotoPreloadLink(photo)
     expect(preload).toContain('href="/thumbnails/photo-360.webp"')
     expect(preload).toContain('type="image/webp"')
+  })
+
+  it('preserves literal dollar signs and markup-like text when updating an existing head', () => {
+    const textPhoto = { ...photo, titles: { 'zh-CN': '$& <light>' }, descriptions: { 'zh-CN': '$1 & light' } }
+    const html = applyPhotoPageMeta(
+      '<html><head><title>Old</title><meta name="description" content="Old"></head><body><div id="root"></div></body></html>',
+      createPhotoPageMeta(textPhoto, siteConfig),
+    )
+    const document = new DOMParser().parseFromString(html, 'text/html')
+    expect(document.title).toBe('$& <light> | Gallery')
+    expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toBe('$1 & light')
+    expect(document.querySelector('#root h1')?.textContent).toBe('$& <light>')
   })
 
   it('uses the production WebP thumbnail when the original format is not social-preview compatible', () => {
@@ -121,7 +170,7 @@ describe('photo-page-meta', () => {
         const html = readFileSync(path.join(outputDirectory, routePath, 'index.html'), 'utf-8')
         const expectedUrl = `https://photos.example.com/${routePath}/`
 
-        expect(html).toContain('<div id="root"></div>')
+        expect(html).toContain('<div id="root"><main data-afilmory-static-content>')
         expect(html).toContain(`rel="canonical" href="${expectedUrl}"`)
         expect(html).toContain(`property="og:url" content="${expectedUrl}"`)
         expect(html).toContain(`property="twitter:url" content="${expectedUrl}"`)

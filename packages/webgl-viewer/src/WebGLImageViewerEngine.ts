@@ -40,6 +40,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
   private texture: WebGLTexture | null = null
   private imageLoaded = false
   private originalImageSrc = ''
+  private destroyed = false
 
   // 变换状态
   private scale = 1
@@ -66,6 +67,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
 
   // 动画状态
   private isAnimating = false
+  private animationFrameId: number | null = null
   private animationStartTime = 0
   private animationDuration = 300
   private startScale = 1
@@ -126,6 +128,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
   private loadingTiles = new Map<TileKey, { priority: number }>()
   private pendingTileRequests: Array<{ key: TileKey; priority: number }> = []
   private tileProcessingFrameId: number | null = null
+  private tileUpdateTimeoutId: ReturnType<typeof setTimeout> | null = null
 
   // 可视区域信息
   private currentVisibleTiles = new Set<TileKey>()
@@ -196,6 +199,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
   }
 
   private resizeCanvas() {
+    if (this.destroyed) return
     const rect = this.canvas.getBoundingClientRect()
     this.devicePixelRatio = window.devicePixelRatio || 1
 
@@ -228,6 +232,8 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
     gl.attachShader(this.program, vertexShader)
     gl.attachShader(this.program, fragmentShader)
     gl.linkProgram(this.program)
+    gl.deleteShader(vertexShader)
+    gl.deleteShader(fragmentShader)
 
     if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
       throw new Error(`Program linking failed: ${gl.getProgramInfoLog(this.program)}`)
@@ -354,6 +360,10 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
 
   private handleWorkerMessage(e: MessageEvent) {
     const { type, payload } = e.data
+    if (this.destroyed) {
+      payload?.imageBitmap?.close()
+      return
+    }
 
     if (type === 'image-loaded') {
       const { imageBitmap, imageWidth, imageHeight, lodLevel } = payload
@@ -366,8 +376,12 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
 
         this.notifyLoadingStateChange(true, LoadingState.CREATE_TEXTURE)
 
-        const texture = this.createWebGLTexture(imageBitmap)
-        imageBitmap.close()
+        let texture: WebGLTexture | null
+        try {
+          texture = this.createWebGLTexture(imageBitmap)
+        } finally {
+          imageBitmap.close()
+        }
 
         if (texture) {
           this.cleanupLODTextures()
@@ -386,10 +400,14 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
         if (this.loadImageResolve) {
           this.loadImageResolve()
         }
+        this.loadImageResolve = null
+        this.loadImageReject = null
       } catch (error) {
         if (this.loadImageReject) {
           this.loadImageReject(error as Error)
         }
+        this.loadImageResolve = null
+        this.loadImageReject = null
       }
       return
     }
@@ -400,6 +418,8 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
       if (this.loadImageReject) {
         this.loadImageReject(new Error('Failed to load image in worker'))
       }
+      this.loadImageResolve = null
+      this.loadImageReject = null
       return
     }
 
@@ -424,8 +444,12 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
         return
       }
 
-      const texture = this.createWebGLTexture(imageBitmap)
-      imageBitmap.close() // free memory
+      let texture: WebGLTexture | null
+      try {
+        texture = this.createWebGLTexture(imageBitmap)
+      } finally {
+        imageBitmap.close()
+      }
 
       if (texture) {
         const [x, y] = key.split('-').map(Number)
@@ -438,6 +462,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
           isLoading: false,
           priority: loadingInfo ? loadingInfo.priority : tileInfoInCache ? tileInfoInCache.priority : 0,
         }
+        if (tileInfoInCache?.texture) this.gl.deleteTexture(tileInfoInCache.texture)
         this.tileCache.set(key, tileInfo)
 
         if (loadingInfo) {
@@ -458,6 +483,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
   }
 
   async loadImage(url: string, preknownWidth?: number, preknownHeight?: number) {
+    if (this.destroyed) throw new Error('Cannot load an image after the viewer is destroyed')
     this.originalImageSrc = url
     this.isLoadingTexture = true
     this.notifyLoadingStateChange(true, LoadingState.IMAGE_LOADING)
@@ -501,16 +527,24 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source)
+    try {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source)
+    } catch (error) {
+      gl.deleteTexture(texture)
+      throw error
+    }
 
     return texture
   }
 
   private cleanupLODTextures() {
-    for (const texture of this.lodTextures.values()) {
+    const textures = new Set(this.lodTextures.values())
+    if (this.texture) textures.add(this.texture)
+    for (const texture of textures) {
       this.gl.deleteTexture(texture)
     }
     this.lodTextures.clear()
+    this.texture = null
   }
 
   private selectOptimalLOD(): number {
@@ -544,6 +578,8 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
     targetTranslateY: number,
     animationTime?: number,
   ) {
+    if (this.destroyed) return
+    this.stopAnimation()
     this.isAnimating = true
     this.animationStartTime = performance.now()
     this.animationDuration = animationTime || (this.config.smooth ? 300 : 0)
@@ -577,11 +613,11 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
   }
 
   private animate() {
-    if (!this.isAnimating) return
+    if (this.destroyed || !this.isAnimating) return
 
     const now = performance.now()
     const elapsed = now - this.animationStartTime
-    const progress = Math.min(elapsed / this.animationDuration, 1)
+    const progress = this.animationDuration > 0 ? Math.min(elapsed / this.animationDuration, 1) : 1
     const easedProgress = this.config.smooth ? this.easeOutQuart(progress) : progress
 
     this.scale = this.startScale + (this.targetScale - this.startScale) * easedProgress
@@ -592,7 +628,10 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
     this.notifyZoomChange()
 
     if (progress < 1) {
-      requestAnimationFrame(() => this.animate())
+      this.animationFrameId = requestAnimationFrame(() => {
+        this.animationFrameId = null
+        this.animate()
+      })
     } else {
       this.isAnimating = false
       this.animationStartLOD = -1
@@ -603,6 +642,15 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
       this.notifyZoomChange()
       // 动画结束后，立即更新瓦片
       this.updateTileCache()
+    }
+  }
+
+  private stopAnimation() {
+    this.isAnimating = false
+    this.animationStartLOD = -1
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId)
+      this.animationFrameId = null
     }
   }
 
@@ -759,6 +807,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
   }
 
   private async updateTileCache(): Promise<void> {
+    if (this.destroyed) return
     const visibleTiles = this.calculateVisibleTiles()
     const newVisibleTiles = new Set<TileKey>()
 
@@ -828,7 +877,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
   }
 
   private processPendingTileRequests(): void {
-    if (!this.worker || !this.textureWorkerInitialized) {
+    if (this.destroyed || !this.worker || !this.textureWorkerInitialized) {
       return
     }
 
@@ -883,6 +932,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
 
   // 修改渲染方法以支持瓦片渲染
   private render() {
+    if (this.destroyed) return
     const { gl } = this
 
     if (!this.positionBuffer || !this.texCoordBuffer) {
@@ -934,10 +984,13 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
     this.updateDebugInfo()
 
     // 定期更新瓦片缓存
-    if (!this.isAnimating && performance.now() - this.lastTileUpdateTime > 100) {
+    if (!this.isAnimating && this.tileUpdateTimeoutId === null && performance.now() - this.lastTileUpdateTime > 100) {
       // 100ms 防抖
       this.lastTileUpdateTime = performance.now()
-      setTimeout(() => this.updateTileCache(), 0)
+      this.tileUpdateTimeoutId = setTimeout(() => {
+        this.tileUpdateTimeoutId = null
+        void this.updateTileCache()
+      }, 0)
     }
   }
 
@@ -1020,6 +1073,29 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
   }
 
   public destroy() {
+    if (this.destroyed) return
+    this.destroyed = true
+    this.stopAnimation()
+    if (this.tileUpdateTimeoutId !== null) {
+      clearTimeout(this.tileUpdateTimeoutId)
+      this.tileUpdateTimeoutId = null
+    }
+    if (this.tileProcessingFrameId !== null) {
+      cancelAnimationFrame(this.tileProcessingFrameId)
+      this.tileProcessingFrameId = null
+    }
+
+    if (this.worker) {
+      this.worker.onmessage = null
+      this.worker.onerror = null
+      this.worker.terminate()
+      this.worker = null
+    }
+    this.textureWorkerInitialized = false
+    this.loadImageReject?.(new DOMException('Image viewer destroyed', 'AbortError'))
+    this.loadImageResolve = null
+    this.loadImageReject = null
+
     // 清理事件监听器
     window.removeEventListener('resize', this.boundResizeCanvas)
     this.canvas.removeEventListener('mousedown', this.boundHandleMouseDown)
@@ -1033,9 +1109,14 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
 
     // 清理 WebGL 资源
     this.cleanupLODTextures()
-    if (this.texture) {
-      this.gl.deleteTexture(this.texture)
+    for (const tile of this.tileCache.values()) {
+      if (tile.texture) this.gl.deleteTexture(tile.texture)
     }
+    this.tileCache.clear()
+    this.currentVisibleTiles.clear()
+    this.loadingTiles.clear()
+    this.pendingTileRequests = []
+    this.imageLoaded = false
     if (this.positionBuffer) {
       this.gl.deleteBuffer(this.positionBuffer)
       this.positionBuffer = null
@@ -1053,15 +1134,8 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
     }
     if (this.resizeObserver) {
       this.resizeObserver.disconnect()
+      this.resizeObserver = null
     }
-
-    if (this.tileProcessingFrameId !== null) {
-      cancelAnimationFrame(this.tileProcessingFrameId)
-      this.tileProcessingFrameId = null
-    }
-
-    this.worker?.terminate()
-    this.worker = null
 
     if (this.workerUrl) {
       URL.revokeObjectURL(this.workerUrl)
@@ -1163,8 +1237,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
 
   private handleMouseDown(e: MouseEvent) {
     if (this.isAnimating) {
-      this.isAnimating = false
-      this.animationStartLOD = -1
+      this.stopAnimation()
     }
     if (this.config.panning.disabled) return
 
@@ -1198,8 +1271,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
     if (this.config.wheel.wheelDisabled) return
 
     if (this.isAnimating) {
-      this.isAnimating = false
-      this.animationStartLOD = -1
+      this.stopAnimation()
     }
 
     const rect = this.canvas.getBoundingClientRect()
@@ -1229,8 +1301,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
     e.preventDefault()
 
     if (this.isAnimating) {
-      this.isAnimating = false
-      this.animationStartLOD = -1
+      this.stopAnimation()
       return
     }
 
@@ -1318,8 +1389,7 @@ export class WebGLImageViewerEngine extends ImageViewerEngineBase {
   }
 
   private performDoubleClickAction(x: number, y: number) {
-    this.isAnimating = false
-    this.animationStartLOD = -1
+    this.stopAnimation()
 
     if (this.config.doubleClick.mode === 'toggle') {
       const fitToScreenScale = this.getFitToScreenScale()

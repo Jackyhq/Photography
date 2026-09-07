@@ -1,4 +1,5 @@
 import { AlignLeftIcon, ArrowRight } from 'lucide-react'
+import type { MouseEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { MDX } from './components'
@@ -6,18 +7,17 @@ import { DocumentFooter } from './components/DocumentFooter'
 import { MobileTableOfContents } from './components/MobileTableOfContents'
 import { Sidebar } from './components/Sidebar'
 import { TableOfContents } from './components/TableOfContents'
-import { docsSite } from './site'
-import { getRandomKaomoji } from './utils/kaomoji'
+import { updateDocsPageMeta } from './page-meta'
+import { docsSite, getDocsPath, normalizeDocsPath } from './site'
 import { getMatchedRoute } from './utils/routes'
 
 function App({ url }: { url?: string }) {
-  const [currentPath, setCurrentPath] = useState(url || '/')
+  const [currentPath, setCurrentPath] = useState(() => normalizeDocsPath(url || '/'))
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const matchedRoute = getMatchedRoute(currentPath)
   const mainContentRef = useRef<HTMLDivElement>(null)
 
   const handleScrollMainContent = (top: number) => {
-    console.info('Scrolling to:', top)
     if (mainContentRef.current) {
       mainContentRef.current.scrollTo({
         top,
@@ -26,36 +26,81 @@ function App({ url }: { url?: string }) {
     }
   }
 
-  const handleNavigate = useCallback(
-    (path: string) => {
-      setCurrentPath(path)
-      setIsSidebarOpen(false) // 导航后关闭侧边栏
-      // 在实际应用中，这里会更新浏览器历史记录
-      if (typeof window !== 'undefined') {
-        window.history.pushState({}, '', path)
+  const scrollToLocation = useCallback(() => {
+    const fragment = window.location.hash.slice(1)
+    let target: HTMLElement | null = null
+    try {
+      // URL fragments identify literal IDs, including characters that are special in CSS selectors.
+      // eslint-disable-next-line unicorn/prefer-query-selector
+      target = fragment ? document.getElementById(decodeURIComponent(fragment)) : null
+    } catch {
+      // An invalid URL fragment should not interrupt route navigation.
+    }
+    if (target) target.scrollIntoView()
+    else mainContentRef.current?.scrollTo({ top: 0 })
+  }, [])
+
+  const handleLinkClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return
+    }
+    const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href]') : null
+    if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return
+
+    const destination = new URL(link.href, window.location.href)
+    if (destination.origin !== window.location.origin || !getMatchedRoute(destination.pathname)) return
+    destination.pathname = getDocsPath(destination.pathname)
+    event.preventDefault()
+
+    if (destination.href !== window.location.href) {
+      window.history.pushState({}, '', `${destination.pathname}${destination.search}${destination.hash}`)
+    }
+    setCurrentPath(normalizeDocsPath(destination.pathname))
+    setIsSidebarOpen(false)
+    requestAnimationFrame(scrollToLocation)
+  }
+
+  useEffect(() => {
+    const syncLocation = () => {
+      const path = window.location.pathname
+      const canonicalPath = getDocsPath(path)
+      if (getMatchedRoute(path) && path !== canonicalPath) {
+        window.history.replaceState(null, '', `${canonicalPath}${window.location.search}${window.location.hash}`)
       }
-    },
-    [setCurrentPath, setIsSidebarOpen],
-  )
+      setCurrentPath(normalizeDocsPath(path))
+      setIsSidebarOpen(false)
+    }
+    syncLocation()
+    window.addEventListener('popstate', syncLocation)
+    return () => window.removeEventListener('popstate', syncLocation)
+  }, [])
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(scrollToLocation)
+    return () => cancelAnimationFrame(frame)
+  }, [currentPath, scrollToLocation])
 
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen(!isSidebarOpen)
   }, [isSidebarOpen])
 
   useEffect(() => {
-    if (matchedRoute) {
-      document.title = `${matchedRoute.title || 'Docs'} | ${docsSite.name}`
-    } else {
-      document.title = `404 Page Not Found | ${docsSite.name}`
-    }
+    updateDocsPageMeta(document, matchedRoute)
   }, [matchedRoute])
 
   if (!matchedRoute) {
     return (
-      <div className="bg-background flex h-screen">
+      <div className="bg-background flex h-screen" onClick={handleLinkClick}>
         {/* 桌面端侧边栏 */}
         <div className="hidden lg:block">
-          <Sidebar currentPath={currentPath} onNavigate={handleNavigate} />
+          <Sidebar currentPath={currentPath} />
         </div>
 
         {/* 移动端侧边栏 */}
@@ -66,7 +111,7 @@ function App({ url }: { url?: string }) {
               onClick={() => setIsSidebarOpen(false)}
             />
             <div className="fixed top-0 left-0 z-50 h-full lg:hidden">
-              <Sidebar currentPath={currentPath} onNavigate={handleNavigate} />
+              <Sidebar currentPath={currentPath} />
             </div>
           </>
         )}
@@ -92,16 +137,12 @@ function App({ url }: { url?: string }) {
           </div>
 
           <div className="mx-4 mt-16 rounded-xl p-8 text-center lg:mt-0">
-            <div className="mb-6 flex items-center justify-center text-4xl">{getRandomKaomoji()}</div>
+            <div className="mb-6 flex items-center justify-center text-4xl">(・_・;)</div>
             <h1 className="mb-1 text-3xl font-semibold">404</h1>
             <p className="text-text-secondary text-lg">Page not found</p>
-            <button
-              onClick={() => handleNavigate('/')}
-              className="bg-accent mt-6 rounded-2xl px-4 py-2 text-white transition-opacity hover:opacity-90"
-              type="button"
-            >
+            <a href="/" className="bg-accent mt-6 rounded-2xl px-4 py-2 text-white transition-opacity hover:opacity-90">
               Return Home <ArrowRight className="inline-block h-4 w-4" />
-            </button>
+            </a>
           </div>
 
           {/* 移动端 TOC (404页面不需要，但为了一致性保留结构) */}
@@ -118,10 +159,10 @@ function App({ url }: { url?: string }) {
   }
 
   return (
-    <div className="bg-background flex h-screen">
+    <div className="bg-background flex h-screen" onClick={handleLinkClick}>
       {/* 桌面端侧边栏 */}
       <div className="hidden lg:block">
-        <Sidebar currentPath={currentPath} onNavigate={handleNavigate} />
+        <Sidebar currentPath={currentPath} />
       </div>
 
       <>
@@ -137,7 +178,7 @@ function App({ url }: { url?: string }) {
             transition: 'transform 0.3s ease-in-out',
           }}
         >
-          <Sidebar currentPath={currentPath} onNavigate={handleNavigate} />
+          <Sidebar currentPath={currentPath} />
         </div>
       </>
 

@@ -1,11 +1,9 @@
 import type { RouteConfig } from '../routes'
 import routes from '../routes'
+import { normalizeDocsPath } from '../site'
 
 export const getMatchedRoute = (currentPath: string): RouteConfig | undefined => {
   return routes.find((route) => {
-    const normalizedCurrentPath =
-      currentPath.endsWith('/') && currentPath !== '/' ? currentPath.slice(0, -1) : currentPath
-    const normalizedRoutePath = route.path.endsWith('/') && route.path !== '/' ? route.path.slice(0, -1) : route.path
-    return normalizedRoutePath === normalizedCurrentPath
+    return normalizeDocsPath(route.path) === normalizeDocsPath(currentPath)
   })
 }

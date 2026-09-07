@@ -5,7 +5,9 @@ import { inspect } from 'node:util'
 import { glob } from 'glob'
 import type { Plugin } from 'vite'
 
+import { getDocumentRoutePath } from './content-path'
 import { formatGeneratedTypescript } from './format-generated'
+import { parseFrontmatterValue } from './frontmatter-value'
 
 interface TocItem {
   id: string
@@ -134,7 +136,7 @@ async function extractTocFromFile(
 
     const relativePath = path.relative(contentsDir, file)
 
-    const routePath = generateRoutePath(file, contentsDir, indexFile)
+    const routePath = getDocumentRoutePath(file, contentsDir, indexFile)
 
     return {
       file: relativePath,
@@ -148,23 +150,6 @@ async function extractTocFromFile(
   }
 }
 
-function generateRoutePath(file: string, contentsDir: string, indexFile: string): string {
-  // 移除 contents 前缀和文件扩展名（与 route-generator 保持一致）
-  let routePath = file.replace(new RegExp(`^${contentsDir}/`), '').replace(/\.(md|mdx)$/, '')
-
-  // 处理 index 文件（与 route-generator 保持一致）
-  if (routePath === indexFile) {
-    routePath = '/'
-  } else if (routePath.endsWith(`/${indexFile}`)) {
-    const basePath = routePath.replace(`/${indexFile}`, '')
-    routePath = basePath ? `/${basePath}` : '/'
-  } else {
-    routePath = `/${routePath}`
-  }
-
-  return routePath
-}
-
 function extractFrontmatterTitle(content: string): string | null {
   // 匹配 frontmatter 中的 title 字段
   const frontmatterMatch = content.match(/^---\n(.*?)\n---/s)
@@ -176,7 +161,7 @@ function extractFrontmatterTitle(content: string): string | null {
   if (!titleMatch) return null
 
   // 移除引号
-  return titleMatch[1].replaceAll(/^['"]|['"]$/g, '').trim()
+  return parseFrontmatterValue(titleMatch[1])
 }
 
 /**
