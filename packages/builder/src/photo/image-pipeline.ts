@@ -1,4 +1,5 @@
 import { compressUint8Array } from '@afilmory/utils'
+import type { Sharp } from 'sharp'
 import sharp from 'sharp'
 
 import type { BuilderOptions } from '../builder/builder.js'
@@ -23,7 +24,7 @@ import { detectMotionPhoto } from './motion-photo-detector.js'
 import type { PhotoProcessorOptions } from './processor.js'
 
 export interface ProcessedImageData {
-  sharpInstance: sharp.Sharp
+  sharpInstance: Sharp
   imageBuffer: Buffer
   metadata: { width: number; height: number }
 }

@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import path, { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import type { OverlayOptions, Sharp } from 'sharp'
 import sharp from 'sharp'
 
 import { buildTimePhotoLoader } from '../photo-loader.js'
@@ -154,7 +155,7 @@ export async function generateOGImage(options: OGImageOptions) {
   }
 
   try {
-    let finalImage: sharp.Sharp
+    let finalImage: Sharp
 
     if (includePhotos) {
       // 获取最新照片
@@ -226,7 +227,7 @@ export async function generateOGImage(options: OGImageOptions) {
       const textBuffer = await sharp(Buffer.from(textSvg)).png().toBuffer()
 
       // 准备合成图层
-      const composite: sharp.OverlayOptions[] = [
+      const composite: OverlayOptions[] = [
         { input: gradientBuffer, top: 0, left: 0 },
         { input: textBuffer, top: 0, left: 0 },
       ]

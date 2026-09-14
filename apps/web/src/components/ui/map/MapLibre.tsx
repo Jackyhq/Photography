@@ -1,6 +1,8 @@
 // Styles
 import 'maplibre-gl/dist/maplibre-gl.css'
 
+import type { FeatureCollection } from 'geojson'
+import mapWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Map from 'react-map-gl/maplibre'
 
@@ -29,7 +31,7 @@ export interface PureMaplibreProps {
   }
   markers?: PhotoMarker[]
   selectedMarkerId?: string | null
-  geoJsonData?: GeoJSON.FeatureCollection
+  geoJsonData?: FeatureCollection
   onMarkerClick?: (marker: PhotoMarker) => void
   onGeoJsonClick?: (event: any) => void
   onGeolocate?: (longitude: number, latitude: number) => void
@@ -202,6 +204,7 @@ export const Maplibre = ({
   return (
     <div className={className} style={style}>
       <Map
+        workerUrl={mapWorkerUrl}
         id={id}
         ref={mapRef}
         {...viewState}

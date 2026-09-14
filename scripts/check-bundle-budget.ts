@@ -49,6 +49,8 @@ const DEFAULT_STARTUP_LOCALE = 'en'
 const STARTUP_PHOTO_TEXT_LOCALES = new Set<(typeof STARTUP_LOCALES)[number]>(['en', 'jp', 'ko'])
 const FULL_MANIFEST_PATTERN = /^assets\/photos-manifest\.[\w-]+\.json$/
 const MAPLIBRE_ASSET_PATTERN = /^assets\/maplibre-gl-[\w-]+\.js$/
+const MAPLIBRE_MAIN_ASSET_PATTERN = /^assets\/maplibre-gl-(?!worker-)[\w-]+\.js$/
+const MAPLIBRE_WORKER_ASSET_PATTERN = /^assets\/maplibre-gl-worker-[\w-]+\.js$/
 const HEIC_ASSET_PATTERN = /^vendor\/heic-[\w-]+\.js$/
 const STARTUP_PHOTO_TEXT_PATTERN = /^assets\/photo-text\.en\.[\w-]+\.json$/
 
@@ -75,9 +77,9 @@ const chunkTargets: ChunkBudgetTarget[] = [
     budget: { gzip: 90 * KiB, brotli: 80 * KiB },
   },
   {
-    name: 'maplibre chunk',
-    pattern: /^assets\/maplibre-gl-[\w-]+\.js$/,
-    budget: { gzip: 360 * KiB, brotli: 320 * KiB },
+    name: 'maplibre runtime',
+    pattern: MAPLIBRE_ASSET_PATTERN,
+    budget: { gzip: 390 * KiB, brotli: 320 * KiB },
   },
   {
     name: 'reaction chunk',
@@ -100,15 +102,19 @@ const routeTargets: RouteBudgetTarget[] = [
   {
     name: 'photo-viewer GPS route',
     // GPS photos render MiniMap immediately. Include its static graph and the
-    // separately emitted MapLibre chunk so the aggregate reflects real traffic.
+    // separately emitted MapLibre main and worker chunks to reflect real traffic.
     sourcePatterns: PHOTO_VIEWER_GPS_SOURCE_PATTERNS,
     assetPatterns: [FULL_MANIFEST_PATTERN, MAPLIBRE_ASSET_PATTERN],
     includeDynamic: false,
-    budget: { gzip: 600 * KiB, brotli: 520 * KiB },
+    // Carry the MapLibre v6 runtime's 30 KiB gzip allowance into this aggregate.
+    // The 389-photo gallery measures 612.4 KiB with its full metadata manifest.
+    budget: { gzip: 630 * KiB, brotli: 520 * KiB },
   },
   {
     name: 'map route',
     sourcePatterns: [/src\/pages\/explory\/index\.tsx$/],
+    // Vite emits the worker outside the route's manifest import graph.
+    assetPatterns: [MAPLIBRE_ASSET_PATTERN],
     includeDynamic: true,
     budget: { gzip: 430 * KiB, brotli: 380 * KiB },
   },
@@ -261,11 +267,13 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     appendCompressedFailures(failures, target.name, size, target.budget)
   }
 
-  const optionalCodeMatches = [HEIC_ASSET_PATTERN, MAPLIBRE_ASSET_PATTERN].map((pattern) =>
-    files.filter((file) => pattern.test(file)),
+  const optionalCodeMatches = [HEIC_ASSET_PATTERN, MAPLIBRE_MAIN_ASSET_PATTERN, MAPLIBRE_WORKER_ASSET_PATTERN].map(
+    (pattern) => files.filter((file) => pattern.test(file)),
   )
   if (optionalCodeMatches.some((matches) => matches.length !== 1)) {
-    failures.push('Expected one HEIC chunk and one MapLibre chunk for optional-code precache validation')
+    failures.push(
+      'Expected one HEIC chunk, one MapLibre main chunk, and one MapLibre worker chunk for optional-code precache validation',
+    )
   }
   const optionalCodeFiles = optionalCodeMatches.flat()
   const serviceWorkerPath = path.join(distDir, 'sw.js')

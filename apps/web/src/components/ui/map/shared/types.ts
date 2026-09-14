@@ -1,3 +1,5 @@
+import type { FeatureCollection } from 'geojson'
+
 import type { PhotoMarker } from '~/types/map'
 
 // LayerProps type definition for compatibility
@@ -27,7 +29,7 @@ export interface ClusterPoint {
 
 // Common interfaces
 export interface GeoJsonLayerProps {
-  data: GeoJSON.FeatureCollection
+  data: FeatureCollection
   layerStyle?: LayerProps
 }
 
