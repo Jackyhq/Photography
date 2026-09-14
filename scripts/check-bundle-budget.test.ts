@@ -197,7 +197,7 @@ describe('bundle budget graph helpers', () => {
 
     // The worker is not a Vite manifest entry. Growing it must still exceed
     // each map budget without affecting the viewer that has no GPS map.
-    writeFileSync(path.join(directory, 'assets/maplibre-gl-worker-main.js'), randomBytes(610 * 1024))
+    writeFileSync(path.join(directory, 'assets/maplibre-gl-worker-main.js'), randomBytes(640 * 1024))
 
     const result = checkBundleBudget(directory)
     for (const target of ['maplibre runtime', 'map route', 'photo-viewer GPS route']) {

@@ -106,7 +106,9 @@ const routeTargets: RouteBudgetTarget[] = [
     sourcePatterns: PHOTO_VIEWER_GPS_SOURCE_PATTERNS,
     assetPatterns: [FULL_MANIFEST_PATTERN, MAPLIBRE_ASSET_PATTERN],
     includeDynamic: false,
-    budget: { gzip: 600 * KiB, brotli: 520 * KiB },
+    // Carry the MapLibre v6 runtime's 30 KiB gzip allowance into this aggregate.
+    // The 389-photo gallery measures 612.4 KiB with its full metadata manifest.
+    budget: { gzip: 630 * KiB, brotli: 520 * KiB },
   },
   {
     name: 'map route',
