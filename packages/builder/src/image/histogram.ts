@@ -1,4 +1,4 @@
-import type sharp from 'sharp'
+import type { Sharp } from 'sharp'
 
 import { getGlobalLoggers } from '../photo/logger-adapter.js'
 import type { HistogramData, ToneAnalysis, ToneType } from '../types/photo.js'
@@ -9,7 +9,7 @@ import type { HistogramData, ToneAnalysis, ToneType } from '../types/photo.js'
  * @param imageLogger 日志记录器
  * @returns 直方图数据
  */
-async function calculateHistogram(sharpInstance: sharp.Sharp): Promise<HistogramData | null> {
+async function calculateHistogram(sharpInstance: Sharp): Promise<HistogramData | null> {
   const log = getGlobalLoggers().image
 
   try {
@@ -162,7 +162,7 @@ function analyzeTone(histogram: HistogramData): ToneAnalysis {
  * @param imageLogger 日志记录器
  * @returns 影调分析结果
  */
-export async function calculateHistogramAndAnalyzeTone(sharpInstance: sharp.Sharp): Promise<ToneAnalysis | null> {
+export async function calculateHistogramAndAnalyzeTone(sharpInstance: Sharp): Promise<ToneAnalysis | null> {
   const histogram = await calculateHistogram(sharpInstance)
   if (!histogram) {
     return null

@@ -1,3 +1,5 @@
+import type { Feature } from 'geojson'
+import type { GeoJSONFeature, MapMouseEvent } from 'maplibre-gl'
 import * as React from 'react'
 import { lazy } from 'react'
 import type { MapRef } from 'react-map-gl/maplibre'
@@ -30,15 +32,15 @@ export const MapLibreMapComponent: React.FC<BaseMapProps> = ({
   // Handle GeoJSON click
   const handleGeoJsonClick = React.useCallback(
     (
-      event: maplibregl.MapMouseEvent & {
-        features?: maplibregl.GeoJSONFeature[]
+      event: MapMouseEvent & {
+        features?: GeoJSONFeature[]
       },
     ) => {
       if (!handlers?.onGeoJsonClick) return
 
       const feature = event.features?.[0]
       if (feature) {
-        handlers.onGeoJsonClick(feature as GeoJSON.Feature)
+        handlers.onGeoJsonClick(feature as Feature)
       }
     },
     [handlers],

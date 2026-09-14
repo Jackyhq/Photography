@@ -1,5 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
 
+import mapWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Map from 'react-map-gl/maplibre'
@@ -31,7 +32,7 @@ export const MiniMap = ({ latitude, longitude, photoId }: MiniMapProps) => {
   return (
     <div className="relative h-40 w-full overflow-hidden rounded-lg border border-white/10">
       <Map
-        mapLib={import('maplibre-gl')}
+        workerUrl={mapWorkerUrl}
         key={`${latitude}-${longitude}`}
         longitude={longitude}
         latitude={latitude}

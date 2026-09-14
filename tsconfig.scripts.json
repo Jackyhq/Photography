@@ -10,8 +10,7 @@
     "noEmit": true,
     "paths": {
       "@pkg": ["./package.json"],
-      "@env": ["./env.ts"],
-      "sharp": ["./node_modules/sharp/lib/index.d.ts"]
+      "@env": ["./env.ts"]
     }
   },
   "include": [

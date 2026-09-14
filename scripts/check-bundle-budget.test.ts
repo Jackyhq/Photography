@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -190,78 +191,46 @@ describe('bundle budget graph helpers', () => {
     ])
   })
 
+  it('counts the separately emitted worker in the map runtime and both map routes', () => {
+    const directory = createBudgetFixture()
+    expect(checkBundleBudget(directory).failures).toEqual([])
+
+    // The worker is not a Vite manifest entry. Growing it must still exceed
+    // each map budget without affecting the viewer that has no GPS map.
+    writeFileSync(path.join(directory, 'assets/maplibre-gl-worker-main.js'), randomBytes(610 * 1024))
+
+    const result = checkBundleBudget(directory)
+    for (const target of ['maplibre runtime', 'map route', 'photo-viewer GPS route']) {
+      expect(result.failures).toEqual(expect.arrayContaining([expect.stringMatching(`^${target} gzip .* exceeds`)]))
+    }
+    expect(result.failures.some((failure) => failure.startsWith('photo-viewer base route'))).toBe(false)
+    expect(result.failures.some((failure) => failure.startsWith('homepage startup'))).toBe(false)
+  })
+
+  it.each(['vendor/heic-main.js', 'assets/maplibre-gl-main.js', 'assets/maplibre-gl-worker-main.js'])(
+    'rejects optional code in the service worker precache: %s',
+    (file) => {
+      const directory = createBudgetFixture()
+      writeFileSync(path.join(directory, 'sw.js'), `precacheAndRoute([{url:${JSON.stringify(file)},revision:null}])`)
+
+      expect(checkBundleBudget(directory).failures).toEqual([`Optional code is unexpectedly precached: ${file}`])
+    },
+  )
+
+  it.each(['assets/maplibre-gl-main.js', 'assets/maplibre-gl-worker-main.js'])(
+    'requires both MapLibre chunks even when the other is present: %s',
+    (file) => {
+      const directory = createBudgetFixture()
+      rmSync(path.join(directory, file))
+
+      expect(checkBundleBudget(directory).failures).toEqual([
+        'Expected one HEIC chunk, one MapLibre main chunk, and one MapLibre worker chunk for optional-code precache validation',
+      ])
+    },
+  )
+
   it('aggregates desktop viewer code, full manifest, and GPS map assets', () => {
-    const directory = mkdtempSync(path.join(tmpdir(), 'afilmory-budget-'))
-    directories.push(directory)
-    mkdirSync(path.join(directory, '.vite'), { recursive: true })
-    mkdirSync(path.join(directory, 'assets'), { recursive: true })
-    mkdirSync(path.join(directory, 'photos/photo-1'), { recursive: true })
-
-    const manifest: ViteManifest = {
-      'index.html': {
-        file: 'assets/index-main.js',
-        isEntry: true,
-      },
-      'src/pages/(main)/layout.tsx': {
-        file: 'assets/layout-main.js',
-        src: 'src/pages/(main)/layout.tsx',
-      },
-      '_PhotoViewer.js': {
-        file: 'assets/PhotoViewer-main.js',
-        name: 'PhotoViewer',
-      },
-      'src/components/ui/photo-viewer/ExifPanel.tsx': {
-        file: 'assets/ExifPanel-main.js',
-        src: 'src/components/ui/photo-viewer/ExifPanel.tsx',
-      },
-      'src/components/ui/photo-viewer/RawExifViewer.tsx': {
-        file: 'assets/RawExifViewer-main.js',
-        src: 'src/components/ui/photo-viewer/RawExifViewer.tsx',
-      },
-      'src/components/ui/photo-viewer/MiniMap.tsx': {
-        file: 'assets/MiniMap-main.js',
-        src: 'src/components/ui/photo-viewer/MiniMap.tsx',
-      },
-      'src/pages/explory/index.tsx': {
-        file: 'assets/map-page-main.js',
-        src: 'src/pages/explory/index.tsx',
-      },
-    }
-
-    writeFileSync(path.join(directory, '.vite/manifest.json'), JSON.stringify(manifest))
-    writeFileSync(
-      path.join(directory, 'index.html'),
-      '<script id="manifest" src="/assets/photos-index.main.js"></script><script type="module" src="/assets/index-main.js"></script>',
-    )
-    for (const file of [
-      'index-main.js',
-      'layout-main.js',
-      'en-main.js',
-      'zh-CN-main.js',
-      'zh-HK-main.js',
-      'zh-TW-main.js',
-      'jp-main.js',
-      'ko-main.js',
-      'PhotoViewer-main.js',
-      'ExifPanel-main.js',
-      'RawExifViewer-main.js',
-      'MiniMap-main.js',
-      'map-page-main.js',
-      'maplibre-gl-main.js',
-      'Reaction-main.js',
-    ]) {
-      writeFileSync(path.join(directory, 'assets', file), 'export {}')
-    }
-    writeFileSync(
-      path.join(directory, 'assets/photos-index.main.js'),
-      'window.__MANIFEST__={};window.__FULL_MANIFEST_URL__="/assets/photos-manifest.main.json";window.__PHOTO_TEXT_URLS__={"en":"/assets/photo-text.en.main.json"};',
-    )
-    writeFileSync(path.join(directory, 'assets/photos-manifest.main.json'), '{"data":[]}')
-    writeFileSync(path.join(directory, 'assets/photo-text.en.main.json'), '{"language":"en","photos":{}}')
-    mkdirSync(path.join(directory, 'vendor'), { recursive: true })
-    writeFileSync(path.join(directory, 'vendor/heic-main.js'), 'export {}')
-    writeFileSync(path.join(directory, 'sw.js'), 'precacheAndRoute([])')
-    writeFileSync(path.join(directory, 'photos/photo-1/index.html'), '<!doctype html>')
+    const directory = createBudgetFixture()
 
     const result = checkBundleBudget(directory)
     expect(result.failures).toEqual([])
@@ -270,7 +239,7 @@ describe('bundle budget graph helpers', () => {
         expect.stringContaining('homepage startup (en):'),
         expect.stringContaining('homepage startup (zh-CN):'),
         expect.stringContaining('homepage startup (jp):'),
-        expect.stringContaining('PWA optional code: 2 heavy chunks excluded'),
+        expect.stringContaining('PWA optional code: 3 heavy chunks excluded'),
         expect.stringContaining('photo-viewer base route:'),
         expect.stringContaining('photo-viewer GPS route:'),
       ]),
@@ -289,3 +258,80 @@ describe('bundle budget graph helpers', () => {
     )
   })
 })
+
+function createBudgetFixture(): string {
+  const directory = mkdtempSync(path.join(tmpdir(), 'afilmory-budget-'))
+  directories.push(directory)
+  mkdirSync(path.join(directory, '.vite'), { recursive: true })
+  mkdirSync(path.join(directory, 'assets'), { recursive: true })
+  mkdirSync(path.join(directory, 'photos/photo-1'), { recursive: true })
+
+  const manifest: ViteManifest = {
+    'index.html': {
+      file: 'assets/index-main.js',
+      isEntry: true,
+    },
+    'src/pages/(main)/layout.tsx': {
+      file: 'assets/layout-main.js',
+      src: 'src/pages/(main)/layout.tsx',
+    },
+    '_PhotoViewer.js': {
+      file: 'assets/PhotoViewer-main.js',
+      name: 'PhotoViewer',
+    },
+    'src/components/ui/photo-viewer/ExifPanel.tsx': {
+      file: 'assets/ExifPanel-main.js',
+      src: 'src/components/ui/photo-viewer/ExifPanel.tsx',
+    },
+    'src/components/ui/photo-viewer/RawExifViewer.tsx': {
+      file: 'assets/RawExifViewer-main.js',
+      src: 'src/components/ui/photo-viewer/RawExifViewer.tsx',
+    },
+    'src/components/ui/photo-viewer/MiniMap.tsx': {
+      file: 'assets/MiniMap-main.js',
+      src: 'src/components/ui/photo-viewer/MiniMap.tsx',
+    },
+    'src/pages/explory/index.tsx': {
+      file: 'assets/map-page-main.js',
+      src: 'src/pages/explory/index.tsx',
+    },
+  }
+
+  writeFileSync(path.join(directory, '.vite/manifest.json'), JSON.stringify(manifest))
+  writeFileSync(
+    path.join(directory, 'index.html'),
+    '<script id="manifest" src="/assets/photos-index.main.js"></script><script type="module" src="/assets/index-main.js"></script>',
+  )
+  for (const file of [
+    'index-main.js',
+    'layout-main.js',
+    'en-main.js',
+    'zh-CN-main.js',
+    'zh-HK-main.js',
+    'zh-TW-main.js',
+    'jp-main.js',
+    'ko-main.js',
+    'PhotoViewer-main.js',
+    'ExifPanel-main.js',
+    'RawExifViewer-main.js',
+    'MiniMap-main.js',
+    'map-page-main.js',
+    'maplibre-gl-main.js',
+    'maplibre-gl-worker-main.js',
+    'Reaction-main.js',
+  ]) {
+    writeFileSync(path.join(directory, 'assets', file), 'export {}')
+  }
+  writeFileSync(
+    path.join(directory, 'assets/photos-index.main.js'),
+    'window.__MANIFEST__={};window.__FULL_MANIFEST_URL__="/assets/photos-manifest.main.json";window.__PHOTO_TEXT_URLS__={"en":"/assets/photo-text.en.main.json"};',
+  )
+  writeFileSync(path.join(directory, 'assets/photos-manifest.main.json'), '{"data":[]}')
+  writeFileSync(path.join(directory, 'assets/photo-text.en.main.json'), '{"language":"en","photos":{}}')
+  mkdirSync(path.join(directory, 'vendor'), { recursive: true })
+  writeFileSync(path.join(directory, 'vendor/heic-main.js'), 'export {}')
+  writeFileSync(path.join(directory, 'sw.js'), 'precacheAndRoute([])')
+  writeFileSync(path.join(directory, 'photos/photo-1/index.html'), '<!doctype html>')
+
+  return directory
+}
