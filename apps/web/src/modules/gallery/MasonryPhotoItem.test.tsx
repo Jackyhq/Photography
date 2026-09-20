@@ -1,7 +1,9 @@
 import '@testing-library/jest-dom/vitest'
 
+import { compressUint8Array } from '@afilmory/utils'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import * as React from 'react'
+import { rgbaToThumbHash } from 'thumbhash'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { resolveThumbnailPrefetchUrl } from '~/hooks/useUpcomingThumbnailPrefetch'
@@ -16,7 +18,6 @@ vi.mock('react-i18next', () => ({
   useTranslation: vi.fn(() => ({ i18n: { language: 'en' }, t: (key: string) => key })),
 }))
 vi.mock('motion/react', () => ({ m: { a: 'a' } }))
-vi.mock('@afilmory/ui/thumbhash', () => ({ Thumbhash: () => null }))
 vi.mock('@afilmory/ui/icons', () => ({
   CarbonIsoOutline: () => null,
   MaterialSymbolsShutterSpeed: () => null,
@@ -42,7 +43,7 @@ const photo: PhotoManifest = {
   size: 100,
 }
 
-const props = { data: photo, width: 190, index: 0, tabIndex: 0, onFocus: vi.fn(), onKeyDown: vi.fn() }
+const props = { data: photo, width: 190, index: 0, onKeyDown: vi.fn() }
 
 beforeEach(() => {
   // The repository's Vitest JSX transform uses the classic runtime for component modules.
@@ -59,6 +60,7 @@ describe('masonry photo links', () => {
   it('exposes an encoded photo URL and takes over ordinary clicks to open the viewer', () => {
     render(<MasonryPhotoItem {...props} />)
     const link = screen.getByRole('link', { name: photo.description })
+    expect(link.tabIndex).toBe(0)
     expect(link).toHaveAttribute('href', '/photos/urban%2Fone%20%26%20two/')
     expect(fireEvent.click(link)).toBe(false)
     expect(openViewerByPhotoId).toHaveBeenCalledExactlyOnceWith(photo.id, { element: link })
@@ -100,5 +102,58 @@ describe('masonry photo links', () => {
     expect(source).toHaveAttribute('sizes', '250px')
     expect(screen.getByRole('img')).toHaveAttribute('sizes', '250px')
     expect(resolveThumbnailPrefetchUrl(photo, 250, 3)).toBe('/photo-1080.webp')
+  })
+})
+
+describe('masonry image placeholders', () => {
+  const photoWithPreview = {
+    ...photo,
+    thumbHash: compressUint8Array(rgbaToThumbHash(1, 1, Uint8Array.of(180, 150, 100, 255))),
+  }
+
+  it('uses a decorative background while loading and removes it when the photo loads', () => {
+    const { container } = render(<MasonryPhotoItem {...props} data={photoWithPreview} />)
+    const preview = container.querySelector('[aria-hidden="true"]')
+    expect((preview as HTMLElement).style.backgroundImage).toContain('data:image/png;base64,')
+    expect(container.querySelectorAll('img')).toHaveLength(1)
+
+    fireEvent.load(screen.getByRole('img'))
+
+    expect(preview).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: photo.title })).toBeInTheDocument()
+  })
+
+  it('restarts loading when a thumbnail source changes and ignores events from the old image', () => {
+    const { container, rerender } = render(<MasonryPhotoItem {...props} data={photoWithPreview} />)
+    const oldImage = screen.getByRole('img')
+    fireEvent.load(oldImage)
+
+    const updatedPhoto = { ...photoWithPreview, thumbnailWebpSrcSet: '/updated-640.webp 640w' }
+    rerender(<MasonryPhotoItem {...props} data={updatedPhoto} />)
+    const newImage = screen.getByRole('img')
+    expect(newImage).not.toBe(oldImage)
+    expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument()
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument()
+
+    fireEvent.error(oldImage)
+    expect(newImage).toBeInTheDocument()
+    fireEvent.load(newImage)
+    expect(container.querySelector('[aria-hidden="true"]')).not.toBeInTheDocument()
+
+    rerender(<MasonryPhotoItem {...props} data={{ ...updatedPhoto, title: 'Updated title' }} />)
+    expect(screen.getByRole('img')).toBe(newImage)
+    expect(screen.getByRole('heading', { level: 2, name: 'Updated title' })).toBeInTheDocument()
+  })
+
+  it('clears an image failure when a new photo replaces the item', () => {
+    const { container, rerender } = render(<MasonryPhotoItem {...props} data={photoWithPreview} />)
+    fireEvent.error(screen.getByRole('img'))
+    expect(screen.getByText('photo.error.loading')).toBeInTheDocument()
+    expect(container.querySelector('[aria-hidden="true"]')).not.toBeInTheDocument()
+
+    rerender(<MasonryPhotoItem {...props} data={{ ...photoWithPreview, id: 'replacement-photo' }} />)
+    expect(screen.queryByText('photo.error.loading')).not.toBeInTheDocument()
+    expect(screen.getByRole('img')).toBeInTheDocument()
+    expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument()
   })
 })

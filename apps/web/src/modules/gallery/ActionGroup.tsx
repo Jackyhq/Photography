@@ -120,7 +120,7 @@ export const ActionGroup = ({ keyboardNavigationGroup = false }: { keyboardNavig
         aria-busy={isSwitchingLanguage}
         className="h-10 w-10 rounded-full border-0 bg-gray-100 px-0 transition-all duration-200 hover:bg-gray-200 disabled:cursor-wait disabled:opacity-70 dark:bg-gray-800 dark:hover:bg-gray-700"
         title={languageToggleTitle}
-        aria-label={languageToggleTitle}
+        aria-label={`${nextLanguageLabel}: ${languageToggleTitle}`}
         data-testid="language-toggle"
       >
         {isSwitchingLanguage ? (

@@ -7,7 +7,7 @@
   "author": {
     "name": "Jackywhq",
     "url": "https://jackyw.cn/",
-    "avatar": "/images/avatar.jpg"
+    "avatar": "/images/avatar-192.webp"
   },
   "social": {
     "github": "Jackyhq",
@@ -23,9 +23,7 @@
       }
     }
   },
-  "map": [
-    "maplibre"
-  ],
+  "map": ["maplibre"],
   "mapStyle": "builtin",
   "mapProjection": "mercator"
 }

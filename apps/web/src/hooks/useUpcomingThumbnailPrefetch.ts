@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import type { PhotoManifest } from '~/types/photo'
 
@@ -15,14 +15,6 @@ interface SrcSetCandidate {
   url: string
   width: number
 }
-
-let pendingThumbnailUrls: string[] = []
-let activePrefetches = 0
-let idleHandle: number | null = null
-let timeoutHandle: ReturnType<typeof setTimeout> | null = null
-
-const attemptedThumbnailUrls = new Set<string>()
-const inFlightThumbnailUrls = new Set<string>()
 
 const isPhotoManifest = (item: unknown): item is PhotoManifest => {
   return !!item && typeof item === 'object' && 'id' in item && 'thumbnailUrl' in item
@@ -84,86 +76,113 @@ export const resolveThumbnailPrefetchUrl = (
   )
 }
 
-const rememberPrefetchAttempt = (url: string) => {
-  attemptedThumbnailUrls.add(url)
+export const useUpcomingThumbnailPrefetch = (scrollElement: HTMLElement | null) => {
+  const latestUrlsRef = useRef<string[]>([])
+  const updateQueueRef = useRef<((urls: string[]) => void) | null>(null)
 
-  while (attemptedThumbnailUrls.size > MAX_REMEMBERED_PREFETCH_ATTEMPTS) {
-    const oldest = attemptedThumbnailUrls.values().next().value
-    if (!oldest) break
-    attemptedThumbnailUrls.delete(oldest)
-  }
-}
+  useEffect(() => {
+    if (!scrollElement) return
 
-const drainThumbnailPrefetchQueue = () => {
-  idleHandle = null
-  timeoutHandle = null
+    let hasScrolled = false
+    let disposed = false
+    let pendingUrls: string[] = []
+    let idleHandle: number | null = null
+    let timeoutHandle: ReturnType<typeof setTimeout> | null = null
+    const attemptedUrls = new Set<string>()
+    const inFlight = new Map<string, AbortController>()
 
-  if (!canPrefetchThumbnails()) {
-    pendingThumbnailUrls = []
-    return
-  }
+    const drainQueue = () => {
+      idleHandle = null
+      timeoutHandle = null
+      if (disposed || !canPrefetchThumbnails()) return
 
-  while (activePrefetches < PREFETCH_CONCURRENCY && pendingThumbnailUrls.length > 0) {
-    const url = pendingThumbnailUrls.shift()
-    if (!url || attemptedThumbnailUrls.has(url) || inFlightThumbnailUrls.has(url)) {
-      continue
+      while (inFlight.size < PREFETCH_CONCURRENCY && pendingUrls.length > 0) {
+        const url = pendingUrls.shift()!
+        if (attemptedUrls.has(url) || inFlight.has(url)) continue
+
+        const controller = new AbortController()
+        inFlight.set(url, controller)
+
+        void fetch(url, {
+          cache: 'force-cache',
+          credentials: 'same-origin',
+          signal: controller.signal,
+        })
+          .then((response) => response.arrayBuffer())
+          .catch(() => {
+            // Prefetch is opportunistic; visible image loading still handles errors.
+          })
+          .finally(() => {
+            // A superseded request must not remove a newer request for this URL.
+            if (inFlight.get(url) === controller) inFlight.delete(url)
+            if (disposed) return
+
+            if (!controller.signal.aborted) {
+              attemptedUrls.add(url)
+              if (attemptedUrls.size > MAX_REMEMBERED_PREFETCH_ATTEMPTS) {
+                attemptedUrls.delete(attemptedUrls.values().next().value!)
+              }
+            }
+            scheduleQueue()
+          })
+      }
     }
 
-    activePrefetches += 1
-    inFlightThumbnailUrls.add(url)
+    const scheduleQueue = () => {
+      if (disposed || !hasScrolled || pendingUrls.length === 0 || !canPrefetchThumbnails()) return
+      if (idleHandle !== null || timeoutHandle !== null) return
 
-    void fetch(url, {
-      cache: 'force-cache',
-      credentials: 'same-origin',
-    })
-      .catch(() => {
-        // Prefetch is opportunistic; visible image loading still handles errors.
-      })
-      .finally(() => {
-        activePrefetches -= 1
-        inFlightThumbnailUrls.delete(url)
-        rememberPrefetchAttempt(url)
+      if (typeof window.requestIdleCallback === 'function') {
+        idleHandle = window.requestIdleCallback(drainQueue, { timeout: 1500 })
+      } else {
+        timeoutHandle = setTimeout(drainQueue, 250)
+      }
+    }
 
-        if (pendingThumbnailUrls.length > 0) {
-          scheduleThumbnailPrefetch()
+    const updateQueue = (urls: string[]) => {
+      const desiredUrls = new Set(urls)
+      for (const [url, controller] of inFlight) {
+        if (!desiredUrls.has(url)) {
+          controller.abort()
+          inFlight.delete(url)
         }
-      })
-  }
-}
+      }
+      pendingUrls = urls.filter((url) => !attemptedUrls.has(url) && !inFlight.has(url))
+      scheduleQueue()
+    }
 
-const scheduleThumbnailPrefetch = () => {
-  if (idleHandle !== null || timeoutHandle !== null) return
-  if (typeof window === 'undefined') return
+    const handleScroll = () => {
+      // Do not compete with first-view photos just because the CPU has become idle.
+      hasScrolled = true
+      scheduleQueue()
+    }
 
-  if (typeof window.requestIdleCallback === 'function') {
-    idleHandle = window.requestIdleCallback(drainThumbnailPrefetchQueue, { timeout: 1500 })
-    return
-  }
+    updateQueueRef.current = updateQueue
+    updateQueue(latestUrlsRef.current)
+    scrollElement.addEventListener('scroll', handleScroll, { passive: true })
 
-  timeoutHandle = setTimeout(drainThumbnailPrefetchQueue, 250)
-}
+    return () => {
+      disposed = true
+      updateQueueRef.current = null
+      scrollElement.removeEventListener('scroll', handleScroll)
+      if (idleHandle !== null) window.cancelIdleCallback(idleHandle)
+      if (timeoutHandle !== null) clearTimeout(timeoutHandle)
+      inFlight.forEach((controller) => controller.abort())
+      inFlight.clear()
+    }
+  }, [scrollElement])
 
-const queueThumbnailPrefetch = (urls: string[]) => {
-  if (!canPrefetchThumbnails()) return
-
-  const nextUrls = urls.filter((url) => !attemptedThumbnailUrls.has(url) && !inFlightThumbnailUrls.has(url))
-  pendingThumbnailUrls = Array.from(new Set(nextUrls)).slice(0, PREFETCH_LOOKAHEAD_COUNT)
-
-  if (pendingThumbnailUrls.length > 0) {
-    scheduleThumbnailPrefetch()
-  }
-}
-
-export const useUpcomingThumbnailPrefetch = () => {
   return useCallback((visibleStopIndex: number, items: unknown[], displayWidth: number) => {
-    if (displayWidth <= 0) return
+    const urls =
+      displayWidth > 0
+        ? items
+            .slice(visibleStopIndex + 1, visibleStopIndex + 1 + PREFETCH_LOOKAHEAD_COUNT)
+            .filter(isPhotoManifest)
+            .map((photo) => resolveThumbnailPrefetchUrl(photo, displayWidth, window.devicePixelRatio || 1))
+            .filter((url): url is string => !!url)
+        : []
 
-    const urls = items
-      .slice(visibleStopIndex + 1, visibleStopIndex + 1 + PREFETCH_LOOKAHEAD_COUNT)
-      .filter(isPhotoManifest)
-      .map((photo) => resolveThumbnailPrefetchUrl(photo, displayWidth, window.devicePixelRatio || 1))
-      .filter((url): url is string => !!url)
-
-    queueThumbnailPrefetch(urls)
+    latestUrlsRef.current = Array.from(new Set(urls))
+    updateQueueRef.current?.(latestUrlsRef.current)
   }, [])
 }

@@ -4,6 +4,7 @@ import { Outlet } from 'react-router'
 import { NotFound } from './components/common/NotFound'
 import { useCommandPaletteShortcut } from './hooks/useCommandPaletteShortcut'
 import { useRoutePageMeta } from './hooks/useRoutePageMeta'
+import { scheduleDeferredAnalytics } from './lib/deferred-analytics'
 import { RootProviders } from './providers/root-providers'
 
 const CommandPalette = lazy(() =>
@@ -11,6 +12,10 @@ const CommandPalette = lazy(() =>
 )
 
 function App() {
+  useEffect(() => {
+    if (import.meta.env.PROD) return scheduleDeferredAnalytics()
+  }, [])
+
   return (
     <RootProviders>
       <RouteContent />
