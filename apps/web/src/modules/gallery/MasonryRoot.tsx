@@ -31,6 +31,9 @@ class MasonryHeaderItem {
 
 type MasonryItemType = PhotoManifest | MasonryHeaderItem
 
+const getPhotoHeight = (item: MasonryItemType, width: number) =>
+  item instanceof MasonryHeaderItem ? undefined : width / item.aspectRatio
+
 const FIRST_SCREEN_ITEMS_COUNT = 30
 const PHOTO_KEYBOARD_DIRECTIONS = {
   ArrowLeft: 'left',
@@ -241,6 +244,9 @@ export const MasonryRoot = () => {
           <Masonry<MasonryItemType>
             ref={masonryRef}
             items={masonryItems}
+            // Mobile keeps its variable-height header outside the grid, so photo
+            // dimensions can position the first screen without hidden DOM measurement.
+            itemHeight={isMobile ? getPhotoHeight : undefined}
             role="list"
             tabIndex={-1}
             render={useCallback(

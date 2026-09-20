@@ -5,10 +5,11 @@ import { useWindowSize } from '@react-hook/window-size'
 import { throttle } from 'es-toolkit/function'
 import { isEqual } from 'es-toolkit/predicate'
 import type { ContainerPosition, MasonryProps, MasonryScrollerProps, Positioner } from 'masonic'
-import { createResizeObserver, useMasonry, usePositioner, useScrollToIndex } from 'masonic'
-import { useForceUpdate } from 'motion/react'
+import { createPositioner, createResizeObserver, useMasonry, usePositioner, useScrollToIndex } from 'masonic'
 import * as React from 'react'
 
+import type { MasonryItemHeight } from './masonry-known-heights'
+import { primeKnownMasonryHeights } from './masonry-known-heights'
 import { createIndexOrderedRange } from './masonry-range'
 
 export interface MasonryRef {
@@ -25,7 +26,9 @@ export interface MasonryRef {
  *
  * @param props
  */
-export const Masonry = <Item,>(props: MasonryProps<Item> & { ref?: React.Ref<MasonryRef> }) => {
+export const Masonry = <Item,>(
+  props: MasonryProps<Item> & { ref?: React.Ref<MasonryRef>; itemHeight?: MasonryItemHeight<Item> },
+) => {
   const [scrollTop, setScrollTop] = React.useState(0)
   const [isScrolling, setIsScrolling] = React.useState(false)
   const scrollElement = useScrollViewElement()
@@ -95,7 +98,24 @@ export const Masonry = <Item,>(props: MasonryProps<Item> & { ref?: React.Ref<Mas
     itemCounter.current = props.items.length
   }
 
-  nextProps.positioner = usePositioner(nextProps, [shrunk ? Math.random() + positionIndex : positionIndex])
+  const measuredPositioner = usePositioner(nextProps, [
+    !props.itemHeight && shrunk ? Math.random() + positionIndex : positionIndex,
+  ])
+  const knownHeightItems = props.itemHeight ? props.items : undefined
+  nextProps.positioner = React.useMemo(
+    () =>
+      knownHeightItems && props.itemHeight
+        ? createPositioner(
+            measuredPositioner.columnCount,
+            measuredPositioner.columnWidth,
+            props.columnGutter,
+            props.rowGutter,
+          )
+        : measuredPositioner,
+    // Masonic normally copies measured heights when width changes. Known heights must instead be
+    // recalculated at the new width, and index-based positions must reset when items are reordered.
+    [measuredPositioner, knownHeightItems, props.itemHeight, props.columnGutter, props.rowGutter],
+  )
 
   nextProps.resizeObserver = useResizeObserver(nextProps.positioner)
   nextProps.scrollTop = scrollTop
@@ -134,6 +154,7 @@ function MasonryScroller<Item>(
   props: MasonryScrollerProps<Item> & {
     scrollTop: number
     isScrolling: boolean
+    itemHeight?: MasonryItemHeight<Item>
   },
 ) {
   const positioner = React.useMemo<Positioner>(
@@ -143,6 +164,17 @@ function MasonryScroller<Item>(
     }),
     [props.positioner],
   )
+
+  if (props.itemHeight) {
+    // Populate the layout cache before useMasonry chooses between visible cells and its hidden
+    // measurement batch. This derives positions from data without touching the DOM.
+    primeKnownMasonryHeights(
+      positioner,
+      props.items,
+      props.itemHeight,
+      props.scrollTop + props.height * (props.overscanBy ?? 2),
+    )
+  }
 
   // We put this in its own layer because it's the thing that will trigger the most updates
   // and we don't want to slower ourselves by cycling through all the functions, objects, and effects
@@ -239,7 +271,9 @@ function useContainerPosition(
 }
 
 function useResizeObserver(positioner: Positioner) {
-  const [forceUpdate] = useForceUpdate()
+  // Masonic memoizes observers by positioner and keeps their first updater. A stable reducer
+  // dispatch ensures later resize notifications cannot reuse a captured render counter.
+  const [, forceUpdate] = React.useReducer((count: number) => count + 1, 0)
   const resizeObserver = React.useMemo(
     () => createResizeObserver(positioner, throttle(forceUpdate, 1000 / 12)),
     [forceUpdate, positioner],
