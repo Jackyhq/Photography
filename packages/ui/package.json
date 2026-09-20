@@ -22,6 +22,8 @@
     "./portal": "./src/portal/index.tsx",
     "./prompts": "./src/prompts/index.ts",
     "./scroll-areas": "./src/scroll-areas/index.ts",
+    "./scroll-areas/context": "./src/scroll-areas/ctx.ts",
+    "./scroll-areas/hooks": "./src/scroll-areas/hooks.ts",
     "./select": "./src/select/index.tsx",
     "./sonner": "./src/sonner.tsx",
     "./styles": "./src/styles/index.ts",

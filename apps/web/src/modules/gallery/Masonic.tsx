@@ -1,5 +1,5 @@
 // @copy internal masonic hooks
-import { useScrollViewElement } from '@afilmory/ui/scroll-areas'
+import { useScrollViewElement } from '@afilmory/ui/scroll-areas/hooks'
 import { clearRequestTimeout, requestTimeout } from '@essentials/request-timeout'
 import { useWindowSize } from '@react-hook/window-size'
 import { throttle } from 'es-toolkit/function'

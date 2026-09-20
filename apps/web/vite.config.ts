@@ -30,6 +30,7 @@ import {
 } from './plugins/vite/photo-runtime-cache'
 import { photosStaticPlugin } from './plugins/vite/photos-static'
 import { pruneJpegThumbnailsPlugin } from './plugins/vite/prune-jpeg-thumbnails'
+import { HASHED_PRECACHE_URL_PATTERN } from './plugins/vite/pwa-precache'
 import { siteConfigInjectPlugin } from './plugins/vite/site-config-inject'
 
 const devPrint = (): PluginOption => ({
@@ -137,6 +138,7 @@ const staticWebBuildPlugins: PluginOption[] = [
       ],
     },
     workbox: {
+      dontCacheBustURLsMatching: HASHED_PRECACHE_URL_PATTERN,
       maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB
       importScripts: ['pwa-cache-migration.js'],
       globPatterns: ['index.html', '**/*.{js,css,ico,svg}'],
