@@ -174,6 +174,40 @@ describe('manifest-inject helpers', () => {
     expect(links).toContain('data-afilmory-preload="gallery"')
     expect(links).toContain('href="/one.webp"')
     expect(links).toContain('imagesrcset="/one.webp 360w, /two.webp 640w"')
+    expect(links).toContain('(min-width: 1024px) calc((100vw - 12px) / 4)')
+    expect(links).toContain('(min-width: 312px) calc((100vw - 12px) / 2)')
+  })
+
+  it('preloads only four early photo thumbnails, including video posters', () => {
+    const data = Array.from({ length: 20 }, (_, index) => ({
+      mediaType: index === 2 ? 'video' : 'photo',
+      thumbnailUrl: `/poster-${index}.jpg`,
+      thumbnailWebpSrcSet: `/poster-${index}-360.webp 360w, /poster-${index}-640.webp 640w`,
+      originalUrl: `/original-${index}.jpg`,
+      videoUrl: `/video-${index}.mp4`,
+    }))
+    const document = new DOMParser().parseFromString(createThumbnailPreloadLinks({ data }), 'text/html')
+    const links = Array.from(document.querySelectorAll('link'))
+
+    expect(links).toHaveLength(4)
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      '/poster-0-360.webp',
+      '/poster-1-360.webp',
+      '/poster-2-360.webp',
+      '/poster-3-360.webp',
+    ])
+    expect(links.every((link) => link.getAttribute('as') === 'image')).toBe(true)
+    expect(links.every((link) => link.getAttribute('type') === 'image/webp')).toBe(true)
+    expect(document.querySelectorAll('[fetchpriority="high"]')).toHaveLength(1)
+  })
+
+  it('skips missing thumbnails without preloading later offscreen photos', () => {
+    const links = createThumbnailPreloadLinks({
+      data: [{}, {}, {}, { thumbnailUrl: '/fourth.jpg' }, { thumbnailUrl: '/offscreen.jpg' }],
+    })
+    expect(links).toContain('href="/fourth.jpg"')
+    expect(links).not.toContain('/offscreen.jpg')
+    expect(links).not.toContain('type="image/webp"')
   })
 
   it('emits a safe bootstrap and places an external production index before the main module', () => {
@@ -196,6 +230,14 @@ describe('manifest-inject helpers', () => {
     expect(html).toContain('<head><link rel="preload" as="image" href="/thumb.webp"></head>')
     expect(html.indexOf('photos-index.abc123.js')).toBeLessThan(html.indexOf('type="module"'))
     expect(html).not.toContain('<script id="manifest"></script>')
+    const document = new DOMParser().parseFromString(html, 'text/html')
+    const manifestScript = document.querySelector<HTMLScriptElement>('#manifest')!
+    expect(manifestScript.defer).toBe(true)
+    expect(manifestScript.hasAttribute('async')).toBe(false)
+    expect(Array.from(document.scripts).map((script) => script.getAttribute('src'))).toEqual([
+      '/assets/photos-index.abc123.js',
+      '/main.js',
+    ])
   })
 
   it('removes every duplicate manifest marker before injecting the bootstrap', () => {
@@ -205,7 +247,7 @@ describe('manifest-inject helpers', () => {
     )
 
     expect(html.match(/id=["']manifest["']/g)).toHaveLength(1)
-    expect(html).toContain('<script id="manifest" src="/assets/photos-index.abc123.js"></script>')
+    expect(html).toContain('<script id="manifest" defer src="/assets/photos-index.abc123.js"></script>')
   })
 
   it('keeps development bootstrap synchronous without requiring a built asset', () => {

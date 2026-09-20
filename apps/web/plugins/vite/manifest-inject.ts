@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 
 import type { Plugin, ResolvedConfig } from 'vite'
 
+import { getDefaultGalleryImageSizes } from '../../src/lib/gallery-layout'
 import { MANIFEST_PATH } from './__internal__/constants'
 import { normalizeProductionThumbnail } from './__internal__/production-thumbnail'
 import { serializeForInlineScript } from './inline-script'
@@ -57,7 +58,9 @@ export interface PhotoTextPack {
   photos: Record<string, PhotoTextEntry>
 }
 
-const PRELOAD_THUMBNAIL_COUNT = 2
+// The fourth photo can be the LCP in both desktop and mobile masonry layouts.
+// Keep this bounded rather than competing with the entire first screen.
+const PRELOAD_THUMBNAIL_COUNT = 4
 const FULL_MANIFEST_ROUTE = '/__afilmory_full_manifest.json'
 const PHOTO_TEXT_ROUTE_PREFIX = '/__afilmory_photo_text/'
 export const PUBLIC_MANIFEST_FILE_NAME = 'photos-manifest.json'
@@ -235,7 +238,7 @@ export function createThumbnailPreloadLinks(manifest: { data?: PreloadManifestIt
           'as="image"',
           'data-afilmory-preload="gallery"',
           `href="${escapeAttribute(href)}"`,
-          'imagesizes="(max-width: 640px) 50vw, 350px"',
+          `imagesizes="${getDefaultGalleryImageSizes()}"`,
         ]
 
         if (index === 0) {
@@ -313,8 +316,10 @@ export function injectManifestBootstrap(
     next = next.replace('</head>', `${preloadLinks}</head>`)
   }
 
+  // Deferred classic scripts retain parser order with the following entry module,
+  // without blocking HTML parsing while the photo index downloads.
   const script = scriptUrl
-    ? `<script id="manifest" src="${escapeAttribute(scriptUrl)}"></script>`
+    ? `<script id="manifest" defer src="${escapeAttribute(scriptUrl)}"></script>`
     : `<script id="manifest">${scriptSource}</script>`
   const moduleScript = next.match(/<script[^>]+type=["']module["'][^>]*>/i)?.[0]
 

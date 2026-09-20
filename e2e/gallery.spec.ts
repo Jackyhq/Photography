@@ -87,6 +87,32 @@ test('enters and traverses header keyboard navigation with arrow keys', async ({
   await expect(search).toBeFocused()
 })
 
+test('exposes the masonry as a list and traverses photo links with Tab', async ({ page }) => {
+  await page.goto('/')
+
+  const photos = page.locator('[data-photo-id]')
+  const firstPhoto = photos.first()
+  const secondPhoto = photos.nth(1)
+  await expect(firstPhoto).toBeVisible()
+  const gallery = page.getByRole('list').filter({ has: firstPhoto })
+  await expect(gallery).toHaveCount(1)
+  await expect(gallery.getByRole('gridcell')).toHaveCount(0)
+  await expect
+    .poll(() =>
+      gallery.evaluate((list) => [...list.children].every((item) => item.getAttribute('role') === 'listitem')),
+    )
+    .toBe(true)
+  await expect
+    .poll(() => photos.evaluateAll((items) => items.every((item) => (item as HTMLElement).tabIndex === 0)))
+    .toBe(true)
+
+  await focusByTab(page, firstPhoto)
+  await page.keyboard.press('Tab')
+  await expect(secondPhoto).toBeFocused()
+  await page.keyboard.press('Shift+Tab')
+  await expect(firstPhoto).toBeFocused()
+})
+
 test('moves focus horizontally between masonry photos with arrow keys', async ({ page }) => {
   await page.goto('/')
 
@@ -98,8 +124,6 @@ test('moves focus horizontally between masonry photos with arrow keys', async ({
   const firstBox = await firstPhoto.boundingBox()
   expect(firstPhotoId).toBeTruthy()
   expect(firstBox).not.toBeNull()
-
-  await expect.poll(() => page.locator('[data-photo-id][tabindex="0"]').count()).toBe(1)
 
   await page.keyboard.press('ArrowRight')
   const rightPhoto = page.locator('[data-photo-id]:focus')
@@ -289,7 +313,7 @@ test('switches the resolved language and accessible labels', async ({ page }) =>
   await page.addInitScript(() => localStorage.setItem('i18nextLng', 'zh-CN'))
   await page.goto('/')
 
-  const languageToggle = page.getByRole('button', { name: '切换到英文' })
+  const languageToggle = page.getByRole('button', { name: 'EN: 切换到英文' })
   await expect(languageToggle).toBeVisible()
   await languageToggle.click()
 

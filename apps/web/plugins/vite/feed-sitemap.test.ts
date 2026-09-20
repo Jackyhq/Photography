@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import type { SiteConfig } from '../../../../site.config'
 import { createFeedSitemapPlugin } from './feed-sitemap'
+import { generateLlmsTxt } from './llms'
 import { generateSitemap } from './sitemap'
 
 const config = {
@@ -82,6 +83,11 @@ describe('image sitemap', () => {
       '<image:loc>https://photos.example.com/thumbnails/video-1-640.webp</image:loc>',
     )
     expect(sitemapAsset?.source).not.toContain('/thumbnails/video-1.jpg')
+    expect(emitFile).toHaveBeenCalledWith({
+      type: 'asset',
+      fileName: 'llms.txt',
+      source: generateLlmsTxt(config),
+    })
   })
 
   it('fails the build when feed and sitemap generation cannot read the manifest', async () => {
@@ -99,5 +105,31 @@ describe('image sitemap', () => {
       'Failed to generate RSS feed and sitemap',
     )
     expect(emitFile).not.toHaveBeenCalled()
+  })
+})
+
+describe('llms.txt', () => {
+  it('uses site branding and public endpoints at the configured canonical URL', () => {
+    const source = generateLlmsTxt({ ...config, url: 'https://gallery.example.org/collection/' })
+
+    expect(source).toMatch(/^# Gallery\n\n> Description\n/)
+    expect(source).toContain('A personal photography gallery by Jacky.')
+    expect(source).toContain('[Photo gallery](https://gallery.example.org/collection/)')
+    expect(source).toContain('[Photo sitemap](https://gallery.example.org/collection/sitemap.xml)')
+    expect(source).toContain('[Public photo manifest](https://gallery.example.org/collection/photos-manifest.json)')
+    expect(source).toContain('[Photo feed](https://gallery.example.org/collection/feed.xml)')
+    expect(source).toContain('This index does not grant permission to reuse them.')
+  })
+
+  it('keeps multiline branding and markdown characters inside their intended sections', () => {
+    const source = generateLlmsTxt({
+      ...config,
+      title: 'Photos [Archive]\n# Extra title',
+      description: 'First line\n## Second line',
+    })
+
+    expect(source.match(/^# /gm)).toHaveLength(1)
+    expect(source).toContain('# Photos \\[Archive\\] \\# Extra title')
+    expect(source).toContain('> First line \\#\\# Second line')
   })
 })

@@ -11,6 +11,7 @@ import { useMobile } from '~/hooks/useMobile'
 import { useContextPhotos } from '~/hooks/usePhotoViewer'
 import { useUpcomingThumbnailPrefetch } from '~/hooks/useUpcomingThumbnailPrefetch'
 import { useVisiblePhotosDateRange } from '~/hooks/useVisiblePhotosDateRange'
+import { GALLERY_COLUMN_GUTTER, GALLERY_DEFAULT_COLUMN_WIDTH, GALLERY_MAX_COLUMNS } from '~/lib/gallery-layout'
 import type { PhotoManifest } from '~/types/photo'
 
 import { ActionGroup } from './ActionGroup'
@@ -39,19 +40,12 @@ const PHOTO_KEYBOARD_DIRECTIONS = {
 } as const satisfies Record<string, MasonryNavigationDirection>
 
 interface MasonryKeyboardNavigationContextValue {
-  tabStopPhotoId: string | null
-  onPhotoFocus: (photoId: string) => void
   onPhotoKeyDown: (event: KeyboardEvent<HTMLAnchorElement>, index: number) => void
 }
 
 const MasonryKeyboardNavigationContext = createContext<MasonryKeyboardNavigationContextValue | null>(null)
 
 const COLUMN_WIDTH_CONFIG = {
-  auto: {
-    mobile: 150,
-    desktop: 250,
-    maxColumns: 8,
-  },
   min: {
     mobile: 120,
     desktop: 200,
@@ -72,7 +66,6 @@ export const MasonryRoot = () => {
   const photos = useContextPhotos()
   const masonryRef = useRef<MasonryRef>(null)
   const focusRequestFrameRef = useRef(0)
-  const [tabStopPhotoId, setTabStopPhotoId] = useState<string | null>(null)
 
   const { dateRange, handleRender } = useVisiblePhotosDateRange(photos)
   const scrollElement = useScrollViewElement()
@@ -83,10 +76,6 @@ export const MasonryRoot = () => {
   const isMobile = useMobile()
 
   const masonryItems = useMemo(() => (isMobile ? photos : [MasonryHeaderItem.default, ...photos]), [photos, isMobile])
-  const resolvedTabStopPhotoId = useMemo(() => {
-    if (tabStopPhotoId && photos.some((photo) => photo.id === tabStopPhotoId)) return tabStopPhotoId
-    return photos[0]?.id ?? null
-  }, [photos, tabStopPhotoId])
 
   const focusPhotoAtIndex = useCallback(
     (targetIndex: number) => {
@@ -94,7 +83,6 @@ export const MasonryRoot = () => {
       if (!target || target instanceof MasonryHeaderItem) return
 
       window.cancelAnimationFrame(focusRequestFrameRef.current)
-      setTabStopPhotoId(target.id)
 
       let attempts = 0
       let didRequestScroll = false
@@ -182,32 +170,19 @@ export const MasonryRoot = () => {
 
   const keyboardNavigationContext = useMemo<MasonryKeyboardNavigationContextValue>(
     () => ({
-      tabStopPhotoId: resolvedTabStopPhotoId,
-      onPhotoFocus: setTabStopPhotoId,
       onPhotoKeyDown: handlePhotoKeyDown,
     }),
-    [handlePhotoKeyDown, resolvedTabStopPhotoId],
+    [handlePhotoKeyDown],
   )
 
   // 动态计算列宽
   const columnWidth = useMemo(() => {
-    const { auto, min, max } = COLUMN_WIDTH_CONFIG
-    const gutter = 4 // 列间距
+    const { min, max } = COLUMN_WIDTH_CONFIG
+    const gutter = GALLERY_COLUMN_GUTTER
     const availableWidth = containerWidth - (isMobile ? 8 : 32) // 移动端和桌面端的 padding 不同
 
     if (columns === 'auto') {
-      const autoWidth = isMobile ? auto.mobile : auto.desktop
-      if (!isMobile) {
-        const { maxColumns } = auto
-        // 当屏幕宽度超过一定阈值时，通过计算动态列宽来限制最大列数
-        const colCount = Math.floor((availableWidth + gutter) / (autoWidth + gutter))
-
-        if (colCount > maxColumns) {
-          return (availableWidth - (maxColumns - 1) * gutter) / maxColumns
-        }
-      }
-
-      return autoWidth
+      return isMobile ? GALLERY_DEFAULT_COLUMN_WIDTH.mobile : GALLERY_DEFAULT_COLUMN_WIDTH.desktop
     }
 
     // 自定义列数模式：根据容器宽度和列数计算列宽
@@ -219,7 +194,7 @@ export const MasonryRoot = () => {
 
     return Math.max(Math.min(calculatedWidth, maxWidth), minWidth)
   }, [isMobile, columns, containerWidth])
-  const prefetchUpcomingThumbnails = useUpcomingThumbnailPrefetch()
+  const prefetchUpcomingThumbnails = useUpcomingThumbnailPrefetch(scrollElement)
 
   // 监听滚动，控制浮动组件的显示
   useEffect(() => {
@@ -266,6 +241,7 @@ export const MasonryRoot = () => {
           <Masonry<MasonryItemType>
             ref={masonryRef}
             items={masonryItems}
+            role="list"
             tabIndex={-1}
             render={useCallback(
               (props) => (
@@ -286,8 +262,9 @@ export const MasonryRoot = () => {
               [handleRender, prefetchUpcomingThumbnails],
             )}
             columnWidth={columnWidth}
-            columnGutter={4}
-            rowGutter={4}
+            maxColumnCount={columns === 'auto' ? GALLERY_MAX_COLUMNS : undefined}
+            columnGutter={GALLERY_COLUMN_GUTTER}
+            rowGutter={GALLERY_COLUMN_GUTTER}
             itemHeightEstimate={400}
             itemKey={useCallback((data, _index) => {
               if (data instanceof MasonryHeaderItem) {
@@ -340,13 +317,11 @@ export const MasonryItem = memo(
         opacity: 0,
         y: 30,
         scale: 0.95,
-        filter: 'blur(4px)',
       },
       visible: {
         opacity: 1,
         y: 0,
         scale: 1,
-        filter: 'blur(0px)',
         transition: {
           ...Spring.presets.smooth,
           delay,
@@ -369,8 +344,6 @@ export const MasonryItem = memo(
             data={data as PhotoManifest}
             width={width}
             index={index}
-            tabIndex={(data as PhotoManifest).id === keyboardNavigation.tabStopPhotoId ? 0 : -1}
-            onFocus={keyboardNavigation.onPhotoFocus}
             onKeyDown={keyboardNavigation.onPhotoKeyDown}
           />
         </m.div>

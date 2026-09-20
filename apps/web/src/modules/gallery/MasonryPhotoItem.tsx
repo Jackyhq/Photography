@@ -41,7 +41,7 @@ const PhotoErrorOverlay = () => {
 }
 
 const MasonryPhotoTitle = ({ title }: { title: string }) => {
-  return <h3 className="mb-2 truncate text-sm font-medium opacity-0 group-hover:opacity-100">{title}</h3>
+  return <h2 className="mb-2 truncate text-sm font-medium opacity-0 group-hover:opacity-100">{title}</h2>
 }
 
 const VideoMediaBadge = ({ formattedDuration }: { formattedDuration: string | null }) => {
@@ -111,12 +111,10 @@ interface MasonryPhotoItemProps {
   data: PhotoManifest
   width: number
   index: number
-  tabIndex: number
-  onFocus: (photoId: string) => void
   onKeyDown: (event: KeyboardEvent<HTMLAnchorElement>, index: number) => void
 }
 
-const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown }: MasonryPhotoItemProps) => {
+const MasonryPhotoItemBase = ({ data, width, index, onKeyDown }: MasonryPhotoItemProps) => {
   const { i18n } = useTranslation()
   usePhotoTextUpdates()
   const { openViewerByPhotoId } = useOpenPhotoViewer()
@@ -167,10 +165,6 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
     }
     event.preventDefault()
     openViewerByPhotoId(data.id, { element: itemRef.current ?? undefined })
-  }
-
-  const handleFocus = () => {
-    onFocus(data.id)
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLAnchorElement>) => {
@@ -466,9 +460,7 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
         height: calculatedHeight,
       }}
       data-photo-id={data.id}
-      tabIndex={tabIndex}
       onClick={handleClick}
-      onFocus={handleFocus}
       onKeyDown={handleKeyDown}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -477,8 +469,10 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
       onPointerCancel={handlePointerEnd}
       onPointerLeave={handlePointerEnd}
     >
-      {/* Blurhash 占位符 */}
-      {data.thumbHash && <Thumbhash thumbHash={data.thumbHash} className="absolute inset-0" />}
+      {/* The blurred preview is decorative and only needed while the photo loads. */}
+      {!imageLoaded && !imageError && data.thumbHash && (
+        <Thumbhash as="div" thumbHash={data.thumbHash} className="absolute inset-0" />
+      )}
 
       {!imageError && (
         <picture className="absolute inset-0 block h-full w-full">
@@ -489,7 +483,7 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
           <img
             src={data.thumbnailUrl}
             alt={photoAlt}
-            className={clsx('h-full w-full object-cover duration-300 group-hover:scale-105')}
+            className={clsx('h-full w-full object-cover transition-transform duration-300 group-hover:scale-105')}
             onLoad={handleImageLoad}
             onError={handleImageError}
             loading={isPriorityImage ? 'eager' : 'lazy'}
@@ -609,12 +603,21 @@ const MasonryPhotoItemBase = ({ data, width, index, tabIndex, onFocus, onKeyDown
 }
 
 export const MasonryPhotoItem = memo(
-  MasonryPhotoItemBase,
+  (props: MasonryPhotoItemProps) => (
+    <MasonryPhotoItemBase
+      // Reset image/video state and dispose pending media work when the source changes.
+      key={JSON.stringify([
+        props.data.id,
+        props.data.thumbnailUrl,
+        props.data.thumbnailSrcSet,
+        props.data.thumbnailWebpSrcSet,
+      ])}
+      {...props}
+    />
+  ),
   (previous, next) =>
     previous.data === next.data &&
     previous.width === next.width &&
     previous.index === next.index &&
-    previous.tabIndex === next.tabIndex &&
-    previous.onFocus === next.onFocus &&
     previous.onKeyDown === next.onKeyDown,
 )

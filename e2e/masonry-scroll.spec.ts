@@ -22,8 +22,8 @@ test('keeps scrolling photo clicks active while respecting a modal menu', async 
   try {
     const scrollingState = await firstPhoto.evaluate(async (photo) => {
       const scrollElement = photo.closest<HTMLElement>('[data-radix-scroll-area-viewport]')
-      const grid = photo.closest<HTMLElement>('[role="grid"]')
-      if (!scrollElement || !grid) throw new Error('Photo is missing its masonry scroll container')
+      const list = photo.closest<HTMLElement>('[role="list"]')
+      if (!scrollElement || !list) throw new Error('Photo is missing its masonry scroll container')
       if (scrollElement.scrollHeight <= scrollElement.clientHeight) throw new Error('Gallery must be scrollable')
 
       const previousScrollTop = scrollElement.scrollTop
@@ -36,7 +36,7 @@ test('keeps scrolling photo clicks active while respecting a modal menu', async 
         scrollElement.scrollTop += 4
       })
 
-      const style = getComputedStyle(grid)
+      const style = getComputedStyle(list)
       return {
         scrolled: scrollElement.scrollTop > previousScrollTop,
         willChange: style.willChange,
@@ -64,10 +64,10 @@ test('keeps scrolling photo clicks active while respecting a modal menu', async 
     .poll(() =>
       firstPhoto.evaluate((photo) => ({
         body: getComputedStyle(document.body).pointerEvents,
-        grid: getComputedStyle(photo.closest('[role="grid"]')!).pointerEvents,
+        list: getComputedStyle(photo.closest('[role="list"]')!).pointerEvents,
       })),
     )
-    .toEqual({ body: 'none', grid: 'none' })
+    .toEqual({ body: 'none', list: 'none' })
 
   const blockedPhotoBounds = await firstPhoto.boundingBox()
   const menuBounds = await menu.boundingBox()

@@ -2,15 +2,6 @@
 <html lang="en" data-theme="dark">
 
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5QBS0G1NGJ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-5QBS0G1NGJ');
-  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="<%- description %>" />
@@ -18,10 +9,23 @@
 
   <!-- PWA iOS Safari 配置 -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="<%- title %>" />
 
   <title><%- title %></title>
+  <!-- Queue analytics immediately; load gtag.js after the app mounts and the browser is idle. -->
+  <script id="analytics-bootstrap" data-measurement-id="G-5QBS0G1NGJ">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', document.currentScript.dataset.measurementId, {
+      page_location: window.location.href,
+      page_referrer: document.referrer,
+      page_title: document.title
+    });
+  </script>
   <script>
     (() => {
       const normalizeLanguage = (language) => {

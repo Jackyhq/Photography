@@ -7,6 +7,7 @@ import type { Plugin } from 'vite'
 import type { SiteConfig } from '../../../../site.config'
 import { MANIFEST_PATH } from './__internal__/constants'
 import { normalizeProductionThumbnail } from './__internal__/production-thumbnail'
+import { generateLlmsTxt } from './llms'
 import { generateSitemap } from './sitemap'
 
 type ReadManifest = () => string
@@ -55,6 +56,12 @@ export function createFeedSitemapPlugin(siteConfig: SiteConfig, readManifestFile
           type: 'asset',
           fileName: 'sitemap.xml',
           source: sitemapXml,
+        })
+
+        this.emitFile({
+          type: 'asset',
+          fileName: 'llms.txt',
+          source: generateLlmsTxt(siteConfig),
         })
 
         console.info(`Generated RSS feed with ${sortedPhotos.length} photos`)

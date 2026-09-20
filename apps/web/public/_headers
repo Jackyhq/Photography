@@ -1,3 +1,6 @@
+# These rules require hosting support for _headers. Configure equivalent
+# response policies separately when serving the build through ESA or OSS.
+
 /
   Cache-Control: public, max-age=0, must-revalidate
 
@@ -10,6 +13,9 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+/vendor/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /locales/*
   Cache-Control: public, max-age=31536000, immutable
 
@@ -18,4 +24,8 @@
 
 /photos-manifest.json
   Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=0, must-revalidate
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=0, must-revalidate

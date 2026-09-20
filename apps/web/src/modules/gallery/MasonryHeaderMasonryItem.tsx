@@ -31,6 +31,8 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
                 <AvatarPrimitive.Image
                   src={siteConfig.author.avatar}
                   alt={t('gallery.authorAvatar', { name: siteConfig.author.name })}
+                  width={64}
+                  height={64}
                   className="size-16 rounded-full"
                 />
                 <AvatarPrimitive.Fallback>
