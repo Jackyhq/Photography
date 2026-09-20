@@ -2,7 +2,7 @@
 title: Performance
 description: Mobile-first loading and image performance notes for Jacky's Photography.
 createdAt: 2026-04-27T00:00:00+01:00
-lastModified: 2026-09-07T12:13:37+08:00
+lastModified: 2026-09-20T09:43:06.250Z
 ---
 
 # Performance
@@ -42,7 +42,7 @@ The masonry gallery treats the first six items as first-screen candidates:
 
 ## Manifest Loading
 
-The build embeds a lightweight manifest into `index.html` for the gallery grid and emits the full manifest as a hashed JSON asset. It also emits the exact same production payload at the stable `/photos-manifest.json` path for external API consumers; that copy uses revalidation caching and allows cross-origin reads. The lightweight manifest keeps fields needed for sorting, filtering, thumbnails, localized descriptions, camera/lens display names, and first-screen rendering. Detail-heavy views fetch the hashed full manifest through `__FULL_MANIFEST_URL__` only when needed. The manifest inspection page can also fetch it during development, but that route is excluded from production builds.
+The build loads a hashed lightweight manifest script before the application module in `index.html` and emits the full manifest as a separate hashed JSON asset. It also emits the exact same full production payload at the stable `/photos-manifest.json` path for external API consumers; that copy uses revalidation caching and allows cross-origin reads. The lightweight manifest keeps fields needed for sorting, filtering, thumbnails, default Chinese descriptions, camera/lens display names, and first-screen rendering. English photo text loads separately for English, Japanese, and Korean interfaces. Detail views and the map fetch the hashed full manifest through `__FULL_MANIFEST_URL__` only when needed. The manifest inspection page can also fetch it during development, but that route is excluded from production builds.
 
 This keeps the initial viewport image budget low and avoids embedding detail-only metadata in the homepage payload.
 
@@ -77,6 +77,33 @@ pnpm run bundle:budget
 ```
 
 Use `pnpm --filter web analyze` when checking chunk boundaries. The home route should not eagerly include HEIC/TIFF converter chunks, command palette code, or the photo detail route.
+
+## Bundle Budgets
+
+`pnpm run bundle:budget` checks application code and gallery data separately, and reports the actual combined transfer size for each startup language and route. Adding photos or replacing repetitive placeholder captions with distinct descriptions increases the data payload even when application code stays unchanged.
+
+The fixed application budgets cover JavaScript, CSS, and interface translations:
+
+| Path                              | gzip    | Brotli  |
+| --------------------------------- | ------- | ------- |
+| Homepage, each supported language | 270 KiB | 235 KiB |
+| Photo viewer without GPS          | 130 KiB | 130 KiB |
+| Photo viewer with GPS             | 520 KiB | 445 KiB |
+| Map                               | 430 KiB | 380 KiB |
+
+The photo-viewer and map code budgets cover additional resources beyond the English homepage baseline. The GPS viewer and map include both the MapLibre main program and worker. Route reports show both additional transfer size and cumulative totals, including the homepage baseline and full metadata manifest.
+
+Gallery-data budgets use validated photo counts, a fixed overhead, and an absolute cap. The index and full manifest must contain the same unique, non-empty photo IDs. English text counts only entries with a non-empty title or description whose ID belongs to that gallery. The allowance never depends on the measured size of the asset being checked:
+
+| Asset                  | gzip allowance                                          | Brotli allowance                                        |
+| ---------------------- | ------------------------------------------------------- | ------------------------------------------------------- |
+| Startup index          | 8 KiB + 192 bytes per photo, capped at 128 KiB          | 6 KiB + 144 bytes per photo, capped at 96 KiB           |
+| English photo text     | 1 KiB + 80 bytes per translated photo, capped at 64 KiB | 1 KiB + 64 bytes per translated photo, capped at 48 KiB |
+| Full metadata manifest | 8 KiB + 384 bytes per photo, capped at 256 KiB          | 6 KiB + 288 bytes per photo, capped at 192 KiB          |
+
+Both sets of checks must pass. Increasing application code cannot consume unused photo-data allowance, and unusually large captions or EXIF data still fail their own limits. Individual heavy-chunk, service-worker precache, and generated photo-HTML checks remain separate.
+
+Pull-request CI uses a small public photo fixture, while production builds use the private gallery. Budget regression tests therefore also exercise 400 distinct synthetic metadata records, oversized data, and code growth. Before publishing changes to photo data or its loading path, run the budget check against the real gallery build as well as the fixture checks.
 
 ## Validation Checklist
 
