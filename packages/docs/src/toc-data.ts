@@ -457,6 +457,12 @@ export const tocData: FileToc[] = [
             children: [],
           },
           {
+            id: 'heading-bundle-budgets',
+            level: 2,
+            text: 'Bundle Budgets',
+            children: [],
+          },
+          {
             id: 'heading-validation-checklist',
             level: 2,
             text: 'Validation Checklist',

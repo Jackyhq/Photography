@@ -40,19 +40,66 @@ interface CompressedSize {
   brotli: number
 }
 
+type GalleryDataKind = 'index' | 'photoText' | 'fullManifest'
+
+interface GalleryDataPolicy {
+  name: string
+  fixed: Budget
+  perPhoto: Budget
+  maximum: Budget
+}
+
+interface GalleryDataCheck {
+  failures: string[]
+  consumers: Set<string>
+}
+
 const KiB = 1024
 const PHOTO_HTML_PAGE_BUDGET = 25 * KiB
 const PHOTO_HTML_TOTAL_BUDGET = 10 * 1024 * KiB
-const STARTUP_BUDGET: Budget = { gzip: 340 * KiB, brotli: 290 * KiB }
+const STARTUP_CODE_BUDGET: Budget = { gzip: 270 * KiB, brotli: 235 * KiB }
 const STARTUP_LOCALES = ['en', 'zh-CN', 'zh-HK', 'zh-TW', 'jp', 'ko'] as const
 const DEFAULT_STARTUP_LOCALE = 'en'
 const STARTUP_PHOTO_TEXT_LOCALES = new Set<(typeof STARTUP_LOCALES)[number]>(['en', 'jp', 'ko'])
 const FULL_MANIFEST_PATTERN = /^assets\/photos-manifest\.[\w-]+\.json$/
+const GALLERY_INDEX_PATTERN = /^assets\/photos-index\.[\w-]+\.js$/
 const MAPLIBRE_ASSET_PATTERN = /^assets\/maplibre-gl-[\w-]+\.js$/
 const MAPLIBRE_MAIN_ASSET_PATTERN = /^assets\/maplibre-gl-(?!worker-)[\w-]+\.js$/
 const MAPLIBRE_WORKER_ASSET_PATTERN = /^assets\/maplibre-gl-worker-[\w-]+\.js$/
 const HEIC_ASSET_PATTERN = /^vendor\/heic-[\w-]+\.js$/
 const STARTUP_PHOTO_TEXT_PATTERN = /^assets\/photo-text\.en\.[\w-]+\.json$/
+
+const GALLERY_DATA_POLICIES: Record<GalleryDataKind, GalleryDataPolicy> = {
+  index: {
+    name: 'gallery index data',
+    fixed: { gzip: 8 * KiB, brotli: 6 * KiB },
+    perPhoto: { gzip: 192, brotli: 144 },
+    maximum: { gzip: 128 * KiB, brotli: 96 * KiB },
+  },
+  photoText: {
+    name: 'English photo text data',
+    fixed: { gzip: KiB, brotli: KiB },
+    perPhoto: { gzip: 80, brotli: 64 },
+    maximum: { gzip: 64 * KiB, brotli: 48 * KiB },
+  },
+  fullManifest: {
+    name: 'full manifest data',
+    fixed: { gzip: 8 * KiB, brotli: 6 * KiB },
+    perPhoto: { gzip: 384, brotli: 288 },
+    maximum: { gzip: 256 * KiB, brotli: 192 * KiB },
+  },
+}
+
+export function getGalleryDataBudget(kind: GalleryDataKind, photoCount: number): Budget {
+  if (!Number.isSafeInteger(photoCount) || photoCount < 0) {
+    throw new Error('Gallery data budgets require a non-negative integer photo count')
+  }
+  const policy = GALLERY_DATA_POLICIES[kind]
+  return {
+    gzip: Math.min(policy.fixed.gzip + policy.perPhoto.gzip * photoCount, policy.maximum.gzip),
+    brotli: Math.min(policy.fixed.brotli + policy.perPhoto.brotli * photoCount, policy.maximum.brotli),
+  }
+}
 
 export const HOMEPAGE_STARTUP_SOURCE_PATTERNS = [
   /src\/pages\/\(main\)\/layout\.tsx$/,
@@ -97,7 +144,7 @@ const routeTargets: RouteBudgetTarget[] = [
     sourcePatterns: PHOTO_VIEWER_IMMEDIATE_SOURCE_PATTERNS,
     assetPatterns: [FULL_MANIFEST_PATTERN],
     includeDynamic: false,
-    budget: { gzip: 260 * KiB, brotli: 230 * KiB },
+    budget: { gzip: 130 * KiB, brotli: 130 * KiB },
   },
   {
     name: 'photo-viewer GPS route',
@@ -106,15 +153,14 @@ const routeTargets: RouteBudgetTarget[] = [
     sourcePatterns: PHOTO_VIEWER_GPS_SOURCE_PATTERNS,
     assetPatterns: [FULL_MANIFEST_PATTERN, MAPLIBRE_ASSET_PATTERN],
     includeDynamic: false,
-    // Carry the MapLibre v6 runtime's 30 KiB gzip allowance into this aggregate.
-    // The 389-photo gallery measures 612.4 KiB with its full metadata manifest.
-    budget: { gzip: 630 * KiB, brotli: 520 * KiB },
+    budget: { gzip: 520 * KiB, brotli: 445 * KiB },
   },
   {
     name: 'map route',
     sourcePatterns: [/src\/pages\/explory\/index\.tsx$/],
-    // Vite emits the worker outside the route's manifest import graph.
-    assetPatterns: [MAPLIBRE_ASSET_PATTERN],
+    // MapSection fetches the full manifest, while Vite emits the worker
+    // outside the route's manifest import graph. Count both explicitly.
+    assetPatterns: [FULL_MANIFEST_PATTERN, MAPLIBRE_ASSET_PATTERN],
     includeDynamic: true,
     budget: { gzip: 430 * KiB, brotli: 380 * KiB },
   },
@@ -128,6 +174,46 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
   const files = listFiles(distDir)
   const rows: string[] = []
   const failures: string[] = []
+  // Route totals, code budgets, and data budgets reuse many assets. Keep this
+  // cache local so another check sees rebuilt files rather than stale sizes.
+  const compressedSizes = new Map<string, CompressedSize>()
+  const measure = (assetFiles: string[]) => sumCompressedSizes(distDir, assetFiles, compressedSizes)
+  const dataChecks = new Map<string, GalleryDataCheck>()
+  const photoIds = readGalleryPhotoIds(distDir, files, failures)
+  const fullManifestFile = files.find((file) => FULL_MANIFEST_PATTERN.test(file))
+  const registerGalleryData = (kind: GalleryDataKind, file: string, count = photoIds?.size) => {
+    if (count === undefined) return
+    const { name } = GALLERY_DATA_POLICIES[kind]
+    const budget = getGalleryDataBudget(kind, count)
+    const size = measure([file])
+    const dataFailures: string[] = []
+    rows.push(formatBudgetRow(name, [file], size, budget))
+    appendCompressedFailures(dataFailures, name, size, budget)
+    dataChecks.set(file, { failures: dataFailures, consumers: new Set() })
+  }
+  if (photoIds && fullManifestFile) {
+    rows.push(`gallery data: ${photoIds.size} photos with unique IDs`)
+    registerGalleryData('fullManifest', fullManifestFile)
+  }
+
+  const checkRouteBudget = (name: string, routeFiles: string[], codeBudget: Budget, baselineFiles: string[] = []) => {
+    // Only validated, actually referenced data assets are excluded from code.
+    const codeFiles = routeFiles.filter((file) => !dataChecks.has(file))
+    const codeSize = measure(codeFiles)
+    const totalFiles = Array.from(new Set([...baselineFiles, ...routeFiles]))
+    const totalSize = measure(totalFiles)
+    const incrementalSize = measure(routeFiles)
+    const navigationContext =
+      baselineFiles.length > 0
+        ? `; includes English homepage baseline; additional ${formatBytes(incrementalSize.gzip)} gzip / ${formatBytes(incrementalSize.brotli)} brotli`
+        : ''
+    rows.push(
+      `${name}: ${formatBytes(totalSize.raw)} raw, ${formatBytes(totalSize.gzip)} gzip, ${formatBytes(totalSize.brotli)} brotli total (${totalFiles.length} files${navigationContext})`,
+      formatBudgetRow(`${name} code`, codeFiles, codeSize, codeBudget),
+    )
+    appendCompressedFailures(failures, `${name} code`, codeSize, codeBudget)
+    for (const file of routeFiles) dataChecks.get(file)?.consumers.add(name)
+  }
   const indexPath = path.join(distDir, 'index.html')
   const viteManifestPath = path.join(distDir, '.vite/manifest.json')
 
@@ -139,7 +225,7 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     const viteManifest = JSON.parse(readFileSync(viteManifestPath, 'utf-8')) as ViteManifest
     const indexHtml = readFileSync(indexPath, 'utf-8')
     const indexStartupFiles = collectStartupFiles(indexHtml)
-    const manifestBootstrapFiles = indexStartupFiles.filter((file) => /^assets\/photos-index\.[\w-]+\.js$/.test(file))
+    const manifestBootstrapFiles = indexStartupFiles.filter((file) => GALLERY_INDEX_PATTERN.test(file))
     let startupPhotoTextFile: string | undefined
 
     if (manifestBootstrapFiles.length !== 1) {
@@ -147,7 +233,11 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     } else {
       const manifestBootstrapFile = manifestBootstrapFiles[0]
       if (files.includes(manifestBootstrapFile)) {
-        const photoTextUrls = parsePhotoTextUrls(readFileSync(path.join(distDir, manifestBootstrapFile), 'utf-8'))
+        const source = readFileSync(path.join(distDir, manifestBootstrapFile), 'utf-8')
+        if (photoIds && fullManifestFile && validateManifestBootstrap(source, fullManifestFile, photoIds, failures)) {
+          registerGalleryData('index', manifestBootstrapFile)
+        }
+        const photoTextUrls = parsePhotoTextUrls(source)
         if (photoTextUrls === null) {
           failures.push('Manifest bootstrap has a missing or invalid photo-text URL map')
         } else if (photoTextUrls.en) {
@@ -166,6 +256,9 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
       }
       if (emittedStartupPhotoTextFiles.length !== 1 || emittedStartupPhotoTextFiles[0] !== startupPhotoTextFile) {
         failures.push(`Declared startup photo text asset is missing: ${startupPhotoTextFile}`)
+      } else if (photoIds) {
+        const textCount = readPhotoTextCount(distDir, startupPhotoTextFile, photoIds, failures)
+        if (textCount !== undefined) registerGalleryData('photoText', startupPhotoTextFile, textCount)
       }
     } else if (emittedStartupPhotoTextFiles.length > 0) {
       failures.push('Found an English photo text asset that is not declared by the manifest bootstrap')
@@ -208,19 +301,19 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
         new Set([
           ...existingStartupBaseFiles,
           ...localeChainFiles.filter((file): file is string => !!file),
-          ...(STARTUP_PHOTO_TEXT_LOCALES.has(locale) && startupPhotoTextFile ? [startupPhotoTextFile] : []),
+          ...(STARTUP_PHOTO_TEXT_LOCALES.has(locale) && startupPhotoTextFile && files.includes(startupPhotoTextFile)
+            ? [startupPhotoTextFile]
+            : []),
         ]),
       ).sort()
-      const startupSize = sumCompressedSizes(distDir, startupFiles)
       const budgetName = `homepage startup (${locale})`
-      rows.push(formatBudgetRow(budgetName, startupFiles, startupSize, STARTUP_BUDGET))
-      appendCompressedFailures(failures, budgetName, startupSize, STARTUP_BUDGET)
+      checkRouteBudget(budgetName, startupFiles, STARTUP_CODE_BUDGET)
     }
 
     const baseline = new Set([
       ...existingStartupBaseFiles,
       ...(defaultLocaleFile ? [defaultLocaleFile] : []),
-      ...(startupPhotoTextFile ? [startupPhotoTextFile] : []),
+      ...(startupPhotoTextFile && files.includes(startupPhotoTextFile) ? [startupPhotoTextFile] : []),
     ])
     for (const target of routeTargets) {
       const matchedSources = findManifestKeys(viteManifest, target.sourcePatterns)
@@ -247,10 +340,14 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
           ...matchedAssets,
         ]),
       ).filter((file) => !baseline.has(file))
-      const size = sumCompressedSizes(distDir, routeFiles)
-      rows.push(formatBudgetRow(target.name, routeFiles, size, target.budget))
-      appendCompressedFailures(failures, target.name, size, target.budget)
+      checkRouteBudget(target.name, routeFiles, target.budget, Array.from(baseline))
     }
+  }
+
+  for (const check of dataChecks.values()) {
+    const consumers = Array.from(check.consumers)
+    const context = consumers.length > 0 ? ` (loaded by ${consumers.join(', ')})` : ''
+    failures.push(...check.failures.map((failure) => `${failure}${context}`))
   }
 
   for (const target of chunkTargets) {
@@ -262,7 +359,7 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
 
     // Sum every matching chunk so a split cannot make the check pass by only
     // measuring the largest fragment.
-    const size = sumCompressedSizes(distDir, candidates)
+    const size = measure(candidates)
     rows.push(formatBudgetRow(target.name, candidates, size, target.budget))
     appendCompressedFailures(failures, target.name, size, target.budget)
   }
@@ -434,13 +531,154 @@ function appendCompressedFailures(failures: string[], name: string, size: Compre
   }
 }
 
-function sumCompressedSizes(distDir: string, files: string[]): CompressedSize {
+function readGalleryPhotoIds(distDir: string, files: string[], failures: string[]): Set<string> | undefined {
+  const manifests = files.filter((file) => FULL_MANIFEST_PATTERN.test(file))
+  if (manifests.length !== 1) {
+    failures.push(`Expected one full manifest data asset, found ${manifests.length}`)
+    return
+  }
+
+  const file = manifests[0]
+  let manifest: unknown
+  try {
+    manifest = JSON.parse(readFileSync(path.join(distDir, file), 'utf-8'))
+  } catch {
+    failures.push(`Invalid full manifest JSON: ${file}`)
+    return
+  }
+
+  return getManifestPhotoIds(manifest, `Full manifest ${file}`, failures)
+}
+
+function getManifestPhotoIds(manifest: unknown, label: string, failures: string[]): Set<string> | undefined {
+  if (!manifest || typeof manifest !== 'object' || !('data' in manifest) || !Array.isArray(manifest.data)) {
+    failures.push(`${label} must contain a data array`)
+    return
+  }
+
+  const ids = new Set<string>()
+  for (const photo of manifest.data) {
+    if (
+      !photo ||
+      typeof photo !== 'object' ||
+      Array.isArray(photo) ||
+      typeof photo.id !== 'string' ||
+      !photo.id.trim()
+    ) {
+      failures.push(`${label} must contain photos with non-empty string IDs`)
+      return
+    }
+    if (ids.has(photo.id)) {
+      failures.push(`${label} contains duplicate photo ID ${JSON.stringify(photo.id)}`)
+      return
+    }
+    ids.add(photo.id)
+  }
+
+  return ids
+}
+
+function validateManifestBootstrap(
+  source: string,
+  fullManifestFile: string,
+  photoIds: Set<string>,
+  failures: string[],
+): boolean {
+  const indexMarker = 'window.__MANIFEST__='
+  const fullMarker = ';window.__FULL_MANIFEST_URL__='
+  const textMarker = ';window.__PHOTO_TEXT_URLS__='
+  const fullIndex = source.lastIndexOf(fullMarker)
+  const textIndex = source.lastIndexOf(textMarker)
+  if (!source.startsWith(indexMarker) || fullIndex < indexMarker.length || textIndex <= fullIndex) {
+    failures.push('Manifest bootstrap has invalid data assignments')
+    return false
+  }
+
+  let index: unknown
+  let fullUrl: unknown
+  try {
+    // The producer writes these JSON assignments in this order. Parse the
+    // literals only; never evaluate the generated JavaScript during validation.
+    index = JSON.parse(source.slice(indexMarker.length, fullIndex))
+    fullUrl = JSON.parse(source.slice(fullIndex + fullMarker.length, textIndex))
+  } catch {
+    failures.push('Manifest bootstrap has invalid manifest JSON or full-manifest URL')
+    return false
+  }
+  if (typeof fullUrl !== 'string' || toLocalDistPath(fullUrl) !== fullManifestFile) {
+    failures.push('Manifest bootstrap full-manifest URL does not match the emitted full manifest')
+    return false
+  }
+  const indexIds = getManifestPhotoIds(index, 'Manifest bootstrap index', failures)
+  if (!indexIds) return false
+  if (indexIds.size !== photoIds.size || Array.from(indexIds).some((id) => !photoIds.has(id))) {
+    failures.push('Manifest bootstrap index and full manifest have different photo IDs')
+    return false
+  }
+  return true
+}
+
+function readPhotoTextCount(
+  distDir: string,
+  file: string,
+  photoIds: Set<string>,
+  failures: string[],
+): number | undefined {
+  let pack: unknown
+  try {
+    pack = JSON.parse(readFileSync(path.join(distDir, file), 'utf-8'))
+  } catch {
+    failures.push(`Invalid English photo text JSON: ${file}`)
+    return
+  }
+  if (
+    !pack ||
+    typeof pack !== 'object' ||
+    !('language' in pack) ||
+    pack.language !== 'en' ||
+    !('photos' in pack) ||
+    !pack.photos ||
+    typeof pack.photos !== 'object' ||
+    Array.isArray(pack.photos)
+  ) {
+    failures.push(`English photo text pack must contain an en language and photos object: ${file}`)
+    return
+  }
+  const entries = Object.entries(pack.photos)
+  for (const [id, text] of entries) {
+    if (!photoIds.has(id)) {
+      failures.push(`English photo text contains unknown photo ID ${JSON.stringify(id)}: ${file}`)
+      return
+    }
+    if (
+      !text ||
+      typeof text !== 'object' ||
+      Array.isArray(text) ||
+      !['title', 'description'].some((field) => typeof text[field] === 'string' && text[field].trim())
+    ) {
+      failures.push(`English photo text contains an empty or invalid entry for ${JSON.stringify(id)}: ${file}`)
+      return
+    }
+  }
+  return entries.length
+}
+
+function sumCompressedSizes(distDir: string, files: string[], cache: Map<string, CompressedSize>): CompressedSize {
   return files.reduce<CompressedSize>(
     (total, file) => {
-      const source = readFileSync(path.join(distDir, file))
-      total.raw += source.byteLength
-      total.gzip += gzipSync(source).byteLength
-      total.brotli += brotliCompressSync(source).byteLength
+      let size = cache.get(file)
+      if (!size) {
+        const source = readFileSync(path.join(distDir, file))
+        size = {
+          raw: source.byteLength,
+          gzip: gzipSync(source).byteLength,
+          brotli: brotliCompressSync(source).byteLength,
+        }
+        cache.set(file, size)
+      }
+      total.raw += size.raw
+      total.gzip += size.gzip
+      total.brotli += size.brotli
       return total
     },
     { raw: 0, gzip: 0, brotli: 0 },
