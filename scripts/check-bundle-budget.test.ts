@@ -267,6 +267,7 @@ describe('bundle budget graph helpers', () => {
 })
 
 describe('gallery data and code budgets', () => {
+  // Real Brotli compression needs extra time on coverage-instrumented CI runners.
   it('accepts 400 distinct bilingual photos with EXIF and reports data plus route traffic separately', () => {
     const directory = createBudgetFixture(400)
     const result = checkBundleBudget(directory)
@@ -294,7 +295,7 @@ describe('gallery data and code budgets', () => {
     expect(changed.rows.find((row) => row.startsWith('map route code:'))).toBe(
       result.rows.find((row) => row.startsWith('map route code:')),
     )
-  })
+  }, 15_000)
 
   it.each([
     {
@@ -349,6 +350,7 @@ describe('gallery data and code budgets', () => {
     expect(result.failures.every((failure) => failure.startsWith('homepage startup'))).toBe(true)
   })
 
+  // Keep the real compression check while allowing slower coverage CI workers.
   it('caps data allowances even when the gallery keeps growing', () => {
     expect(getGalleryDataBudget('index', 10_000)).toEqual({ gzip: 128 * 1024, brotli: 96 * 1024 })
     expect(getGalleryDataBudget('photoText', 10_000)).toEqual({ gzip: 64 * 1024, brotli: 48 * 1024 })
@@ -361,7 +363,7 @@ describe('gallery data and code budgets', () => {
       expect.arrayContaining([expect.stringMatching(/^gallery index data gzip .* exceeds 128\.0 KiB/)]),
     )
     expect(failures.every((failure) => failure.startsWith('gallery index data'))).toBe(true)
-  })
+  }, 15_000)
 
   it('keeps fixed overhead allowances for empty galleries and empty English packs', () => {
     expect(getGalleryDataBudget('index', 0)).toEqual({ gzip: 8192, brotli: 6144 })
