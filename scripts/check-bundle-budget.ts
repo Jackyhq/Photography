@@ -58,6 +58,7 @@ const KiB = 1024
 const PHOTO_HTML_PAGE_BUDGET = 25 * KiB
 const PHOTO_HTML_TOTAL_BUDGET = 10 * 1024 * KiB
 const STARTUP_CODE_BUDGET: Budget = { gzip: 270 * KiB, brotli: 235 * KiB }
+const MOBILE_STARTUP_CODE_BUDGET: Budget = { gzip: 245 * KiB, brotli: 215 * KiB }
 const STARTUP_LOCALES = ['en', 'zh-CN', 'zh-HK', 'zh-TW', 'jp', 'ko'] as const
 const DEFAULT_STARTUP_LOCALE = 'en'
 const STARTUP_PHOTO_TEXT_LOCALES = new Set<(typeof STARTUP_LOCALES)[number]>(['en', 'jp', 'ko'])
@@ -102,8 +103,13 @@ export function getGalleryDataBudget(kind: GalleryDataKind, photoCount: number):
 }
 
 export const HOMEPAGE_STARTUP_SOURCE_PATTERNS = [
-  /src\/pages\/\(main\)\/layout\.tsx$/,
-  /src\/modules\/gallery\/GalleryRouteContent\.tsx$/,
+  /src\/pages\/\(main\)\/layout\.tsx$|^layout$/,
+  /GalleryRouteContent(?:\.tsx)?$/,
+]
+
+export const DESKTOP_GALLERY_SOURCE_PATTERNS = [
+  /src\/modules\/gallery\/DesktopGalleryScrollArea\.tsx$/,
+  /src\/modules\/gallery\/components\/DesktopActionButton\.tsx$/,
 ]
 
 export const PHOTO_VIEWER_IMMEDIATE_SOURCE_PATTERNS = [
@@ -136,6 +142,14 @@ const chunkTargets: ChunkBudgetTarget[] = [
 ]
 
 const routeTargets: RouteBudgetTarget[] = [
+  {
+    // This runs automatically when idle; budget it separately from critical
+    // homepage code so moving work after first paint cannot hide its cost.
+    name: 'homepage idle notifications',
+    sourcePatterns: [/packages\/ui\/src\/sonner\.tsx$/],
+    includeDynamic: false,
+    budget: { gzip: 20 * KiB, brotli: 17 * KiB },
+  },
   {
     name: 'photo-viewer base route',
     // ExifPanel and its raw-EXIF trigger render as soon as the desktop viewer
@@ -205,7 +219,7 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
     const incrementalSize = measure(routeFiles)
     const navigationContext =
       baselineFiles.length > 0
-        ? `; includes English homepage baseline; additional ${formatBytes(incrementalSize.gzip)} gzip / ${formatBytes(incrementalSize.brotli)} brotli`
+        ? `; includes English desktop homepage baseline; additional ${formatBytes(incrementalSize.gzip)} gzip / ${formatBytes(incrementalSize.brotli)} brotli`
         : ''
     rows.push(
       `${name}: ${formatBytes(totalSize.raw)} raw, ${formatBytes(totalSize.gzip)} gzip, ${formatBytes(totalSize.brotli)} brotli total (${totalFiles.length} files${navigationContext})`,
@@ -274,7 +288,13 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
         return [locale, matches[0]] as const
       }),
     )
-    const startupBaseFiles = Array.from(
+    const homepageSources = findManifestKeys(viteManifest, HOMEPAGE_STARTUP_SOURCE_PATTERNS)
+    if (homepageSources.length !== HOMEPAGE_STARTUP_SOURCE_PATTERNS.length) {
+      failures.push(
+        `Missing homepage source: expected ${HOMEPAGE_STARTUP_SOURCE_PATTERNS.length}, found ${homepageSources.length}`,
+      )
+    }
+    const mobileStartupBaseFiles = Array.from(
       new Set([
         ...indexStartupFiles,
         // GalleryRouteContent is conditionally imported so direct photo routes
@@ -285,11 +305,31 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
         }),
       ]),
     ).sort()
+    const desktopSources = findManifestKeys(viteManifest, DESKTOP_GALLERY_SOURCE_PATTERNS)
+    if (desktopSources.length !== DESKTOP_GALLERY_SOURCE_PATTERNS.length) {
+      failures.push(
+        `Missing desktop gallery source: expected ${DESKTOP_GALLERY_SOURCE_PATTERNS.length}, found ${desktopSources.length}`,
+      )
+    }
+    const desktopFiles = collectManifestRouteFiles(viteManifest, DESKTOP_GALLERY_SOURCE_PATTERNS, {
+      includeEntries: false,
+      includeDynamic: false,
+    })
+    // These lazy modules render immediately on desktop. Keep counting them there
+    // even though mobile no longer downloads their static dependency graph.
+    const startupBaseFiles = Array.from(new Set([...mobileStartupBaseFiles, ...desktopFiles])).sort()
+    for (const key of desktopSources) {
+      const { file } = viteManifest[key]
+      if (mobileStartupBaseFiles.includes(file)) {
+        failures.push(`Desktop gallery module is unexpectedly included in mobile startup: ${file}`)
+      }
+    }
     const missingStartupFiles = startupBaseFiles.filter((file) => !files.includes(file))
     failures.push(...missingStartupFiles.map((file) => `Missing startup asset: ${file}`))
 
     const existingStartupBaseFiles = startupBaseFiles.filter((file) => files.includes(file))
     const defaultLocaleFile = startupLocaleFiles.get(DEFAULT_STARTUP_LOCALE)
+    let defaultStartupFiles = existingStartupBaseFiles
     for (const locale of STARTUP_LOCALES) {
       const localeFile = startupLocaleFiles.get(locale)
       if (!localeFile) continue
@@ -297,24 +337,29 @@ export function checkBundleBudget(distDir: string): { rows: string[]; failures: 
       // Include English as a conservative fallback for non-English startup paths.
       // This catches regressions even when i18next's exact fallback hierarchy changes.
       const localeChainFiles = locale === DEFAULT_STARTUP_LOCALE ? [localeFile] : [defaultLocaleFile, localeFile]
-      const startupFiles = Array.from(
-        new Set([
-          ...existingStartupBaseFiles,
-          ...localeChainFiles.filter((file): file is string => !!file),
-          ...(STARTUP_PHOTO_TEXT_LOCALES.has(locale) && startupPhotoTextFile && files.includes(startupPhotoTextFile)
-            ? [startupPhotoTextFile]
-            : []),
-        ]),
-      ).sort()
+      const localeFiles = localeChainFiles.filter((file): file is string => !!file)
+      const localizedFiles = [
+        ...localeFiles,
+        ...collectManifestRouteFiles(viteManifest, [], {
+          includeEntries: false,
+          includeDynamic: false,
+          entryFiles: localeFiles,
+        }),
+        ...(STARTUP_PHOTO_TEXT_LOCALES.has(locale) && startupPhotoTextFile && files.includes(startupPhotoTextFile)
+          ? [startupPhotoTextFile]
+          : []),
+      ]
+      const startupFiles = Array.from(new Set([...existingStartupBaseFiles, ...localizedFiles])).sort()
+      if (locale === DEFAULT_STARTUP_LOCALE) defaultStartupFiles = startupFiles
       const budgetName = `homepage startup (${locale})`
       checkRouteBudget(budgetName, startupFiles, STARTUP_CODE_BUDGET)
+      const mobileStartupFiles = Array.from(
+        new Set([...mobileStartupBaseFiles.filter((file) => files.includes(file)), ...localizedFiles]),
+      ).sort()
+      checkRouteBudget(`mobile homepage startup (${locale})`, mobileStartupFiles, MOBILE_STARTUP_CODE_BUDGET)
     }
 
-    const baseline = new Set([
-      ...existingStartupBaseFiles,
-      ...(defaultLocaleFile ? [defaultLocaleFile] : []),
-      ...(startupPhotoTextFile && files.includes(startupPhotoTextFile) ? [startupPhotoTextFile] : []),
-    ])
+    const baseline = new Set(defaultStartupFiles)
     for (const target of routeTargets) {
       const matchedSources = findManifestKeys(viteManifest, target.sourcePatterns)
       if (matchedSources.length !== target.sourcePatterns.length) {
@@ -456,13 +501,11 @@ export function parsePhotoTextUrls(bootstrapSource: string): Record<string, stri
 export function collectManifestRouteFiles(
   manifest: ViteManifest,
   sourcePatterns: RegExp[],
-  options: { includeEntries: boolean; includeDynamic: boolean },
+  options: { includeEntries: boolean; includeDynamic: boolean; entryFiles?: string[] },
 ): Set<string> {
   const seeds = new Set(findManifestKeys(manifest, sourcePatterns))
-  if (options.includeEntries) {
-    for (const [key, chunk] of Object.entries(manifest)) {
-      if (chunk.isEntry) seeds.add(key)
-    }
+  for (const [key, chunk] of Object.entries(manifest)) {
+    if ((options.includeEntries && chunk.isEntry) || options.entryFiles?.includes(chunk.file)) seeds.add(key)
   }
 
   const files = new Set<string>()

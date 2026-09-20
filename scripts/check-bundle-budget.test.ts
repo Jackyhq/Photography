@@ -267,6 +267,95 @@ describe('bundle budget graph helpers', () => {
 })
 
 describe('gallery data and code budgets', () => {
+  it('counts homepage chunks that Rollup exposes by name without their original source paths', () => {
+    const directory = createBudgetFixture()
+    const manifest = readJson(directory, '.vite/manifest.json') as ViteManifest
+    for (const [source, name] of [
+      ['src/pages/(main)/layout.tsx', 'layout'],
+      ['src/modules/gallery/GalleryRouteContent.tsx', 'GalleryRouteContent'],
+    ]) {
+      const chunk = manifest[source]
+      delete chunk.src
+      chunk.name = name
+      manifest[`_${name}-main.js`] = chunk
+      delete manifest[source]
+    }
+    manifest['_layout-main.js'].dynamicImports = ['_GalleryRouteContent-main.js']
+    writeJson(directory, '.vite/manifest.json', manifest)
+    expect(checkBundleBudget(directory).failures).toEqual([])
+  })
+
+  it('counts locale dependencies in mobile even when desktop imports the same shared chunk', () => {
+    const directory = createBudgetFixture()
+    const before = checkBundleBudget(directory)
+    const manifest = readJson(directory, '.vite/manifest.json') as ViteManifest
+    manifest['locales/en.json'] = { file: 'assets/en-main.js', imports: ['locale-shared.js'] }
+    manifest['locale-shared.js'] = { file: 'assets/locale-shared.js' }
+    manifest['src/modules/gallery/components/DesktopActionButton.tsx'].imports = ['locale-shared.js']
+    writeJson(directory, '.vite/manifest.json', manifest)
+    writeFileSync(path.join(directory, 'assets/locale-shared.js'), deterministicBytes(20 * 1024))
+    const after = checkBundleBudget(directory)
+    expect(after.failures).toEqual([])
+    for (const locale of ['en', 'zh-CN']) {
+      const prefix = `mobile homepage startup (${locale}) code:`
+      expect(after.rows.find((row) => row.startsWith(prefix))).not.toBe(
+        before.rows.find((row) => row.startsWith(prefix)),
+      )
+    }
+  })
+
+  it('counts deferred desktop dependencies without charging them to mobile startup', () => {
+    const directory = createBudgetFixture()
+    const before = checkBundleBudget(directory)
+    expect(before.failures).toEqual([])
+    writeFileSync(path.join(directory, 'assets/DesktopActionButton-main.js'), deterministicBytes(300 * 1024))
+
+    const after = checkBundleBudget(directory)
+    expect(after.failures).toEqual(
+      expect.arrayContaining([expect.stringMatching(/^homepage startup \(en\) code gzip .* exceeds/)]),
+    )
+    expect(after.failures.some((failure) => failure.startsWith('mobile homepage startup'))).toBe(false)
+    expect(after.rows.filter((row) => row.startsWith('mobile homepage startup'))).toEqual(
+      before.rows.filter((row) => row.startsWith('mobile homepage startup')),
+    )
+  })
+
+  it('rejects desktop modules that become static homepage dependencies', () => {
+    const directory = createBudgetFixture()
+    const manifest = readJson(directory, '.vite/manifest.json') as ViteManifest
+    manifest['src/pages/(main)/layout.tsx'].imports = ['src/modules/gallery/components/DesktopActionButton.tsx']
+    writeJson(directory, '.vite/manifest.json', manifest)
+    expect(checkBundleBudget(directory).failures).toContain(
+      'Desktop gallery module is unexpectedly included in mobile startup: assets/DesktopActionButton-main.js',
+    )
+  })
+
+  it('requires the desktop entry points so lazy splitting cannot silently bypass their budgets', () => {
+    const directory = createBudgetFixture()
+    const manifest = readJson(directory, '.vite/manifest.json') as ViteManifest
+    delete manifest['src/modules/gallery/DesktopGalleryScrollArea.tsx']
+    writeJson(directory, '.vite/manifest.json', manifest)
+    expect(checkBundleBudget(directory).failures).toContain('Missing desktop gallery source: expected 2, found 1')
+  })
+
+  it('requires the common gallery entry point to keep both startup graphs complete', () => {
+    const directory = createBudgetFixture()
+    const manifest = readJson(directory, '.vite/manifest.json') as ViteManifest
+    delete manifest['src/modules/gallery/GalleryRouteContent.tsx']
+    writeJson(directory, '.vite/manifest.json', manifest)
+    expect(checkBundleBudget(directory).failures).toContain('Missing homepage source: expected 2, found 1')
+  })
+
+  it('keeps automatically loaded idle notifications within a separate code budget', () => {
+    const directory = createBudgetFixture()
+    writeFileSync(path.join(directory, 'assets/sonner-main.js'), deterministicBytes(30 * 1024))
+    const { failures } = checkBundleBudget(directory)
+    expect(failures).toEqual(
+      expect.arrayContaining([expect.stringMatching(/^homepage idle notifications code gzip .* exceeds/)]),
+    )
+    expect(failures.every((failure) => failure.startsWith('homepage idle notifications'))).toBe(true)
+  })
+
   // Real Brotli compression needs extra time on coverage-instrumented CI runners.
   it('accepts 400 distinct bilingual photos with EXIF and reports data plus route traffic separately', () => {
     const directory = createBudgetFixture(400)
@@ -280,7 +369,7 @@ describe('gallery data and code budgets', () => {
         expect.stringMatching(/^English photo text data: .* \/ 32\.3 KiB gzip, .* \/ 26\.0 KiB brotli/),
         expect.stringMatching(/^full manifest data: .* \/ 158\.0 KiB gzip, .* \/ 118\.5 KiB brotli/),
         expect.stringMatching(/^homepage startup \(jp\) code: .* \/ 270\.0 KiB gzip/),
-        expect.stringMatching(/^map route: .*includes English homepage baseline; additional/),
+        expect.stringMatching(/^map route: .*includes English desktop homepage baseline; additional/),
       ]),
     )
     // The map's full metadata is not part of the Vite import graph, but its
@@ -334,6 +423,7 @@ describe('gallery data and code budgets', () => {
     }
   })
 
+  // Compressing a 400-photo fixture and high-entropy code is slower under coverage.
   it('rejects application code growth without charging it to gallery data', () => {
     const directory = createBudgetFixture(400)
     writeFileSync(
@@ -347,8 +437,8 @@ describe('gallery data and code budgets', () => {
         expect.arrayContaining([expect.stringMatching(`^homepage startup \\(${locale}\\) code gzip .* exceeds`)]),
       )
     }
-    expect(result.failures.every((failure) => failure.startsWith('homepage startup'))).toBe(true)
-  })
+    expect(result.failures.every((failure) => /^(?:mobile )?homepage startup/.test(failure))).toBe(true)
+  }, 15_000)
 
   // Keep the real compression check while allowing slower coverage CI workers.
   it('caps data allowances even when the gallery keeps growing', () => {
@@ -455,6 +545,27 @@ function createBudgetFixture(photoCount = 0): string {
     'src/pages/(main)/layout.tsx': {
       file: 'assets/layout-main.js',
       src: 'src/pages/(main)/layout.tsx',
+      dynamicImports: ['src/modules/gallery/GalleryRouteContent.tsx'],
+    },
+    'src/modules/gallery/GalleryRouteContent.tsx': {
+      file: 'assets/GalleryRouteContent-main.js',
+      src: 'src/modules/gallery/GalleryRouteContent.tsx',
+      dynamicImports: [
+        'src/modules/gallery/DesktopGalleryScrollArea.tsx',
+        'src/modules/gallery/components/DesktopActionButton.tsx',
+      ],
+    },
+    '../../packages/ui/src/sonner.tsx': {
+      file: 'assets/sonner-main.js',
+      src: '../../packages/ui/src/sonner.tsx',
+    },
+    'src/modules/gallery/DesktopGalleryScrollArea.tsx': {
+      file: 'assets/DesktopGalleryScrollArea-main.js',
+      src: 'src/modules/gallery/DesktopGalleryScrollArea.tsx',
+    },
+    'src/modules/gallery/components/DesktopActionButton.tsx': {
+      file: 'assets/DesktopActionButton-main.js',
+      src: 'src/modules/gallery/components/DesktopActionButton.tsx',
     },
     '_PhotoViewer.js': {
       file: 'assets/PhotoViewer-main.js',
@@ -486,6 +597,10 @@ function createBudgetFixture(photoCount = 0): string {
   for (const file of [
     'index-main.js',
     'layout-main.js',
+    'GalleryRouteContent-main.js',
+    'sonner-main.js',
+    'DesktopGalleryScrollArea-main.js',
+    'DesktopActionButton-main.js',
     'en-main.js',
     'zh-CN-main.js',
     'zh-HK-main.js',

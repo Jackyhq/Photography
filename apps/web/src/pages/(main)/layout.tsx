@@ -5,6 +5,7 @@ import { Outlet, useLocation, useNavigate, useParams, useSearchParams } from 're
 import { gallerySettingAtom } from '~/atoms/app'
 import { siteConfig } from '~/config'
 import { getFilteredPhotos, useOpenPhotoViewer, usePhotos, usePhotoViewer } from '~/hooks/usePhotoViewer'
+import { GALLERY_MOBILE_BREAKPOINT } from '~/lib/gallery-layout'
 import { getPhotoDetailPath } from '~/lib/photo-route'
 import { PhotosProvider } from '~/providers/photos-provider'
 
@@ -17,6 +18,14 @@ const GalleryRouteContent = lazy(loadGalleryRouteContent)
 
 if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/photos/')) {
   void loadGalleryRouteContent().catch(() => null)
+  // Start desktop dependencies alongside the gallery, rather than waiting for
+  // the gallery chunk to execute. Direct photo visits keep skipping this work.
+  if (window.innerWidth >= GALLERY_MOBILE_BREAKPOINT) {
+    void Promise.all([
+      import('~/modules/gallery/DesktopGalleryScrollArea'),
+      import('~/modules/gallery/components/DesktopActionButton'),
+    ]).catch(() => null)
+  }
 }
 
 export const Component = () => {

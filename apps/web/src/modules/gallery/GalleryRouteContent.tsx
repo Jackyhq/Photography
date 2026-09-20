@@ -1,9 +1,14 @@
-import { ScrollArea, ScrollElementContext } from '@afilmory/ui/scroll-areas'
+import { ScrollElementContext } from '@afilmory/ui/scroll-areas/context'
+import { lazy, Suspense } from 'react'
 
 import { useMobile } from '~/hooks/useMobile'
 import { usePhotoViewerState } from '~/hooks/usePhotoViewer'
 
 import { MasonryRoot } from './MasonryRoot'
+
+const loadDesktopScrollArea = () =>
+  import('./DesktopGalleryScrollArea').then((module) => ({ default: module.DesktopGalleryScrollArea }))
+const DesktopGalleryScrollArea = lazy(loadDesktopScrollArea)
 
 export const GalleryRouteContent = () => {
   const isMobile = useMobile()
@@ -16,9 +21,11 @@ export const GalleryRouteContent = () => {
           <MasonryRoot />
         </ScrollElementContext>
       ) : (
-        <ScrollArea rootClassName="h-svh w-full" viewportClassName="size-full">
-          <MasonryRoot />
-        </ScrollArea>
+        <Suspense fallback={null}>
+          <DesktopGalleryScrollArea>
+            <MasonryRoot />
+          </DesktopGalleryScrollArea>
+        </Suspense>
       )}
     </div>
   )
