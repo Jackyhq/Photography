@@ -70,7 +70,12 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-function gallery(ref: React.Ref<MasonryRef>, items = photos, height: typeof itemHeight | null = itemHeight) {
+function gallery(
+  ref: React.Ref<MasonryRef>,
+  items = photos,
+  height: typeof itemHeight | null = itemHeight,
+  overscanBy = 2,
+) {
   return (
     <ScrollElementContext value={document.body}>
       <Masonry
@@ -83,6 +88,7 @@ function gallery(ref: React.Ref<MasonryRef>, items = photos, height: typeof item
         columnGutter={4}
         rowGutter={4}
         itemHeightEstimate={200}
+        overscanBy={overscanBy}
         render={PhotoCell}
       />
     </ScrollElementContext>
@@ -111,6 +117,46 @@ describe('known-height masonry layout', () => {
     expect(container.querySelector('[data-photo="photo-0"]')).toBeNull()
     expect(container.querySelectorAll('[data-photo]').length).toBeLessThan(10)
     expect(measuredPhotos).toEqual([])
+  })
+
+  it('does not extend the committed cache for a suspended render that is later abandoned', async () => {
+    const ref = createMasonryRef()
+    const pending = new Promise<void>(() => {})
+    const suspend = vi.fn((blocked: boolean) => {
+      if (blocked) throw pending
+      return null
+    })
+    const Suspend = ({ blocked }: { blocked: boolean }) => suspend(blocked)
+    const tree = (overscanBy: number, blocked: boolean) => (
+      <React.StrictMode>
+        <React.Suspense fallback={<div data-testid="fallback" />}>
+          {gallery(ref, photos, itemHeight, overscanBy)}
+          <Suspend blocked={blocked} />
+        </React.Suspense>
+      </React.StrictMode>
+    )
+    const { container, rerender } = render(tree(2, false))
+    const committedPositioner = ref.current!.getPositioner()
+    expect(committedPositioner.size()).toBe(4)
+    const committedItems = Array.from({ length: 4 }, (_, index) => ({ ...committedPositioner.get(index) }))
+
+    await act(async () => {
+      React.startTransition(() => rerender(tree(20, true)))
+    })
+    expect(suspend).toHaveBeenCalledWith(true)
+    expect(container.querySelector('[data-testid="fallback"]')).toBeNull()
+    expect(ref.current!.getPositioner()).toBe(committedPositioner)
+    expect(committedPositioner.size()).toBe(4)
+    expect(Array.from({ length: 4 }, (_, index) => committedPositioner.get(index))).toEqual(committedItems)
+
+    // Supersede the suspended work, then commit a smaller extension on the same cache.
+    rerender(tree(2, false))
+    expect(committedPositioner.size()).toBe(4)
+    rerender(tree(4, false))
+    expect(ref.current!.getPositioner()).toBe(committedPositioner)
+    expect(committedPositioner.size()).toBe(8)
+    expect(measuredPhotos).toEqual([])
+    expect(firstCommits.every((commit) => commit.visibility !== 'hidden')).toBe(true)
   })
 
   it('recalculates known heights at the new column width instead of copying old measurements', () => {
@@ -174,6 +220,20 @@ describe('known-height masonry layout', () => {
     expect(ref.current!.getPositioner().get(2)?.top).toBe(204)
   })
 
+  it('resumes known-height preparation after a short unknown item is measured', () => {
+    const ref = createMasonryRef()
+    const items = [{ id: 'unknown-short', aspectRatio: 200 }, ...photos]
+    const partlyKnownHeight = (photo: Photo, width: number) =>
+      photo.id === 'unknown-short' ? Number.NaN : itemHeight(photo, width)
+    const { container } = render(gallery(ref, items, partlyKnownHeight))
+    expect(measuredPhotos).toContain('unknown-short')
+    expect(ref.current!.getPositioner().get(0)?.height).toBe(1)
+    expect(ref.current!.getPositioner().shortestColumn()).toBeGreaterThanOrEqual(400)
+    expect(container.querySelector('[data-photo="photo-3"]')).not.toBeNull()
+    expect(measuredPhotos).not.toContain('photo-3')
+    expect(firstCommits.find((commit) => commit.id === 'photo-3')?.visibility).not.toBe('hidden')
+  })
+
   it('renders every ResizeObserver correction, including consecutive changes on the same positioner', () => {
     const ref = createMasonryRef()
     const { container } = render(gallery(ref))
@@ -203,5 +263,17 @@ describe('known-height masonry layout', () => {
     expect(ref.current!.getPositioner().get(0)?.height).toBe(300)
     expect(ref.current!.getPositioner().get(2)?.top).toBe(304)
     expect(container.querySelector('[data-photo="photo-2"]')!.parentElement!.style.top).toBe('304px')
+
+    const correctedPositioner = ref.current!.getPositioner()
+    const correctedItems = Array.from({ length: correctedPositioner.size() }, (_, index) => ({
+      ...correctedPositioner.get(index),
+    }))
+    measuredPhotos.length = 0
+    document.body.scrollTop = 600
+    fireEvent.scroll(document.body)
+    expect(ref.current!.getPositioner()).toBe(correctedPositioner)
+    expect(correctedPositioner.size()).toBeGreaterThan(correctedItems.length)
+    expect(correctedItems.map((_, index) => correctedPositioner.get(index))).toEqual(correctedItems)
+    expect(measuredPhotos).toEqual([])
   })
 })

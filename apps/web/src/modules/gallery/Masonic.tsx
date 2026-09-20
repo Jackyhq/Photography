@@ -9,7 +9,7 @@ import { createPositioner, createResizeObserver, useMasonry, usePositioner, useS
 import * as React from 'react'
 
 import type { MasonryItemHeight } from './masonry-known-heights'
-import { primeKnownMasonryHeights } from './masonry-known-heights'
+import { getKnownMasonryHeight, primeKnownMasonryHeights } from './masonry-known-heights'
 import { createIndexOrderedRange } from './masonry-range'
 
 export interface MasonryRef {
@@ -157,24 +157,37 @@ function MasonryScroller<Item>(
     itemHeight?: MasonryItemHeight<Item>
   },
 ) {
+  const [, forceUpdate] = React.useReducer((count: number) => count + 1, 0)
+  const rangeEnd = props.scrollTop + props.height * (props.overscanBy ?? 2)
+  const nextIndex = props.positioner.size()
+  const pendingRangeEnd =
+    props.itemHeight &&
+    nextIndex < props.items.length &&
+    props.positioner.shortestColumn() < rangeEnd &&
+    getKnownMasonryHeight(props.items[nextIndex], props.positioner.columnWidth, nextIndex, props.itemHeight) !==
+      undefined
+      ? rangeEnd
+      : undefined
   const positioner = React.useMemo<Positioner>(
     () => ({
       ...props.positioner,
       range: createIndexOrderedRange(props.positioner.range),
+      // Suppress Masonic's hidden measurement batch while known positions await commit.
+      // Keep its real height estimate so the scroll container does not shrink in this pass.
+      shortestColumn: pendingRangeEnd === undefined ? props.positioner.shortestColumn : () => pendingRangeEnd,
     }),
-    [props.positioner],
+    [props.positioner, pendingRangeEnd],
   )
 
-  if (props.itemHeight) {
-    // Populate the layout cache before useMasonry chooses between visible cells and its hidden
-    // measurement batch. This derives positions from data without touching the DOM.
-    primeKnownMasonryHeights(
-      positioner,
-      props.items,
-      props.itemHeight,
-      props.scrollTop + props.height * (props.overscanBy ?? 2),
-    )
-  }
+  // Only committed renders may extend the shared cache. The synchronous rerender displays
+  // known cells before paint without mounting them for DOM measurement. Check every commit
+  // because Masonic's fallback refs and ResizeObserver may also change the cached range.
+  React.useLayoutEffect(() => {
+    if (pendingRangeEnd === undefined || !props.itemHeight) return
+    const previousSize = props.positioner.size()
+    primeKnownMasonryHeights(props.positioner, props.items, props.itemHeight, pendingRangeEnd)
+    if (props.positioner.size() !== previousSize) forceUpdate()
+  })
 
   // We put this in its own layer because it's the thing that will trigger the most updates
   // and we don't want to slower ourselves by cycling through all the functions, objects, and effects

@@ -187,4 +187,9 @@ test('keeps a long gallery virtualized through scrolling, resizing, columns and 
   await expect(page.getByRole('dialog')).toBeHidden()
   await expect(photos.first()).toBeVisible()
   await expectConsistentLayout(page)
+  expect(
+    await page.evaluate(
+      () => (window as typeof window & { __hiddenPhotoHeightReads: number }).__hiddenPhotoHeightReads,
+    ),
+  ).toBe(0)
 })
