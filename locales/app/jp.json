@@ -321,6 +321,7 @@
   "gallery.authorAvatar": "{{name}} のアバター",
   "gallery.authorHome": "{{name}} のホームページ",
   "gallery.built.at": "ビルド日時 ",
+  "gallery.photoLicensing": "写真の利用許諾",
   "gallery.photos_one": "写真{{count}}枚",
   "gallery.photos_other": "写真{{count}}枚",
   "gallery.social.links": "ソーシャルメディアリンク",

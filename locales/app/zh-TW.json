@@ -320,6 +320,7 @@
   "gallery.authorAvatar": "{{name}} 的頭像",
   "gallery.authorHome": "{{name}} 的首頁",
   "gallery.built.at": "建置於 ",
+  "gallery.photoLicensing": "照片授權",
   "gallery.photos_one": "{{count}} 張照片",
   "gallery.photos_other": "{{count}} 張照片",
   "gallery.social.links": "社群媒體連結",

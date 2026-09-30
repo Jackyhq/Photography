@@ -322,6 +322,7 @@
   "gallery.authorAvatar": "{{name}} avatar",
   "gallery.authorHome": "{{name}} homepage",
   "gallery.built.at": "Built at ",
+  "gallery.photoLicensing": "Photo licensing",
   "gallery.photos_one": "{{count}} photo",
   "gallery.photos_other": "{{count}} photos",
   "gallery.social.links": "Social media links",

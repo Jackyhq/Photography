@@ -142,6 +142,8 @@ const staticWebBuildPlugins: PluginOption[] = [
       maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB
       importScripts: ['pwa-cache-migration.js'],
       globPatterns: ['index.html', '**/*.{js,css,ico,svg}'],
+      // This standalone page must keep its own HTML when a service worker controls navigation.
+      navigateFallbackDenylist: [/^\/licensing(?:\/|\?|$)/],
       globIgnores: [
         'photos/**/*.html',
         'thumbnails/**/*',

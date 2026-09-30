@@ -100,7 +100,37 @@ describe('photo-page-meta', () => {
     expect(meta.jsonLd.creditText).toBe('Jacky')
     expect(meta.jsonLd.copyrightNotice).toBe('Jacky')
     expect(meta.jsonLd).not.toHaveProperty('license')
+    expect(meta.jsonLd).not.toHaveProperty('acquireLicensePage')
     expect(meta.jsonLd).not.toHaveProperty('uploadDate')
+  })
+
+  it('writes absolute configured licensing URLs into the generated image structured data', () => {
+    const html = applyPhotoPageMeta(
+      '<html><head><title>Gallery</title></head><body><div id="root"></div></body></html>',
+      createPhotoPageMeta(photo, {
+        ...siteConfig,
+        photoLicense: {
+          license: '/licensing/',
+          acquireLicensePage: 'https://example.com/permission/',
+        },
+      }),
+    )
+    const document = new DOMParser().parseFromString(html, 'text/html')
+    const jsonLd = JSON.parse(document.querySelector('script[data-afilmory-page-jsonld]')!.textContent!)
+
+    expect(jsonLd['@type']).toBe('ImageObject')
+    expect(jsonLd.license).toBe('https://photos.example.com/licensing/')
+    expect(jsonLd.acquireLicensePage).toBe('https://example.com/permission/')
+  })
+
+  it('omits blank licensing URLs while preserving independently configured fields', () => {
+    const meta = createPhotoPageMeta(photo, {
+      ...siteConfig,
+      photoLicense: { license: ' ', acquireLicensePage: '/licensing/' },
+    })
+
+    expect(meta.jsonLd).not.toHaveProperty('license')
+    expect(meta.jsonLd.acquireLicensePage).toBe('https://photos.example.com/licensing/')
   })
 
   it('replaces owned JSON-LD nodes across legacy names, attribute forms, and repeated rendering', () => {
@@ -233,7 +263,10 @@ describe('photo-page-meta', () => {
     }
     const html = applyPhotoPageMeta(
       '<html><head><title>x</title></head><body></body></html>',
-      createPhotoPageMeta(video, siteConfig),
+      createPhotoPageMeta(video, {
+        ...siteConfig,
+        photoLicense: { license: '/licensing/', acquireLicensePage: '/licensing/' },
+      }),
     )
     expect(html).toContain('"@type":"VideoObject"')
     expect(html).toContain('"duration":"PT12.5S"')
@@ -242,6 +275,10 @@ describe('photo-page-meta', () => {
     expect(html).toContain('poster="/thumbnails/photo-640.webp"')
     expect(html).not.toContain('property="og:image" content="https://cdn.example.com/photos/movie.mp4"')
     expect(html).toContain('<video controls')
+    const document = new DOMParser().parseFromString(html, 'text/html')
+    const jsonLd = JSON.parse(document.querySelector('script[data-afilmory-page-jsonld]')!.textContent!)
+    expect(jsonLd).not.toHaveProperty('license')
+    expect(jsonLd).not.toHaveProperty('acquireLicensePage')
   })
 
   it('writes static entry pages for client routes without relying on an SPA fallback', () => {

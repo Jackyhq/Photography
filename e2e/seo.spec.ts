@@ -1,6 +1,8 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
+import { openFirstPhotoViewer } from './helpers/gallery'
+
 async function readHead(page: Page) {
   return page.evaluate(() => {
     const meta = (property: string) => document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`)?.content
@@ -110,4 +112,69 @@ test('keeps invalid pages noindex and restores metadata through navigation and h
   await expect(page.getByRole('dialog')).toBeVisible()
   await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
   expect((await readHead(page)).jsonLd['@type']).toBe('ImageObject')
+})
+
+test('publishes photo licensing metadata and opens the policy through an active service worker', async ({
+  page,
+  request,
+}) => {
+  test.skip(process.env.PLAYWRIGHT_PRODUCTION !== 'true', 'Checks generated photo HTML and production service worker')
+  const viewer = await openFirstPhotoViewer(page)
+  const clientMeta = await readHead(page)
+  const licensingUrl = new URL('/licensing/', clientMeta.canonical!).href
+  const licenseFields = { '@type': 'ImageObject', license: licensingUrl, acquireLicensePage: licensingUrl }
+  expect(clientMeta.jsonLd).toMatchObject(licenseFields)
+
+  const photoResponse = await request.get(new URL(page.url()).pathname)
+  expect(photoResponse.status()).toBe(200)
+  const generatedMeta = await page.evaluate(
+    (html) => {
+      const document = new DOMParser().parseFromString(html, 'text/html')
+      return JSON.parse(document.querySelector('script[data-afilmory-page-jsonld]')?.textContent ?? '{}')
+    },
+    await photoResponse.text(),
+  )
+  expect(generatedMeta).toMatchObject(licenseFields)
+
+  await page.keyboard.press('Escape')
+  await expect(viewer).toBeHidden()
+  await expect.poll(() => new URL(page.url()).pathname).toBe('/')
+  await expect
+    .poll(() => page.evaluate(async () => Boolean((await navigator.serviceWorker.getRegistration())?.active)))
+    .toBe(true)
+  await page.reload()
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true)
+
+  const licensingLink = page.locator('a[href="/licensing/"]')
+  await expect(licensingLink).toBeVisible()
+  await expect(licensingLink).toHaveAccessibleName(/licens|授权/i)
+  await licensingLink.click()
+  await expect.poll(() => new URL(page.url()).pathname).toBe('/licensing/')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(/licens|授权/i)
+  await expect(
+    page.getByRole('region', { name: '如何申请授权' }).getByRole('link', { name: 'i@jackyw.cn', exact: true }),
+  ).toHaveAttribute('href', 'mailto:i@jackyw.cn')
+})
+
+test.describe('static photo licensing policy', () => {
+  test.use({ javaScriptEnabled: false })
+
+  test('serves readable bilingual terms and an authorization contact without JavaScript', async ({ page }) => {
+    test.skip(process.env.PLAYWRIGHT_PRODUCTION !== 'true', 'Checks the production standalone policy page')
+    const response = await page.goto('/licensing/')
+    expect(response?.status()).toBe(200)
+    expect(response?.headers()['content-type']).toContain('text/html')
+    await expect(page).toHaveTitle(/licens|授权/i)
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await expect(page.locator('main')).toContainText('书面')
+    await expect(page.getByRole('region', { name: 'Photo licensing and usage' })).toContainText(/written consent/i)
+    const contact = page
+      .getByRole('region', { name: '如何申请授权' })
+      .getByRole('link', { name: 'i@jackyw.cn', exact: true })
+    await expect(contact).toBeVisible()
+    await expect(contact).toHaveAttribute('href', 'mailto:i@jackyw.cn')
+    const galleryLink = page.getByRole('link', { name: /back to gallery|返回摄影画廊/i })
+    await expect(galleryLink).toBeVisible()
+    await expect(galleryLink).toHaveAttribute('href', '/')
+  })
 })

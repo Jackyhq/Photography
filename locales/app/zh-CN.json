@@ -322,6 +322,7 @@
   "gallery.authorAvatar": "{{name}} 的头像",
   "gallery.authorHome": "{{name}} 的主页",
   "gallery.built.at": "构建于 ",
+  "gallery.photoLicensing": "照片授权",
   "gallery.photos_one": "{{count}} 张照片",
   "gallery.photos_other": "{{count}} 张照片",
   "gallery.social.links": "社交媒体链接",

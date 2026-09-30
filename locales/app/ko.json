@@ -321,6 +321,7 @@
   "gallery.authorAvatar": "{{name}} 아바타",
   "gallery.authorHome": "{{name}} 홈페이지",
   "gallery.built.at": "빌드 날짜 ",
+  "gallery.photoLicensing": "사진 사용 허가",
   "gallery.photos_one": "사진 {{count}}장",
   "gallery.photos_other": "사진 {{count}}장",
   "gallery.social.links": "소셜 미디어 링크",

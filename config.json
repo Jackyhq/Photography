@@ -9,6 +9,10 @@
     "url": "https://jackyw.cn/",
     "avatar": "/images/avatar-192.webp"
   },
+  "photoLicense": {
+    "license": "/licensing/",
+    "acquireLicensePage": "/licensing/"
+  },
   "social": {
     "github": "Jackyhq",
     "instagram": "https://www.instagram.com/jackywhq/",

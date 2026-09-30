@@ -17,6 +17,7 @@ const { config, photos } = vi.hoisted(() => ({
     url: 'https://photos.example.com/',
     accentColor: '#000',
     author: { name: 'Jacky', url: 'https://example.com/' },
+    photoLicense: { license: '/licensing/', acquireLicensePage: '/licensing/' },
   } satisfies SiteConfig,
   photos: [
     {
@@ -115,12 +116,16 @@ describe('route page metadata', () => {
     expect(document.title).toBe('First photo | Gallery')
     expect(getMeta('og:image')).toBe('https://photos.example.com/first.jpg')
     expect(getJsonLd().url).toBe('https://photos.example.com/photos/first/')
+    expect(getJsonLd().license).toBe('https://photos.example.com/licensing/')
+    expect(getJsonLd().acquireLicensePage).toBe('https://photos.example.com/licensing/')
 
     fireEvent.click(screen.getByText('Next'))
     await waitFor(() => expect(document.title).toBe('Next photo | Gallery'))
     expect(getMeta('og:description')).toBe('Next description')
     expect(getMeta('og:url')).toBe('https://photos.example.com/photos/next/')
     expect(getJsonLd().contentUrl).toBe('https://photos.example.com/next.jpg')
+    expect(getJsonLd().license).toBe('https://photos.example.com/licensing/')
+    expect(getJsonLd().acquireLicensePage).toBe('https://photos.example.com/licensing/')
 
     fireEvent.click(screen.getByText('Home'))
     await waitFor(() => expect(document.title).toBe(config.title))
@@ -130,11 +135,15 @@ describe('route page metadata', () => {
     expect(getMeta('twitter:image')).toBe('https://photos.example.com/site.png')
     expect(getJsonLd()['@type']).toBe('WebSite')
     expect(getJsonLd()).not.toHaveProperty('contentUrl')
+    expect(getJsonLd()).not.toHaveProperty('license')
+    expect(getJsonLd()).not.toHaveProperty('acquireLicensePage')
 
     fireEvent.click(screen.getByText('Map'))
     await waitFor(() => expect(getMeta('og:url')).toBe('https://photos.example.com/explory/'))
     expect(document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href).toBe(getMeta('og:url'))
     expect(getJsonLd()['@type']).toBe('WebPage')
+    expect(getJsonLd()).not.toHaveProperty('license')
+    expect(getJsonLd()).not.toHaveProperty('acquireLicensePage')
     expect(document.querySelectorAll('script[type="application/ld+json"]')).toHaveLength(1)
     expect(document.querySelectorAll('link[rel="canonical"]')).toHaveLength(1)
     unmount()
