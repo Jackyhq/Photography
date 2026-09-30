@@ -54,6 +54,28 @@ describe('image sitemap', () => {
     expect(sitemap).not.toContain('.heic')
   })
 
+  it('indexes the configured local licensing page without submitting external contact pages', () => {
+    const local = generateSitemap([], { ...config, photoLicense: { acquireLicensePage: '/licensing/' } })
+    expect(local).toContain('<loc>https://photos.example.com/licensing/</loc>')
+
+    const external = generateSitemap([], {
+      ...config,
+      photoLicense: { acquireLicensePage: 'https://author.example.com/contact/' },
+    })
+    expect(external).not.toContain('author.example.com')
+    expect(generateSitemap([], config)).not.toContain('/licensing/')
+  })
+
+  it('preserves licensing file paths and query strings while excluding fragments', () => {
+    const sitemap = generateSitemap([], {
+      ...config,
+      photoLicense: { acquireLicensePage: '/license.html?lang=en&request=photo#contact' },
+    })
+    expect(sitemap).toContain('<loc>https://photos.example.com/license.html?lang=en&amp;request=photo</loc>')
+    expect(sitemap).not.toContain('/license.html/')
+    expect(sitemap).not.toContain('#contact')
+  })
+
   it('emits the production WebP thumbnail for video sitemap metadata', async () => {
     const video = {
       id: 'video-1',

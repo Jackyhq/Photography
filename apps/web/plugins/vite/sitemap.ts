@@ -1,7 +1,7 @@
 import type { PhotoManifestItem } from '@afilmory/builder/photo-types'
 
 import type { SiteConfig } from '../../../../site.config'
-import { getCanonicalUrl } from '../../src/lib/page-meta'
+import { getCanonicalUrl, getPhotoLicensePageUrl } from '../../src/lib/page-meta'
 import { getPhotoDetailPath } from '../../src/lib/photo-route'
 import { getPreferredPhotoDescription, getPreferredPhotoTitle } from './__internal__/photo-text'
 
@@ -42,6 +42,18 @@ export function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig)
     <priority>1.0</priority>
   </url>`
 
+  const licensingUrl = getPhotoLicensePageUrl(config)
+  const licensingPage = licensingUrl ? new URL(licensingUrl) : undefined
+  if (licensingPage) licensingPage.hash = ''
+  const licensingPageXml =
+    licensingPage && licensingPage.origin === new URL(config.url).origin && licensingPage.pathname !== '/'
+      ? `  <url>
+    <loc>${escapeXml(licensingPage.href)}</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>`
+      : ''
+
   const photoUrls = photos
     .map((photo) => {
       const imageUrl = toAbsoluteUrl(getSitemapImageSource(photo), baseUrl)
@@ -75,6 +87,7 @@ export function generateSitemap(photos: PhotoManifestItem[], config: SiteConfig)
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${mainPageXml}
+${licensingPageXml}
 ${photoUrls}
 </urlset>\n`
 }

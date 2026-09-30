@@ -2,6 +2,64 @@
   "version": 1,
   "photos": [
     {
+      "key": "随手/20260926174215.jpeg",
+      "title": "舷窗里的伦敦",
+      "titles": {
+        "zh-CN": "舷窗里的伦敦",
+        "en": "London Through the Cabin Window"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于飞往伦敦的航班上，透过舷窗俯瞰伦敦市中心，泰晤士河穿过密集楼群，远处云层透出金色光芒。",
+        "en": "Photographed on a flight to London, looking through the cabin window over central London, where the Thames runs between dense buildings beneath clouds lit with gold."
+      },
+      "tags": [
+        "英国",
+        "伦敦",
+        "航拍"
+      ],
+      "aiContext": {
+        "currentTitle": "舷窗里的伦敦",
+        "dateTaken": "2026-09-26T17:42:15.120Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 6.765mm f/1.78",
+        "categoryTags": [
+          "随手",
+          "英国",
+          "伦敦",
+          "航拍"
+        ]
+      }
+    },
+    {
+      "key": "风光/20260926174022.jpeg",
+      "title": "云霞下的泰晤士河",
+      "titles": {
+        "zh-CN": "云霞下的泰晤士河",
+        "en": "The Thames Beneath Glowing Clouds"
+      },
+      "descriptions": {
+        "zh-CN": "拍摄于飞往伦敦的航班上，泰晤士河在伦敦市中心蜿蜒，桥梁连接两岸街区，粉橙色云霞铺在远处天际。",
+        "en": "Photographed on a flight to London, with the Thames winding through central London, bridges linking the riverbanks and pink-orange clouds along the distant horizon."
+      },
+      "tags": [
+        "英国",
+        "伦敦",
+        "航拍"
+      ],
+      "aiContext": {
+        "currentTitle": "云霞下的泰晤士河",
+        "dateTaken": "2026-09-26T17:40:22.860Z",
+        "camera": "Apple iPhone 16 Pro",
+        "lens": "Apple iPhone 16 Pro back triple camera 15.66mm f/2.8",
+        "categoryTags": [
+          "风光",
+          "英国",
+          "伦敦",
+          "航拍"
+        ]
+      }
+    },
+    {
       "key": "风光/20260917105418.jpg",
       "title": "树梢上的晚云",
       "titles": {

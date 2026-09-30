@@ -38,6 +38,17 @@ export function getCanonicalUrl(pathname: string, siteUrl: string): string {
   return `${siteUrl.replace(/\/+$/, '')}${normalizeCanonicalPathname(pathname)}`
 }
 
+export function getPhotoLicensePageUrl(siteConfig: SiteConfig): string | undefined {
+  return toAbsoluteUrl(siteConfig.photoLicense?.acquireLicensePage, siteConfig.url)
+}
+
+export function getPhotoLicensePageHref(siteConfig: SiteConfig): string | undefined {
+  const url = getPhotoLicensePageUrl(siteConfig)
+  if (!url) return undefined
+  const page = new URL(url)
+  return page.origin === new URL(siteConfig.url).origin ? `${page.pathname}${page.search}${page.hash}` : url
+}
+
 export function createSitePageMeta(siteConfig: SiteConfig, pathname = '/', image?: string): IndexablePageMeta {
   const url = getCanonicalUrl(pathname, siteConfig.url)
   const isHome = normalizeCanonicalPathname(pathname) === '/'
@@ -97,6 +108,11 @@ export function createPhotoMeta(
     creator: createAuthor(siteConfig),
     creditText: siteConfig.author.name,
     copyrightNotice: siteConfig.author.name,
+  }
+
+  if (!isVideo) {
+    jsonLd.license = toAbsoluteUrl(siteConfig.photoLicense?.license, siteConfig.url)
+    jsonLd.acquireLicensePage = getPhotoLicensePageUrl(siteConfig)
   }
 
   // Capture time and filesystem mtime are not verified publication dates.

@@ -9,6 +9,11 @@ export interface SiteConfig {
   url: string
   accentColor: string
   author: Author
+  /** Photo usage terms and the page where visitors can request permission. */
+  photoLicense?: {
+    license?: string
+    acquireLicensePage?: string
+  }
   social?: Social
   feed?: Feed
   map?: MapConfig
@@ -46,8 +51,7 @@ interface Social {
 const defaultConfig: SiteConfig = {
   name: "Innei's Afilmory",
   title: "Innei's Afilmory",
-  description:
-    'Capturing beautiful moments in life, documenting daily warmth and emotions through my lens.',
+  description: 'Capturing beautiful moments in life, documenting daily warmth and emotions through my lens.',
   url: 'https://afilmory.innei.in',
   accentColor: '#007bff',
   author: {
