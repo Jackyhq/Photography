@@ -3,6 +3,8 @@
 **Copyright (c) 2025-2026 Jackyhq. All rights reserved.**
 **Portions Copyright (c) 2025 Afilmory Team & Contributors**
 
+Jackyhq's software contributions are offered under the applicable code licenses below. The personal-content notice in Section 2C was updated on **2026-10-01**; it does not replace upstream licenses or revoke previously granted rights.
+
 > This repository is licensed under a **dual-track** model:
 >
 > - **Library Code** is licensed under the **MIT License** (Section 3).
@@ -40,7 +42,7 @@
 
 **2.2 Project Code → AGPL-3.0-or-later + §7 UI attribution.** Project Code is licensed under **AGPL-3.0-or-later**, with the **additional requirement in Section 4**. When you run or offer Project Code with interactive features over a network, you must provide **Corresponding Source** to those users as required by AGPLv3 (including the remote network interaction clause).
 
-**2.3 Trademarks & Endorsement.** No trademark rights are granted. You may not imply endorsement by Innei or contributors.
+**2.3 Trademarks & Endorsement.** No trademark rights are granted. You may not imply sponsorship, affiliation, or endorsement by Jackyhq (also known as Jackywhq), Jacky's Photography, Afilmory, Innei, or contributors. Names and marks may be used for truthful attribution and identification of origin as permitted by applicable law; this is not permission to present a fork or another service as the official gallery.
 
 **2.4 Patents.**
 - Library Code (MIT) does not include an **explicit** patent license beyond what may be implied by applicable law.  
@@ -66,19 +68,38 @@ This project may include components under other licenses. You must comply with t
 
 ## 2C) Documentation & Media
 
-Unless stated otherwise, **project documentation** is licensed under **CC BY 4.0**, and **non-code media assets** (images, icons, diagrams) are licensed under **CC BY 4.0**, except for the excluded assets below.
+Unless stated otherwise, **project documentation** is licensed under **CC BY 4.0**, and **non-code media assets** (images, icons, diagrams) are licensed under **CC BY 4.0**, except for the excluded content below. Trademarks and brand elements remain protected and are not licensed for use as another project's identity.
 
-**EXCLUSION:** All photography files located within the `photos/` directory, and all media files derived from those photographs, are **NOT** licensed under CC BY 4.0 or any other open-source license. These are the proprietary creative works of **Jackyhq**, and all rights are reserved. No permission is granted for reproduction, distribution, public display, sublicensing, or use of these files without explicit written consent.
+**2C.1 Protected personal content.** The following separate creative works, to the extent owned by **Jackyhq**, are **NOT** offered under CC BY 4.0, MIT, AGPL, or another open license by this document. All rights not expressly granted are reserved:
 
-This exclusion includes, without limitation:
+- Original photographs, Live Photo motion/video components, and media derived from these works, including edited versions, crops, thumbnails, previews, covers, social sharing images, README images, and screenshots containing the works.
+- Original expressive photo titles, captions, localized descriptions, and narrative text in `content/photo-descriptions.json`, and copies or translations of that expression in generated manifests, feeds, metadata, or pages. This reservation does not claim exclusive rights in facts such as dates, camera settings, coordinates, place names, or ordinary tags, nor in the JSON format, schemas, or processing code.
+- Jackyhq's original logo and avatar artwork, and branding images derived from them, including favicons and application icons. This reservation does not include third-party artwork or licensed UI icons.
+
+Examples of locations containing protected content include:
 
 - `photos/**`
 - `apps/web/public/thumbnails/**`
+- `apps/web/dist/thumbnails/**`
 - `web/thumbnails/**`
 - `apps/web/public/og-image-*.png`
+- `apps/web/dist/og-image-*.png`
 - `web/og-image-*.png`
+- `apps/web/public/readme-og-image.png`
+- `apps/web/dist/readme-og-image.png`
 - `web/readme-og-image.png`
-- any other generated thumbnails, previews, cover images, social sharing images, or README preview images derived from the photographs
+- the expressive photo text in `content/photo-descriptions.json`
+- `apps/web/src/assets/brand/logo.jpg`, `apps/web/public/images/avatar*`, and their generated branding images
+
+The exclusion follows the protected content, regardless of its filename, format, directory, or delivery through a source repository, deployed website, CDN, API, public manifest, or generated build. Public access, a download link, or attribution alone does not grant permission to reuse that content. A generated file containing protected text or media does not become freely reusable merely because the generator is open source.
+
+**2C.2 Permission to browse and share links.** Jackyhq permits ordinary viewing of the official gallery and documentation, the technical copying and caching necessary for that viewing, and sharing links to the original pages. This limited permission does not authorize a separate gallery, mirror, republication, or reuse of the protected content.
+
+**2C.3 Other uses require written permission.** Except for Section 2C.2, previously granted licenses, or uses permitted by applicable law, prior explicit written permission from Jackyhq is required to reproduce, redistribute, adapt, publicly display, sublicense, or commercially exploit protected content. This includes reuse in advertising, resale, datasets, machine-learning training or evaluation, and bulk collection where those activities require the rights holder's permission. Giving credit, linking back, or using content for a non-commercial purpose does not by itself provide that permission.
+
+To request permission, contact **i@jackyw.cn** with the photo URL or content identifier, intended use, publication platform, commercial status, scope, and duration. Sending a request is not approval; any permission is limited to the uses explicitly agreed in writing. Separate permission from Jackyhq covers only rights Jackyhq controls and does not waive third-party software or content licenses.
+
+**2C.4 Existing licenses and legal exceptions.** These reservations apply only to separate personal content and branding; they do not restrict rights granted in Library Code, Project Code, their Corresponding Source, technical documentation, or third-party materials. Third-party license notices, including the separate MIT license in `packages/webgl-viewer/LICENSE` and licenses for third-party icons, remain applicable. No reservation overrides fair use, fair dealing, other statutory exceptions, or an existing valid license. In particular, material previously offered under CC BY 4.0, MIT, or AGPL remains available under that grant to the extent its terms provide; this notice does not retroactively withdraw those rights.
 
 ---
 
@@ -140,6 +161,7 @@ Project Code is licensed under the **GNU Affero General Public License, version 
 
 ## 6) Practical Notes (non-normative)
 
+- **Attribution for this fork.** A recommended notice is **Jacky's Photography by Jackyhq — based on Afilmory by Innei and contributors**, alongside the Source and License links required by Section 4. A fork may use its own name while retaining applicable copyright and attribution notices. The Source link should identify the Corresponding Source of the version actually offered. This example adds no new condition to previously licensed copies.
 - **SPDX in file headers (recommended):**  
   - Library files: `SPDX-License-Identifier: MIT`  
   - Project files: `SPDX-License-Identifier: AGPL-3.0-or-later`
