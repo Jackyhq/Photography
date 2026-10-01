@@ -5,7 +5,7 @@
 > [!IMPORTANT]
 > 本项目由 [Jackyhq](https://github.com/Jackyhq) 基于 [Afilmory](https://github.com/Afilmory/afilmory) 深度定制。源码仓库只开源应用、构建器、文档和工程配置；私有照片源文件位于 `Jackyhq/Photography-Photos`。
 >
-> 本地 `photos/` 目录只是构建时 checkout，已被 Git 忽略。照片原图、缩略图、OG 图、README 预览图和其他由个人照片生成的媒体资产均为 Jackyhq 个人作品或衍生媒体，不属于开源授权范围，未经明确书面许可不得转载、引用、分发或展示。
+> 本地 `photos/` 目录只是构建时 checkout，已被 Git 忽略。个人照片及其衍生媒体、受版权保护的原创照片文案、个人 logo 和头像不随代码开源授权。除正常浏览、分享原页面链接、既有有效授权和法律允许的使用外，复用须事先取得书面许可，详见 [LICENSE 第 2C 节](LICENSE)。
 
 ## 项目概览
 
@@ -216,8 +216,14 @@ Vercel Preview 使用 `vercel.json` 中的 `pnpm run vercel:build`。Preview 只
 
 ## 许可证
 
-本项目代码遵循 [Attribution Network License (ANL) v1.0](LICENSE)。
+本项目采用 [Attribution Network License (ANL) v1.0](LICENSE)，保留 Afilmory 上游及第三方许可：
 
-私有照片仓库内容、生成缩略图、OG 图、README 预览图以及其他由个人照片生成的媒体资产不属于开源授权范围，详见 [LICENSE](LICENSE) 的 Documentation & Media 排除条款。
+- 库代码按 MIT 授权；应用代码按 AGPL-3.0-or-later 及其署名附加条款授权。复用本项目应用代码须保留适用的 Jackyhq、Afilmory 和上游作者署名，并按许可提供对应版本源码。
+- 技术文档和未被排除的非代码媒体默认按 CC BY 4.0 授权；第三方组件和图标保留各自许可。
+- 私有照片、Live Photo 视频、缩略图、OG 图、README 预览图、原创照片叙述文案、个人 logo 和头像等受保护内容保留权利。即使通过网站、CDN、公开 manifest 或构建产物发布，也不自动获得开源授权。未经另行书面许可，不授权将这些内容用于转载、商业用途、数据集或 AI 训练等需要权利人许可的活动。
 
-Copyright (c) 2025-2026 Jackyhq. All rights reserved.
+正常浏览和分享原页面链接获准。法律允许的使用及以前合法授出的许可不受本次声明影响；拍摄时间、GPS、设备参数等事实信息不因此成为独占内容。完整边界见 [LICENSE 第 2C 节](LICENSE)。
+
+申请个人内容授权请联系 [i@jackyw.cn](mailto:i@jackyw.cn)，提供照片链接或内容标识、用途、发布平台、是否商用、范围和期限。发送申请不代表获准。
+
+Copyright (c) 2025-2026 Jackyhq. Software rights are granted under the applicable licenses above; protected personal content has all rights reserved, subject to existing licenses and applicable law.
