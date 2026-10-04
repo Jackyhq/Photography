@@ -90,10 +90,10 @@
       "defu@6.1.4": "6.1.7",
       "diff@8.0.2": "8.0.4",
       "@babel/plugin-transform-modules-systemjs": "7.29.4",
-      "brace-expansion@1.1.14": "2.1.4",
-      "brace-expansion@2.1.0": "2.1.4",
-      "brace-expansion@5.0.5": "5.0.9",
-      "fast-uri": "3.1.6",
+      "brace-expansion@1.1.14": "2.1.7",
+      "brace-expansion@2.1.0": "2.1.7",
+      "brace-expansion@5.0.5": "5.0.12",
+      "fast-uri": "3.1.8",
       "fast-xml-builder": "1.1.7",
       "flatted@3.3.3": "3.4.2",
       "handlebars@4.7.8": "4.7.9",
@@ -107,12 +107,15 @@
       "serialize-javascript@6.0.2": "7.0.5",
       "serialize-javascript@7.0.2": "7.0.5",
       "@typescript-eslint/parser@8.46.1": "8.46.2",
-      "undici": "7.29.0",
+      "undici": "7.29.1",
       "yaml@1.10.2": "1.10.3",
       "yaml@2.8.1": "2.8.4",
       "@humanfs/node@<0.16.8": "0.16.8",
       "browserslist@<4.28.7": "4.28.7",
       "baseline-browser-mapping@<2.11.0": "2.11.0"
+    },
+    "patchedDependencies": {
+      "braces@3.0.3": "patches/braces@3.0.3.patch"
     }
   },
   "simple-git-hooks": {
