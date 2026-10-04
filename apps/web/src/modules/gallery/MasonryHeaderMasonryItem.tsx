@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 
 import { siteConfig } from '~/config'
 import { usePhotos } from '~/hooks/usePhotoViewer'
-import { getPhotoLicensePageHref } from '~/lib/page-meta'
 import { useAppUpdate } from '~/providers/app-update-context'
 
 import { ActionGroup } from './ActionGroup'
@@ -15,7 +14,6 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
   const locale = i18n.resolvedLanguage ?? i18n.language
   const visiblePhotoCount = usePhotos().length
   const { needRefresh, updateApp } = useAppUpdate()
-  const photoLicensePage = getPhotoLicensePageHref(siteConfig)
   return (
     <div
       className={clsxm(
@@ -178,11 +176,6 @@ export const MasonryHeaderMasonryItem = ({ style, className }: { style?: React.C
           )}
         </div>
         <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
-          {photoLicensePage && (
-            <a href={photoLicensePage} className="hover:text-gray-700 dark:hover:text-gray-300">
-              {t('gallery.photoLicensing')}
-            </a>
-          )}
           <a
             href="https://beian.miit.gov.cn/"
             target="_blank"

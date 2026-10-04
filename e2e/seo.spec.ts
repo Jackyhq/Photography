@@ -145,10 +145,11 @@ test('publishes photo licensing metadata and opens the policy through an active 
   await page.reload()
   await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true)
 
-  const licensingLink = page.locator('a[href="/licensing/"]')
-  await expect(licensingLink).toBeVisible()
-  await expect(licensingLink).toHaveAccessibleName(/licens|授权/i)
-  await licensingLink.click()
+  await expect(page.locator('a[href="/licensing/"]')).toHaveCount(0)
+  const icpLink = page.getByRole('link', { name: '粤ICP备2025447157号', exact: true })
+  await expect(icpLink).toBeVisible()
+  await expect(icpLink).toHaveAttribute('href', 'https://beian.miit.gov.cn/')
+  await page.goto('/licensing/')
   await expect.poll(() => new URL(page.url()).pathname).toBe('/licensing/')
   await expect(page.getByRole('heading', { level: 1 })).toContainText(/licens|授权/i)
   await expect(

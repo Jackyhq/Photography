@@ -42,13 +42,6 @@ export function getPhotoLicensePageUrl(siteConfig: SiteConfig): string | undefin
   return toAbsoluteUrl(siteConfig.photoLicense?.acquireLicensePage, siteConfig.url)
 }
 
-export function getPhotoLicensePageHref(siteConfig: SiteConfig): string | undefined {
-  const url = getPhotoLicensePageUrl(siteConfig)
-  if (!url) return undefined
-  const page = new URL(url)
-  return page.origin === new URL(siteConfig.url).origin ? `${page.pathname}${page.search}${page.hash}` : url
-}
-
 export function createSitePageMeta(siteConfig: SiteConfig, pathname = '/', image?: string): IndexablePageMeta {
   const url = getCanonicalUrl(pathname, siteConfig.url)
   const isHome = normalizeCanonicalPathname(pathname) === '/'

@@ -8,7 +8,7 @@ import type { Plugin } from 'vite'
 
 import type { SiteConfig } from '../../../../site.config'
 import type { IndexablePageMeta } from '../../src/lib/page-meta'
-import { createPhotoMeta, createSitePageMeta, getPhotoLicensePageHref } from '../../src/lib/page-meta'
+import { createPhotoMeta, createSitePageMeta } from '../../src/lib/page-meta'
 import { getPhotoDetailPath } from '../../src/lib/photo-route'
 import { MANIFEST_PATH } from './__internal__/constants'
 import { getPreferredPhotoDescription, getPreferredPhotoTitle } from './__internal__/photo-text'
@@ -97,7 +97,7 @@ export function applyHomePageMeta(html: string, photos: PhotoManifestItem[], sit
       return `<li><a href="${escapeAttribute(getPhotoDetailPath(photo.id))}">${escapeHtmlText(title)}</a></li>`
     })
     .join('')
-  const content = `<main data-afilmory-static-content><h1>${escapeHtmlText(siteConfig.title)}</h1><p>${escapeHtmlText(siteConfig.description)}</p><nav aria-label="Recent photographs"><ul>${links}</ul></nav>${createPhotoLicensingLink(siteConfig)}<noscript><p>Enable JavaScript to browse the full gallery.</p></noscript></main>`
+  const content = `<main data-afilmory-static-content><h1>${escapeHtmlText(siteConfig.title)}</h1><p>${escapeHtmlText(siteConfig.description)}</p><nav aria-label="Recent photographs"><ul>${links}</ul></nav><noscript><p>Enable JavaScript to browse the full gallery.</p></noscript></main>`
   return replaceStaticContent(applyPageMeta(html, createSitePageMeta(siteConfig)), content)
 }
 
@@ -110,7 +110,7 @@ export function createPhotoPageMeta(photo: PhotoManifestItem, siteConfig: SiteCo
   return {
     ...meta,
     preload: createPhotoPreloadLink(productionPhoto),
-    staticContent: createPhotoStaticContent(productionPhoto, meta.description, siteConfig),
+    staticContent: createPhotoStaticContent(productionPhoto, meta.description),
   }
 }
 
@@ -203,12 +203,7 @@ export function createPhotoPreloadLink(
   return `<link ${attributes.join(' ')}>`
 }
 
-function createPhotoLicensingLink(siteConfig: SiteConfig): string {
-  const url = getPhotoLicensePageHref(siteConfig)
-  return url ? `<p><a href="${escapeAttribute(url)}">Photo licensing</a></p>` : ''
-}
-
-function createPhotoStaticContent(photo: PhotoManifestItem, description: string, siteConfig: SiteConfig): string {
+function createPhotoStaticContent(photo: PhotoManifestItem, description: string): string {
   const title = getPreferredPhotoTitle(photo, photo.id)
   const caption = description && description !== title ? `${title} — ${description}` : title
   const dimensions = [
@@ -233,7 +228,7 @@ function createPhotoStaticContent(photo: PhotoManifestItem, description: string,
     media = `<picture>${webpSource}<img src="${escapeAttribute(fallback)}"${srcSet} sizes="(max-width: 1024px) 100vw, 1024px" alt="${escapeAttribute(title)}" ${dimensions}></picture>`
   }
 
-  return `<main data-afilmory-static-content><p><a href="/">Back to gallery</a></p><h1>${escapeHtmlText(title)}</h1><figure>${media}<figcaption>${escapeHtmlText(caption)}</figcaption></figure>${createPhotoLicensingLink(siteConfig)}</main>`
+  return `<main data-afilmory-static-content><p><a href="/">Back to gallery</a></p><h1>${escapeHtmlText(title)}</h1><figure>${media}<figcaption>${escapeHtmlText(caption)}</figcaption></figure></main>`
 }
 
 function getFirstSrcFromSrcSet(srcSet: string): string {
