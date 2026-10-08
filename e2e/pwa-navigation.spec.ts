@@ -4,20 +4,34 @@ import { createServer, request as forwardRequest } from 'node:http'
 import { expect, test } from '@playwright/test'
 
 async function createCanonicalRedirectProxy(baseURL: string) {
+  const preview = new URL(baseURL)
+  if (preview.protocol !== 'http:' || preview.hostname !== '127.0.0.1') {
+    throw new Error('The navigation proxy requires the local HTTP preview')
+  }
   const upstreamRequests = new Set<ClientRequest>()
   const server = createServer((incoming, response) => {
-    const target = new URL(incoming.url ?? '/', baseURL)
+    const requestPath = incoming.url ?? '/'
+    if (!requestPath.startsWith('/') || requestPath.startsWith('//') || requestPath.includes('\\')) {
+      response.writeHead(400)
+      response.end('Only local origin-form paths are supported')
+      return
+    }
 
     // Cloudflare canonicalizes this file URL, including Workbox revision queries.
-    if (target.pathname === '/index.html') {
-      response.writeHead(308, { Location: `/${target.search}` })
+    if (requestPath.split('?')[0] === '/index.html') {
+      response.writeHead(308, { Location: '/' })
       response.end()
       return
     }
 
     const upstream = forwardRequest(
-      target,
-      { method: incoming.method, headers: { ...incoming.headers, host: target.host } },
+      {
+        hostname: '127.0.0.1',
+        port: preview.port,
+        path: requestPath,
+        method: incoming.method,
+        headers: { ...incoming.headers, host: preview.host },
+      },
       (upstreamResponse) => {
         response.writeHead(upstreamResponse.statusCode ?? 502, upstreamResponse.headers)
         upstreamResponse.pipe(response)
@@ -72,6 +86,27 @@ test('opens Google photo links after the service worker app shell cache is evict
   const proxy = await createCanonicalRedirectProxy(baseURL!)
 
   try {
+    const redirectResponse = await request.get(`${proxy.origin}/index.html?__WB_REVISION__=fixture`, {
+      maxRedirects: 0,
+    })
+    expect(redirectResponse.status()).toBe(308)
+    expect(redirectResponse.headers().location).toBe('/')
+
+    for (const requestPath of [baseURL!, `//${new URL(baseURL!).host}/`]) {
+      const status = await new Promise<number | undefined>((resolve, reject) => {
+        const proxyRequest = forwardRequest(
+          { hostname: '127.0.0.1', port: new URL(proxy.origin).port, path: requestPath },
+          (response) => {
+            response.once('end', () => resolve(response.statusCode))
+            response.resume()
+          },
+        )
+        proxyRequest.once('error', reject)
+        proxyRequest.end()
+      })
+      expect(status).toBe(400)
+    }
+
     await page.goto(proxy.origin)
     await expect
       .poll(() => page.evaluate(async () => Boolean((await navigator.serviceWorker.getRegistration())?.active)))
