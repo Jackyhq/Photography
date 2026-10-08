@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@afilmory/ui/dialog'
 import { ScrollArea } from '@afilmory/ui/scroll-areas'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
@@ -39,12 +39,28 @@ export const RawExifViewer: React.FC<RawExifViewerProps> = ({ currentPhoto }) =>
   const [isOpen, setIsOpen] = useState(false)
   const [rawExifData, setRawExifData] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const requestRef = useRef<AbortController | null>(null)
+
+  const invalidateRequest = useCallback(() => {
+    requestRef.current?.abort()
+    requestRef.current = null
+  }, [])
 
   useEffect(() => {
     setIsOpen(false)
     setRawExifData(null)
     setIsLoading(false)
-  }, [currentPhoto.id])
+
+    return invalidateRequest
+  }, [currentPhoto.id, invalidateRequest])
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      invalidateRequest()
+      setIsLoading(false)
+    }
+    setIsOpen(open)
+  }
 
   const handleOpenModal = async () => {
     if (rawExifData) {
@@ -52,15 +68,23 @@ export const RawExifViewer: React.FC<RawExifViewerProps> = ({ currentPhoto }) =>
       return
     }
 
+    invalidateRequest()
+    const controller = new AbortController()
+    requestRef.current = controller
+    const isCurrentRequest = () => requestRef.current === controller && !controller.signal.aborted
     setIsLoading(true)
     try {
-      const response = await fetch(currentPhoto.originalUrl)
+      const response = await fetch(currentPhoto.originalUrl, { signal: controller.signal })
+      if (!isCurrentRequest()) return
       const blob = await response.blob()
+      if (!isCurrentRequest()) return
       const data = await ExifToolManager.parse(blob, currentPhoto.s3Key)
+      if (!isCurrentRequest()) return
 
       setRawExifData(data || null)
       setIsOpen(true)
     } catch (error) {
+      if (!isCurrentRequest()) return
       console.error('Failed to parse EXIF data:', error)
       toast.error(
         t('exif.raw.parse.error', {
@@ -68,7 +92,10 @@ export const RawExifViewer: React.FC<RawExifViewerProps> = ({ currentPhoto }) =>
         }),
       )
     } finally {
-      setIsLoading(false)
+      if (isCurrentRequest()) {
+        requestRef.current = null
+        setIsLoading(false)
+      }
     }
   }
 
@@ -78,7 +105,7 @@ export const RawExifViewer: React.FC<RawExifViewerProps> = ({ currentPhoto }) =>
   )
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <button
           type="button"

@@ -28,7 +28,6 @@ function useTocThumb(containerRef: React.RefObject<HTMLDivElement | null>, activ
 interface TableOfContentsProps {
   currentPath: string
   onItemClick?: () => void
-  handleScroll?: (top: number) => void
 }
 
 interface TocItemProps {
@@ -36,7 +35,6 @@ interface TocItemProps {
   activeId: string | null
   level: number
   onItemClick?: () => void
-  handleScroll?: (top: number) => void
 }
 
 // Helper functions for SVG indicator positioning
@@ -50,7 +48,7 @@ function getLineOffset(depth: number): number {
   return depth >= 3 ? 12 : 0
 }
 
-function TocItemComponent({ item, activeId, level, onItemClick, handleScroll }: TocItemProps) {
+function TocItemComponent({ item, activeId, level, onItemClick }: TocItemProps) {
   const isActive = activeId === item.id
   const hasChildren = item.children && item.children.length > 0
 
@@ -66,11 +64,8 @@ function TocItemComponent({ item, activeId, level, onItemClick, handleScroll }: 
           paddingInlineStart: `${getItemOffset(level)}px`,
         }}
         onClick={(e) => {
-          e.preventDefault()
-          const element = document.querySelector(`#${item.id}`)
-          if (element && element instanceof HTMLElement) {
-            const elementTop = element.offsetTop
-            handleScroll?.(elementTop - 74)
+          if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+            return
           }
           onItemClick?.()
         }}
@@ -87,7 +82,6 @@ function TocItemComponent({ item, activeId, level, onItemClick, handleScroll }: 
               activeId={activeId}
               level={level + 1}
               onItemClick={onItemClick}
-              handleScroll={handleScroll}
             />
           ))}
         </ul>
@@ -96,7 +90,7 @@ function TocItemComponent({ item, activeId, level, onItemClick, handleScroll }: 
   )
 }
 
-export function TableOfContents({ currentPath, onItemClick, handleScroll }: TableOfContentsProps) {
+export function TableOfContents({ currentPath, onItemClick }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const pos = useTocThumb(containerRef, activeId)
@@ -265,14 +259,7 @@ export function TableOfContents({ currentPath, onItemClick, handleScroll }: Tabl
 
           <ul className="text-sm">
             {currentToc.map((item) => (
-              <TocItemComponent
-                key={item.id}
-                item={item}
-                activeId={activeId}
-                level={1}
-                onItemClick={onItemClick}
-                handleScroll={handleScroll}
-              />
+              <TocItemComponent key={item.id} item={item} activeId={activeId} level={1} onItemClick={onItemClick} />
             ))}
           </ul>
         </div>

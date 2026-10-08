@@ -4,10 +4,9 @@ import { TableOfContents } from './TableOfContents'
 
 interface MobileTableOfContentsProps {
   currentPath: string
-  handleScroll?: (top: number) => void
 }
 
-export function MobileTableOfContents({ currentPath, handleScroll }: MobileTableOfContentsProps) {
+export function MobileTableOfContents({ currentPath }: MobileTableOfContentsProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -45,11 +44,7 @@ export function MobileTableOfContents({ currentPath, handleScroll }: MobileTable
               <h3 className="text-text-primary text-base font-semibold">目录</h3>
             </div>
             <div className="scrollbar-hide max-h-80 overflow-y-auto p-4">
-              <TableOfContents
-                currentPath={currentPath}
-                onItemClick={() => setIsOpen(false)}
-                handleScroll={handleScroll}
-              />
+              <TableOfContents currentPath={currentPath} onItemClick={() => setIsOpen(false)} />
             </div>
           </div>
         </>

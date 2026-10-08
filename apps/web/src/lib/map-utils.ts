@@ -4,6 +4,9 @@ import { normalizeGPSAltitudeRef } from '~/lib/gps-altitude'
 import type { GPSCoordinates, MapBounds, MapViewState, PhotoMarker } from '~/types/map'
 import { GPSDirection } from '~/types/map'
 
+const hasGPSCoordinateValue = (value: unknown): boolean =>
+  typeof value === 'number' || (typeof value === 'string' && value.trim() !== '')
+
 /**
  * Convert EXIF GPS data to decimal coordinates with proper directional handling
  */
@@ -15,7 +18,8 @@ export function convertExifGPSToDecimal(exif: PickedExif | null): {
   altitude?: number
   altitudeRef?: 'Above Sea Level' | 'Below Sea Level'
 } | null {
-  if (!exif?.GPSLatitude || !exif?.GPSLongitude) {
+  // Zero lies on the equator or prime meridian and is a valid coordinate.
+  if (!exif || !hasGPSCoordinateValue(exif.GPSLatitude) || !hasGPSCoordinateValue(exif.GPSLongitude)) {
     return null
   }
 

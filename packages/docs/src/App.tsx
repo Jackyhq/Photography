@@ -16,15 +16,13 @@ function App({ url }: { url?: string }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const matchedRoute = getMatchedRoute(currentPath)
   const mainContentRef = useRef<HTMLDivElement>(null)
+  const sidebarToggleRef = useRef<HTMLButtonElement>(null)
+  const scrollFrameRef = useRef<number | null>(null)
 
-  const handleScrollMainContent = (top: number) => {
-    if (mainContentRef.current) {
-      mainContentRef.current.scrollTo({
-        top,
-        behavior: 'smooth',
-      })
-    }
-  }
+  const closeSidebar = useCallback(() => {
+    if (document.activeElement?.closest('#mobile-navigation')) sidebarToggleRef.current?.focus()
+    setIsSidebarOpen(false)
+  }, [])
 
   const scrollToLocation = useCallback(() => {
     const fragment = window.location.hash.slice(1)
@@ -36,9 +34,17 @@ function App({ url }: { url?: string }) {
     } catch {
       // An invalid URL fragment should not interrupt route navigation.
     }
-    if (target) target.scrollIntoView()
+    if (target) target.scrollIntoView({ behavior: 'smooth' })
     else mainContentRef.current?.scrollTo({ top: 0 })
   }, [])
+
+  const scheduleLocationScroll = useCallback(() => {
+    if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current)
+    scrollFrameRef.current = requestAnimationFrame(() => {
+      scrollFrameRef.current = null
+      scrollToLocation()
+    })
+  }, [scrollToLocation])
 
   const handleLinkClick = (event: MouseEvent<HTMLDivElement>) => {
     if (
@@ -63,11 +69,14 @@ function App({ url }: { url?: string }) {
       window.history.pushState({}, '', `${destination.pathname}${destination.search}${destination.hash}`)
     }
     setCurrentPath(normalizeDocsPath(destination.pathname))
-    setIsSidebarOpen(false)
-    requestAnimationFrame(scrollToLocation)
+    closeSidebar()
+    scheduleLocationScroll()
   }
 
   useEffect(() => {
+    const previousScrollRestoration = window.history.scrollRestoration
+    // This router owns scrolling; native history restoration can interrupt its smooth scrolls.
+    window.history.scrollRestoration = 'manual'
     const syncLocation = () => {
       const path = window.location.pathname
       const canonicalPath = getDocsPath(path)
@@ -75,21 +84,22 @@ function App({ url }: { url?: string }) {
         window.history.replaceState(null, '', `${canonicalPath}${window.location.search}${window.location.hash}`)
       }
       setCurrentPath(normalizeDocsPath(path))
-      setIsSidebarOpen(false)
+      closeSidebar()
+      scheduleLocationScroll()
     }
     syncLocation()
     window.addEventListener('popstate', syncLocation)
-    return () => window.removeEventListener('popstate', syncLocation)
-  }, [])
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(scrollToLocation)
-    return () => cancelAnimationFrame(frame)
-  }, [currentPath, scrollToLocation])
+    return () => {
+      window.removeEventListener('popstate', syncLocation)
+      if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current)
+      window.history.scrollRestoration = previousScrollRestoration
+    }
+  }, [closeSidebar, scheduleLocationScroll])
 
   const toggleSidebar = useCallback(() => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }, [isSidebarOpen])
+    if (isSidebarOpen) closeSidebar()
+    else setIsSidebarOpen(true)
+  }, [closeSidebar, isSidebarOpen])
 
   useEffect(() => {
     updateDocsPageMeta(document, matchedRoute)
@@ -106,11 +116,8 @@ function App({ url }: { url?: string }) {
         {/* 移动端侧边栏 */}
         {isSidebarOpen && (
           <>
-            <div
-              className="bg-opacity-50 fixed inset-0 z-40 bg-black lg:hidden"
-              onClick={() => setIsSidebarOpen(false)}
-            />
-            <div className="fixed top-0 left-0 z-50 h-full lg:hidden">
+            <div className="bg-opacity-50 fixed inset-0 z-40 bg-black lg:hidden" onClick={closeSidebar} />
+            <div id="mobile-navigation" className="fixed top-0 left-0 z-50 h-full lg:hidden">
               <Sidebar currentPath={currentPath} />
             </div>
           </>
@@ -124,6 +131,10 @@ function App({ url }: { url?: string }) {
                 onClick={toggleSidebar}
                 className="text-text-primary hover:bg-background-secondary rounded-lg p-2 transition-colors"
                 type="button"
+                aria-label="Toggle navigation"
+                aria-expanded={isSidebarOpen}
+                aria-controls="mobile-navigation"
+                ref={sidebarToggleRef}
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -169,10 +180,13 @@ function App({ url }: { url?: string }) {
         <div
           className="bg-opacity-50 fixed inset-0 z-40 bg-black/10 lg:hidden"
           style={{ display: isSidebarOpen ? 'block' : 'none' }}
-          onClick={() => setIsSidebarOpen(false)}
+          onClick={closeSidebar}
         />
         <div
+          id="mobile-navigation"
           className="fixed top-0 left-0 z-50 h-full lg:hidden"
+          inert={!isSidebarOpen}
+          aria-hidden={!isSidebarOpen}
           style={{
             transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
             transition: 'transform 0.3s ease-in-out',
@@ -190,6 +204,10 @@ function App({ url }: { url?: string }) {
               onClick={toggleSidebar}
               className="text-text-primary hover:bg-background-secondary rounded-lg p-2 transition-colors"
               type="button"
+              aria-label="Toggle navigation"
+              aria-expanded={isSidebarOpen}
+              aria-controls="mobile-navigation"
+              ref={sidebarToggleRef}
             >
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -220,13 +238,13 @@ function App({ url }: { url?: string }) {
               On this page
             </h4>
             <div className="scrollbar-hide sticky top-6 max-h-[calc(100vh-2rem)] overflow-y-auto">
-              <TableOfContents currentPath={currentPath} handleScroll={handleScrollMainContent} />
+              <TableOfContents currentPath={currentPath} />
             </div>
           </div>
         </div>
 
         {/* 移动端 TOC */}
-        <MobileTableOfContents currentPath={currentPath} handleScroll={handleScrollMainContent} />
+        <MobileTableOfContents currentPath={currentPath} />
       </main>
     </div>
   )
