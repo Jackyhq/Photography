@@ -7,7 +7,7 @@ import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { getManifest } from 'workbox-build'
 
-import { HASHED_PRECACHE_URL_PATTERN } from './pwa-precache'
+import { APP_SHELL_PRECACHE_OPTIONS, HASHED_PRECACHE_URL_PATTERN } from './pwa-precache'
 
 const HASHED_VENDOR_FILES = ['vendor/react-Cbh89ZlP.js', 'vendor/i18n-Abc_12-3.js']
 const UNVERSIONED_FILES = ['index.html', 'pwa-cache-migration.js', 'vendor/react.js', 'vendor/plain-helper.js']
@@ -81,5 +81,25 @@ describe('PWA precache revisions', () => {
       expect(afterRevision).toBeTypeOf('string')
       expect(afterRevision).not.toBe(beforeRevision)
     }
+  })
+
+  it('precaches the canonical app shell with its content revision for navigation recovery', async () => {
+    const before = await readManifest(HASHED_PRECACHE_URL_PATTERN)
+    const after = await getManifest({
+      globDirectory: directory,
+      globPatterns: ['index.html', '**/*.{js,css}'],
+      dontCacheBustURLsMatching: HASHED_PRECACHE_URL_PATTERN,
+      modifyURLPrefix: APP_SHELL_PRECACHE_OPTIONS.modifyURLPrefix,
+    })
+
+    expect(after.warnings).toEqual([])
+    expect(after.count).toBe(before.count)
+    expect(after.size).toBe(before.size)
+    const shell = before.manifestEntries.find((entry) => entry.url === 'index.html')!
+    expect(after.manifestEntries).toContainEqual({ ...shell, url: APP_SHELL_PRECACHE_OPTIONS.navigateFallback })
+    expect(after.manifestEntries.some((entry) => entry.url === 'index.html')).toBe(false)
+    expect(after.manifestEntries.filter((entry) => entry.url !== '/')).toEqual(
+      before.manifestEntries.filter((entry) => entry.url !== 'index.html'),
+    )
   })
 })

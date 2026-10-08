@@ -71,6 +71,7 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
 
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const isComposingRef = useRef(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
   const triggerElementRef = useRef<HTMLElement | null>(null)
@@ -117,6 +118,7 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
 
   // Reset state when opened
   useEffect(() => {
+    isComposingRef.current = false
     if (isOpen) {
       setQuery('')
       setSelectedIndex(0)
@@ -298,6 +300,9 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
   // Keyboard navigation
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      // Safari can end composition before its final keydown and report only keyCode 229.
+      if (isComposingRef.current || e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) return
+
       switch (e.key) {
         case 'ArrowDown': {
           e.preventDefault()
@@ -393,6 +398,15 @@ export const CommandPalette = ({ isOpen, onClose }: CommandPaletteProps) => {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onCompositionStart={() => {
+                isComposingRef.current = true
+              }}
+              onCompositionEnd={() => {
+                isComposingRef.current = false
+              }}
+              onBlur={() => {
+                isComposingRef.current = false
+              }}
               onKeyDown={handleKeyDown}
               placeholder={t('action.search.placeholder')}
               aria-label={t('action.search.placeholder')}
